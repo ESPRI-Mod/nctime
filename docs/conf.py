@@ -272,5 +272,5 @@ class Mock(MagicMock):
     def __getattr__(cls, name):
             return Mock()
 
-MOCK_MODULES = ['netCDF4']
+MOCK_MODULES = ['netCDF4', 'netcdftime']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
