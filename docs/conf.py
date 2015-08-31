@@ -264,7 +264,7 @@ autodoc_member_order = 'bysource'
 autodoc_default_flags = ['members', 'private-members']
 
 
-from unittest.mock import MagicMock
+from mock import Mock as MagicMock
 
 
 class Mock(MagicMock):
