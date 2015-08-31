@@ -1,0 +1,968 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Code documentation &mdash; time_axis 3.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="time_axis 3.0 documentation" href="index.html" />
+    <link rel="prev" title="Changelog" href="log.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="log.html" title="Changelog"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">time_axis 3.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="code-documentation">
+<span id="autodoc"></span><h1>Code documentation<a class="headerlink" href="#code-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-timeaxis">
+<span id="timeaxis-py"></span><h2>timeaxis.py<a class="headerlink" href="#module-timeaxis" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">platform:</th><td class="field-body">Unix</td>
+</tr>
+<tr class="field-even field"><th class="field-name">synopsis:</th><td class="field-body">Rewrite and/or check time axis of MIP NetCDF files.</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="timeaxis.ProcessingContext">
+<em class="property">class </em><tt class="descclassname">timeaxis.</tt><tt class="descname">ProcessingContext</tt><big>(</big><em>args</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#ProcessingContext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.ProcessingContext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encapsulates the following processing context/information for main process:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="21%" />
+<col width="47%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Attribute</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><em>self</em>.directory</td>
+<td><em>str</em></td>
+<td>Variable to scan</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.check</td>
+<td><em>boolean</em></td>
+<td>True if check mode</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.write</td>
+<td><em>boolean</em></td>
+<td>True if write mode</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.force</td>
+<td><em>boolean</em></td>
+<td>True if force writing</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.project</td>
+<td><em>str</em></td>
+<td>Project</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.checksum</td>
+<td><em>str</em></td>
+<td>The checksum type</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.cfg</td>
+<td><em>callable</em></td>
+<td>Configuration file parser</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.attributes</td>
+<td><em>dict</em></td>
+<td>DRS attributes from regex</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.calendar</td>
+<td><em>str</em></td>
+<td>NetCDF calendar attribute</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.tunits</td>
+<td><em>str</em></td>
+<td>Time units from file</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.funits</td>
+<td><em>str</em></td>
+<td>Time units from frequency</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>args</strong> (<em>dict</em>) &#8211; Parsed command-line arguments</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The processing context</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><em>dict</em></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><strong>Error</strong> &#8211; If the project name is inconsistent with the sections names from the configuration file</li>
+<li><strong>Error</strong> &#8211; If the regular expression from the configurtion file cannot match the supplied directory</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="timeaxis.AxisStatus">
+<em class="property">class </em><tt class="descclassname">timeaxis.</tt><tt class="descname">AxisStatus</tt><a class="reference internal" href="_modules/timeaxis.html#AxisStatus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.AxisStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encapsulates the following file diagnostic to print or save:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="14%" />
+<col width="64%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Attribute</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><em>self</em>.directory</td>
+<td><em>str</em></td>
+<td>Variable to scan</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.file</td>
+<td><em>str</em></td>
+<td>Filename</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.start</td>
+<td><em>str</em></td>
+<td>Start date from filename</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.end</td>
+<td><em>str</em></td>
+<td>End date from filename</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.last</td>
+<td><em>str</em></td>
+<td>Last date from theoretical time axis</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.steps</td>
+<td><em>int</em></td>
+<td>Time axis length</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.instant</td>
+<td><em>boolean</em></td>
+<td>True if instantaneous time axis</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.calendar</td>
+<td><em>str</em></td>
+<td>NetCDF calendar attribute</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.units</td>
+<td><em>str</em></td>
+<td>Expected time units</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.control</td>
+<td><em>list</em></td>
+<td>Errors status</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.bnds</td>
+<td><em>boolean</em></td>
+<td>True if time boundaries excpeted and not mistaken</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.checksum</td>
+<td><em>str</em></td>
+<td>New checksum if modified file</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.axis</td>
+<td><em>array</em></td>
+<td>Theoretical time axis</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.time</td>
+<td><em>array</em></td>
+<td>Time axis from file</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The axis status</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><em>dict</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.get_args">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">get_args</tt><big>(</big><em>job</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#get_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.get_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns parsed command-line arguments. See <tt class="docutils literal"><span class="pre">esg_mapfiles</span> <span class="pre">-h</span></tt> for full description.
+A <tt class="docutils literal"><span class="pre">job</span></tt> dictionnary can be used as developper&#8217;s entry point to overload the parser.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>job</strong> (<em>dict</em>) &#8211; Optionnal dictionnary instead of command-line arguments.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The corresponding <tt class="docutils literal"><span class="pre">argparse</span></tt> Namespace</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.init_logging">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">init_logging</tt><big>(</big><em>logdir</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#init_logging"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.init_logging" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates the logging configuration (output, message formatting). In the case of a logfile, the logfile name is unique and formatted as follows:
+name-YYYYMMDD-HHMMSS-PID.log</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>logdir</strong> (<em>str</em>) &#8211; The relative or absolute logfile directory. If <tt class="docutils literal"><span class="pre">None</span></tt> the standard output is used.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.check_directory">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">check_directory</tt><big>(</big><em>path</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#check_directory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.check_directory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the supplied directory exists. The path is normalized before without trailing slash.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>paths</strong> (<em>list</em>) &#8211; The path to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The same path if exists</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>str</em></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises Error:</th><td class="field-body">If the directory does not exist</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.config_parse">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">config_parse</tt><big>(</big><em>config_path</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#config_parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.config_parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the configuration file if exists.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>config_path</strong> (<em>str</em>) &#8211; The absolute or relative path of the configuration file</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The configuration file parser</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><em>dict</em></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><strong>Error</strong> &#8211; If no configuration file exists</li>
+<li><strong>Error</strong> &#8211; If the configuration file parsing fails</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.time_init">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">time_init</tt><big>(</big><em>ctx</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#time_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.time_init" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Returns the required referenced time properties from first file into processing context:</dt>
+<dd><ul class="first last simple">
+<li>The calendar is then used for all files scanned into the variable path,</li>
+<li>The NetCDF time units attribute has to be unchanged in respect with CF convention and archives designs,</li>
+<li>The frequency and the version are also read to detect instantaneous time axis.</li>
+</ul>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ctx</strong> (<em>dict</em>) &#8211; The processing context (as a <a class="reference internal" href="#timeaxis.ProcessingContext" title="timeaxis.ProcessingContext"><tt class="xref py py-func docutils literal"><span class="pre">ProcessingContext()</span></tt></a> class instance)</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><strong>Error</strong> &#8211; If NetCDF time units attribute is missing</li>
+<li><strong>Error</strong> &#8211; If NetCDF calendar attribute is missing</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.control_time_units">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">control_time_units</tt><big>(</big><em>tunits</em>, <em>project</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#control_time_units"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.control_time_units" title="Permalink to this definition">¶</a></dt>
+<dd><p>Controls the time units format as at least &#8220;days since YYYY-MM-DD&#8221;.
+For CORDEX project, the time units has to be &#8220;days since 1949-12-01 00:00:00&#8221;.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>tunits</strong> (<em>str</em>) &#8211; The NetCDF time units string from file</li>
+<li><strong>project</strong> (<em>str</em>) &#8211; The MIP project</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The appropriate time units string formatted and controlled depending on the project</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>str</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.convert_time_units">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">convert_time_units</tt><big>(</big><em>unit</em>, <em>frequency</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#convert_time_units"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.convert_time_units" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts default time units from file into time units using the MIP frequency.
+As en example, for a 3-hourly file, the time units &#8220;days since YYYY-MM-DD&#8221; becomes &#8220;hours since YYYY-MM-DD&#8221;.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>tunits</strong> (<em>str</em>) &#8211; The NetCDF time units string from file</li>
+<li><strong>frequency</strong> (<em>str</em>) &#8211; The time frequency</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The converted time units string</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>str</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.counted">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">counted</tt><big>(</big><em>fct</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#counted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.counted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator used to count all file process calls.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fct</strong> (<em>callable</em>) &#8211; The function to monitor</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A wrapped function with a <tt class="docutils literal"><span class="pre">.called</span></tt> attribute</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>callable</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.time_axis_processing">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">time_axis_processing</tt><big>(</big><em>inputs</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#time_axis_processing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.time_axis_processing" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Time axis process that:</dt>
+<dd><ul class="first last simple">
+<li>Deduces start and end dates from filename,</li>
+<li>Rebuilds the theoretical time axis (using frenquency, calendar, etc.),</li>
+<li>Compares the theoretical time axis with the time axis from the file,</li>
+<li>Compares the last theoretical date with the end date from the filename,</li>
+<li>Checks if the expected time units keep unchanged,</li>
+<li>Checks the squareness and the consistency of time boundaries,</li>
+<li>Rewrites (with <tt class="docutils literal"><span class="pre">-w/--write</span></tt> mode) the new time axis,</li>
+<li>Computes the new checksum if modified,</li>
+<li>Tracebacks the status.</li>
+</ul>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>inputs</strong> (<em>tuple</em>) &#8211; A tuple with the file path and the processing context</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The time axis status as an <a class="reference internal" href="#timeaxis.AxisStatus" title="timeaxis.AxisStatus"><tt class="xref py py-func docutils literal"><span class="pre">AxisStatus()</span></tt></a> instance</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>dict</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.checksum">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">checksum</tt><big>(</big><em>ctx</em>, <em>filename</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#checksum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.checksum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does the MD5 or SHA256 checksum by the Shell avoiding Python memory limits.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>file</strong> (<em>str</em>) &#8211; The full path of a file</li>
+<li><strong>ctx</strong> (<em>dict</em>) &#8211; The processing context (as a <a class="reference internal" href="#timeaxis.ProcessingContext" title="timeaxis.ProcessingContext"><tt class="xref py py-func docutils literal"><span class="pre">ProcessingContext()</span></tt></a> class instance)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises Error:</th><td class="field-body"><p class="first last">If the checksum fails</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.nc_var_delete">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">nc_var_delete</tt><big>(</big><em>ctx</em>, <em>filename</em>, <em>variable</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#nc_var_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.nc_var_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a NetCDF variable using NCO operators.
+A unique filename is generated to avoid multithreading errors.
+To overwrite the input file, the source file is dump using the <tt class="docutils literal"><span class="pre">cat</span></tt> Shell command-line to avoid Python memory limit.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> (<em>str</em>) &#8211; The filename</li>
+<li><strong>ctx</strong> (<em>dict</em>) &#8211; The processing context (as a <a class="reference internal" href="#timeaxis.ProcessingContext" title="timeaxis.ProcessingContext"><tt class="xref py py-func docutils literal"><span class="pre">ProcessingContext()</span></tt></a> class instance)</li>
+<li><strong>variable</strong> (<em>str</em>) &#8211; The NetCDF variable to delete</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises Error:</th><td class="field-body"><p class="first last">If the deletion failed</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.dates_from_filename">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">dates_from_filename</tt><big>(</big><em>project</em>, <em>filename</em>, <em>calendar</em>, <em>pattern</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#dates_from_filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.dates_from_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns datetime objetcs for start and end dates from the filename.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> (<em>str</em>) &#8211; The filename</li>
+<li><strong>project</strong> (<em>str</em>) &#8211; The MIP project</li>
+<li><strong>calendar</strong> (<em>str</em>) &#8211; The NetCDF calendar attribute</li>
+<li><strong>Object pattern</strong> (<em>re</em>) &#8211; The filename pattern as a regex (from <a class="reference external" href="https://docs.python.org/2/library/re.html">re library</a>).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><tt class="docutils literal"><span class="pre">datetime</span></tt> instances for start and end dates from the filename</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>datetime.datetime</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.untroncated_timestamp">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">untroncated_timestamp</tt><big>(</big><em>timestamp</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#untroncated_timestamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.untroncated_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns proper digits for yearly and monthly truncated timestamps.
+The dates from filename are filled with the 0 digit to reach 14 digits.
+Consequently, yealry dates starts at January 1st and monthly dates starts at first day of the month.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timestamp</strong> (<em>str</em>) &#8211; A date string from a filename</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The filled timestamp</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>str</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.Num2date">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">Num2date</tt><big>(</big><em>num_axis</em>, <em>units</em>, <em>calendar</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#Num2date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.Num2date" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper from <tt class="docutils literal"><span class="pre">netCDF4.num2date</span></tt> able to handle &#8220;years since&#8221; and &#8220;months since&#8221; units.
+If time units are not &#8220;years since&#8221; or &#8220;months since&#8221;, calls usual <tt class="docutils literal"><span class="pre">netcdftime.num2date</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>num_axis</strong> (<em>array</em>) &#8211; The numerical time axis following units</li>
+<li><strong>units</strong> (<em>str</em>) &#8211; The proper time units</li>
+<li><strong>calendar</strong> (<em>str</em>) &#8211; The NetCDF calendar attribute</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The corresponding date axis</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>array</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.Date2num">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">Date2num</tt><big>(</big><em>date_axis</em>, <em>units</em>, <em>calendar</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#Date2num"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.Date2num" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper from <tt class="docutils literal"><span class="pre">netCDF4.date2num</span></tt> able to handle &#8220;years since&#8221; and &#8220;months since&#8221; units.
+If time units are not &#8220;years since&#8221; or &#8220;months since&#8221; calls usual <tt class="docutils literal"><span class="pre">netcdftime.date2num</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>num_axis</strong> (<em>array</em>) &#8211; The date axis following units</li>
+<li><strong>units</strong> (<em>str</em>) &#8211; The proper time units</li>
+<li><strong>calendar</strong> (<em>str</em>) &#8211; The NetCDF calendar attribute</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The corresponding numerical time axis</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>array</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.add_month">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">add_month</tt><big>(</big><em>date</em>, <em>months_to_add</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#add_month"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.add_month" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the next month from date.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>date</strong> (<em>datetime</em>) &#8211; Accepts datetime or phony datetime from <tt class="docutils literal"><span class="pre">netCDF4.num2date</span></tt>.</li>
+<li><strong>months_to_add</strong> (<em>int</em>) &#8211; The number of months to add to the date</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The final date</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>datetime</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.add_year">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">add_year</tt><big>(</big><em>date</em>, <em>years_to_add</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#add_year"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.add_year" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the next year from date.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>date</strong> (<em>datetime</em>) &#8211; Accepts datetime or phony datetime from <tt class="docutils literal"><span class="pre">netCDF4.num2date</span></tt>.</li>
+<li><strong>years_to_add</strong> (<em>int</em>) &#8211; The number of years to add to the date</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The final date</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>datetime</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.is_instant_time_axis">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">is_instant_time_axis</tt><big>(</big><em>ctx</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#is_instant_time_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.is_instant_time_axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deduces from MIP frequency, variable and realm, if the file requires an instantaneous time axis.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ctx</strong> (<em>dict</em>) &#8211; The processing context (as a <a class="reference internal" href="#timeaxis.ProcessingContext" title="timeaxis.ProcessingContext"><tt class="xref py py-func docutils literal"><span class="pre">ProcessingContext()</span></tt></a> class instance)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if the file requires an instantaneous time axis</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>boolean</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.time_inc">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">time_inc</tt><big>(</big><em>frequency</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#time_inc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.time_inc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the time incrementation depending on the MIP frequency.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frequency</strong> (<em>str</em>) &#8211; The MIP frequency</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The corresponding time raising value</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>int</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.date_print">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">date_print</tt><big>(</big><em>date</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#date_print"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.date_print" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints date in format: %Y%m%d %H:%M:%s.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>date</strong> (<em>datetime</em>) &#8211; Accepts datetime or phony datetime objects</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The corresponding formatted date to print</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>str</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.rebuild_time_axis">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">rebuild_time_axis</tt><big>(</big><em>start</em>, <em>length</em>, <em>instant</em>, <em>inc</em>, <em>ctx</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#rebuild_time_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.rebuild_time_axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rebuilds time axis from date axis, depending on MIP frequency, calendar and instant status.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>date</strong> (<em>float</em>) &#8211; The numerical date to start (from <tt class="docutils literal"><span class="pre">netCDF4.num2date</span></tt> or <a class="reference internal" href="#timeaxis.Date2num" title="timeaxis.Date2num"><tt class="xref py py-func docutils literal"><span class="pre">Date2num()</span></tt></a>)</li>
+<li><strong>length</strong> (<em>int</em>) &#8211; The time axis length (i.e., the timesteps number)</li>
+<li><strong>instant</strong> (<em>boolean</em>) &#8211; The instant status (from <a class="reference internal" href="#timeaxis.is_instant_time_axis" title="timeaxis.is_instant_time_axis"><tt class="xref py py-func docutils literal"><span class="pre">is_instant_time_axis()</span></tt></a>)</li>
+<li><strong>inc</strong> (<em>int</em>) &#8211; The time incrementation (from <a class="reference internal" href="#timeaxis.time_inc" title="timeaxis.time_inc"><tt class="xref py py-func docutils literal"><span class="pre">time_inc()</span></tt></a>)</li>
+<li><strong>ctx</strong> (<em>dict</em>) &#8211; The processing context (as a <a class="reference internal" href="#timeaxis.ProcessingContext" title="timeaxis.ProcessingContext"><tt class="xref py py-func docutils literal"><span class="pre">ProcessingContext()</span></tt></a> class instance)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The corresponding theoretical time axis</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>float array</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.rebuild_date_axis">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">rebuild_date_axis</tt><big>(</big><em>start</em>, <em>length</em>, <em>instant</em>, <em>inc</em>, <em>ctx</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#rebuild_date_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.rebuild_date_axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rebuilds date axis from numerical time axis, depending on MIP frequency, calendar and instant status.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>date</strong> (<em>float</em>) &#8211; The numerical date to start (from <tt class="docutils literal"><span class="pre">netCDF4.date2num</span></tt> or <a class="reference internal" href="#timeaxis.Date2num" title="timeaxis.Date2num"><tt class="xref py py-func docutils literal"><span class="pre">Date2num()</span></tt></a>)</li>
+<li><strong>length</strong> (<em>int</em>) &#8211; The time axis length (i.e., the timesteps number)</li>
+<li><strong>instant</strong> (<em>boolean</em>) &#8211; The instant status (from <a class="reference internal" href="#timeaxis.is_instant_time_axis" title="timeaxis.is_instant_time_axis"><tt class="xref py py-func docutils literal"><span class="pre">is_instant_time_axis()</span></tt></a>)</li>
+<li><strong>inc</strong> (<em>int</em>) &#8211; The time incrementation (from <a class="reference internal" href="#timeaxis.time_inc" title="timeaxis.time_inc"><tt class="xref py py-func docutils literal"><span class="pre">time_inc()</span></tt></a>)</li>
+<li><strong>ctx</strong> (<em>dict</em>) &#8211; The processing context (as a <a class="reference internal" href="#timeaxis.ProcessingContext" title="timeaxis.ProcessingContext"><tt class="xref py py-func docutils literal"><span class="pre">ProcessingContext()</span></tt></a> class instance)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The corresponding theoretical date axis</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>datetime array</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.trunc">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">trunc</tt><big>(</big><em>f</em>, <em>n</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#trunc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.trunc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Truncates a float f to n decimal places before rounding</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>f</strong> (<em>float</em>) &#8211; The number to truncates</li>
+<li><strong>n</strong> (<em>int</em>) &#8211; Decimal number to place before rounding</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The corresponding truncated number</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>float</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.time_checker">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">time_checker</tt><big>(</big><em>right_axis</em>, <em>test_axis</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#time_checker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.time_checker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the time axis squareness.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>right_axis</strong> (<em>array</em>) &#8211; The theoretical time axis (from <a class="reference internal" href="#timeaxis.rebuild_time_axis" title="timeaxis.rebuild_time_axis"><tt class="xref py py-func docutils literal"><span class="pre">rebuild_time_axis()</span></tt></a>),</li>
+<li><strong>test_axis</strong> (<em>array</em>) &#8211; The time axis to check from NetCDF file,</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if both time axis are exactly the same,</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>boolean</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.rebuild_time_bnds">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">rebuild_time_bnds</tt><big>(</big><em>start</em>, <em>length</em>, <em>instant</em>, <em>inc</em>, <em>ctx</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#rebuild_time_bnds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.rebuild_time_bnds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rebuilds time boundaries from the start date, depending on MIP frequency, calendar and instant status.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>date</strong> (<em>float</em>) &#8211; The numerical date to start (from <tt class="docutils literal"><span class="pre">netCDF4.date2num</span></tt> or <a class="reference internal" href="#timeaxis.Date2num" title="timeaxis.Date2num"><tt class="xref py py-func docutils literal"><span class="pre">Date2num()</span></tt></a>)</li>
+<li><strong>length</strong> (<em>int</em>) &#8211; The time axis length (i.e., the timesteps number)</li>
+<li><strong>instant</strong> (<em>boolean</em>) &#8211; The instant status (from <a class="reference internal" href="#timeaxis.is_instant_time_axis" title="timeaxis.is_instant_time_axis"><tt class="xref py py-func docutils literal"><span class="pre">is_instant_time_axis()</span></tt></a>)</li>
+<li><strong>inc</strong> (<em>int</em>) &#8211; The time incrementation (from <a class="reference internal" href="#timeaxis.time_inc" title="timeaxis.time_inc"><tt class="xref py py-func docutils literal"><span class="pre">time_inc()</span></tt></a>)</li>
+<li><strong>ctx</strong> (<em>dict</em>) &#8211; The processing context (as a <a class="reference internal" href="#timeaxis.ProcessingContext" title="timeaxis.ProcessingContext"><tt class="xref py py-func docutils literal"><span class="pre">ProcessingContext()</span></tt></a> class instance).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The corresponding theoretical time boundaries</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>[n, 2] array</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.last_date_checker">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">last_date_checker</tt><big>(</big><em>last</em>, <em>end</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#last_date_checker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.last_date_checker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if last and end date are the same.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>last</strong> (<em>float</em>) &#8211; The last timesteps of the theoretical time axis (from <a class="reference internal" href="#timeaxis.rebuild_time_axis" title="timeaxis.rebuild_time_axis"><tt class="xref py py-func docutils literal"><span class="pre">rebuild_time_axis()</span></tt></a>)</li>
+<li><strong>end</strong> (<em>float</em>) &#8211; The numerical date to end (from <tt class="docutils literal"><span class="pre">netCDF4.date2num</span></tt> or <a class="reference internal" href="#timeaxis.Date2num" title="timeaxis.Date2num"><tt class="xref py py-func docutils literal"><span class="pre">Date2num()</span></tt></a>)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if both dates are exactly the same</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>boolean</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.yield_inputs">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">yield_inputs</tt><big>(</big><em>ctx</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#yield_inputs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.yield_inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yields all files to process within tuples with the processing context.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ctx</strong> (<em>dict</em>) &#8211; The processing context (as a <a class="reference internal" href="#timeaxis.ProcessingContext" title="timeaxis.ProcessingContext"><tt class="xref py py-func docutils literal"><span class="pre">ProcessingContext()</span></tt></a> class instance)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Attach the processing context to a file to process as an iterator of tuples</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>iter</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.wrapper">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">wrapper</tt><big>(</big><em>inputs</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#wrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.wrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transparent wrapper for pool map.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>inputs</strong> (<em>tuple</em>) &#8211; A tuple with the file path and the processing context</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The <a class="reference internal" href="#timeaxis.time_axis_processing" title="timeaxis.time_axis_processing"><tt class="xref py py-func docutils literal"><span class="pre">time_axis_processing()</span></tt></a> call</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>callable</em></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises Error:</th><td class="field-body">When a thread-process failed preserving its traceback</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="timeaxis.run">
+<tt class="descclassname">timeaxis.</tt><tt class="descname">run</tt><big>(</big><em>job</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.run" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Main process that:</dt>
+<dd><ul class="first last simple">
+<li>Instanciates processing context,</li>
+<li>Defines the referenced time properties,</li>
+<li>Instanciates threads pools,</li>
+<li>Prints or logs the time axis diagnostics.</li>
+</ul>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>job</strong> (<em>dict</em>) &#8211; An optionnal dictionnary to supply instead of classical command-line use.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p><em>Module author: Levavasseur, G. &lt;<a class="reference external" href="mailto:glipsl&#37;&#52;&#48;ipsl&#46;jussieu&#46;fr">glipsl<span>&#64;</span>ipsl<span>&#46;</span>jussieu<span>&#46;</span>fr</a>&gt; and Laliberte, F. &lt;<a class="reference external" href="mailto:frederic&#46;laliberte&#37;&#52;&#48;utoronto&#46;ca">frederic<span>&#46;</span>laliberte<span>&#64;</span>utoronto<span>&#46;</span>ca</a>&gt;</em></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Code documentation</a><ul>
+<li><a class="reference internal" href="#module-timeaxis">timeaxis.py</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="log.html"
+                        title="previous chapter">Changelog</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/autodoc.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="log.html" title="Changelog"
+             >previous</a> |</li>
+        <li><a href="index.html">time_axis 3.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Levavasseur, G..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

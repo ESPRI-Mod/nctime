@@ -2,7 +2,7 @@
 """
 .. module:: time_axis.py
    :platform: Unix
-   :synopsis: Rewrite and/or check time axis of CMIP5 files upon local IPSL-ESGF datanode.
+   :synopsis: Rewrite and/or check time axis of CMIP5 files.
 
 .. moduleauthor:: Levavasseur, G. <glipsl@ipsl.jussieu.fr>, Laliberte, F. <frederic.laliberte@utoronto.ca> and Raciazek, J. <Jerome.Raciazek@ipsl.jussieu.fr>
 
@@ -46,6 +46,7 @@ class _ProcessingContext(object):
         self.check = args.check
         self.write = args.write
         self.force = args.force
+        self.checksum = args.checksum
         self.verbose = args.verbose
         self.realm = None
         self.version = None
@@ -63,6 +64,7 @@ class _SyndaProcessingContext(object):
         self.check = True
         self.write = False
         self.force = False
+        self.checksum = 'sha256'
         self.verbose = True
         self.realm = None
         self.version = None
@@ -97,7 +99,6 @@ class _Exception(Exception):
     """Exception type to log encountered error."""
     def __init__(self, msg=''):
         self.msg = msg
-
     def __str__(self):
         print
         _log('error', self.msg)
@@ -134,6 +135,12 @@ def _get_args():
         action='store_true',
         default=False,
         help="""Force time axis writing overpassing checking step\n(default is False).\nTHIS ACTION DEFINITELY MODIFY INPUT FILES!\n\n""")
+    parser.add_argument(
+        '-C', '--checksum',
+        type=str,
+        choices=['md5', 'sha256'],
+        default='md5',
+        help="""Checksum type (default is md5) among:\n- md5\n- sha256\n\n""")
     parser.add_argument(
         '-o', '--outdiag',
         type=str,
@@ -321,7 +328,7 @@ def _time_axis_processing(inputs):
                 data.close()
                 _nc_var_delete(ctx, filename, 'time_bnds')
                 # Compute checksum
-                status.checksum = _checksum(ctx, filename)
+                #status.checksum = _checksum(ctx, filename)
                 data = Dataset('{0}/{1}'.format(ctx.directory, filename), 'r+')
         # Check time axis squareness
         if ctx.check or ctx.write:
@@ -333,7 +340,7 @@ def _time_axis_processing(inputs):
                 _log('warning', 'ERROO1 - Wrong time axis for {0}'.format(filename))
             # Rebuild, read and check time boundaries squareness if needed
             if 'time_bnds' in data.variables.keys():
-                axis_bnds = _rebuild_time_bnds(start, length, inc, ctx)
+                axis_bnds = _rebuild_time_bnds(start, length, instant, inc, ctx)
                 time_bnds = data.variables['time_bnds'][:, :]
                 if _time_checker(axis_bnds, time_bnds):
                     status.bnds = True
@@ -348,13 +355,16 @@ def _time_axis_processing(inputs):
             if 'time_bnds' in data.variables.keys():
                 data.variables['time_bnds'][:, :] = axis_bnds
             # Compute checksum
-            status.checksum = _checksum(ctx, filename)
+            #status.checksum = _checksum(ctx, filename)
         # Control consistency between time units
         if ctx.tunits != status.units:
             status.control.append('002')
             _log('warning', 'ERROO2 - Changing time units for {0}'.format(filename))
     # Close file
     data.close()
+    if ctx.write or ctx.force:
+        # Becareful to compute checksum at the end of all modifications
+        status.checksum = _checksum(ctx, filename)
     # Return file status
     return status
 
@@ -362,7 +372,12 @@ def _time_axis_processing(inputs):
 def _checksum(ctx, filename):
     """Do MD5 checksum by Shell"""
     try:
-        shell = os.popen("md5sum {0} | awk -F ' ' '{{ print $1 }}'".format('{0}/{1}'.format(ctx.directory, filename)), 'r')
+        if ctx.checksum == 'sha256':
+            shell = os.popen("sha256sum {0} | awk -F ' ' '{{ print $1 }}'".format('{0}/{1}'.format(ctx.directory, filename)), 'r')
+        elif ctx.checksum == 'md5':
+            shell = os.popen("md5sum {0} | awk -F ' ' '{{ print $1 }}'".format('{0}/{1}'.format(ctx.directory, filename)), 'r')
+        else:
+            raise _Exception('Invalid checksum type: {0} instead of MD5 or SHA256'.format(ctx.checksum))
         return shell.readline()[:-1]
     except:
         raise _Exception('Checksum failed for {0}'.format('{0}/{1}'.format(ctx.directory, filename)))
@@ -550,7 +565,7 @@ def _rebuild_date_axis(start, length, instant, inc, ctx):
         last = _num2date(num_axis[-1], units=ctx.funits, calendar=ctx.calendar)[0]
     else:
         last = _num2date(num_axis[-1], units=ctx.funits, calendar=ctx.calendar)
-    if not instant:
+    if not instant and not inc in [3, 6]:  # To solve non-instant [36]hr files
         num_axis += 0.5 * inc
     date_axis = _num2date(num_axis, units=ctx.funits, calendar=ctx.calendar)
     return date_axis, last
@@ -570,10 +585,12 @@ def _time_checker(right_axis, test_axis):
         return False
 
 
-def _rebuild_time_bnds(start, length, inc, ctx):
+def _rebuild_time_bnds(start, length, instant, inc, ctx):
     """Rebuild time boundaries from start date, depending on frequency and calendar."""
     num_axis_bnds = np.column_stack(((np.arange(start=start, stop=start + length * inc, step=inc)),
                                      (np.arange(start=start, stop=start + (length+1) * inc, step=inc)[1:])))
+    if not instant and inc in [3, 6]:  # To solve non-instant [36]hr files
+        num_axis_bnds -= 0.5 * inc
     date_axis_bnds = _num2date(num_axis_bnds, units=ctx.funits, calendar=ctx.calendar)
     axis_bnds = _date2num(date_axis_bnds, units=ctx.tunits, calendar=ctx.calendar)
     return axis_bnds
