@@ -264,13 +264,13 @@ autodoc_member_order = 'bysource'
 autodoc_default_flags = ['members', 'private-members']
 
 
-from mock import Mock as MagicMock
+# from mock import Mock as MagicMock
 
 
-class Mock(MagicMock):
-    @classmethod
-    def __getattr__(cls, name):
-            return Mock()
+# class Mock(MagicMock):
+#     @classmethod
+#     def __getattr__(cls, name):
+#             return Mock()
 
-MOCK_MODULES = ['netCDF4', 'netcdftime']
-sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+# MOCK_MODULES = ['netCDF4', 'netcdftime']
+# sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
