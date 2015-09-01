@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Synopsis &mdash; time_axis 3.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="time_axis 3.0 documentation" href="index.html" />
+    <link rel="next" title="Installation" href="installation.html" />
+    <link rel="prev" title="time_axis" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="time_axis"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">time_axis 3.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="synopsis">
+<span id="id1"></span><h1>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h1>
+<p>NetCDF files describe all dimensions necessary to work with. In the climate community, this format is widely used following the <a class="reference external" href="http://cfconventions.org/">CF conventions</a>. Dimensions such as longitude, latitude and time are included in NetCDF files as vectors.</p>
+<p>The time axis is a key dimension. Unfortunately, this time axis often is mistaken in files from coupled climate models and leads to flawed studies or unused data. Consequently, these files cannot be used or, even worse, produced erroneous results, due to problems in the time axis description.</p>
+<p><tt class="docutils literal"><span class="pre">time_axis</span></tt> is a command-line tool allowing you to easily check and rebuild a MIP-compliant time axis of your downloaded files from the <a class="reference external" href="http://pcmdi9.llnl.gov/">ESG-F</a>.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last"><tt class="docutils literal"><span class="pre">time_axis</span></tt> is based on uncorrupted filename period dates and properly-defined times units, time calendar and frequency NetCDF attributes.</p>
+</div>
+<div class="section" id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><strong>Time axis squareness</strong></dt>
+<dd>The theoretical time axis is always rebuilt depending on the calendar, the frequency, the realm and the time units. These information are extracted from the DRS tree of your file or the NetCDF attributes. Both time axis are rigorously compared to detect any mistakes.</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<dl class="last docutils">
+<dt><tt class="docutils literal"><span class="pre">time_axis</span></tt> checks:</dt>
+<dd><ul class="first last simple">
+<li>all timesteps,</li>
+<li>all time increments,</li>
+<li>the consistency between the latest theoretical date and the end date from the filename,</li>
+<li>the time units (following the CF and MIP requirements),</li>
+<li>the time axis type (instantaneous or not),</li>
+<li>the absence/presence of time boudaries.</li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="docutils">
+<dt><strong>Multi-project</strong></dt>
+<dd><tt class="docutils literal"><span class="pre">time_axis</span></tt> is currently provided supporting <a class="reference external" href="http://cmip-pcmdi.llnl.gov/cmip5/docs/cmip5_data_reference_syntax.pdf">CMIP5</a> and <a class="reference external" href="https://www.medcordex.eu/cordex_archive_specifications_2.2_30sept2013.pdf">CORDEX</a> <em>Data Reference Syntax</em> (DRS). Nevertheless, you can easily add a new &#8220;project&#8221; section in the configuration file to support yours. Please follow the <a class="reference external" href="https://en.wikipedia.org/wiki/INI_file">INI syntax</a>.</dd>
+<dt><strong>No duplicated files</strong></dt>
+<dd>A process file is open with both read and write access. This allows a faster file processing just reading the required metadata and the time axis. We choose to directly overwrite the time axis into the original file avoiding to duplicate the file. <em>Consequently, the write (*``-w/&#8211;write``</em> and <em>``-f/&#8211;force``</em>) mode definitely modify the original input files*.  The modifications are only apply on time axis and/or time attributes. <tt class="docutils literal"><span class="pre">time_axis</span></tt> never reads the other dimensions or the variable(s) described into the NetCDF.</dd>
+<dt><strong>Ignore files with missing timesteps</strong></dt>
+<dd>When a time axis has a wrong length, the error is raised but not corrected because of inability to add/delete timesteps to a file currently.</dd>
+<dt><strong>Delete time boundaries if necessary</strong></dt>
+<dd>An instantaneous time axis do not embed time boundaries. If an instantaneous time axis is detected with time boundaries, they are deleted using <a class="reference external" href="http://nco.sourceforge.net/">NCO operators</a>. In this case only, the file is duplicated.</dd>
+<dt><strong>CF-MIP time units requirements</strong></dt>
+<dd>Into a MIP atomic dataset (i.e., the variable level from the DRS tree) the NetCDF files are splitted depending on the model and the frequency over a time period. This requires the same time units for all files into the same atmic dataset (at least) and fixed by the first file of the period. Moreover, the times units has to be declared with the following format: <tt class="docutils literal"><span class="pre">days</span> <span class="pre">since</span> <span class="pre">YYYY-MM-DD</span> <span class="pre">HH:mm:ss</span></tt>.</dd>
+<dt><strong>Multithreading</strong></dt>
+<dd>To check the time axis of a lot of high frequency files becomes time consuming. We implement multithreading at file level. Each file is processed by a thread that runs the time axis diagnostic.</dd>
+<dt><strong>Keep threads tracebacks</strong></dt>
+<dd>The threads-processes do not shutdown the main process of <tt class="docutils literal"><span class="pre">time_axis</span></tt> run. If an error occurs on a thread, the traceback of the child-process is not raised to the main process. To help you to have a fast debug, the tracebacks of each threads can be raised using the <tt class="docutils literal"><span class="pre">-v/--verbose</span></tt> option (see <a class="reference internal" href="usage.html#usage"><em>Usage</em></a>).</dd>
+<dt><strong>Developer&#8217;s entry point</strong></dt>
+<dd><tt class="docutils literal"><span class="pre">time_axis</span></tt> can be imported and call in your own scripts. Just pass a dictionnary with your flags to the <tt class="docutils literal"><span class="pre">run(job={})</span></tt> function (see <a class="reference internal" href="autodoc.html#autodoc"><em>Code documentation</em></a>).</dd>
+<dt><strong>Use a logfile</strong></dt>
+<dd>You can initiate a logger instead of the standard output. This could be useful for automatic workflows. The logfile name is automatically defined and unique (using the the job&#8217;s name, the date and the job&#8217;s PID). You can define an output directory for your logs too.</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Synopsis</a><ul>
+<li><a class="reference internal" href="#features">Features</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">time_axis</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="installation.html"
+                        title="next chapter">Installation</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/synopsis.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="time_axis"
+             >previous</a> |</li>
+        <li><a href="index.html">time_axis 3.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Levavasseur, G..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
