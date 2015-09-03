@@ -44,8 +44,6 @@ Installation from GitHub
 4. The ``time_axis`` command-line is ready.
 
 
-.. warning:: To run ``time_axis`` you have to be logged on filesystem hosting the data to publish.
-
 Dependencies
 ++++++++++++
 

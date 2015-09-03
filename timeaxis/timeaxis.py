@@ -30,31 +30,33 @@ class ProcessingContext(object):
     """
     Encapsulates the following processing context/information for main process:
 
-    +-------------------+------------+---------------------------+
-    | Attribute         | Type       | Description               |
-    +===================+============+===========================+
-    | *self*.directory  | *str*      | Variable to scan          |
-    +-------------------+------------+---------------------------+
-    | *self*.check      | *boolean*  | True if check mode        |
-    +-------------------+------------+---------------------------+
-    | *self*.write      | *boolean*  | True if write mode        |
-    +-------------------+------------+---------------------------+
-    | *self*.force      | *boolean*  | True if force writing     |
-    +-------------------+------------+---------------------------+
-    | *self*.project    | *str*      | Project                   |
-    +-------------------+------------+---------------------------+
-    | *self*.checksum   | *str*      | The checksum type         |
-    +-------------------+------------+---------------------------+
-    | *self*.cfg        | *callable* | Configuration file parser |
-    +-------------------+------------+---------------------------+
-    | *self*.attributes | *dict*     | DRS attributes from regex |
-    +-------------------+------------+---------------------------+
-    | *self*.calendar   | *str*      | NetCDF calendar attribute |
-    +-------------------+------------+---------------------------+
-    | *self*.tunits     | *str*      | Time units from file      |
-    +-------------------+------------+---------------------------+
-    | *self*.funits     | *str*      | Time units from frequency |
-    +-------------------+------------+---------------------------+
+    +-------------------+-------------+---------------------------+
+    | Attribute         | Type        | Description               |
+    +===================+=============+===========================+
+    | *self*.directory  | *str*       | Variable to scan          |
+    +-------------------+-------------+---------------------------+
+    | *self*.check      | *boolean*   | True if check mode        |
+    +-------------------+-------------+---------------------------+
+    | *self*.write      | *boolean*   | True if write mode        |
+    +-------------------+-------------+---------------------------+
+    | *self*.force      | *boolean*   | True if force writing     |
+    +-------------------+-------------+---------------------------+
+    | *self*.project    | *str*       | Project                   |
+    +-------------------+-------------+---------------------------+
+    | *self*.checksum   | *str*       | The checksum type         |
+    +-------------------+-------------+---------------------------+
+    | *self*.cfg        | *callable*  | Configuration file parser |
+    +-------------------+-------------+---------------------------+
+    | *self*.attributes | *dict*      | DRS attributes from regex |
+    +-------------------+-------------+---------------------------+
+    | *self*.pattern    | *re object* | Filename regex pattern    |
+    +-------------------+-------------+---------------------------+
+    | *self*.calendar   | *str*       | NetCDF calendar attribute |
+    +-------------------+-------------+---------------------------+
+    | *self*.tunits     | *str*       | Time units from file      |
+    +-------------------+-------------+---------------------------+
+    | *self*.funits     | *str*       | Time units from frequency |
+    +-------------------+-------------+---------------------------+
 
     :param dict args: Parsed command-line arguments
     :returns: The processing context
@@ -75,6 +77,7 @@ class ProcessingContext(object):
             self.project = args.project
         else:
             raise Exception('No section in configuration file corresponds to "{0}" project. Supported projects are {1}.'.format(args.project, self.cfg.sections()))
+        self.pattern = re.compile(self.cfg.get(self.project, 'filename_format'))
         try:
             self.attributes = re.match(re.compile(self.cfg.get(self.project, 'directory_format')), self.directory).groupdict()
         except:
@@ -150,7 +153,7 @@ class AxisStatus(object):
 
 def get_args(job):
     """
-    Returns parsed command-line arguments. See ``esg_mapfiles -h`` for full description.
+    Returns parsed command-line arguments. See ``time_axis -h`` for full description.
     A ``job`` dictionnary can be used as developper's entry point to overload the parser.
 
     :param dict job: Optionnal dictionnary instead of command-line arguments.
@@ -165,7 +168,7 @@ def get_args(job):
     parser.add_argument(
         'directory',
         nargs='?',
-        help="""Variable path to diagnose following the DRS\n(e.g., /prodigfs/esg/CMIP5/merge/NCAR/CCSM4/amip/day/atmos/cfDay/r7i1p1/v20130507/tas/).\n\n"""),
+        help="""Variable path to diagnose following the DRS\n(e.g., /path/to/your/archive/CMIP5/merge/NCAR/CCSM4/amip/day/atmos/cfDay/r7i1p1/v20130507/tas/).\n\n"""),
     parser.add_argument(
         '-p', '--project',
         type=str,
@@ -397,8 +400,7 @@ def time_axis_processing(inputs):
     # Extract inputs from tuple
     filename, ctx = inputs
     # Extract start and end dates from filename
-    pattern = re.compile(r'{0}'.format(ctx.cfg.get(ctx.project, 'filename_format')))
-    start_date, end_date = dates_from_filename(ctx.project, filename, ctx.calendar, pattern)
+    start_date, end_date = dates_from_filename(ctx.project, filename, ctx.calendar, ctx.pattern)
     start = Date2num(start_date, units=ctx.funits, calendar=ctx.calendar)
     # Set time length, True/False instant axis and incrementation in frequency units
     data = Dataset('{0}/{1}'.format(ctx.directory, filename), 'r+')
@@ -881,9 +883,8 @@ def yield_inputs(ctx):
     :rtype: *iter*
 
     """
-    pattern = re.compile(r'([\w.-]+)_([\w.-]+)_([\w.-]+)_([\w.-]+)_([\w.-]+)_([\d]+)-([\d]+).nc')
     for file in sorted(os.listdir(ctx.directory)):
-        if not re.match(pattern, file):
+        if not re.match(ctx.pattern, file):
             logging.warning('{0} has invalid filename and was skipped'.format(file))
             continue
         yield file, ctx
