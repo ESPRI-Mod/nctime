@@ -1,1 +1,2 @@
+include timeaxis/config.ini
 include README.rst
