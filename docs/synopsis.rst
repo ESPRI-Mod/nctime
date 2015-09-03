@@ -51,7 +51,7 @@ Features
   The threads-processes do not shutdown the main process of ``time_axis`` run. If an error occurs on a thread, the traceback of the child-process is not raised to the main process. To help you to have a fast debug, the tracebacks of each threads can be raised using the ``-v/--verbose`` option (see :ref:`usage`).
 
 **Developer's entry point**
-  ``time_axis`` can be imported and call in your own scripts. Just pass a dictionnary with your flags to the ``run(job={})`` function (see :ref:`autodoc`). 
+  ``time_axis`` can be imported and called in your own scripts. Just pass a dictionnary with your flags to the ``run(job={})`` function (see :ref:`autodoc`). 
 
 **Use a logfile**
    You can initiate a logger instead of the standard output. This could be useful for automatic workflows. The logfile name is automatically defined and unique (using the the job's name, the date and the job's PID). You can define an output directory for your logs too.
