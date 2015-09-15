@@ -297,7 +297,7 @@ def time_init(ctx):
     file = yield_inputs(ctx).next()[0]
     data = Dataset('{0}/{1}'.format(ctx.directory, file), 'r')
     if 'units' in data.variables['time'].ncattrs():
-            ctx.tunits = control_time_units(data.variables['time'].units, ctx.project)
+            ctx.tunits = control_time_units(data.variables['time'].units, ctx)
     else:
         raise Exception('Time units attribute is missing.')
     ctx.funits = convert_time_units(ctx.tunits, ctx.attributes['frequency'])
@@ -314,10 +314,10 @@ def time_init(ctx):
     logging.warning('Time units:'.ljust(25)+'{0}'.format(ctx.tunits))
 
 
-def control_time_units(tunits, project):
+def control_time_units(tunits, ctx):
     """
     Controls the time units format as at least "days since YYYY-MM-DD".
-    For CORDEX project, the time units has to be "days since 1949-12-01 00:00:00".
+    The time units can be forced within configuration file using the ``time_units_default`` option.
 
     :param str tunits: The NetCDF time units string from file
     :param str project: The MIP project
@@ -331,10 +331,12 @@ def control_time_units(tunits, project):
         units[2] = units[2] + '-{0}-{1}'.format('01', '01')
     elif len(units[2].split('-')) == 2:
         units[2] = units[2] + '-{0}'.format('01')
-    if project == 'cordex' and ' '.join(units) != 'days since 1949-12-01 00:00:00':
-        logging.warning('Invalid CORDEX time units. Replace "{0}" by "days since 1949-12-01 00:00:00"'.format(' '.join(units)))
-        return 'days since 1949-12-01 00:00:00'
-    else:
+    try:
+        time_units_default = eval(ctx.cfg.get(ctx.project, 'time_units_default'))
+        if ' '.join(units) != time_units_default:
+            logging.warning('Invalid time units. Replace "{0}" by "{1}"'.format(' '.join(units), time_units_default))
+        return time_units_default
+    except:
         return ' '.join(units)
 
 
@@ -415,7 +417,7 @@ def time_axis_processing(inputs):
     status.end = date_print(end_date)
     status.steps = length
     status.calendar = ctx.calendar
-    status.units = control_time_units(data.variables['time'].units, ctx.project)
+    status.units = control_time_units(data.variables['time'].units, ctx)
     if instant:
         status.instant = True
     # Rebuild a proper time axis
@@ -478,7 +480,7 @@ def time_axis_processing(inputs):
     # Close file
     data.close()
     # Compute checksum at the end of all modifications and after closing file
-    if ctx.write or ctx.force:
+    if (ctx.write or ctx.force) and '000' not in status.control:
         status.checksum = checksum(ctx, filename)
     # Return file status
     return status
@@ -720,16 +722,10 @@ def is_instant_time_axis(ctx):
 
     """
     need_instant_time = eval(ctx.cfg.get(ctx.project, 'need_instant_time'))
-    if ctx.project == 'cmip5':
-        if (ctx.attributes['variable'], ctx.attributes['frequency'], ctx.attributes['realm']) in need_instant_time:
-            return True
-        else:
-            return False
-    if ctx.project == 'cordex':
-        if (ctx.attributes['variable'], ctx.attributes['frequency']) in need_instant_time:
-            return True
-        else:
-            return False
+    if (ctx.attributes['variable'], ctx.attributes['frequency'], ctx.attributes['realm']) in need_instant_time:
+        return True
+    else:
+        return False
 
 
 def time_inc(frequency):
