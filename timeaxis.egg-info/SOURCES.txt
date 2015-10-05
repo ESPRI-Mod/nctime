@@ -1,0 +1,13 @@
+MANIFEST.in
+README.rst
+setup.py
+timeaxis/__init__.py
+timeaxis/config.ini
+timeaxis/setup.py
+timeaxis/timeaxis.py
+timeaxis.egg-info/PKG-INFO
+timeaxis.egg-info/SOURCES.txt
+timeaxis.egg-info/dependency_links.txt
+timeaxis.egg-info/entry_points.txt
+timeaxis.egg-info/requires.txt
+timeaxis.egg-info/top_level.txt
