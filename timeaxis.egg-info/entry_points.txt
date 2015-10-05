@@ -1,0 +1,3 @@
+[console_scripts]
+time_axis = timeaxis.timeaxis:run
+
