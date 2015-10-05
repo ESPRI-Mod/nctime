@@ -1,8 +1,7 @@
 .. _configuration:
 
-*************
 Configuration
-*************
+=============
 
 The only conguration you have to do at least is to define the threads number under the ``[DEFAULT]`` section in the configuration INI file. Edit the ``config.ini`` to set the number of threads you want (default is 4 threads).
 
@@ -21,7 +20,7 @@ You can also define the checksum type you want in this section. MD5 (default) or
 
 
 Add a new project
-+++++++++++++++++
+*****************
 
 Edit the ``config.ini`` as follows:
 

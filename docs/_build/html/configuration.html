@@ -75,7 +75,7 @@
 </div>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">The <tt class="docutils literal"><span class="pre">-p</span></tt> option directly refers to the name of &#8220;project&#8221; sections.</p>
+<p class="last">The <tt class="docutils literal"><span class="pre">-p/--project</span></tt> option directly refers to the name of &#8220;project&#8221; sections.</p>
 </div>
 <ol class="arabic simple" start="2">
 <li>Define the <em>Data Reference Syntax</em> (DRS) tree of your project on your filesystem. The <tt class="docutils literal"><span class="pre">directory_format</span></tt> is requiered for auto-detection and uses a regular expression to match the DRS facets of the directory to scan.</li>
@@ -83,9 +83,9 @@
 <div class="highlight-ini"><div class="highlight"><pre><span class="na">directory_format</span> <span class="o">=</span> <span class="s">/(?P&lt;root&gt;[\w./-]+)/(?P&lt;project&gt;[\w.-]+)/(?P&lt;facet1&gt;[\w.-]+)/(?P&lt;facet2&gt;[\w.-]+)/(?P&lt;facet3&gt;[\w.-]+)</span>
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Feel free to defined a new tree if necessary using all regex facilities.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Feel free to create/modify a tree if necessary using all regex facilities. Nevertheless, your DRS has to include at least the following facets &#8220;project&#8221;, &#8220;frequency&#8221;, &#8220;realm&#8221; (CMIP5 specific), &#8220;variable&#8221;, &#8220;version&#8221;.</p>
 </div>
 <ol class="arabic simple" start="3">
 <li>Define the filename format of your project. The <tt class="docutils literal"><span class="pre">filename_format</span></tt> uses a regular expression to match the period dates in filename to process.</li>
@@ -93,9 +93,9 @@
 <div class="highlight-ini"><div class="highlight"><pre><span class="na">filename_format</span> <span class="o">=</span> <span class="s">([\w.-]+)_([\w.-]+)_([\w.-]+)_([\w.-]+)_([\w.-]+)_([\d]+)-([\d]+).nc</span>
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Feel free to defined a new filename format using all regex facilities. Becareful to keep the <tt class="docutils literal"><span class="pre">.nc</span></tt> extension because <tt class="docutils literal"><span class="pre">time_axis</span></tt> only supports NetCDF files.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Feel free to defined a new filename format using all regex facilities.  The filename format must end with two groups of digits. Becareful to keep the <tt class="docutils literal"><span class="pre">.nc</span></tt> extension because <tt class="docutils literal"><span class="pre">time_axis</span></tt> only supports NetCDF files.</p>
 </div>
 <ol class="arabic simple" start="4">
 <li>Declare all tuples of attributes requiering instantaneous time axis. For example, CMIP5 datasets using an instantaneous time axis can be targeted using a tuple compsed by the variable, the frequency and the realm of the DRS.</li>

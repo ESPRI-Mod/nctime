@@ -23,46 +23,85 @@ from textwrap import fill
 from glob import glob
 
 # Program version
-__version__ = '{0} {1}-{2}-{3}'.format('v3.0', '2015', '08', '25')
+__version__ = '{0} {1}-{2}-{3}'.format('v3.2', '2015', '10', '05')
+
+# Filaname date correction for 3hr and 6hr files
+_HALF_HOUR = 0.125/6
+_AVERAGED_TIME_CORRECTION = {'3hr': {0: {'000000': 0.0,
+                                         '003000': -_HALF_HOUR,
+                                         '013000': -_HALF_HOUR*3,
+                                         '030000': -_HALF_HOUR*6},
+                                     1: {'210000': 0.0,
+                                         '213000': -_HALF_HOUR,
+                                         '223000': -_HALF_HOUR*3,
+                                         '230000': -_HALF_HOUR*4,
+                                         '000000': -_HALF_HOUR*6,
+                                         '003000': -_HALF_HOUR*7}},
+                             '6hr': {0: {'000000': 0.0,
+                                         '060000': -_HALF_HOUR*12},
+                                     1: {'180000': 0.0,
+                                         '230000': -_HALF_HOUR*10,
+                                         '000000': -_HALF_HOUR*12}}}
+
+_INSTANT_TIME_CORRECTION = {'3hr': {0: {'000000': _HALF_HOUR*6,
+                                        '003000': _HALF_HOUR*5,
+                                        '013000': _HALF_HOUR*3,
+                                        '030000': 0.0},
+                                    1: {'210000': _HALF_HOUR*6,
+                                        '213000': _HALF_HOUR*5,
+                                        '223000': _HALF_HOUR*3,
+                                        '230000': _HALF_HOUR*2,
+                                        '000000': 0.0,
+                                        '003000': -_HALF_HOUR}},
+                            '6hr': {0: {'000000': _HALF_HOUR*12,
+                                        '060000': 0.0},
+                                    1: {'180000': _HALF_HOUR*12,
+                                        '230000': _HALF_HOUR*2,
+                                        '000000': 0.0}}}
 
 
 class ProcessingContext(object):
     """
     Encapsulates the following processing context/information for main process:
 
-    +-------------------+-------------+---------------------------+
-    | Attribute         | Type        | Description               |
-    +===================+=============+===========================+
-    | *self*.directory  | *str*       | Variable to scan          |
-    +-------------------+-------------+---------------------------+
-    | *self*.check      | *boolean*   | True if check mode        |
-    +-------------------+-------------+---------------------------+
-    | *self*.write      | *boolean*   | True if write mode        |
-    +-------------------+-------------+---------------------------+
-    | *self*.force      | *boolean*   | True if force writing     |
-    +-------------------+-------------+---------------------------+
-    | *self*.project    | *str*       | Project                   |
-    +-------------------+-------------+---------------------------+
-    | *self*.checksum   | *str*       | The checksum type         |
-    +-------------------+-------------+---------------------------+
-    | *self*.cfg        | *callable*  | Configuration file parser |
-    +-------------------+-------------+---------------------------+
-    | *self*.attributes | *dict*      | DRS attributes from regex |
-    +-------------------+-------------+---------------------------+
-    | *self*.pattern    | *re object* | Filename regex pattern    |
-    +-------------------+-------------+---------------------------+
-    | *self*.calendar   | *str*       | NetCDF calendar attribute |
-    +-------------------+-------------+---------------------------+
-    | *self*.tunits     | *str*       | Time units from file      |
-    +-------------------+-------------+---------------------------+
-    | *self*.funits     | *str*       | Time units from frequency |
-    +-------------------+-------------+---------------------------+
+    +-------------------+-------------+---------------------------------+
+    | Attribute         | Type        | Description                     |
+    +===================+=============+=================================+
+    | *self*.directory  | *str*       | Variable to scan                |
+    +-------------------+-------------+---------------------------------+
+    | *self*.check      | *boolean*   | True if check mode              |
+    +-------------------+-------------+---------------------------------+
+    | *self*.write      | *boolean*   | True if write mode              |
+    +-------------------+-------------+---------------------------------+
+    | *self*.force      | *boolean*   | True if force writing           |
+    +-------------------+-------------+---------------------------------+
+    | *self*.verbose    | *boolean*   | True if verbose mode            |
+    +-------------------+-------------+---------------------------------+
+    | *self*.project    | *str*       | MIP project                     |
+    +-------------------+-------------+---------------------------------+
+    | *self*.checksum   | *str*       | The checksum type               |
+    +-------------------+-------------+---------------------------------+
+    | *self*.cfg        | *callable*  | Configuration file parser       |
+    +-------------------+-------------+---------------------------------+
+    | *self*.pattern    | *re object* | Filename regex pattern          |
+    +-------------------+-------------+---------------------------------+
+    | *self*.calendar   | *str*       | NetCDF calendar attribute       |
+    +-------------------+-------------+---------------------------------+
+    | *self*.frequency  | *str*       | NetCDF frequency attribute      |
+    +-------------------+-------------+---------------------------------+
+    | *self*.variable   | *str*       | MIP variable                    |
+    +-------------------+-------------+---------------------------------+
+    | *self*.realm      | *str*       | NetCDF modeling realm attribute |
+    +-------------------+-------------+---------------------------------+
+    | *self*.tunits     | *str*       | Time units from file            |
+    +-------------------+-------------+---------------------------------+
+    | *self*.funits     | *str*       | Time units from frequency       |
+    +-------------------+-------------+---------------------------------+
 
     :param dict args: Parsed command-line arguments
     :returns: The processing context
     :rtype: *dict*
     :raises Error: If the project name is inconsistent with the sections names from the configuration file
-    :raises Error: If the regular expression from the configurtion file cannot match the supplied directory
 
     """
     def __init__(self, args):
@@ -78,16 +117,10 @@ class ProcessingContext(object):
         else:
             raise Exception('No section in configuration file corresponds to "{0}" project. Supported projects are {1}.'.format(args.project, self.cfg.sections()))
         self.pattern = re.compile(self.cfg.get(self.project, 'filename_format'))
-        try:
-            self.attributes = re.match(re.compile(self.cfg.get(self.project, 'directory_format')), self.directory).groupdict()
-        except:
-            # Fails can be due to:
-            # -> Wrong project argument
-            # -> Mistake in directory_format pattern in configuration file
-            # -> Wrong version format (defined as one or more digit after 'v')
-            # -> Wrong ensemble format (defined as r[0-9]i[0-9]p[0-9])
-            # -> Mistake in the DRS tree of your filesystem.
-            raise Exception('The "directory_format" regex cannot match {0}'.format(self.directory))
+        self.frequency = None
+        self.instant = None
+        self.realm = None
+        self.variable = None
         self.checksum = str(self.cfg.defaults()['checksum_type'])
         self.calendar = None
         self.tunits = None
@@ -161,7 +194,7 @@ def get_args(job):
 
     """
     parser = argparse.ArgumentParser(
-        description="""Rewrite and/or check time axis into MIP NetCDF files, considering\n(i) uncorrupted filename period dates and\n(ii) properly-defined times units, time calendar and frequency NetCDF attributes.\n\nReturned status:\n000: Unmodified time axis,\n001: Corrected time axis because wrong timesteps.\n002: Corrected time axis because of changing time units,\n003: Ignored time axis because of inconsistency between last date of time axis and\nend date of filename period (e.g., wrong time axis length),\n004: Corrected time axis deleting time boundaries for instant time,\n005: Ignored averaged time axis without time boundaries.""",
+        description="""Rewrite and/or check time axis into MIP NetCDF files, considering\n(i) uncorrupted filename period dates and\n(ii) properly-defined times units, time calendar and frequency NetCDF attributes.\n\nTime axis status:\n000: Unmodified time axis,\n001: Corrected time axis because wrong timesteps.\n002: Corrected time axis because of changing time units,\n003: Ignored time axis because of inconsistency between last date of time axis and\nend date of filename period (e.g., wrong time axis length),\n004: Corrected time axis deleting time boundaries for instant time,\n005: Ignored averaged time axis without time boundaries.""",
         formatter_class=RawTextHelpFormatter,
         add_help=False,
         epilog="""Developped by Levavasseur, G. (CNRS/IPSL) and Laliberte, F. (ExArch)""")
@@ -218,7 +251,7 @@ def get_args(job):
     if job is None:
         return parser.parse_args()
     else:
-        return parser.parse_args([job['full_path_variable'], '-p', job['project'], '-C', '/prodigfs/esg/ArchiveTools/sdp/conf/time_axis.ini', '-l', 'synda_logger', '-c', '-v'])
+        return parser.parse_args([job['full_path_variable'], '-p', job['project'], '-c', '-v'])
 
 
 def init_logging(logdir):
@@ -285,33 +318,47 @@ def config_parse(config_path):
 def time_init(ctx):
     """
     Returns the required referenced time properties from first file into processing context:
-     * The calendar is then used for all files scanned into the variable path,
-     * The NetCDF time units attribute has to be unchanged in respect with CF convention and archives designs,
-     * The frequency and the version are also read to detect instantaneous time axis.
+     * The calendar, the frequency and the realm are read from NetCDF global attributes and use to detect instantaneous time axis,
+     * The NetCDF time units attribute has to be unchanged in respect with CF convention and archives designs.
 
     :param dict ctx: The processing context (as a :func:`ProcessingContext` class instance)
     :raises Error: If NetCDF time units attribute is missing
+    :raises Error: If NetCDF frequency attribute is missing
+    :raises Error: If NetCDF realm attribute is missing
     :raises Error: If NetCDF calendar attribute is missing
 
     """
     file = yield_inputs(ctx).next()[0]
     data = Dataset('{0}/{1}'.format(ctx.directory, file), 'r')
+    ctx.variable = file.split('_')[0]
+    if data.project_id == 'CORDEX':
+        ctx.realm = 'atmos'
+    else:
+        if 'modeling_realm' in data.ncattrs():
+            ctx.realm = data.modeling_realm
+        else:
+            raise Exception('"modeling_realm" attribute is missing.')
+    if 'frequency' in data.ncattrs():
+        ctx.frequency = data.frequency
+    else:
+        raise Exception('"frequency" attribute is missing.')
     if 'units' in data.variables['time'].ncattrs():
             ctx.tunits = control_time_units(data.variables['time'].units, ctx)
     else:
-        raise Exception('Time units attribute is missing.')
-    ctx.funits = convert_time_units(ctx.tunits, ctx.attributes['frequency'])
+        raise Exception('"units" attribute is missing for "time" variable.')
+    ctx.funits = convert_time_units(ctx.tunits, ctx.frequency)
     if 'calendar' in data.variables['time'].ncattrs():
         ctx.calendar = data.variables['time'].calendar
     else:
-        raise Exception('Time calendar attribute is missing.')
-    if ctx.calendar == 'standard' and ctx.attributes['model'] == 'CMCC-CM':
+        raise Exception('"calendar" attribute is missing for "time" variable.')
+    if ctx.calendar == 'standard' and data.model_id == 'CMCC-CM':
         ctx.calendar = 'proleptic_gregorian'
     data.close()
-    logging.warning('Version:'.ljust(25)+'{0}'.format(ctx.attributes['version']))
-    logging.warning('Frequency:'.ljust(25)+'{0}'.format(ctx.attributes['frequency']))
+    ctx.instant = is_instant_time_axis(ctx)
+    logging.warning('Frequency:'.ljust(25)+'{0}'.format(ctx.frequency))
     logging.warning('Calendar:'.ljust(25)+'{0}'.format(ctx.calendar))
     logging.warning('Time units:'.ljust(25)+'{0}'.format(ctx.tunits))
+    logging.warning('Instant time axis:'.ljust(25)+'{0}'.format(ctx.instant))
 
 
 def control_time_units(tunits, ctx):
@@ -320,7 +367,7 @@ def control_time_units(tunits, ctx):
     The time units can be forced within configuration file using the ``time_units_default`` option.
 
     :param str tunits: The NetCDF time units string from file
-    :param str project: The MIP project
+    :param dict ctx: The processing context (as a :func:`ProcessingContext` class instance)
     :returns: The appropriate time units string formatted and controlled depending on the project
     :rtype: *str*
 
@@ -402,13 +449,12 @@ def time_axis_processing(inputs):
     # Extract inputs from tuple
     filename, ctx = inputs
     # Extract start and end dates from filename
-    start_date, end_date = dates_from_filename(ctx.project, filename, ctx.calendar, ctx.pattern)
+    start_date, end_date = dates_from_filename(filename, ctx)
     start = Date2num(start_date, units=ctx.funits, calendar=ctx.calendar)
     # Set time length, True/False instant axis and incrementation in frequency units
     data = Dataset('{0}/{1}'.format(ctx.directory, filename), 'r+')
     length = data.variables['time'].shape[0]
-    instant = is_instant_time_axis(ctx)
-    inc = time_inc(ctx.attributes['frequency'])
+    inc = time_inc(ctx.frequency)
     # Instanciates object to display axis status
     status = AxisStatus()
     status.directory = ctx.directory
@@ -417,66 +463,68 @@ def time_axis_processing(inputs):
     status.end = date_print(end_date)
     status.steps = length
     status.calendar = ctx.calendar
+    status.instant = ctx.instant
     status.units = control_time_units(data.variables['time'].units, ctx)
-    if instant:
-        status.instant = True
     # Rebuild a proper time axis
-    axis_hp, last_hp = rebuild_time_axis(start, length, instant, inc, ctx)  # High precision
-    axis_lp, last_lp = rebuild_time_axis(trunc(start, 5), length, instant, inc, ctx)  # Low precision avoiding float precision issues
-    # Control consistency between last time date and end date from filename
+    axis_hp, last_hp = rebuild_time_axis(start, length, inc, ctx)  # High precision
+    axis_lp, last_lp = rebuild_time_axis(trunc(start, 5), length, inc, ctx)  # Low precision avoiding float precision issues
+    # Check consistency between last time date and end date from filename
     if not last_date_checker(date_print(last_hp), date_print(end_date)) and not last_date_checker(date_print(last_lp), date_print(end_date)):
         status.control.append('003')
         logging.warning('ERROO3 - {0} - The date from last theoretical time step differs from the end date from filename'.format(filename))
-    else:
-        if last_date_checker(date_print(last_hp), date_print(end_date)):
-            status.last = date_print(last_hp)
-            status.axis = axis_hp
-        elif last_date_checker(date_print(last_lp), date_print(end_date)):
-            status.last = date_print(last_lp)
-            status.axis = axis_lp
-        # Control consistency between instant time and time boundaries
-        if instant and ('time_bnds' in data.variables.keys()):
-            status.control.append('004')
-            logging.warning('ERROO4 - {0} - An instantaneous time axis should not embeded time boundaries'.format(filename))
-            # Delete time bounds and bounds attribute from file
-            if ctx.write or ctx.force:
-                if 'bounds' in data.variables['time'].ncattrs():
-                    del data.variables['time'].bounds
-                data.close()
-                nc_var_delete(ctx, filename, 'time_bnds')
-                data = Dataset('{0}/{1}'.format(ctx.directory, filename), 'r+')
-        # Control consistency between averaged time and time boundaries
-        if not instant and ('time_bnds' not in data.variables.keys()):
-            status.control.append('005')
-            logging.warning('ERROO5 - {0} - An averaged time axis should embeded time boundaries'.format(filename))
-        # Check time axis squareness
-        if ctx.check or ctx.write:
-            status.time = data.variables['time'][:]
-            if time_checker(status.axis, status.time):
-                status.control.append('000')
-            else:
-                status.control.append('001')
-                logging.warning('ERROO1 - {0} - Mistaken time axis over one or several time steps'.format(filename))
-            # Rebuild, read and check time boundaries squareness if needed
-            if 'time_bnds' in data.variables.keys():
-                axis_bnds = rebuild_time_bnds(start, length, instant, inc, ctx)
-                time_bnds = data.variables['time_bnds'][:, :]
-                if time_checker(axis_bnds, time_bnds):
-                    status.bnds = True
-                else:
-                    status.bnds = False
-        # Rewrite time axis depending on checking
-        if (ctx.write and not time_checker(status.axis, status.time)) or ctx.force:
-            data.variables['time'][:] = status.axis
-            # Rewrite time units according to MIP requirements (i.e., same units for all files)
-            data.variables['time'].units = ctx.tunits
-            # Rewrite time boundaries if needed
-            if 'time_bnds' in data.variables.keys():
-                data.variables['time_bnds'][:, :] = axis_bnds
-        # Control consistency between time units
-        if ctx.tunits != status.units:
-            status.control.append('002')
-            logging.warning('ERROO2 - {0} - Time units must be unchanged for the same dataset.'.format(filename))
+        status.axis = axis_lp
+        status.last = date_print(last_lp)
+        return status
+    # Set appropriate float precision
+    if last_date_checker(date_print(last_hp), date_print(end_date)):
+        status.last = date_print(last_hp)
+        status.axis = axis_hp
+    elif last_date_checker(date_print(last_lp), date_print(end_date)):
+        status.last = date_print(last_lp)
+        status.axis = axis_lp
+    # Check inconsistency between instant time and time boundaries
+    if ctx.instant and ('time_bnds' in data.variables.keys()):
+        status.control.append('004')
+        logging.warning('ERROO4 - {0} - An instantaneous time axis should not embeded time boundaries'.format(filename))
+        # Delete time bounds and bounds attribute from file if write of force mode
+        if ctx.write or ctx.force:
+            if 'bounds' in data.variables['time'].ncattrs():
+                del data.variables['time'].bounds
+            data.close()
+            nc_var_delete(ctx, filename, 'time_bnds')
+            data = Dataset('{0}/{1}'.format(ctx.directory, filename), 'r+')
+    # Control consistency between averaged time and time boundaries
+    if not ctx.instant and ('time_bnds' not in data.variables.keys()):
+        status.control.append('005')
+        logging.warning('ERROO5 - {0} - An averaged time axis should embeded time boundaries'.format(filename))
+        status.axis = axis_lp
+        status.last = date_print(last_lp)
+        return status
+    # Check time axis squareness
+    if ctx.check or ctx.write:
+        status.time = data.variables['time'][:]
+        if time_checker(status.axis, status.time):
+            status.control.append('000')
+        else:
+            status.control.append('001')
+            logging.warning('ERROO1 - {0} - Mistaken time axis over one or several time steps'.format(filename))
+        # Rebuild, read and check time boundaries squareness if needed
+        if 'time_bnds' in data.variables.keys():
+            axis_bnds = rebuild_time_bnds(start, length, inc, ctx)
+            time_bnds = data.variables['time_bnds'][:, :]
+            status.bnds = time_checker(axis_bnds, time_bnds)
+    # Rewrite time axis depending on checking
+    if (ctx.write and not time_checker(status.axis, status.time)) or ctx.force:
+        data.variables['time'][:] = status.axis
+        # Rewrite time units according to MIP requirements (i.e., same units for all files)
+        data.variables['time'].units = ctx.tunits
+        # Rewrite time boundaries if needed
+        if 'time_bnds' in data.variables.keys():
+            data.variables['time_bnds'][:, :] = axis_bnds
+    # Control consistency between time units
+    if ctx.tunits != status.units:
+        status.control.append('002')
+        logging.warning('ERROO2 - {0} - Time units must be unchanged for the same dataset.'.format(filename))
     # Close file
     data.close()
     # Compute checksum at the end of all modifications and after closing file
@@ -529,26 +577,34 @@ def nc_var_delete(ctx, filename, variable):
         raise Exception('Deleting "{0}" failed for {1}'.format(variable, file))
 
 
-def dates_from_filename(project, filename, calendar, pattern):
+def dates_from_filename(filename, ctx):
     """
     Returns datetime objetcs for start and end dates from the filename.
+    To rebuild a proper time axis, the dates from filename are expected to set the first time boundary and not the middle of the time interval.
 
     :param str filename: The filename
-    :param str project: The MIP project
-    :param str calendar: The NetCDF calendar attribute
-    :param re Object pattern: The filename pattern as a regex (from `re library <https://docs.python.org/2/library/re.html>`_).
+    :param dict ctx: The processing context (as a :func:`ProcessingContext` class instance)
 
     :returns: ``datetime`` instances for start and end dates from the filename
     :rtype: *datetime.datetime*
 
     """
     dates = []
-    for date in pattern.search(filename).groups()[-2:]:
+    for date in ctx.pattern.search(filename).groups()[-2:]:
         digits = untroncated_timestamp(date)
         # Convert string digits to %Y-%m-%d %H:%M:%S format
         date_as_since = ''.join([''.join(triple) for triple in zip(digits[::2], digits[1::2], ['', '-', '-', ' ', ':', ':', ':'])])[:-1]
         # Use num2date to create netCDF4 datetime objects
-        dates.append(num2date(0.0, units='days since ' + date_as_since, calendar=calendar))
+        if ctx.frequency in ['3hr', '6hr']:
+            # Fix on filename digits for 3hr and 6hr frequencies. 3hr (6hr) files always start at 000000 end at 2100000 (180000) whether the time axis is instaneous or not.
+            if ctx.instant:
+                date_correction = _INSTANT_TIME_CORRECTION[ctx.frequency][ctx.pattern.search(filename).groups()[-2:].index(date)][digits[-6:]]
+                dates.append(num2date(date_correction, units='days since ' + date_as_since, calendar=ctx.calendar))
+            else:
+                date_correction = _AVERAGED_TIME_CORRECTION[ctx.frequency][ctx.pattern.search(filename).groups()[-2:].index(date)][digits[-6:]]
+                dates.append(num2date(date_correction, units='days since ' + date_as_since, calendar=ctx.calendar))
+        else:
+            dates.append(num2date(0.0, units='days since ' + date_as_since, calendar=ctx.calendar))
     return dates
 
 
@@ -722,10 +778,7 @@ def is_instant_time_axis(ctx):
 
     """
     need_instant_time = eval(ctx.cfg.get(ctx.project, 'need_instant_time'))
-    if (ctx.attributes['variable'], ctx.attributes['frequency'], ctx.attributes['realm']) in need_instant_time:
-        return True
-    else:
-        return False
+    return (ctx.variable, ctx.frequency, ctx.realm) in need_instant_time
 
 
 def time_inc(frequency):
@@ -758,31 +811,29 @@ def date_print(date):
     return '{0:04d}-{1:02d}-{2:02d} {3:02d}:{4:02d}:{5:02d}'.format(date.year, date.month, date.day, date.hour, date.minute, date.second)
 
 
-def rebuild_time_axis(start, length, instant, inc, ctx):
+def rebuild_time_axis(start, length, inc, ctx):
     """
     Rebuilds time axis from date axis, depending on MIP frequency, calendar and instant status.
 
     :param float date: The numerical date to start (from ``netCDF4.num2date`` or :func:`Date2num`)
     :param int length: The time axis length (i.e., the timesteps number)
-    :param boolean instant: The instant status (from :func:`is_instant_time_axis`)
     :param int inc: The time incrementation (from :func:`time_inc`)
     :param dict ctx: The processing context (as a :func:`ProcessingContext` class instance)
     :returns: The corresponding theoretical time axis
     :rtype: *float array*
 
     """
-    date_axis, last = rebuild_date_axis(start, length, instant, inc, ctx)
+    date_axis, last = rebuild_date_axis(start, length, inc, ctx)
     axis = Date2num(date_axis, units=ctx.tunits, calendar=ctx.calendar)
     return axis, last
 
 
-def rebuild_date_axis(start, length, instant, inc, ctx):
+def rebuild_date_axis(start, length, inc, ctx):
     """
     Rebuilds date axis from numerical time axis, depending on MIP frequency, calendar and instant status.
 
     :param float date: The numerical date to start (from ``netCDF4.date2num`` or :func:`Date2num`)
     :param int length: The time axis length (i.e., the timesteps number)
-    :param boolean instant: The instant status (from :func:`is_instant_time_axis`)
     :param int inc: The time incrementation (from :func:`time_inc`)
     :param dict ctx: The processing context (as a :func:`ProcessingContext` class instance)
 
@@ -795,7 +846,7 @@ def rebuild_date_axis(start, length, instant, inc, ctx):
         last = Num2date(num_axis[-1], units=ctx.funits, calendar=ctx.calendar)[0]
     else:
         last = Num2date(num_axis[-1], units=ctx.funits, calendar=ctx.calendar)
-    if not instant and not inc in [3, 6]:  # To solve non-instant [36]hr files
+    if not ctx.instant:
         num_axis += 0.5 * inc
     date_axis = Num2date(num_axis, units=ctx.funits, calendar=ctx.calendar)
     return date_axis, last
@@ -825,19 +876,15 @@ def time_checker(right_axis, test_axis):
     :rtype: *boolean*
 
     """
-    if np.array_equal(right_axis, test_axis):
-        return True
-    else:
-        return False
+    return np.array_equal(right_axis, test_axis)
 
 
-def rebuild_time_bnds(start, length, instant, inc, ctx):
+def rebuild_time_bnds(start, length, inc, ctx):
     """
     Rebuilds time boundaries from the start date, depending on MIP frequency, calendar and instant status.
 
     :param float date: The numerical date to start (from ``netCDF4.date2num`` or :func:`Date2num`)
     :param int length: The time axis length (i.e., the timesteps number)
-    :param boolean instant: The instant status (from :func:`is_instant_time_axis`)
     :param int inc: The time incrementation (from :func:`time_inc`)
     :param dict ctx: The processing context (as a :func:`ProcessingContext` class instance).
 
@@ -847,8 +894,6 @@ def rebuild_time_bnds(start, length, instant, inc, ctx):
     """
     num_axis_bnds = np.column_stack(((np.arange(start=start, stop=start + length * inc, step=inc)),
                                      (np.arange(start=start, stop=start + (length+1) * inc, step=inc)[1:])))
-    if not instant and inc in [3, 6]:  # To solve non-instant [36]hr files
-        num_axis_bnds -= 0.5 * inc
     date_axis_bnds = Num2date(num_axis_bnds, units=ctx.funits, calendar=ctx.calendar)
     axis_bnds = Date2num(date_axis_bnds, units=ctx.tunits, calendar=ctx.calendar)
     return axis_bnds
@@ -864,10 +909,7 @@ def last_date_checker(last, end):
     :rtype: *boolean*
 
     """
-    if last != end:
-        return False
-    else:
-        return True
+    return last == end
 
 
 def yield_inputs(ctx):
@@ -915,8 +957,8 @@ def run(job=None):
     """
     # Instanciate processing context from command-line arguments or SYNDA job dictionnary
     ctx = ProcessingContext(get_args(job))
-    if ctx.attributes['frequency'] == 'fx':
-        logging.warning('Skipped "{0}"" frequency because no time axis'.format(ctx.attributes['frequency']))
+    if ('/fx/' or '/fixed/') in ctx.directory:
+        logging.warning('Skipped "fx/fixed" frequency because no time axis')
     else:
         logging.info('Time diagnostic started for {0}'.format(ctx.directory))
         # Set driving time properties (calendar, frequency and time units) from first file in directory
@@ -931,12 +973,10 @@ def run(job=None):
         job['files'] = {}
         for output in outputs:
             logging.info('==> Filename:'.ljust(25)+'{0}'.format(output.file))
-            if ctx.verbose:
-                logging.info('-> Start:'.ljust(25)+'{0}'.format(str(output.start)))
-                logging.info('-> End:'.ljust(25)+'{0}'.format(str(output.end)))
-                logging.info('-> Last:'.ljust(25)+'{0}'.format(str(output.last)))
+            logging.info('-> Start:'.ljust(25)+'{0}'.format(str(output.start)))
+            logging.info('-> End:'.ljust(25)+'{0}'.format(str(output.end)))
+            logging.info('-> Last:'.ljust(25)+'{0}'.format(str(output.last)))
             logging.info('-> Timesteps:'.ljust(25)+'{0}'.format(output.steps))
-            logging.info('-> Instant time:'.ljust(25)+'{0}'.format(output.instant))
             logging.info('-> Time axis status:'.ljust(25)+'{0}'.format(','.join(output.control)))
             logging.info('-> Time boundaries:'.ljust(25)+'{0}'.format(output.bnds))
             logging.info('-> New checksum:'.ljust(25)+'{0}'.format(output.checksum))
@@ -947,7 +987,6 @@ def run(job=None):
                 logging.info('{0}'.format(fill(' | '.join(map(str, output.axis.tolist())), width=100)))
             # Return diagnostic to SYNDA using job dictionnary
             job['files'][output.file] = {}
-            job['files'][output.file]['version'] = ctx.attributes['version']
             job['files'][output.file]['calendar'] = output.calendar
             job['files'][output.file]['start'] = output.start
             job['files'][output.file]['end'] = output.end

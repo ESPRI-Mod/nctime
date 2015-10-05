@@ -56,9 +56,9 @@
 <span id="id1"></span><h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
 <p>Here is the command-line help:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span class="nv">$&gt;</span> time_axis -h
-usage: timeaxis.py -p PROJECT <span class="o">[</span>-C CONFIG<span class="o">]</span> <span class="o">[</span>-h<span class="o">]</span> <span class="o">(</span>-c | -w | -f<span class="o">)</span> <span class="o">[</span>-l <span class="o">[</span>LOGDIR<span class="o">]]</span>
-                   <span class="o">[</span>-v<span class="o">]</span> <span class="o">[</span>-V<span class="o">]</span>
-                   <span class="o">[</span>directory<span class="o">]</span>
+usage: timeaxis -p PROJECT <span class="o">[</span>-C CONFIG<span class="o">]</span> <span class="o">[</span>-h<span class="o">]</span> <span class="o">(</span>-c | -w | -f<span class="o">)</span> <span class="o">[</span>-l <span class="o">[</span>LOGDIR<span class="o">]]</span>
+                <span class="o">[</span>-v<span class="o">]</span> <span class="o">[</span>-V<span class="o">]</span>
+                <span class="o">[</span>directory<span class="o">]</span>
 
 Rewrite and/or check <span class="nb">time </span>axis into MIP NetCDF files, considering
 <span class="o">(</span>i<span class="o">)</span> uncorrupted filename period dates and
@@ -75,7 +75,7 @@ end date of filename period <span class="o">(</span>e.g., wrong <span class="nb"
 
 positional arguments:
   directory             Variable path to diagnose following the DRS
-                        <span class="o">(</span>e.g., /prodigfs/esg/CMIP5/merge/NCAR/CCSM4/amip/day/atmos/cfDay/r7i1p1/v20130507/tas/<span class="o">)</span>.
+                        <span class="o">(</span>e.g., /path/to/your/archive/CMIP5/merge/NCAR/CCSM4/amip/day/atmos/cfDay/r7i1p1/v20130507/tas/<span class="o">)</span>.
 
 
 optional arguments:
@@ -112,7 +112,7 @@ Developped by Levavasseur, G. <span class="o">(</span>CNRS/IPSL<span class="o">)
 <div class="section" id="tutorials">
 <h2>Tutorials<a class="headerlink" href="#tutorials" title="Permalink to this headline">¶</a></h2>
 <p>Just check a MIP variable:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$&gt;</span>time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb -p cmip5 -c
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$&gt;</span>time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb -p CMIP5 -c
 Time diagnostic started <span class="k">for</span> /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb
 Version:                 v1
 Frequency:               mon
@@ -129,7 +129,7 @@ Time diagnostic completed <span class="o">(</span>1 files scanned<span class="o"
 </pre></div>
 </div>
 <p>Scan a directory with verbosity:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$&gt;</span>time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb -p cmip5 -c -v
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$&gt;</span>time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb -p CMIP5 -c -v
 Time diagnostic started <span class="k">for</span> /prodigfs/esg/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb
 Version:                 v1
 Frequency:               mon
@@ -161,11 +161,12 @@ Time diagnostic completed <span class="o">(</span>1 files scanned<span class="o"
 <p class="last">The <tt class="docutils literal"><span class="pre">-v/--verbose</span></tt> raises the tracebacks of thread-processes (default is the &#8220;silent&#8221; mode).</p>
 </div>
 <p>To specify the configuration file:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$&gt;</span> esg_mapfiles /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb -p cmip5 -c /path/to/configfile/config.ini
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$&gt;</span> esg_mapfiles /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb -p CMIP5 -c /path/to/configfile/config.ini
 </pre></div>
 </div>
 <p>To use a logfile (the logfile directory is optionnal):</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$&gt;</span>time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb -p cmip5 -c -l
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$&gt;</span>time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb -p CMIP5 -c -l /path/to/logfile
+
 <span class="nv">$&gt;</span> cat /path/to/logfile/timeaxis-YYYYMMDD-HHMMSS-PID.log
 YYYY/MM/DD HH:MM:SS AM INFO Time diagnostic started <span class="k">for</span> /prodigfs/esg/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb
 YYYY/MM/DD HH:MM:SS AM WARNING Version:                 v1
@@ -184,7 +185,7 @@ YYYY/MM/DD HH:MM:SS PM <span class="nv">INFO</span> <span class="o">==</span>&gt
 </pre></div>
 </div>
 <p>The write-mode displays the same information and only modify the input files if necessary. Nevertheless, you can force to overwrite time axis (the checksum is automatically computed again):</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$&gt;</span> time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/test -p cmip5 -f
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$&gt;</span> time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/test -p CMIP5 -f
 Time diagnostic started <span class="k">for</span> /prodigfs/esg/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/test
 Version:                 v1
 Frequency:               mon

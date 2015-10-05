@@ -1,8 +1,7 @@
 .. _usage:
 
-*****
 Usage
-*****
+=====
 
 Here is the command-line help:
 
@@ -62,7 +61,7 @@ Here is the command-line help:
    Developped by Levavasseur, G. (CNRS/IPSL) and Laliberte, F. (ExArch)
 
 Tutorials
----------
+*********
 
 Just check a MIP variable:
 

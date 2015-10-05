@@ -1,25 +1,24 @@
 .. _installation:
 
-************
 Installation
-************
+============
 
 Usual PIP installation 
-++++++++++++++++++++++
+**********************
 
 .. code-block:: bash
 
   pip install timeaxis
 
 PIP installation from GitHub
-++++++++++++++++++++++++++++
+****************************
 
 .. code-block:: bash
 
   pip install -e git://github.com/Prodiguer/cmip5-time-axis.git@master#egg=timeaxis
 
 Installation from GitHub
-++++++++++++++++++++++++
+************************
 
 1. Create a new directory:
 
@@ -45,7 +44,7 @@ Installation from GitHub
 
 
 Dependencies
-++++++++++++
+************
 
 ``time_axis`` uses the following basic Python libraries includes in Python 2.5+. Becareful your Python environment includes:
 

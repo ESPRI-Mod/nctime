@@ -61,6 +61,10 @@
 <p class="first admonition-title">Warning</p>
 <p class="last"><tt class="docutils literal"><span class="pre">time_axis</span></tt> is based on uncorrupted filename period dates and properly-defined times units, time calendar and frequency NetCDF attributes.</p>
 </div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">To rebuild a proper time axis, the dates from filename are expected to set the first time boundary and not the middle of the time interval. This is always the case for the instantaneous axis or frequencies greater than the daily frequency. Consequently, the 3-6 hourly files with an averaged time axis requires a date time correction.</p>
+</div>
 <div class="section" id="features">
 <h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
 <dl class="docutils">
@@ -98,7 +102,7 @@
 <dt><strong>Keep threads tracebacks</strong></dt>
 <dd>The threads-processes do not shutdown the main process of <tt class="docutils literal"><span class="pre">time_axis</span></tt> run. If an error occurs on a thread, the traceback of the child-process is not raised to the main process. To help you to have a fast debug, the tracebacks of each threads can be raised using the <tt class="docutils literal"><span class="pre">-v/--verbose</span></tt> option (see <a class="reference internal" href="usage.html#usage"><em>Usage</em></a>).</dd>
 <dt><strong>Developer&#8217;s entry point</strong></dt>
-<dd><tt class="docutils literal"><span class="pre">time_axis</span></tt> can be imported and call in your own scripts. Just pass a dictionnary with your flags to the <tt class="docutils literal"><span class="pre">run(job={})</span></tt> function (see <a class="reference internal" href="autodoc.html#autodoc"><em>Code documentation</em></a>).</dd>
+<dd><tt class="docutils literal"><span class="pre">time_axis</span></tt> can be imported and called in your own scripts. Just pass a dictionnary with your flags to the <tt class="docutils literal"><span class="pre">run(job={})</span></tt> function (see <a class="reference internal" href="autodoc.html#autodoc"><em>Code documentation</em></a>).</dd>
 <dt><strong>Use a logfile</strong></dt>
 <dd>You can initiate a logger instead of the standard output. This could be useful for automatic workflows. The logfile name is automatically defined and unique (using the the job&#8217;s name, the date and the job&#8217;s PID). You can define an output directory for your logs too.</dd>
 </dl>

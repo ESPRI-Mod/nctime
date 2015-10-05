@@ -68,9 +68,9 @@
 <dd><p>Encapsulates the following processing context/information for main process:</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="33%" />
-<col width="21%" />
-<col width="47%" />
+<col width="29%" />
+<col width="20%" />
+<col width="51%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Attribute</th>
@@ -95,25 +95,41 @@
 <td><em>boolean</em></td>
 <td>True if force writing</td>
 </tr>
-<tr class="row-even"><td><em>self</em>.project</td>
-<td><em>str</em></td>
-<td>Project</td>
+<tr class="row-even"><td><em>self</em>.verbose</td>
+<td><em>boolean</em></td>
+<td>True if verbose mode</td>
 </tr>
-<tr class="row-odd"><td><em>self</em>.checksum</td>
+<tr class="row-odd"><td><em>self</em>.project</td>
+<td><em>str</em></td>
+<td>MIP project</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.checksum</td>
 <td><em>str</em></td>
 <td>The checksum type</td>
 </tr>
-<tr class="row-even"><td><em>self</em>.cfg</td>
+<tr class="row-odd"><td><em>self</em>.cfg</td>
 <td><em>callable</em></td>
 <td>Configuration file parser</td>
 </tr>
-<tr class="row-odd"><td><em>self</em>.attributes</td>
-<td><em>dict</em></td>
-<td>DRS attributes from regex</td>
+<tr class="row-even"><td><em>self</em>.pattern</td>
+<td><em>re object</em></td>
+<td>Filename regex pattern</td>
 </tr>
-<tr class="row-even"><td><em>self</em>.calendar</td>
+<tr class="row-odd"><td><em>self</em>.calendar</td>
 <td><em>str</em></td>
 <td>NetCDF calendar attribute</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.frequency</td>
+<td><em>str</em></td>
+<td>NetCDF frequency attribute</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.variable</td>
+<td><em>str</em></td>
+<td>MIP variable</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.realm</td>
+<td><em>str</em></td>
+<td>NetCDF modeling realm attribute</td>
 </tr>
 <tr class="row-odd"><td><em>self</em>.tunits</td>
 <td><em>str</em></td>
@@ -129,20 +145,13 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>args</strong> (<em>dict</em>) &#8211; Parsed command-line arguments</p>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>dict</em>) &#8211; Parsed command-line arguments</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The processing context</p>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The processing context</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><em>dict</em></p>
-</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>dict</em></td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
-<li><strong>Error</strong> &#8211; If the project name is inconsistent with the sections names from the configuration file</li>
-<li><strong>Error</strong> &#8211; If the regular expression from the configurtion file cannot match the supplied directory</li>
-</ul>
-</td>
+<tr class="field-even field"><th class="field-name">Raises Error:</th><td class="field-body">If the project name is inconsistent with the sections names from the configuration file</td>
 </tr>
 </tbody>
 </table>
@@ -238,7 +247,7 @@
 <dl class="function">
 <dt id="timeaxis.get_args">
 <tt class="descclassname">timeaxis.</tt><tt class="descname">get_args</tt><big>(</big><em>job</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#get_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.get_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns parsed command-line arguments. See <tt class="docutils literal"><span class="pre">esg_mapfiles</span> <span class="pre">-h</span></tt> for full description.
+<dd><p>Returns parsed command-line arguments. See <tt class="docutils literal"><span class="pre">time_axis</span> <span class="pre">-h</span></tt> for full description.
 A <tt class="docutils literal"><span class="pre">job</span></tt> dictionnary can be used as developper&#8217;s entry point to overload the parser.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -320,9 +329,8 @@ name-YYYYMMDD-HHMMSS-PID.log</p>
 <dd><dl class="docutils">
 <dt>Returns the required referenced time properties from first file into processing context:</dt>
 <dd><ul class="first last simple">
-<li>The calendar is then used for all files scanned into the variable path,</li>
-<li>The NetCDF time units attribute has to be unchanged in respect with CF convention and archives designs,</li>
-<li>The frequency and the version are also read to detect instantaneous time axis.</li>
+<li>The calendar, the frequency and the realm are read from NetCDF global attributes and use to detect instantaneous time axis,</li>
+<li>The NetCDF time units attribute has to be unchanged in respect with CF convention and archives designs.</li>
 </ul>
 </dd>
 </dl>
@@ -335,6 +343,8 @@ name-YYYYMMDD-HHMMSS-PID.log</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
 <li><strong>Error</strong> &#8211; If NetCDF time units attribute is missing</li>
+<li><strong>Error</strong> &#8211; If NetCDF frequency attribute is missing</li>
+<li><strong>Error</strong> &#8211; If NetCDF realm attribute is missing</li>
 <li><strong>Error</strong> &#8211; If NetCDF calendar attribute is missing</li>
 </ul>
 </td>
@@ -345,16 +355,16 @@ name-YYYYMMDD-HHMMSS-PID.log</p>
 
 <dl class="function">
 <dt id="timeaxis.control_time_units">
-<tt class="descclassname">timeaxis.</tt><tt class="descname">control_time_units</tt><big>(</big><em>tunits</em>, <em>project</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#control_time_units"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.control_time_units" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">timeaxis.</tt><tt class="descname">control_time_units</tt><big>(</big><em>tunits</em>, <em>ctx</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#control_time_units"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.control_time_units" title="Permalink to this definition">¶</a></dt>
 <dd><p>Controls the time units format as at least &#8220;days since YYYY-MM-DD&#8221;.
-For CORDEX project, the time units has to be &#8220;days since 1949-12-01 00:00:00&#8221;.</p>
+The time units can be forced within configuration file using the <tt class="docutils literal"><span class="pre">time_units_default</span></tt> option.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>tunits</strong> (<em>str</em>) &#8211; The NetCDF time units string from file</li>
-<li><strong>project</strong> (<em>str</em>) &#8211; The MIP project</li>
+<li><strong>ctx</strong> (<em>dict</em>) &#8211; The processing context (as a <a class="reference internal" href="#timeaxis.ProcessingContext" title="timeaxis.ProcessingContext"><tt class="xref py py-func docutils literal"><span class="pre">ProcessingContext()</span></tt></a> class instance)</li>
 </ul>
 </td>
 </tr>
@@ -490,17 +500,16 @@ To overwrite the input file, the source file is dump using the <tt class="docuti
 
 <dl class="function">
 <dt id="timeaxis.dates_from_filename">
-<tt class="descclassname">timeaxis.</tt><tt class="descname">dates_from_filename</tt><big>(</big><em>project</em>, <em>filename</em>, <em>calendar</em>, <em>pattern</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#dates_from_filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.dates_from_filename" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns datetime objetcs for start and end dates from the filename.</p>
+<tt class="descclassname">timeaxis.</tt><tt class="descname">dates_from_filename</tt><big>(</big><em>filename</em>, <em>ctx</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#dates_from_filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.dates_from_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns datetime objetcs for start and end dates from the filename.
+To rebuild a proper time axis, the dates from filename are expected to set the first time boundary and not the middle of the time interval.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>filename</strong> (<em>str</em>) &#8211; The filename</li>
-<li><strong>project</strong> (<em>str</em>) &#8211; The MIP project</li>
-<li><strong>calendar</strong> (<em>str</em>) &#8211; The NetCDF calendar attribute</li>
-<li><strong>Object pattern</strong> (<em>re</em>) &#8211; The filename pattern as a regex (from <a class="reference external" href="https://docs.python.org/2/library/re.html">re library</a>).</li>
+<li><strong>ctx</strong> (<em>dict</em>) &#8211; The processing context (as a <a class="reference internal" href="#timeaxis.ProcessingContext" title="timeaxis.ProcessingContext"><tt class="xref py py-func docutils literal"><span class="pre">ProcessingContext()</span></tt></a> class instance)</li>
 </ul>
 </td>
 </tr>
@@ -690,7 +699,7 @@ If time units are not &#8220;years since&#8221; or &#8220;months since&#8221; ca
 
 <dl class="function">
 <dt id="timeaxis.rebuild_time_axis">
-<tt class="descclassname">timeaxis.</tt><tt class="descname">rebuild_time_axis</tt><big>(</big><em>start</em>, <em>length</em>, <em>instant</em>, <em>inc</em>, <em>ctx</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#rebuild_time_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.rebuild_time_axis" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">timeaxis.</tt><tt class="descname">rebuild_time_axis</tt><big>(</big><em>start</em>, <em>length</em>, <em>inc</em>, <em>ctx</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#rebuild_time_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.rebuild_time_axis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rebuilds time axis from date axis, depending on MIP frequency, calendar and instant status.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -699,7 +708,6 @@ If time units are not &#8220;years since&#8221; or &#8220;months since&#8221; ca
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>date</strong> (<em>float</em>) &#8211; The numerical date to start (from <tt class="docutils literal"><span class="pre">netCDF4.num2date</span></tt> or <a class="reference internal" href="#timeaxis.Date2num" title="timeaxis.Date2num"><tt class="xref py py-func docutils literal"><span class="pre">Date2num()</span></tt></a>)</li>
 <li><strong>length</strong> (<em>int</em>) &#8211; The time axis length (i.e., the timesteps number)</li>
-<li><strong>instant</strong> (<em>boolean</em>) &#8211; The instant status (from <a class="reference internal" href="#timeaxis.is_instant_time_axis" title="timeaxis.is_instant_time_axis"><tt class="xref py py-func docutils literal"><span class="pre">is_instant_time_axis()</span></tt></a>)</li>
 <li><strong>inc</strong> (<em>int</em>) &#8211; The time incrementation (from <a class="reference internal" href="#timeaxis.time_inc" title="timeaxis.time_inc"><tt class="xref py py-func docutils literal"><span class="pre">time_inc()</span></tt></a>)</li>
 <li><strong>ctx</strong> (<em>dict</em>) &#8211; The processing context (as a <a class="reference internal" href="#timeaxis.ProcessingContext" title="timeaxis.ProcessingContext"><tt class="xref py py-func docutils literal"><span class="pre">ProcessingContext()</span></tt></a> class instance)</li>
 </ul>
@@ -717,7 +725,7 @@ If time units are not &#8220;years since&#8221; or &#8220;months since&#8221; ca
 
 <dl class="function">
 <dt id="timeaxis.rebuild_date_axis">
-<tt class="descclassname">timeaxis.</tt><tt class="descname">rebuild_date_axis</tt><big>(</big><em>start</em>, <em>length</em>, <em>instant</em>, <em>inc</em>, <em>ctx</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#rebuild_date_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.rebuild_date_axis" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">timeaxis.</tt><tt class="descname">rebuild_date_axis</tt><big>(</big><em>start</em>, <em>length</em>, <em>inc</em>, <em>ctx</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#rebuild_date_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.rebuild_date_axis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rebuilds date axis from numerical time axis, depending on MIP frequency, calendar and instant status.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -726,7 +734,6 @@ If time units are not &#8220;years since&#8221; or &#8220;months since&#8221; ca
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>date</strong> (<em>float</em>) &#8211; The numerical date to start (from <tt class="docutils literal"><span class="pre">netCDF4.date2num</span></tt> or <a class="reference internal" href="#timeaxis.Date2num" title="timeaxis.Date2num"><tt class="xref py py-func docutils literal"><span class="pre">Date2num()</span></tt></a>)</li>
 <li><strong>length</strong> (<em>int</em>) &#8211; The time axis length (i.e., the timesteps number)</li>
-<li><strong>instant</strong> (<em>boolean</em>) &#8211; The instant status (from <a class="reference internal" href="#timeaxis.is_instant_time_axis" title="timeaxis.is_instant_time_axis"><tt class="xref py py-func docutils literal"><span class="pre">is_instant_time_axis()</span></tt></a>)</li>
 <li><strong>inc</strong> (<em>int</em>) &#8211; The time incrementation (from <a class="reference internal" href="#timeaxis.time_inc" title="timeaxis.time_inc"><tt class="xref py py-func docutils literal"><span class="pre">time_inc()</span></tt></a>)</li>
 <li><strong>ctx</strong> (<em>dict</em>) &#8211; The processing context (as a <a class="reference internal" href="#timeaxis.ProcessingContext" title="timeaxis.ProcessingContext"><tt class="xref py py-func docutils literal"><span class="pre">ProcessingContext()</span></tt></a> class instance)</li>
 </ul>
@@ -792,7 +799,7 @@ If time units are not &#8220;years since&#8221; or &#8220;months since&#8221; ca
 
 <dl class="function">
 <dt id="timeaxis.rebuild_time_bnds">
-<tt class="descclassname">timeaxis.</tt><tt class="descname">rebuild_time_bnds</tt><big>(</big><em>start</em>, <em>length</em>, <em>instant</em>, <em>inc</em>, <em>ctx</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#rebuild_time_bnds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.rebuild_time_bnds" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">timeaxis.</tt><tt class="descname">rebuild_time_bnds</tt><big>(</big><em>start</em>, <em>length</em>, <em>inc</em>, <em>ctx</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#rebuild_time_bnds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.rebuild_time_bnds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rebuilds time boundaries from the start date, depending on MIP frequency, calendar and instant status.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -801,7 +808,6 @@ If time units are not &#8220;years since&#8221; or &#8220;months since&#8221; ca
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>date</strong> (<em>float</em>) &#8211; The numerical date to start (from <tt class="docutils literal"><span class="pre">netCDF4.date2num</span></tt> or <a class="reference internal" href="#timeaxis.Date2num" title="timeaxis.Date2num"><tt class="xref py py-func docutils literal"><span class="pre">Date2num()</span></tt></a>)</li>
 <li><strong>length</strong> (<em>int</em>) &#8211; The time axis length (i.e., the timesteps number)</li>
-<li><strong>instant</strong> (<em>boolean</em>) &#8211; The instant status (from <a class="reference internal" href="#timeaxis.is_instant_time_axis" title="timeaxis.is_instant_time_axis"><tt class="xref py py-func docutils literal"><span class="pre">is_instant_time_axis()</span></tt></a>)</li>
 <li><strong>inc</strong> (<em>int</em>) &#8211; The time incrementation (from <a class="reference internal" href="#timeaxis.time_inc" title="timeaxis.time_inc"><tt class="xref py py-func docutils literal"><span class="pre">time_inc()</span></tt></a>)</li>
 <li><strong>ctx</strong> (<em>dict</em>) &#8211; The processing context (as a <a class="reference internal" href="#timeaxis.ProcessingContext" title="timeaxis.ProcessingContext"><tt class="xref py py-func docutils literal"><span class="pre">ProcessingContext()</span></tt></a> class instance).</li>
 </ul>
@@ -881,7 +887,7 @@ If time units are not &#8220;years since&#8221; or &#8220;months since&#8221; ca
 
 <dl class="function">
 <dt id="timeaxis.run">
-<tt class="descclassname">timeaxis.</tt><tt class="descname">run</tt><big>(</big><em>job</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.run" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">timeaxis.</tt><tt class="descname">run</tt><big>(</big><em>job=None</em><big>)</big><a class="reference internal" href="_modules/timeaxis.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#timeaxis.run" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
 <dt>Main process that:</dt>
 <dd><ul class="first last simple">
