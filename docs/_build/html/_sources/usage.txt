@@ -1,17 +1,16 @@
 .. _usage:
 
-*****
 Usage
-*****
+=====
 
 Here is the command-line help:
 
 .. code-block:: bash
 
    $> time_axis -h
-   usage: timeaxis.py -p PROJECT [-C CONFIG] [-h] (-c | -w | -f) [-l [LOGDIR]]
-                      [-v] [-V]
-                      [directory]
+   usage: timeaxis -p PROJECT [-C CONFIG] [-h] (-c | -w | -f) [-l [LOGDIR]]
+                   [-v] [-V]
+                   [directory]
 
    Rewrite and/or check time axis into MIP NetCDF files, considering
    (i) uncorrupted filename period dates and
@@ -28,7 +27,7 @@ Here is the command-line help:
 
    positional arguments:
      directory             Variable path to diagnose following the DRS
-                           (e.g., /prodigfs/esg/CMIP5/merge/NCAR/CCSM4/amip/day/atmos/cfDay/r7i1p1/v20130507/tas/).
+                           (e.g., /path/to/your/archive/CMIP5/merge/NCAR/CCSM4/amip/day/atmos/cfDay/r7i1p1/v20130507/tas/).
                            
 
    optional arguments:
@@ -62,13 +61,13 @@ Here is the command-line help:
    Developped by Levavasseur, G. (CNRS/IPSL) and Laliberte, F. (ExArch)
 
 Tutorials
----------
+*********
 
 Just check a MIP variable:
 
 .. code-block:: bash
 
-   $>time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb -p cmip5 -c
+   $>time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb -p CMIP5 -c
    Time diagnostic started for /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb
    Version:                 v1
    Frequency:               mon
@@ -87,7 +86,7 @@ Scan a directory with verbosity:
 
 .. code-block:: bash
 
-   $>time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb -p cmip5 -c -v
+   $>time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb -p CMIP5 -c -v
    Time diagnostic started for /prodigfs/esg/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb
    Version:                 v1
    Frequency:               mon
@@ -119,13 +118,14 @@ To specify the configuration file:
 
 .. code-block:: bash
 
-   $> esg_mapfiles /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb -p cmip5 -c /path/to/configfile/config.ini
+   $> esg_mapfiles /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb -p CMIP5 -c /path/to/configfile/config.ini
 
 To use a logfile (the logfile directory is optionnal):
 
 .. code-block:: bash
 
-   $>time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb -p cmip5 -c -l
+   $>time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb -p CMIP5 -c -l /path/to/logfile
+   
    $> cat /path/to/logfile/timeaxis-YYYYMMDD-HHMMSS-PID.log
    YYYY/MM/DD HH:MM:SS AM INFO Time diagnostic started for /prodigfs/esg/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb
    YYYY/MM/DD HH:MM:SS AM WARNING Version:                 v1
@@ -146,7 +146,7 @@ The write-mode displays the same information and only modify the input files if 
 
 .. code-block:: bash
 
-   $> time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/test -p cmip5 -f
+   $> time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/test -p CMIP5 -f
    Time diagnostic started for /prodigfs/esg/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/test
    Version:                 v1
    Frequency:               mon

@@ -1,11 +1,10 @@
 .. _autodoc:
 
-******************
 Code documentation
-******************
+==================
 
 timeaxis.py
-===========
+***********
 
 .. automodule:: timeaxis
 

@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='timeaxis',
-      version='3.0',
+      version='3.2',
       description='Rewrite and/or check time axis of MIP NetCDF files.',
       author='Levavasseur Guillaume',
       author_email='glipsl@ipsl.jussieu.fr',

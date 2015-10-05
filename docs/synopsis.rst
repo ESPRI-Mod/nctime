@@ -1,8 +1,7 @@
 .. _synopsis:
 
-********
 Synopsis
-********
+========
 
 NetCDF files describe all dimensions necessary to work with. In the climate community, this format is widely used following the `CF conventions <http://cfconventions.org/>`_. Dimensions such as longitude, latitude and time are included in NetCDF files as vectors.
 
@@ -12,9 +11,11 @@ The time axis is a key dimension. Unfortunately, this time axis often is mistake
 
 .. warning:: ``time_axis`` is based on uncorrupted filename period dates and properly-defined times units, time calendar and frequency NetCDF attributes.
 
+.. warning:: To rebuild a proper time axis, the dates from filename are expected to set the first time boundary and not the middle of the time interval. This is always the case for the instantaneous axis or frequencies greater than the daily frequency. Consequently, the 3-6 hourly files with an averaged time axis requires a date time correction.
+
 
 Features
-++++++++
+********
 
 **Time axis squareness**
    The theoretical time axis is always rebuilt depending on the calendar, the frequency, the realm and the time units. These information are extracted from the DRS tree of your file or the NetCDF attributes. Both time axis are rigorously compared to detect any mistakes.
