@@ -19,4 +19,4 @@ setup(name='timeaxis',
                    'Programming Language :: Python :: 2.5',
                    'Topic :: Scientific/Engineering',
                    'Topic :: Software Development :: Build Tools']
-      )
+       )
