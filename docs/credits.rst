@@ -6,18 +6,14 @@ Credits
 Developer/Author
 ****************
 
-.. codeauthor:: Levavasseur Guillaume (CNRS/IPSL) <glipsl@ipsl.jussieu.fr>
+`Guillaume LEVAVASSEUR <glipsl@ipsl.jussieu.fr>`_ (`UPMC <http://www.upmc.fr/>`_/`IPSL <https://www.ipsl.fr/>`_)
+
+Contributors
+************
+
+`Frederic LALIBERTE <frederic.laliberte@utoronto.ca>`_ (`ExArch <http://proj.badc.rl.ac.uk/exarch>`_)
 
 Contacts
 ********
 
-To submit bugs, suggestions or ideas:
-
-.. sectionauthor:: Levavasseur G. (CNRS/IPSL) <glipsl@ipsl.jussieu.fr>
-
-.. sectionauthor:: Denvil S. (CNRS/IPSL) <sdipsl@ipsl.jussieu.fr>
-
-Acknowledgments
-***************
-
-Thanks to Frederic Laliberté (`ExArch <http://proj.badc.rl.ac.uk/exarch>`_) for developing the useful and operating :func:`Date2num` and :func:`Num2date` functions (see :ref:`autodoc`).  
+To submit bugs, suggestions or ideas, please address your comments to `Guillaume LEVAVASSEUR <glipsl@ipsl.jussieu.fr>`_ or post your issue on our `GitHub repository <https://github.com/Prodiguer/cmip5-time-axis>`_.

@@ -8,66 +8,76 @@ Here is the command-line help:
 .. code-block:: bash
 
    $> time_axis -h
-   usage: timeaxis -p PROJECT [-C CONFIG] [-h] (-c | -w | -f) [-l [LOGDIR]]
-                   [-v] [-V]
-                   [directory]
+   usage: timeaxis.py --project <project_id> [-i $PYTHONUSERSITE/timeaxis/config.ini] [--write]
+                      [--force] [--logdir [$PWD]] [-h] [-v] [-V]
+                      [directory]
 
-   Rewrite and/or check time axis into MIP NetCDF files, considering
-   (i) uncorrupted filename period dates and
-   (ii) properly-defined times units, time calendar and frequency NetCDF attributes.
+   NetCDF files describe all dimensions necessary to work with. In the climate community, this format
+   is widely used following the CF conventions. Dimensions such as longitude, latitude and time are
+   included in NetCDF files as vectors.
 
-   Returned status:
+   The time axis is a key dimension. Unfortunately, this time axis often is mistaken in files from
+   coupled climate models and leads to flawed studies or unused data.
+
+   "time_axis" is a command-line tool allowing you to easily check and rebuild a MIP-compliant time
+   axis of your downloaded files from the ESGF.
+
+   Note that:
+   (i) "time_axis" is based on uncorrupted filename period dates and properly-defined times units, time
+   calendar and frequency NetCDF attributes.
+   (ii) To rebuild a proper time axis, the dates from filename are expected to set the first time
+   boundary and not the middle of the time interval. This is always the case for the instantaneous axis
+   or frequencies greater than the daily frequency. Consequently, the 3-6 hourly files with an averaged
+   time axis requires a date time correction.
+
+   Time axis status returned:
    000: Unmodified time axis,
-   001: Corrected time axis because wrong timesteps.
+   001: Corrected time axis because wrong timesteps,
    002: Corrected time axis because of changing time units,
-   003: Ignored time axis because of inconsistency between last date of time axis and
-   end date of filename period (e.g., wrong time axis length),
+   003: Ignored time axis because of inconsistency between last date of time axis and end date of
+   filename period (e.g., wrong time axis length),
    004: Corrected time axis deleting time boundaries for instant time,
    005: Ignored averaged time axis without time boundaries.
 
+   See full documentation on http://cmip5-time-axis.readthedocs.org/
+
+   The default values are displayed next to the corresponding flags.
+
    positional arguments:
-     directory             Variable path to diagnose following the DRS
-                           (e.g., /path/to/your/archive/CMIP5/merge/NCAR/CCSM4/amip/day/atmos/cfDay/r7i1p1/v20130507/tas/).
-                           
+     directory                               Variable path to diagnose.
 
    optional arguments:
-     -p PROJECT, --project PROJECT
-                           Required project name corresponding to a section of the configuration file.
-                           
-     -C CONFIG, --config CONFIG
-                           Path of configuration INI file
-                           (default is ~/anaconda/lib/python2.7/site-packages/timeaxis/config.ini).
-                           
-     -h, --help            Show this help message and exit.
-                           
-     -c, --check           Check time axis squareness (default is True).
-                           
-     -w, --write           Rewrite time axis depending on checking
-                           (includes --check ; default is False).
-                           THIS ACTION DEFINITELY MODIFY INPUT FILES!
-                           
-     -f, --force           Force time axis writing overpassing checking step
-                           (default is False).
-                           THIS ACTION DEFINITELY MODIFY INPUT FILES!
-                           
-     -l [LOGDIR], --logdir [LOGDIR]
-                           Logfile directory (default is working directory).
-                           If not, standard output is used.
-                           
-     -v, --verbose         Verbose mode.
-                           
-     -V, --version         Program version.
+     --project <project_id>                  Required project name corresponding to a section of the
+                                             configuration file.
 
-   Developped by Levavasseur, G. (CNRS/IPSL) and Laliberte, F. (ExArch)
+     -i $PYTHONUSERSITE/timeaxis/config.ini  Path of configuration INI file.
+
+     --write                                 Rewrites time axis depending on checking.
+                                             THIS ACTION DEFINITELY MODIFY INPUT FILES!
+
+     --force                                 Forces time axis writing overpassing checking step.
+                                             THIS ACTION DEFINITELY MODIFY INPUT FILES!
+
+     --logdir [$PWD]                         Logfile directory. If not, standard output is used.
+
+     -h, --help                              Show this help message and exit.
+
+     -v                                      Verbose mode.
+
+     -V                                      Program version.
+
+   Developped by:
+   Levavasseur, G. (UPMC/IPSL - glipsl@ipsl.jussieu.fr)
+   Laliberte, F. (ExArch - frederic.laliberte@utoronto.ca)
 
 Tutorials
 *********
 
-Just check a MIP variable:
+Check a MIP variable:
 
 .. code-block:: bash
 
-   $>time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb -p CMIP5 -c
+   $>time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb --project CMIP5
    Time diagnostic started for /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb
    Version:                 v1
    Frequency:               mon
@@ -86,7 +96,7 @@ Scan a directory with verbosity:
 
 .. code-block:: bash
 
-   $>time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb -p CMIP5 -c -v
+   $>time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb --project CMIP5 -v
    Time diagnostic started for /prodigfs/esg/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb
    Version:                 v1
    Frequency:               mon
@@ -112,20 +122,20 @@ Scan a directory with verbosity:
    50901.0 | 50931.5 | 50962.5 | 50993.0 | 51023.5 | 51054.0 | 51084.5
    Time diagnostic completed (1 files scanned)
 
-.. note:: The ``-v/--verbose`` raises the tracebacks of thread-processes (default is the "silent" mode).
+.. note:: The ``-v`` raises the tracebacks of thread-processes (default is the "silent" mode).
 
 To specify the configuration file:
 
 .. code-block:: bash
 
-   $> esg_mapfiles /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb -p CMIP5 -c /path/to/configfile/config.ini
+   $> esg_mapfiles /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb --project CMIP5 -i /path/to/configfile/config.ini
 
 To use a logfile (the logfile directory is optionnal):
 
 .. code-block:: bash
 
-   $>time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb -p CMIP5 -c -l /path/to/logfile
-   
+   $>time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb --project CMIP5 --log /path/to/logdir
+
    $> cat /path/to/logfile/timeaxis-YYYYMMDD-HHMMSS-PID.log
    YYYY/MM/DD HH:MM:SS AM INFO Time diagnostic started for /prodigfs/esg/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb
    YYYY/MM/DD HH:MM:SS AM WARNING Version:                 v1
@@ -142,11 +152,30 @@ To use a logfile (the logfile directory is optionnal):
    YYYY/MM/DD HH:MM:SS AM INFO Time diagnostic completed (1 files scanned)
    YYYY/MM/DD HH:MM:SS PM INFO ==> Search complete.
 
-The write-mode displays the same information and only modify the input files if necessary. Nevertheless, you can force to overwrite time axis (the checksum is automatically computed again):
+The write-mode displays the same information and only modify the input files if necessary.
 
 .. code-block:: bash
 
-   $> time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/test -p CMIP5 -f
+   $> time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/test --project CMIP5 --write
+   Time diagnostic started for /prodigfs/esg/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/test
+   Version:                 v1
+   Frequency:               mon
+   Calendar:                noleap
+   Time units:              days since 0160-01-01
+   Files to process:        1
+   ==> Filename:            ccb_Amon_bcc-csm1-1_1pctCO2_r1i1p1_016001-029912.nc
+   -> Timesteps:            1680
+   -> Instant time:         False
+   -> Time axis status:     001
+   -> Time boundaries:      True
+   -> New checksum:         3c81206ad871acc38b9fa32d738669e9
+   Time diagnostic completed (1 files scanned)
+
+Nevertheless, you can force to overwrite time axis (the checksum is automatically computed again):
+
+.. code-block:: bash
+
+   $> time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/test --project CMIP5 --force
    Time diagnostic started for /prodigfs/esg/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/test
    Version:                 v1
    Frequency:               mon

@@ -21,7 +21,7 @@ Features
    The theoretical time axis is always rebuilt depending on the calendar, the frequency, the realm and the time units. These information are extracted from the DRS tree of your file or the NetCDF attributes. Both time axis are rigorously compared to detect any mistakes.
 
 .. note::
-   
+
    ``time_axis`` checks:
     * all timesteps,
     * all time increments,
@@ -34,7 +34,7 @@ Features
    ``time_axis`` is currently provided supporting `CMIP5 <http://cmip-pcmdi.llnl.gov/cmip5/docs/cmip5_data_reference_syntax.pdf>`_ and `CORDEX <https://www.medcordex.eu/cordex_archive_specifications_2.2_30sept2013.pdf>`_ *Data Reference Syntax* (DRS). Nevertheless, you can easily add a new "project" section in the configuration file to support yours. Please follow the `INI syntax <https://en.wikipedia.org/wiki/INI_file>`_.
 
 **No duplicated files**
-   A process file is open with both read and write access. This allows a faster file processing just reading the required metadata and the time axis. We choose to directly overwrite the time axis into the original file avoiding to duplicate the file. *Consequently, the write (*``-w/--write``* and *``-f/--force``*) mode definitely modify the original input files*.  The modifications are only apply on time axis and/or time attributes. ``time_axis`` never reads the other dimensions or the variable(s) described into the NetCDF.
+   A process file is open with both read and write access. This allows a faster file processing just reading the required metadata and the time axis. We choose to directly overwrite the time axis into the original file avoiding to duplicate the file. *Consequently, the write (*``--write``* and *``--force``*) mode definitely modify the original input files*.  The modifications are only apply on time axis and/or time attributes. ``time_axis`` never reads the other dimensions or the variable(s) described into the NetCDF.
 
 **Ignore files with missing timesteps**
    When a time axis has a wrong length, the error is raised but not corrected because of inability to add/delete timesteps to a file currently.
@@ -49,10 +49,10 @@ Features
    To check the time axis of a lot of high frequency files becomes time consuming. We implement multithreading at file level. Each file is processed by a thread that runs the time axis diagnostic.
 
 **Keep threads tracebacks**
-  The threads-processes do not shutdown the main process of ``time_axis`` run. If an error occurs on a thread, the traceback of the child-process is not raised to the main process. To help you to have a fast debug, the tracebacks of each threads can be raised using the ``-v/--verbose`` option (see :ref:`usage`).
+  The threads-processes do not shutdown the main process of ``time_axis`` run. If an error occurs on a thread, the traceback of the child-process is not raised to the main process. To help you to have a fast debug, the tracebacks of each threads can be raised using the ``-v`` option (see :ref:`usage`).
 
 **Developer's entry point**
-  ``time_axis`` can be imported and called in your own scripts. Just pass a dictionnary with your flags to the ``run(job={})`` function (see :ref:`autodoc`). 
+  ``time_axis`` can be imported and called in your own scripts. Just pass a dictionnary with your flags to the ``run(job={})`` function (see :ref:`autodoc`).
 
 **Use a logfile**
    You can initiate a logger instead of the standard output. This could be useful for automatic workflows. The logfile name is automatically defined and unique (using the the job's name, the date and the job's PID). You can define an output directory for your logs too.

@@ -11,22 +11,24 @@ import os
 import argparse
 import logging
 import ConfigParser
+import textwrap
 from uuid import uuid4
 import numpy as np
-from argparse import RawTextHelpFormatter
+from argparse import HelpFormatter
 from datetime import datetime
 from functools import wraps
 from netCDF4 import Dataset, date2num, num2date
 from multiprocessing.dummy import Pool as ThreadPool
 from netcdftime import datetime as phony_datetime
+from netcdftime import utime
 from textwrap import fill
 from glob import glob
 
 # Program version
-__version__ = '{0} {1}-{2}-{3}'.format('v3.2', '2015', '10', '05')
+__version__ = 'v{0} {1}'.format('3.3', datetime(year=2015, month=11, day=30).strftime("%Y-%d-%m"))
 
 # Filaname date correction for 3hr and 6hr files
-_HALF_HOUR = 0.125/6
+_HALF_HOUR = 0.125/6.0
 _AVERAGED_TIME_CORRECTION = {'3hr': {0: {'000000': 0.0,
                                          '003000': -_HALF_HOUR,
                                          '013000': -_HALF_HOUR*3,
@@ -69,8 +71,6 @@ class ProcessingContext(object):
     +===================+=============+=================================+
     | *self*.directory  | *str*       | Variable to scan                |
     +-------------------+-------------+---------------------------------+
-    | *self*.check      | *boolean*   | True if check mode              |
-    +-------------------+-------------+---------------------------------+
     | *self*.write      | *boolean*   | True if write mode              |
     +-------------------+-------------+---------------------------------+
     | *self*.force      | *boolean*   | True if force writing           |
@@ -101,21 +101,23 @@ class ProcessingContext(object):
     :param dict args: Parsed command-line arguments
     :returns: The processing context
     :rtype: *dict*
-    :raises Error: If the project name is inconsistent with the sections names from the configuration file
+    :raises Error: If the project name is inconsistent with the sections names from \
+    the configuration file
 
     """
     def __init__(self, args):
-        init_logging(args.logdir)
+        init_logging(args.log)
         self.directory = check_directory(args.directory)
-        self.check = args.check
         self.write = args.write
         self.force = args.force
-        self.verbose = args.verbose
-        self.cfg = config_parse(args.config)
+        self.verbose = args.v
+        self.cfg = config_parse(args.i)
         if args.project in self.cfg.sections():
             self.project = args.project
         else:
-            raise Exception('No section in configuration file corresponds to "{0}" project. Supported projects are {1}.'.format(args.project, self.cfg.sections()))
+            raise Exception('No section in configuration file corresponds to "{0}" project. \
+                            Supported projects are {1}.'.format(args.project,
+                                                                self.cfg.sections()))
         self.pattern = re.compile(self.cfg.get(self.project, 'filename_format'))
         self.frequency = None
         self.instant = None
@@ -125,6 +127,43 @@ class ProcessingContext(object):
         self.calendar = None
         self.tunits = None
         self.funits = None
+
+
+class MultilineFormatter(HelpFormatter):
+    """
+    Curstom formatter class for argument parser to use with the Python
+    `argparse <https://docs.python.org/2/library/argparse.html>`_ module.
+
+    """
+    def __init__(self, prog):
+        # Overload the HelpFormatter class to increase the help text position
+        # and the total text width.
+        super(MultilineFormatter, self).__init__(prog, max_help_position=60, width=100)
+
+    def _fill_text(self, text, width, indent):
+        # Rewrites the _fill_text method to support multiline description.
+        text = self._whitespace_matcher.sub(' ', text).strip()
+        multiline_text = ''
+        paragraphs = text.split('|n|n ')
+        for paragraph in paragraphs:
+            lines = paragraph.split('|n ')
+            for line in lines:
+                formatted_line = textwrap.fill(line, width,
+                                               initial_indent=indent,
+                                               subsequent_indent=indent) + '\n'
+                multiline_text = multiline_text + formatted_line
+            multiline_text = multiline_text + '\n'
+        return multiline_text
+
+    def _split_lines(self, text, width):
+        # Rewrites the _split_lines method to support multiline helps.
+        text = self._whitespace_matcher.sub(' ', text).strip()
+        lines = text.split('|n ')
+        multiline_text = []
+        for line in lines:
+            multiline_text.append(textwrap.fill(line, width))
+        multiline_text[-1] = multiline_text[-1] + '\n'
+        return multiline_text
 
 
 class AxisStatus(object):
@@ -194,72 +233,113 @@ def get_args(job):
 
     """
     parser = argparse.ArgumentParser(
-        description="""Rewrite and/or check time axis into MIP NetCDF files, considering\n(i) uncorrupted filename period dates and\n(ii) properly-defined times units, time calendar and frequency NetCDF attributes.\n\nTime axis status:\n000: Unmodified time axis,\n001: Corrected time axis because wrong timesteps.\n002: Corrected time axis because of changing time units,\n003: Ignored time axis because of inconsistency between last date of time axis and\nend date of filename period (e.g., wrong time axis length),\n004: Corrected time axis deleting time boundaries for instant time,\n005: Ignored averaged time axis without time boundaries.""",
-        formatter_class=RawTextHelpFormatter,
+        description="""NetCDF files describe all dimensions necessary to work with. In the
+                    climate community, this format is widely used following the CF conventions.
+                    Dimensions such as longitude, latitude and time are included in NetCDF files
+                    as vectors.|n|n
+
+                    The time axis is a key dimension. Unfortunately, this time axis often is
+                    mistaken in files from coupled climate models and leads to flawed studies
+                    or unused data.|n|n
+
+                    "time_axis" is a command-line tool allowing you to easily check and rebuild
+                    a MIP-compliant time axis of your downloaded files from the ESGF.|n|n
+
+                    Note that:|n
+                    (i) "time_axis" is based on uncorrupted filename period dates and
+                    properly-defined times units, time calendar and frequency NetCDF attributes.|n
+                    (ii) To rebuild a proper time axis, the dates from filename are expected to
+                    set the first time boundary and not the middle of the time interval.
+                    This is always the case for the instantaneous axis or frequencies greater
+                    than the daily frequency. Consequently, the 3-6 hourly files with an
+                    averaged time axis requires a date time correction.|n|n
+
+                    Time axis status returned:|n
+                    000: Unmodified time axis,|n
+                    001: Corrected time axis because wrong timesteps,|n
+                    002: Corrected time axis because of changing time units,|n
+                    003: Ignored time axis because of inconsistency between last date of time axis
+                     and end date of filename period (e.g., wrong time axis length),|n
+                    004: Corrected time axis deleting time boundaries for instant time,|n
+                    005: Ignored averaged time axis without time boundaries.|n|n
+
+                    See full documentation on http://cmip5-time-axis.readthedocs.org/|n|n
+
+                    The default values are displayed next to the corresponding flags.""",
+        formatter_class=MultilineFormatter,
         add_help=False,
-        epilog="""Developped by Levavasseur, G. (CNRS/IPSL) and Laliberte, F. (ExArch)""")
+        epilog="""Developped by:|n
+               Levavasseur, G. (UPMC/IPSL - glipsl@ipsl.jussieu.fr)|n
+               Laliberte, F. (ExArch - frederic.laliberte@utoronto.ca)""")
     parser.add_argument(
         'directory',
         nargs='?',
-        help="""Variable path to diagnose following the DRS\n(e.g., /path/to/your/archive/CMIP5/merge/NCAR/CCSM4/amip/day/atmos/cfDay/r7i1p1/v20130507/tas/).\n\n"""),
+        help="""Variable path to diagnose."""),
     parser.add_argument(
-        '-p', '--project',
+        '--project',
+        metavar='<project_id>',
         type=str,
         required=True,
-        help="""Required project name corresponding to a section of the configuration file.\n\n""")
+        help="""Required project name corresponding to a section of the|n
+                configuration file.""")
     parser.add_argument(
-        '-C', '--config',
+        '-i',
+        metavar='$PYTHONUSERSITE/timeaxis/config.ini',
         type=str,
         default='{0}/config.ini'.format(os.path.dirname(os.path.abspath(__file__))),
-        help="""Path of configuration INI file\n(default is {0}/config.ini).\n\n""".format(os.path.dirname(os.path.abspath(__file__))))
+        help="""Path of configuration INI file.""")
     parser.add_argument(
-        '-h', '--help',
-        action="help",
-        help="""Show this help message and exit.\n\n""")
-    group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument(
-        '-c', '--check',
-        action='store_true',
-        default=True,
-        help='Check time axis squareness (default is True).\n\n')
-    group.add_argument(
-        '-w', '--write',
+        '--write',
         action='store_true',
         default=False,
-        help="""Rewrite time axis depending on checking\n(includes --check ; default is False).\nTHIS ACTION DEFINITELY MODIFY INPUT FILES!\n\n""")
-    group.add_argument(
-        '-f', '--force',
+        help="""Rewrites time axis depending on checking.|n
+                THIS ACTION DEFINITELY MODIFY INPUT FILES!""")
+    parser.add_argument(
+        '--force',
         action='store_true',
         default=False,
-        help="""Force time axis writing overpassing checking step\n(default is False).\nTHIS ACTION DEFINITELY MODIFY INPUT FILES!\n\n""")
+        help="""Forces time axis writing overpassing checking step.|n
+                THIS ACTION DEFINITELY MODIFY INPUT FILES!""")
     parser.add_argument(
-        '-l', '--logdir',
+        '--log',
+        metavar='$PWD',
         type=str,
         nargs='?',
         const=os.getcwd(),
-        help="""Logfile directory (default is working directory).\nIf not, standard output is used.\n\n""")
+        help="""Logfile directory. If not, standard output is used.""")
     parser.add_argument(
-        '-v', '--verbose',
+        '-h', '--help',
+        action="help",
+        help="""Show this help message and exit.""")
+    parser.add_argument(
+        '-v',
         action='store_true',
         default=False,
-        help='Verbose mode.\n\n')
+        help='Verbose mode.')
     parser.add_argument(
-        '-V', '--version',
+        '-V',
         action='version',
         version='%(prog)s ({0})'.format(__version__),
         help="""Program version.""")
     if job is None:
         return parser.parse_args()
     else:
-        return parser.parse_args([job['full_path_variable'], '-p', job['project'], '-c', '-v'])
+        return parser.parse_args([job['args']['variable_path'],
+                                 '--project', job['args']['project'],
+                                 '-i', '/prodigfs/esg/ArchiveTools/sdp/conf/timeaxis.ini',
+                                 '--write',
+                                 '--logdir', 'synda_logger',
+                                 '-v'])
 
 
 def init_logging(logdir):
     """
-    Initiates the logging configuration (output, message formatting). In the case of a logfile, the logfile name is unique and formatted as follows:
-    name-YYYYMMDD-HHMMSS-PID.log
+    Initiates the logging configuration (output, message formatting).
+    In the case of a logfile, the logfile name is unique and formatted as follows:
+    `name-YYYYMMDD-HHMMSS-JOBID.log``
 
-    :param str logdir: The relative or absolute logfile directory. If ``None`` the standard output is used.
+    :param str logdir: The relative or absolute logfile directory. If ``None`` the standard \
+    output is used.
 
     """
     if logdir is 'synda_logger':
@@ -267,8 +347,10 @@ def init_logging(logdir):
         pass
     elif logdir:
         name = os.path.splitext(os.path.basename(os.path.abspath(__file__)))[0]
-        logfile = '{0}-{1}-{2}.log'.format(name, datetime.now().strftime("%Y%m%d-%H%M%S"), os.getpid())
-        if not os.path.exists(logdir):
+        logfile = '{0}-{1}-{2}.log'.format(name,
+                                           datetime.now().strftime("%Y%m%d-%H%M%S"),
+                                           os.getpid())
+        if not os.path.isdir(logdir):
             os.mkdir(logdir)
         logging.basicConfig(filename=os.path.join(logdir, logfile),
                             level=logging.DEBUG,
@@ -318,8 +400,10 @@ def config_parse(config_path):
 def time_init(ctx):
     """
     Returns the required referenced time properties from first file into processing context:
-     * The calendar, the frequency and the realm are read from NetCDF global attributes and use to detect instantaneous time axis,
-     * The NetCDF time units attribute has to be unchanged in respect with CF convention and archives designs.
+     * The calendar, the frequency and the realm are read from NetCDF global attributes and
+     use to detect instantaneous time axis,
+     * The NetCDF time units attribute has to be unchanged in respect with CF convention and
+     archives designs.
 
     :param dict ctx: The processing context (as a :func:`ProcessingContext` class instance)
     :raises Error: If NetCDF time units attribute is missing
@@ -328,9 +412,9 @@ def time_init(ctx):
     :raises Error: If NetCDF calendar attribute is missing
 
     """
-    file = yield_inputs(ctx).next()[0]
-    data = Dataset('{0}/{1}'.format(ctx.directory, file), 'r')
-    ctx.variable = file.split('_')[0]
+    filename = yield_inputs(ctx).next()[0]
+    data = Dataset('{0}/{1}'.format(ctx.directory, filename), 'r')
+    ctx.variable = filename.split('_')[0]
     if data.project_id == 'CORDEX':
         ctx.realm = 'atmos'
     else:
@@ -381,7 +465,9 @@ def control_time_units(tunits, ctx):
     try:
         time_units_default = eval(ctx.cfg.get(ctx.project, 'time_units_default'))
         if ' '.join(units) != time_units_default:
-            logging.warning('Invalid time units. Replace "{0}" by "{1}"'.format(' '.join(units), time_units_default))
+            logging.warning('Invalid time units. '
+                            'Replace "{0}" by "{1}"'.format(' '.join(units),
+                                                            time_units_default))
         return time_units_default
     except:
         return ' '.join(units)
@@ -390,7 +476,8 @@ def control_time_units(tunits, ctx):
 def convert_time_units(unit, frequency):
     """
     Converts default time units from file into time units using the MIP frequency.
-    As en example, for a 3-hourly file, the time units "days since YYYY-MM-DD" becomes "hours since YYYY-MM-DD".
+    As en example, for a 3-hourly file, the time units "days since YYYY-MM-DD" becomes
+    "hours since YYYY-MM-DD".
 
     :param str tunits: The NetCDF time units string from file
     :param str frequency: The time frequency
@@ -467,11 +554,14 @@ def time_axis_processing(inputs):
     status.units = control_time_units(data.variables['time'].units, ctx)
     # Rebuild a proper time axis
     axis_hp, last_hp = rebuild_time_axis(start, length, inc, ctx)  # High precision
-    axis_lp, last_lp = rebuild_time_axis(trunc(start, 5), length, inc, ctx)  # Low precision avoiding float precision issues
+    # Low precision avoiding float precision issues
+    axis_lp, last_lp = rebuild_time_axis(trunc(start, 5), length, inc, ctx)
     # Check consistency between last time date and end date from filename
-    if not last_date_checker(date_print(last_hp), date_print(end_date)) and not last_date_checker(date_print(last_lp), date_print(end_date)):
+    if not last_date_checker(date_print(last_hp), date_print(end_date)) and \
+       not last_date_checker(date_print(last_lp), date_print(end_date)):
         status.control.append('003')
-        logging.warning('ERROO3 - {0} - The date from last theoretical time step differs from the end date from filename'.format(filename))
+        logging.warning('ERROO3 - {0} - The date from last theoretical time step differs from '
+                        'the end date from filename'.format(filename))
         status.axis = axis_lp
         status.last = date_print(last_lp)
         return status
@@ -485,7 +575,8 @@ def time_axis_processing(inputs):
     # Check inconsistency between instant time and time boundaries
     if ctx.instant and ('time_bnds' in data.variables.keys()):
         status.control.append('004')
-        logging.warning('ERROO4 - {0} - An instantaneous time axis should not embeded time boundaries'.format(filename))
+        logging.warning('ERROO4 - {0} - An instantaneous time axis should not embeded time '
+                        'boundaries'.format(filename))
         # Delete time bounds and bounds attribute from file if write of force mode
         if ctx.write or ctx.force:
             if 'bounds' in data.variables['time'].ncattrs():
@@ -496,23 +587,24 @@ def time_axis_processing(inputs):
     # Control consistency between averaged time and time boundaries
     if not ctx.instant and ('time_bnds' not in data.variables.keys()):
         status.control.append('005')
-        logging.warning('ERROO5 - {0} - An averaged time axis should embeded time boundaries'.format(filename))
+        logging.warning('ERROO5 - {0} - An averaged time axis should embeded time '
+                        'boundaries'.format(filename))
         status.axis = axis_lp
         status.last = date_print(last_lp)
         return status
     # Check time axis squareness
-    if ctx.check or ctx.write:
-        status.time = data.variables['time'][:]
-        if time_checker(status.axis, status.time):
-            status.control.append('000')
-        else:
-            status.control.append('001')
-            logging.warning('ERROO1 - {0} - Mistaken time axis over one or several time steps'.format(filename))
-        # Rebuild, read and check time boundaries squareness if needed
-        if 'time_bnds' in data.variables.keys():
-            axis_bnds = rebuild_time_bnds(start, length, inc, ctx)
-            time_bnds = data.variables['time_bnds'][:, :]
-            status.bnds = time_checker(axis_bnds, time_bnds)
+    status.time = data.variables['time'][:]
+    if time_checker(status.axis, status.time):
+        status.control.append('000')
+    else:
+        status.control.append('001')
+        logging.warning('ERROO1 - {0} - Mistaken time axis over one or several time '
+                        'steps'.format(filename))
+    # Rebuild, read and check time boundaries squareness if needed
+    if 'time_bnds' in data.variables.keys():
+        axis_bnds = rebuild_time_bnds(start, length, inc, ctx)
+        time_bnds = data.variables['time_bnds'][:, :]
+        status.bnds = time_checker(axis_bnds, time_bnds)
     # Rewrite time axis depending on checking
     if (ctx.write and not time_checker(status.axis, status.time)) or ctx.force:
         data.variables['time'][:] = status.axis
@@ -524,7 +616,8 @@ def time_axis_processing(inputs):
     # Control consistency between time units
     if ctx.tunits != status.units:
         status.control.append('002')
-        logging.warning('ERROO2 - {0} - Time units must be unchanged for the same dataset.'.format(filename))
+        logging.warning('ERROO2 - {0} - Time units must be unchanged for '
+                        'the same dataset.'.format(filename))
     # Close file
     data.close()
     # Compute checksum at the end of all modifications and after closing file
@@ -543,22 +636,25 @@ def checksum(ctx, filename):
     :raises Error: If the checksum fails
 
     """
-    assert (ctx.checksum in ['SHA256', 'MD5']), 'Invalid checksum type: {0} instead of MD5 or SHA256'.format(ctx.checksum)
+    assert (ctx.checksum in ['SHA256', 'MD5']), 'Invalid checksum type: {0} instead of \
+    MD5 or SHA256'.format(ctx.checksum)
+    ffp = '{0}/{1}'.format(ctx.directory, filename)
     try:
         if ctx.checksum == 'SHA256':
-            shell = os.popen("sha256sum {0} | awk -F ' ' '{{ print $1 }}'".format('{0}/{1}'.format(ctx.directory, filename)), 'r')
+            shell = os.popen("sha256sum {0} | awk -F ' ' '{{ print $1 }}'".format(ffp), 'r')
         elif ctx.checksum == 'MD5':
-            shell = os.popen("md5sum {0} | awk -F ' ' '{{ print $1 }}'".format('{0}/{1}'.format(ctx.directory, filename)), 'r')
+            shell = os.popen("md5sum {0} | awk -F ' ' '{{ print $1 }}'".format(ffp), 'r')
         return shell.readline()[:-1]
     except:
-        raise Exception('Checksum failed for {0}'.format('{0}/{1}'.format(ctx.directory, filename)))
+        raise Exception('Checksum failed for {0}'.format(ffp))
 
 
 def nc_var_delete(ctx, filename, variable):
     """
     Delete a NetCDF variable using NCO operators.
     A unique filename is generated to avoid multithreading errors.
-    To overwrite the input file, the source file is dump using the ``cat`` Shell command-line to avoid Python memory limit.
+    To overwrite the input file, the source file is dump using the ``cat`` Shell command-line
+    to avoid Python memory limit.
 
     :param str filename: The filename
     :param dict ctx: The processing context (as a :func:`ProcessingContext` class instance)
@@ -569,8 +665,14 @@ def nc_var_delete(ctx, filename, variable):
     # Generate unique filename
     tmp = '{0}{1}'.format(str(uuid4()), '.nc')
     try:
-        os.popen("ncks -x -O -v {3} {0}/{1} {0}/{2}".format(ctx.directory, filename, tmp, variable), 'r')
-        os.popen("cat {0}/{2} > {0}/{1}".format(ctx.directory, filename, tmp, variable), 'r')
+        os.popen("ncks -x -O -v {3} {0}/{1} {0}/{2}".format(ctx.directory,
+                                                            filename,
+                                                            tmp,
+                                                            variable), 'r')
+        os.popen("cat {0}/{2} > {0}/{1}".format(ctx.directory,
+                                                filename,
+                                                tmp,
+                                                variable), 'r')
         os.remove('{0}/{1}'.format(ctx.directory, tmp))
     except:
         os.remove('{0}/{1}'.format(ctx.directory, tmp))
@@ -580,7 +682,8 @@ def nc_var_delete(ctx, filename, variable):
 def dates_from_filename(filename, ctx):
     """
     Returns datetime objetcs for start and end dates from the filename.
-    To rebuild a proper time axis, the dates from filename are expected to set the first time boundary and not the middle of the time interval.
+    To rebuild a proper time axis, the dates from filename are expected to set the first
+    time boundary and not the middle of the time interval.
 
     :param str filename: The filename
     :param dict ctx: The processing context (as a :func:`ProcessingContext` class instance)
@@ -593,18 +696,27 @@ def dates_from_filename(filename, ctx):
     for date in ctx.pattern.search(filename).groups()[-2:]:
         digits = untroncated_timestamp(date)
         # Convert string digits to %Y-%m-%d %H:%M:%S format
-        date_as_since = ''.join([''.join(triple) for triple in zip(digits[::2], digits[1::2], ['', '-', '-', ' ', ':', ':', ':'])])[:-1]
+        date_as_since = ''.join([''.join(triple) for triple in
+                        zip(digits[::2], digits[1::2], ['', '-', '-', ' ', ':', ':', ':'])])[:-1]
         # Use num2date to create netCDF4 datetime objects
         if ctx.frequency in ['3hr', '6hr']:
-            # Fix on filename digits for 3hr and 6hr frequencies. 3hr (6hr) files always start at 000000 end at 2100000 (180000) whether the time axis is instaneous or not.
+            # Fix on filename digits for 3hr and 6hr frequencies. 3hr (6hr) files always start
+            # at 000000 end at 2100000 (180000) whether the time axis is instaneous or not.
+            date_index = ctx.pattern.search(filename).groups()[-2:].index(date)
             if ctx.instant:
-                date_correction = _INSTANT_TIME_CORRECTION[ctx.frequency][ctx.pattern.search(filename).groups()[-2:].index(date)][digits[-6:]]
-                dates.append(num2date(date_correction, units='days since ' + date_as_since, calendar=ctx.calendar))
+                date_correction = _INSTANT_TIME_CORRECTION[ctx.frequency][date_index][digits[-6:]]
+                dates.append(num2date(date_correction,
+                                      units='days since ' + date_as_since,
+                                      calendar=ctx.calendar))
             else:
-                date_correction = _AVERAGED_TIME_CORRECTION[ctx.frequency][ctx.pattern.search(filename).groups()[-2:].index(date)][digits[-6:]]
-                dates.append(num2date(date_correction, units='days since ' + date_as_since, calendar=ctx.calendar))
+                date_correction = _AVERAGED_TIME_CORRECTION[ctx.frequency][date_index][digits[-6:]]
+                dates.append(num2date(date_correction,
+                                      units='days since ' + date_as_since,
+                                      calendar=ctx.calendar))
         else:
-            dates.append(num2date(0.0, units='days since ' + date_as_since, calendar=ctx.calendar))
+            dates.append(num2date(0.0,
+                         units='days since ' + date_as_since,
+                         calendar=ctx.calendar))
     return dates
 
 
@@ -612,7 +724,8 @@ def untroncated_timestamp(timestamp):
     """
     Returns proper digits for yearly and monthly truncated timestamps.
     The dates from filename are filled with the 0 digit to reach 14 digits.
-    Consequently, yealry dates starts at January 1st and monthly dates starts at first day of the month.
+    Consequently, yealry dates starts at January 1st and monthly dates starts at first day
+    of the month.
 
     :param str timestamp: A date string from a filename
     :returns: The filled timestamp
@@ -641,7 +754,6 @@ def Num2date(num_axis, units, calendar):
     :rtype: *array*
 
     """
-    # num_axis is the numerical time axis incremented following units (i.e., by years, months, days, etc).
     if not units.split(' ')[0] in ['years', 'months']:
         # If units are not 'years' or 'months since', call usual netcdftime.num2date:
         return num2date(num_axis, units=units, calendar=calendar)
@@ -654,30 +766,42 @@ def Num2date(num_axis, units, calendar):
         num_axis_mod = np.atleast_1d(np.array(num_axis))
         if units.split(' ')[0] == 'years':
             # If units are 'years since'
-            # Define the number of maximum and minimum years to build a date axis covering the whole 'num_axis' period
+            # Define the number of maximum and minimum years to build a date axis covering
+            # the whole 'num_axis' period
             max_years = np.floor(np.max(num_axis_mod)) + 1
             min_years = np.ceil(np.min(num_axis_mod)) - 1
             # Create a date axis with one year that spans the entire period by year
-            years_axis = np.array([add_year(start_date, years_to_add) for years_to_add in np.arange(min_years, max_years+2)])
+            years_axis = np.array([add_year(start_date, years_to_add)
+                                  for years_to_add in np.arange(min_years, max_years+2)])
             # Convert rebuilt years axis as 'number of days since'
-            year_axis_as_days = date2num(years_axis, units=units_as_days, calendar=calendar)
+            cdftime = utime(units_as_days, calendar=calendar)
+            years_axis_as_days = cdftime.date2num(years_axis)
             # Index of each years
             yind = np.vectorize(np.int)(np.floor(num_axis_mod))
-            # Rebuilt num_axis as 'days since' addint the number of days since referenced time with an half-increment (num_axis_mod - yind) = 0 or 0.5
-            num_axis_mod_days = (year_axis_as_days[yind - int(min_years)] + (num_axis_mod - yind) * np.diff(year_axis_as_days)[yind - int(min_years)])
+            # Rebuilt num_axis as 'days since' addint the number of days since referenced time
+            # with an half-increment (num_axis_mod - yind) = 0 or 0.5
+            num_axis_mod_days = (years_axis_as_days[yind - int(min_years)] +
+                                 (num_axis_mod - yind) *
+                                 np.diff(years_axis_as_days)[yind - int(min_years)])
         elif units.split(' ')[0] == 'months':
             # If units are 'months since'
-            # Define the number of maximum and minimum months to build a date axis covering the whole 'num_axis' period
+            # Define the number of maximum and minimum months to build a date axis covering
+            # the whole 'num_axis' period
             max_months = np.floor(np.max(num_axis_mod)) + 1
             min_months = np.ceil(np.min(num_axis_mod)) - 1
             # Create a date axis with one month that spans the entire period by month
-            months_axis = np.array([add_month(start_date, months_to_add) for months_to_add in np.arange(min_months, max_months+12)])
+            months_axis = np.array([add_month(start_date, months_to_add)
+                                   for months_to_add in np.arange(min_months, max_months+12)])
             # Convert rebuilt months axis as 'number of days since'
-            months_axis_as_days = date2num(months_axis, units=units_as_days, calendar=calendar)
+            cdftime = utime(units_as_days, calendar=calendar)
+            months_axis_as_days = cdftime.date2num(months_axis)
             # Index of each months
             mind = np.vectorize(np.int)(np.floor(num_axis_mod))
-            # Rebuilt num_axis as 'days since' addint the number of days since referenced time with an half-increment (num_axis_mod - mind) = 0 or 0.5
-            num_axis_mod_days = (months_axis_as_days[mind - int(min_months)] + (num_axis_mod - mind) * np.diff(months_axis_as_days)[mind - int(min_months)])
+            # Rebuilt num_axis as 'days since' addint the number of days since referenced time
+            # with an half-increment (num_axis_mod - mind) = 0 or 0.5
+            num_axis_mod_days = (months_axis_as_days[mind - int(min_months)] +
+                                 (num_axis_mod - mind) *
+                                 np.diff(months_axis_as_days)[mind - int(min_months)])
         # Convert result as date axis
         return num2date(num_axis_mod_days, units=units_as_days, calendar=calendar)
 
@@ -694,7 +818,7 @@ def Date2num(date_axis, units, calendar):
     :rtype: *array*
 
     """
-    # date_axis is the date time axis incremented following units (i.e., by years, months, days, etc).
+    # date_axis is the date time axis incremented following units (i.e., by years, months, etc).
     if not units.split(' ')[0] in ['years', 'months']:
         # If units are not 'years' or 'months since', call usual netcdftime.date2num:
         return date2num(date_axis, units=units, calendar=calendar)
@@ -709,30 +833,40 @@ def Date2num(date_axis, units, calendar):
         years = np.array([date.year for date in np.atleast_1d(np.array(date_axis))])
         if units.split(' ')[0] == 'years':
             # If units are 'years since'
-            # Define the number of maximum and minimum years to build a date axis covering the whole 'num_axis' period
+            # Define the number of maximum and minimum years to build a date axis covering
+            # the whole 'num_axis' period
             max_years = np.max(years - start_date.year) + 1
             min_years = np.min(years - start_date.year) - 1
             # Create a date axis with one year that spans the entire period by year
-            years_axis = np.array([add_year(start_date, yid) for yid in np.arange(min_years, max_years+2)])
+            years_axis = np.array([add_year(start_date, yid)
+                                  for yid in np.arange(min_years, max_years+2)])
             # Convert years axis as number of days since time reference
-            years_axis_as_days = date2num(years_axis, units=units_as_days, calendar=calendar)
+            cdftime = utime(units_as_days, calendar=calendar)
+            years_axis_as_days = cdftime.date2num(years_axis)
             # Find closest index for years_axis_as_days in days_axis
             closest_index = np.searchsorted(years_axis_as_days, days_axis)
             # ???
-            return min_years + closest_index + (days_axis - years_axis_as_days[closest_index]) / np.diff(years_axis_as_days)[closest_index]
+            NUM = days_axis - years_axis_as_days[closest_index]
+            DEN = np.diff(years_axis_as_days)[closest_index]
+            return min_years + closest_index + NUM / DEN
         elif units.split(' ')[0] == 'months':
             # If units are 'months since'
-            # Define the number of maximum and minimum months to build a date axis covering the whole 'num_axis' period
+            # Define the number of maximum and minimum months to build a date axis covering
+            # the whole 'num_axis' period
             max_months = np.max(12 * (years - start_date.year)) + 1
             min_months = np.min(12 * (years - start_date.year)) - 1
             # Create a date axis with one month that spans the entire period by month
-            months_axis = np.array([add_month(start_date, mid) for mid in np.arange(min_months, max_months+12)])
+            months_axis = np.array([add_month(start_date, mid)
+                                   for mid in np.arange(min_months, max_months+12)])
             # Convert months axis as number of days since time reference
-            months_axis_as_days = date2num(months_axis, units=units_as_days, calendar=calendar)
+            cdftime = utime(units_as_days, calendar=calendar)
+            months_axis_as_days = cdftime.date2num(months_axis)
             # Find closest index for months_axis_as_days in days_axis
             closest_index = np.searchsorted(months_axis_as_days, days_axis)
             # ???
-            return min_months + closest_index + (days_axis - months_axis_as_days[closest_index]) / np.diff(months_axis_as_days)[closest_index]
+            NUM = days_axis - months_axis_as_days[closest_index]
+            DEN = np.diff(months_axis_as_days)[closest_index]
+            return min_months + closest_index + NUM / DEN
 
 
 def add_month(date, months_to_add):
@@ -745,11 +879,17 @@ def add_month(date, months_to_add):
     :rtype: *datetime*
 
     """
-    date_next = phony_datetime(year=date.year, month=date.month, day=date.day, hour=date.hour, minute=date.minute, second=date.second)
-    years_to_add = int((date.month+months_to_add - np.mod(date.month+months_to_add - 1, 12) - 1) / 12)
+    years_to_add = int((date.month+months_to_add - np.mod(date.month+months_to_add - 1, 12) - 1)
+                       / 12)
     new_month = int(np.mod(date.month+months_to_add - 1, 12)) + 1
-    date_next.year += years_to_add
-    date_next.month = new_month
+    new_year = date.year + years_to_add
+    date_next = phony_datetime(year=new_year,
+                               month=new_month,
+                               day=date.day,
+                               hour=date.hour,
+                               minute=date.minute,
+                               second=date.second)
+
     return date_next
 
 
@@ -763,21 +903,28 @@ def add_year(date, years_to_add):
     :rtype: *datetime*
 
     """
-    date_next = phony_datetime(year=date.year, month=date.month, day=date.day, hour=date.hour, minute=date.minute, second=date.second)
-    date_next.year += years_to_add
+    new_year = date.year + years_to_add
+    date_next = phony_datetime(year=new_year,
+                               month=date.month,
+                               day=date.day,
+                               hour=date.hour,
+                               minute=date.minute,
+                               second=date.second)
     return date_next
 
 
 def is_instant_time_axis(ctx):
     """
-    Deduces from MIP frequency, variable and realm, if the file requires an instantaneous time axis.
+    Deduces from MIP frequency, variable and realm, if the file requires an instantaneous
+    time axis.
 
     :param dict ctx: The processing context (as a :func:`ProcessingContext` class instance)
     :returns: True if the file requires an instantaneous time axis
     :rtype: *boolean*
 
     """
-    need_instant_time = eval(ctx.cfg.get(ctx.project, 'need_instant_time'))
+    need_instant_time = eval(ctx.cfg.get(ctx.project,
+                                         'need_instant_time'))
     return (ctx.variable, ctx.frequency, ctx.realm) in need_instant_time
 
 
@@ -808,7 +955,12 @@ def date_print(date):
     :rtype: *str*
 
     """
-    return '{0:04d}-{1:02d}-{2:02d} {3:02d}:{4:02d}:{5:02d}'.format(date.year, date.month, date.day, date.hour, date.minute, date.second)
+    return '{0:04d}-{1:02d}-{2:02d} {3:02d}:{4:02d}:{5:02d}'.format(date.year,
+                                                                    date.month,
+                                                                    date.day,
+                                                                    date.hour,
+                                                                    date.minute,
+                                                                    date.second)
 
 
 def rebuild_time_axis(start, length, inc, ctx):
@@ -823,14 +975,20 @@ def rebuild_time_axis(start, length, inc, ctx):
     :rtype: *float array*
 
     """
-    date_axis, last = rebuild_date_axis(start, length, inc, ctx)
-    axis = Date2num(date_axis, units=ctx.tunits, calendar=ctx.calendar)
+    date_axis, last = rebuild_date_axis(start,
+                                        length,
+                                        inc,
+                                        ctx)
+    axis = Date2num(date_axis,
+                    units=ctx.tunits,
+                    calendar=ctx.calendar)
     return axis, last
 
 
 def rebuild_date_axis(start, length, inc, ctx):
     """
-    Rebuilds date axis from numerical time axis, depending on MIP frequency, calendar and instant status.
+    Rebuilds date axis from numerical time axis, depending on MIP frequency, calendar and
+    instant status.
 
     :param float date: The numerical date to start (from ``netCDF4.date2num`` or :func:`Date2num`)
     :param int length: The time axis length (i.e., the timesteps number)
@@ -841,14 +999,22 @@ def rebuild_date_axis(start, length, inc, ctx):
     :rtype: *datetime array*
 
     """
-    num_axis = np.arange(start=start, stop=start + length * inc, step=inc)
+    num_axis = np.arange(start=start,
+                         stop=start + length * inc,
+                         step=inc)
     if ctx.funits.split(' ')[0] in ['years', 'months']:
-        last = Num2date(num_axis[-1], units=ctx.funits, calendar=ctx.calendar)[0]
+        last = Num2date(num_axis[-1],
+                        units=ctx.funits,
+                        calendar=ctx.calendar)[0]
     else:
-        last = Num2date(num_axis[-1], units=ctx.funits, calendar=ctx.calendar)
+        last = Num2date(num_axis[-1],
+                        units=ctx.funits,
+                        calendar=ctx.calendar)
     if not ctx.instant:
         num_axis += 0.5 * inc
-    date_axis = Num2date(num_axis, units=ctx.funits, calendar=ctx.calendar)
+    date_axis = Num2date(num_axis,
+                         units=ctx.funits,
+                         calendar=ctx.calendar)
     return date_axis, last
 
 
@@ -881,7 +1047,8 @@ def time_checker(right_axis, test_axis):
 
 def rebuild_time_bnds(start, length, inc, ctx):
     """
-    Rebuilds time boundaries from the start date, depending on MIP frequency, calendar and instant status.
+    Rebuilds time boundaries from the start date, depending on MIP frequency, calendar and
+    instant status.
 
     :param float date: The numerical date to start (from ``netCDF4.date2num`` or :func:`Date2num`)
     :param int length: The time axis length (i.e., the timesteps number)
@@ -892,10 +1059,18 @@ def rebuild_time_bnds(start, length, inc, ctx):
     :rtype: *[n, 2] array*
 
     """
-    num_axis_bnds = np.column_stack(((np.arange(start=start, stop=start + length * inc, step=inc)),
-                                     (np.arange(start=start, stop=start + (length+1) * inc, step=inc)[1:])))
-    date_axis_bnds = Num2date(num_axis_bnds, units=ctx.funits, calendar=ctx.calendar)
-    axis_bnds = Date2num(date_axis_bnds, units=ctx.tunits, calendar=ctx.calendar)
+    num_axis_bnds = np.column_stack(((np.arange(start=start,
+                                                stop=start + length * inc,
+                                                step=inc)),
+                                     (np.arange(start=start,
+                                                stop=start + (length+1) * inc,
+                                                step=inc)[1:])))
+    date_axis_bnds = Num2date(num_axis_bnds,
+                              units=ctx.funits,
+                              calendar=ctx.calendar)
+    axis_bnds = Date2num(date_axis_bnds,
+                         units=ctx.tunits,
+                         calendar=ctx.calendar)
     return axis_bnds
 
 
@@ -903,7 +1078,8 @@ def last_date_checker(last, end):
     """
     Checks if last and end date are the same.
 
-    :param float last: The last timesteps of the theoretical time axis (from :func:`rebuild_time_axis`)
+    :param float last: The last timesteps of the theoretical time axis \
+    (from :func:`rebuild_time_axis`)
     :param float end: The numerical date to end (from ``netCDF4.date2num`` or :func:`Date2num`)
     :returns: True if both dates are exactly the same
     :rtype: *boolean*
@@ -921,11 +1097,11 @@ def yield_inputs(ctx):
     :rtype: *iter*
 
     """
-    for file in sorted(os.listdir(ctx.directory)):
-        if not re.match(ctx.pattern, file):
-            logging.warning('{0} has invalid filename and was skipped'.format(file))
+    for filename in sorted(os.listdir(ctx.directory)):
+        if not re.match(ctx.pattern, filename):
+            logging.warning('{0} has invalid filename and was skipped'.format(filename))
             continue
-        yield file, ctx
+        yield filename, ctx
 
 
 def wrapper(inputs):
@@ -961,9 +1137,11 @@ def run(job=None):
         logging.warning('Skipped "fx/fixed" frequency because no time axis')
     else:
         logging.info('Time diagnostic started for {0}'.format(ctx.directory))
-        # Set driving time properties (calendar, frequency and time units) from first file in directory
+        # Set driving time properties (calendar, frequency and time units)
+        # from first file in directory
         time_init(ctx)
-        logging.info('Files to process:'.ljust(25)+'{0}'.format(len(glob('{0}/*.nc'.format(ctx.directory)))))
+        nfiles = len(glob('{0}/*.nc'.format(ctx.directory)))
+        logging.info('Files to process:'.ljust(25)+'{0}'.format(nfiles))
         # Process
         pool = ThreadPool(int(ctx.cfg.defaults()['threads_number']))
         outputs = pool.imap(wrapper, yield_inputs(ctx))
@@ -982,9 +1160,13 @@ def run(job=None):
             logging.info('-> New checksum:'.ljust(25)+'{0}'.format(output.checksum))
             if ctx.verbose:
                 logging.info('-> Time axis:')
-                logging.info('{0}'.format(fill(' | '.join(map(str, output.time.tolist())), width=100)))
+                logging.info('{0}'.format(fill(' | '.join(map(str,
+                                                              output.time.tolist())),
+                                               width=100)))
                 logging.info('-> Theoretical axis:')
-                logging.info('{0}'.format(fill(' | '.join(map(str, output.axis.tolist())), width=100)))
+                logging.info('{0}'.format(fill(' | '.join(map(str,
+                                                              output.axis.tolist())),
+                                               width=100)))
             # Return diagnostic to SYNDA using job dictionnary
             job['files'][output.file] = {}
             job['files'][output.file]['calendar'] = output.calendar
@@ -999,7 +1181,8 @@ def run(job=None):
         # Close tread pool
         pool.close()
         pool.join()
-        logging.info('Time diagnostic completed ({0} files scanned)'.format(time_axis_processing.called))
+        logging.info('Time diagnostic completed '
+                     '({0} files scanned)'.format(time_axis_processing.called))
         return job
 
 

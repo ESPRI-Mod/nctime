@@ -3,7 +3,7 @@
 Installation
 ============
 
-Usual PIP installation 
+Usual PIP installation
 **********************
 
 .. code-block:: bash
@@ -71,8 +71,8 @@ or download and intall the sources from PyPi for numpy<https://pypi.python.org/p
    wget https://pypi.python.org/packages/source/n/numpy/numpy-1.9.2.tar.gz#md5=a1ed53432dbcd256398898d35bc8e645
    cd numpy-1.9.2/
    python setup.py install
-   wget https://pypi.python.org/packages/source/n/netCDF4/netCDF4-1.1.9.tar.gz#md5=4ee7399e547f8b906e89da5529fa5ef4
-   cd netCDF4-1.1.9/
+   wget https://pypi.python.org/packages/source/n/netCDF4/netCDF4-1.2.1.tar.gz#md5=9d9a7015ee98ec6766adc811d95b82c3
+   cd netCDF4-1.2.1/
    python setup.py install
 
 .. warning:: To support some corrections, `NCO operators <http://nco.sourceforge.net/#Binaries>`_ are required.
