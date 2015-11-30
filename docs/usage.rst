@@ -58,7 +58,7 @@ Here is the command-line help:
      --force                                 Forces time axis writing overpassing checking step.
                                              THIS ACTION DEFINITELY MODIFY INPUT FILES!
 
-     --logdir [$PWD]                         Logfile directory. If not, standard output is used.
+     --log [$PWD]                            Logfile directory. If not, standard output is used.
 
      -h, --help                              Show this help message and exit.
 

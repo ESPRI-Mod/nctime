@@ -328,7 +328,7 @@ def get_args(job):
                                  '--project', job['args']['project'],
                                  '-i', '/prodigfs/esg/ArchiveTools/sdp/conf/timeaxis.ini',
                                  '--write',
-                                 '--logdir', 'synda_logger',
+                                 '--log', 'synda_logger',
                                  '-v'])
 
 
