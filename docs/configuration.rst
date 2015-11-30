@@ -10,13 +10,13 @@ The only conguration you have to do at least is to define the threads number und
    [DEFAULT]
    threads_number = 4
 
-The configuration file is included in the package and is in the default installation directory of your Python packages (see ``time_axis -h``). Feel free to copy it and made your own using the ``-c/--config`` option (see :ref:`usage`).
+The configuration file is included in the package and is in the default installation directory of your Python packages (see ``time_axis -h``). Feel free to copy it and made your own using the ``-i`` option (see :ref:`usage`).
 
 You can also define the checksum type you want in this section. MD5 (default) or SHA256 checksums are supported.
 
 .. code-block:: ini
 
-   checksum_type = MD5
+   checksum_type = SHA256
 
 
 Add a new project
@@ -30,7 +30,7 @@ Edit the ``config.ini`` as follows:
 
    [your_project]
 
-.. warning:: The ``-p/--project`` option directly refers to the name of "project" sections.
+.. warning:: The ``--project`` option directly refers to the name of "project" sections.
 
 2. Define the *Data Reference Syntax* (DRS) tree of your project on your filesystem. The ``directory_format`` is requiered for auto-detection and uses a regular expression to match the DRS facets of the directory to scan.
 
@@ -53,3 +53,9 @@ Edit the ``config.ini`` as follows:
 .. code-block:: ini
 
    need_instant_time = [(tuple1), (tuple2), ...]
+
+5. Define the default time units if fixed by the DRS of your project.
+
+.. code-block:: ini
+
+    time_units_default = days since 1949-12-01 00:00:00

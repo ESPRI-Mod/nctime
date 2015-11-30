@@ -25,7 +25,7 @@ from textwrap import fill
 from glob import glob
 
 # Program version
-__version__ = '{0} {1}-{2}-{3}'.format('v3.2', '2015', '10', '05')
+__version__ = 'v{0} {1}'.format('3.3', datetime(year=2015, month=11, day=30).strftime("%Y-%d-%m"))
 
 # Filaname date correction for 3hr and 6hr files
 _HALF_HOUR = 0.125/6.0
@@ -106,7 +106,7 @@ class ProcessingContext(object):
 
     """
     def __init__(self, args):
-        init_logging(args.logdir)
+        init_logging(args.log)
         self.directory = check_directory(args.directory)
         self.write = args.write
         self.force = args.force
@@ -136,7 +136,8 @@ class MultilineFormatter(HelpFormatter):
 
     """
     def __init__(self, prog):
-        # Overload the HelpFormatter class to increase the help text position and the total text width.
+        # Overload the HelpFormatter class to increase the help text position
+        # and the total text width.
         super(MultilineFormatter, self).__init__(prog, max_help_position=60, width=100)
 
     def _fill_text(self, text, width, indent):
@@ -246,7 +247,7 @@ def get_args(job):
 
                     Note that:|n
                     (i) "time_axis" is based on uncorrupted filename period dates and
-                    properly-defined times units, time calendar and frequency NetCDF attributes.
+                    properly-defined times units, time calendar and frequency NetCDF attributes.|n
                     (ii) To rebuild a proper time axis, the dates from filename are expected to
                     set the first time boundary and not the middle of the time interval.
                     This is always the case for the instantaneous axis or frequencies greater
@@ -300,7 +301,7 @@ def get_args(job):
         help="""Forces time axis writing overpassing checking step.|n
                 THIS ACTION DEFINITELY MODIFY INPUT FILES!""")
     parser.add_argument(
-        '--logdir',
+        '--log',
         metavar='$PWD',
         type=str,
         nargs='?',
@@ -349,7 +350,7 @@ def init_logging(logdir):
         logfile = '{0}-{1}-{2}.log'.format(name,
                                            datetime.now().strftime("%Y%m%d-%H%M%S"),
                                            os.getpid())
-        if not os.path.exists(logdir):
+        if not os.path.isdir(logdir):
             os.mkdir(logdir)
         logging.basicConfig(filename=os.path.join(logdir, logfile),
                             level=logging.DEBUG,
@@ -464,9 +465,9 @@ def control_time_units(tunits, ctx):
     try:
         time_units_default = eval(ctx.cfg.get(ctx.project, 'time_units_default'))
         if ' '.join(units) != time_units_default:
-            logging.warning('Invalid time units. \
-                            Replace "{0}" by "{1}"'.format(' '.join(units),
-                                                           time_units_default))
+            logging.warning('Invalid time units. '
+                            'Replace "{0}" by "{1}"'.format(' '.join(units),
+                                                            time_units_default))
         return time_units_default
     except:
         return ' '.join(units)
@@ -559,8 +560,8 @@ def time_axis_processing(inputs):
     if not last_date_checker(date_print(last_hp), date_print(end_date)) and \
        not last_date_checker(date_print(last_lp), date_print(end_date)):
         status.control.append('003')
-        logging.warning('ERROO3 - {0} - The date from last theoretical time step differs from \
-                        the end date from filename'.format(filename))
+        logging.warning('ERROO3 - {0} - The date from last theoretical time step differs from '
+                        'the end date from filename'.format(filename))
         status.axis = axis_lp
         status.last = date_print(last_lp)
         return status
@@ -574,8 +575,8 @@ def time_axis_processing(inputs):
     # Check inconsistency between instant time and time boundaries
     if ctx.instant and ('time_bnds' in data.variables.keys()):
         status.control.append('004')
-        logging.warning('ERROO4 - {0} - An instantaneous time axis should not embeded time \
-                        boundaries'.format(filename))
+        logging.warning('ERROO4 - {0} - An instantaneous time axis should not embeded time '
+                        'boundaries'.format(filename))
         # Delete time bounds and bounds attribute from file if write of force mode
         if ctx.write or ctx.force:
             if 'bounds' in data.variables['time'].ncattrs():
@@ -586,8 +587,8 @@ def time_axis_processing(inputs):
     # Control consistency between averaged time and time boundaries
     if not ctx.instant and ('time_bnds' not in data.variables.keys()):
         status.control.append('005')
-        logging.warning('ERROO5 - {0} - An averaged time axis should embeded time \
-                        boundaries'.format(filename))
+        logging.warning('ERROO5 - {0} - An averaged time axis should embeded time '
+                        'boundaries'.format(filename))
         status.axis = axis_lp
         status.last = date_print(last_lp)
         return status
@@ -597,8 +598,8 @@ def time_axis_processing(inputs):
         status.control.append('000')
     else:
         status.control.append('001')
-        logging.warning('ERROO1 - {0} - Mistaken time axis over one or several time \
-                        steps'.format(filename))
+        logging.warning('ERROO1 - {0} - Mistaken time axis over one or several time '
+                        'steps'.format(filename))
     # Rebuild, read and check time boundaries squareness if needed
     if 'time_bnds' in data.variables.keys():
         axis_bnds = rebuild_time_bnds(start, length, inc, ctx)
@@ -615,8 +616,8 @@ def time_axis_processing(inputs):
     # Control consistency between time units
     if ctx.tunits != status.units:
         status.control.append('002')
-        logging.warning('ERROO2 - {0} - Time units must be unchanged for \
-                        the same dataset.'.format(filename))
+        logging.warning('ERROO2 - {0} - Time units must be unchanged for '
+                        'the same dataset.'.format(filename))
     # Close file
     data.close()
     # Compute checksum at the end of all modifications and after closing file
@@ -636,7 +637,7 @@ def checksum(ctx, filename):
 
     """
     assert (ctx.checksum in ['SHA256', 'MD5']), 'Invalid checksum type: {0} instead of \
-                                                 MD5 or SHA256'.format(ctx.checksum)
+    MD5 or SHA256'.format(ctx.checksum)
     ffp = '{0}/{1}'.format(ctx.directory, filename)
     try:
         if ctx.checksum == 'SHA256':
@@ -753,7 +754,6 @@ def Num2date(num_axis, units, calendar):
     :rtype: *array*
 
     """
-    # num_axis is the numerical time axis incremented following units (i.e., by years, months, etc).
     if not units.split(' ')[0] in ['years', 'months']:
         # If units are not 'years' or 'months since', call usual netcdftime.num2date:
         return num2date(num_axis, units=units, calendar=calendar)
@@ -1047,7 +1047,8 @@ def time_checker(right_axis, test_axis):
 
 def rebuild_time_bnds(start, length, inc, ctx):
     """
-    Rebuilds time boundaries from the start date, depending on MIP frequency, calendar and instant status.
+    Rebuilds time boundaries from the start date, depending on MIP frequency, calendar and
+    instant status.
 
     :param float date: The numerical date to start (from ``netCDF4.date2num`` or :func:`Date2num`)
     :param int length: The time axis length (i.e., the timesteps number)
@@ -1077,7 +1078,8 @@ def last_date_checker(last, end):
     """
     Checks if last and end date are the same.
 
-    :param float last: The last timesteps of the theoretical time axis (from :func:`rebuild_time_axis`)
+    :param float last: The last timesteps of the theoretical time axis \
+    (from :func:`rebuild_time_axis`)
     :param float end: The numerical date to end (from ``netCDF4.date2num`` or :func:`Date2num`)
     :returns: True if both dates are exactly the same
     :rtype: *boolean*
@@ -1135,9 +1137,11 @@ def run(job=None):
         logging.warning('Skipped "fx/fixed" frequency because no time axis')
     else:
         logging.info('Time diagnostic started for {0}'.format(ctx.directory))
-        # Set driving time properties (calendar, frequency and time units) from first file in directory
+        # Set driving time properties (calendar, frequency and time units)
+        # from first file in directory
         time_init(ctx)
-        logging.info('Files to process:'.ljust(25)+'{0}'.format(len(glob('{0}/*.nc'.format(ctx.directory)))))
+        nfiles = len(glob('{0}/*.nc'.format(ctx.directory)))
+        logging.info('Files to process:'.ljust(25)+'{0}'.format(nfiles))
         # Process
         pool = ThreadPool(int(ctx.cfg.defaults()['threads_number']))
         outputs = pool.imap(wrapper, yield_inputs(ctx))
@@ -1156,9 +1160,13 @@ def run(job=None):
             logging.info('-> New checksum:'.ljust(25)+'{0}'.format(output.checksum))
             if ctx.verbose:
                 logging.info('-> Time axis:')
-                logging.info('{0}'.format(fill(' | '.join(map(str, output.time.tolist())), width=100)))
+                logging.info('{0}'.format(fill(' | '.join(map(str,
+                                                              output.time.tolist())),
+                                               width=100)))
                 logging.info('-> Theoretical axis:')
-                logging.info('{0}'.format(fill(' | '.join(map(str, output.axis.tolist())), width=100)))
+                logging.info('{0}'.format(fill(' | '.join(map(str,
+                                                              output.axis.tolist())),
+                                               width=100)))
             # Return diagnostic to SYNDA using job dictionnary
             job['files'][output.file] = {}
             job['files'][output.file]['calendar'] = output.calendar
@@ -1173,7 +1181,8 @@ def run(job=None):
         # Close tread pool
         pool.close()
         pool.join()
-        logging.info('Time diagnostic completed ({0} files scanned)'.format(time_axis_processing.called))
+        logging.info('Time diagnostic completed '
+                     '({0} files scanned)'.format(time_axis_processing.called))
         return job
 
 
