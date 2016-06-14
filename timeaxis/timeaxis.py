@@ -27,7 +27,7 @@ from textwrap import fill
 from glob import glob
 
 # Program version
-__version__ = 'v{0} {1}'.format('3.3', datetime(year=2015, month=11, day=30).strftime("%Y-%d-%m"))
+__version__ = 'v{0} {1}'.format('3.4', datetime(year=2015, month=11, day=30).strftime("%Y-%d-%m"))
 
 # Filaname date correction for 3hr and 6hr files
 _HALF_HOUR = 0.125/6.0
@@ -1185,10 +1185,11 @@ def run(job=None):
         pool.join()
         logging.info('Time diagnostic completed '
                      '({0} files scanned)'.format(time_axis_processing.called))
-        #return job
-        sys.exit()
+        return job
 
 
 # Main entry point for stand-alone call.
 if __name__ == "__main__":
     run()
+    sys.exit(0)
+
