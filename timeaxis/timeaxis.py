@@ -225,12 +225,10 @@ class AxisStatus(object):
         self.time = None
 
 
-def get_args(job):
+def get_args():
     """
     Returns parsed command-line arguments. See ``time_axis -h`` for full description.
-    A ``job`` dictionnary can be used as developper's entry point to overload the parser.
 
-    :param dict job: Optionnal dictionnary instead of command-line arguments.
     :returns: The corresponding ``argparse`` Namespace
 
     """
@@ -323,15 +321,7 @@ def get_args(job):
         action='version',
         version='%(prog)s ({0})'.format(__version__),
         help="""Program version.""")
-    if job is None:
-        return parser.parse_args()
-    else:
-        return parser.parse_args([job['args']['variable_path'],
-                                 '--project', job['args']['project'],
-                                 '-i', '/opt/sdp/conf/time_axis.ini',
-                                 '--write',
-                                 '--log', 'synda_logger',
-                                 '-v'])
+    return parser.parse_args()
 
 
 def init_logging(logdir):
@@ -1122,7 +1112,7 @@ def wrapper(inputs):
         logging.exception('A thread-process fails:')
 
 
-def run(job=None):
+def run():
     """
     Main process that\:
      * Instanciates processing context,
@@ -1130,11 +1120,9 @@ def run(job=None):
      * Instanciates threads pools,
      * Prints or logs the time axis diagnostics.
 
-    :param dict job: An optionnal dictionnary to supply instead of classical command-line use.
-
     """
     # Instanciate processing context from command-line arguments or SYNDA job dictionnary
-    ctx = ProcessingContext(get_args(job))
+    ctx = ProcessingContext(get_args())
     if ('/fx/' or '/fixed/') in ctx.directory:
         logging.warning('Skipped "fx/fixed" frequency because no time axis')
     else:
@@ -1148,8 +1136,7 @@ def run(job=None):
         pool = ThreadPool(int(ctx.cfg.defaults()['threads_number']))
         outputs = pool.imap(wrapper, yield_inputs(ctx))
         # Returns diagnostic for each file
-        if not job:
-            job = {}
+        job = dict()
         job['files'] = {}
         for output in outputs:
             logging.info('==> Filename:'.ljust(25)+'{0}'.format(output.file))
@@ -1185,11 +1172,8 @@ def run(job=None):
         pool.join()
         logging.info('Time diagnostic completed '
                      '({0} files scanned)'.format(time_axis_processing.called))
-        return job
 
 
 # Main entry point for stand-alone call.
 if __name__ == "__main__":
     run()
-    sys.exit(0)
-
