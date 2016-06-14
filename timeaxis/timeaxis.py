@@ -7,6 +7,7 @@
 
 # Module imports
 import re
+import sys
 import os
 import argparse
 import logging
@@ -16,6 +17,7 @@ from uuid import uuid4
 import numpy as np
 from argparse import HelpFormatter
 from datetime import datetime
+import nco as NCO
 from functools import wraps
 from netCDF4 import Dataset, date2num, num2date
 from multiprocessing.dummy import Pool as ThreadPool
@@ -326,7 +328,7 @@ def get_args(job):
     else:
         return parser.parse_args([job['args']['variable_path'],
                                  '--project', job['args']['project'],
-                                 '-i', '/prodigfs/esg/ArchiveTools/sdp/conf/timeaxis.ini',
+                                 '-i', '/opt/sdp/conf/time_axis.ini',
                                  '--write',
                                  '--log', 'synda_logger',
                                  '-v'])
@@ -665,10 +667,10 @@ def nc_var_delete(ctx, filename, variable):
     # Generate unique filename
     tmp = '{0}{1}'.format(str(uuid4()), '.nc')
     try:
-        os.popen("ncks -x -O -v {3} {0}/{1} {0}/{2}".format(ctx.directory,
-                                                            filename,
-                                                            tmp,
-                                                            variable), 'r')
+        nco = NCO.Nco()
+        nco.ncks(input='{0}/{1}'.format(ctx.directory, filename),
+                 output='{0}/{1}'.format(ctx.directory, tmp),
+                 options='-x -O -v {0}'.format(variable))
         os.popen("cat {0}/{2} > {0}/{1}".format(ctx.directory,
                                                 filename,
                                                 tmp,
@@ -1183,7 +1185,8 @@ def run(job=None):
         pool.join()
         logging.info('Time diagnostic completed '
                      '({0} files scanned)'.format(time_axis_processing.called))
-        return job
+        #return job
+        sys.exit()
 
 
 # Main entry point for stand-alone call.
