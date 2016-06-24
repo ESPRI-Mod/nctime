@@ -440,8 +440,7 @@ def process(inputs):
                                                                 inc=__INC__[init.frequency],
                                                                 input_units=init.funits,
                                                                 output_units=init.tunits,
-                                                                calendar=init.calendar,
-                                                                is_instant=init.is_instant)
+                                                                calendar=init.calendar)
         if not np.array_equal(handler.time_bounds_rebuilt, handler.time_bounds):
             handler.status.append('006')
             logging.error('{0} - 006 - Mistaken time bounds over one or several time steps'.format(filename))
@@ -501,7 +500,6 @@ def wrapper(inputs):
         return process(inputs)
     except:
         logging.exception('A thread-process fails:')
-
 
 def run():
     """

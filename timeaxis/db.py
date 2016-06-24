@@ -5,7 +5,6 @@
 
 """
 import sqlite3
-from datetime import datetime
 
 # Database connexion timeout (in sec)
 __TIMEOUT__ = 120
@@ -26,6 +25,11 @@ def connect(db_file):
     By default, sqlite is in autocommit mode but the sqlite3 python module is not in autocommit mode by default. We
     don't want autocommit mode, so we leave it at its default, which will result in a plain "BEGIN" statement.
     If you want autocommit mode, then set isolation_level to None.
+
+    :param str db_file: The destination file database to connect
+    :returns: The database connector
+    :rtype: *sqlite3.connect*
+
     """
     connexion = sqlite3.connect(db_file, __TIMEOUT__)
     # By name columns indexing
@@ -37,8 +41,7 @@ def close(connexion):
     """
     Close database connexion.
 
-    :param connexion:
-    :return:
+    :param sqlite3.connect connexion: A ``sqlite3.connect`` instance
 
     """
     if is_connected(connexion):
@@ -49,8 +52,9 @@ def is_connected(connexion):
     """
     Test database connexion.
 
-    :param connexion:
-    :return:
+    :param sqlite3.connect connexion: A ``sqlite3.connect`` instance
+    :returns: True if connexion is already established with the database
+    :rtype: *boolean*
 
     """
     if connexion is None:
@@ -63,7 +67,7 @@ def create(db_file):
     """
     Creates the destination database.
 
-    :return:
+    :param str db_file: The destination file database to create
 
     """
     # Open database connection
@@ -105,8 +109,8 @@ def insert(db_file, data):
     """
     Insert time diagnostic to database.
 
-    :param connexion:
-    :return:
+    :param str db_file: The destination file database
+    :param dict data: The serialized data to persist into the database
 
     """
     # Open database connection

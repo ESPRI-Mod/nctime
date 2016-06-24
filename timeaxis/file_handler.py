@@ -47,7 +47,6 @@ __INSTANT_TIME_CORRECTION__ = {'3hr': {0: {'000000': __HALF_HOUR__*6,
                                            '230000': __HALF_HOUR__*2,
                                            '000000': 0.0}}}
 
-
 class File(object):
     """
     Handler providing methods to deal with file processing.
@@ -205,7 +204,8 @@ class File(object):
         To overwrite the input file, the source file is dump using the ``cat`` Shell command-line
         to avoid Python memory limit.
 
-        :param str variable: The variable to delete
+        :param str attribute: The attribute to delete
+        :param str variable: The variable that has the attribute
         :raises Error: If the deletion failed
 
         """
@@ -226,7 +226,12 @@ class File(object):
         """
         Rebuilds time axis from date axis, depending on MIP frequency, calendar and instant status.
 
-        :param dict ctx: The processing context (as a :func:`ProcessingContext` class instance)
+        :param float start: The numerical date to start (from ``netCDF4.date2num`` or :func:`_date2num`)
+        :param int inc: The time incrementation
+        :param input_units: The time units deduced from the frequency
+        :param output_units: The time units from the file
+        :param calendar: The time calendar fro NetCDF attributes
+        :param boolean is_instant: True if instantaneous time axis
         :returns: The corresponding theoretical time axis
         :rtype: *float array*
 
@@ -242,15 +247,16 @@ class File(object):
         date_axis = _num2date(num_axis, units=input_units, calendar=calendar)
         return _date2num(date_axis, units=output_units, calendar=calendar)
 
-    def build_time_bounds(self, start, inc, input_units, output_units, calendar, is_instant=False):
+    def build_time_bounds(self, start, inc, input_units, output_units, calendar):
         """
         Rebuilds time boundaries from the start date, depending on MIP frequency, calendar and
         instant status.
 
-        :param float date: The numerical date to start (from ``netCDF4.date2num`` or :func:`Date2num`)
-        :param int length: The time axis length (i.e., the timesteps number)
-        :param int inc: The time incrementation (from :func:`time_inc`)
-        :param dict ctx: The processing context (as a :func:`ProcessingContext` class instance).
+        :param float start: The numerical date to start (from ``netCDF4.date2num`` or :func:`_date2num`)
+        :param int inc: The time incrementation
+        :param input_units: The time units deduced from the frequency
+        :param output_units: The time units from the file
+        :param calendar: The time calendar fro NetCDF attributes
 
         :returns: The corresponding theoretical time boundaries
         :rtype: *[n, 2] array*
@@ -267,20 +273,25 @@ class File(object):
 
     def nc_var_overwrite(self, variable, data):
         """
-        Rewrite axis to NetCDF file without copy.
-        :param axis:
-        :return:
+        Rewrite variable to NetCDF file without copy.
+
+        :param str variable: The variable to replace
+        :param float array data: The data array to overwrite
+
         """
         f = Dataset(self.ffp, 'r+')
         f.variables[variable][:] = data
         f.close()
 
-
     def nc_att_overwrite(self, attribute, variable, data):
         """
-        Rewrite axis to NetCDF file without copy.
-        :param axis:
-        :return:
+        Rewrite attribute to NetCDF file without copy.
+
+
+        :param str attribute: THe attribute to replace
+        :param str variable: The variable that has the attribute
+        :param str data: The string to add to overwrite
+
         """
         f = Dataset(self.ffp, 'r+')
         f.variables[variable].__dict__[attribute] = data

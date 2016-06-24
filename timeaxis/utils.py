@@ -343,4 +343,3 @@ def trunc(f, n):
     """
     slen = len('%.*f' % (n, f))
     return float(str(f)[:slen])
-
