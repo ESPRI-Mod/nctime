@@ -273,8 +273,10 @@ def get_args():
         type=str,
         nargs='?',
         const='{0}/{1}'.format(os.getcwd(), 'timeaxis.db'),
-        help="""SQLite database path to persist diagnostics. Default is <db_path> from config.ini. If no <db_path>,
-        current working directory is used. If not, time diagnostic is not saved.""")
+        help="""SQLite database path to persist diagnostics. Default is|n
+             <db_path> from config.ini. If no <db_path>, current|n
+             working directory is used. If not, time diagnostic is not|n
+             saved.""")
     parser.add_argument(
         '--log',
         metavar='$PWD',
