@@ -461,13 +461,13 @@ def process(inputs):
         logging.error('{0} - 002 - Time units must be unchanged for the same dataset.'.format(filename))
 
     # Rewrite time axis depending on checking
-    if (ctx.write or ctx.force) and {'004'}.intersection(set(handler.status)):
+    if (ctx.write or ctx.force) and set(['004']).intersection(set(handler.status)):
         # Delete time bounds and bounds attribute from file if write of force mode
         handler.nc_var_delete(variable='time_bnds')
         handler.nc_att_delete(attribute='bounds', variable='time')
 
     # Rewrite time axis depending on checking
-    if (ctx.write and {'001', '002', '006'}.intersection(set(handler.status))) or ctx.force:
+    if (ctx.write and set(['001', '002', '006']).intersection(set(handler.status))) or ctx.force:
         handler.nc_var_overwrite('time', handler.time_axis_rebuilt)
         handler.nc_att_overwrite('units', 'time', init.tunits)
         # Rewrite time boundaries if needed
@@ -475,7 +475,7 @@ def process(inputs):
             handler.nc_var_overwrite('time_bnds', handler.time_bounds_rebuilt)
 
     # Compute checksum at the end of all modifications and after closing file
-    if (ctx.write or ctx.force) and {'001', '002', '004', '006'}.intersection(set(handler.status)):
+    if (ctx.write or ctx.force) and set(['001', '002', '004', '006']).intersection(set(handler.status)):
         handler.new_checksum = handler.checksum(ctx.checksum_type)
 
     # Return file status
