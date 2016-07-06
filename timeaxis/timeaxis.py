@@ -18,7 +18,7 @@ from netCDF4 import Dataset
 from textwrap import fill
 from multiprocessing.dummy import Pool as ThreadPool
 from utils import init_logging, config_parse, check_directory, MultilineFormatter, trunc
-from file_handler import File
+from file_handler import File, _date2num, _num2date
 import db
 
 # Program version
@@ -85,6 +85,8 @@ class ProcessingContext(object):
             raise Exception('No section in configuration file corresponds to "{0}" project. \
                             Supported projects are {1}.'.format(args.project,
                                                                 cfg.sections()))
+        if self.db and cfg.has_option('DEFAULT', 'db_path'):
+            self.db = cfg.get('DEFAULT', 'db_path')
         self.checksum_type = str(cfg.defaults()['checksum_type'])
         self.threads = int(cfg.defaults()['threads_number'])
         self.pattern = re.compile(cfg.get(self.project, 'filename_format'))
@@ -224,7 +226,7 @@ def get_args():
                      and end date of filename period (e.g., wrong time axis length),|n
                     004: Corrected time axis deleting time boundaries for instant time,|n
                     005: Ignored averaged time axis without time boundaries,|n
-                    006: Corrected time bounds because wrong time steps'.|n|n
+                    006: Corrected time bounds because wrong time steps.|n|n
 
                     See full documentation on http://cmip5-time-axis.readthedocs.org/|n|n
 
@@ -267,11 +269,12 @@ def get_args():
                 THIS ACTION DEFINITELY MODIFY INPUT FILES!""")
     parser.add_argument(
         '--db',
-        metavar='$PWD/timeaxis.db',
+        metavar='<db_path>',
         type=str,
         nargs='?',
         const='{0}/{1}'.format(os.getcwd(), 'timeaxis.db'),
-        help="""SQLite database path to persist diagnostics. If not, time diagnostic is not saved.""")
+        help="""SQLite database path to persist diagnostics. Default is <db_path> from config.ini. If no <db_path>,
+        current working directory is used. If not, time diagnostic is not saved.""")
     parser.add_argument(
         '--log',
         metavar='$PWD',
@@ -414,6 +417,11 @@ def process(inputs):
         if handler.last_date != handler.end_date:
             handler.status.append('003')
             logging.error('{0} - 003 - Last time step differs from end date from filename'.format(filename))
+            if ctx.verbose:
+                axe = fill(' | '.join(map(str, handler.time_axis.tolist())), width=100)
+                logging.info('{0} - Time axis:\n {1}'.format(filename, axe))
+                axe = fill(' | '.join(map(str, handler.time_axis_rebuilt.tolist())), width=100)
+                logging.info('{0} - Theoretical axis:\n {1}'.format(filename, axe))
             return handler
 
     # Check consistency between instant time and time boundaries
