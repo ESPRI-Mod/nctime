@@ -22,7 +22,7 @@ from file_handler import File, _date2num, _num2date
 import db
 
 # Program version
-__version__ = 'v{0} {1}'.format('3.6', datetime(year=2016, month=07, day=06).strftime("%Y-%d-%m"))
+__version__ = 'v{0} {1}'.format('3.7', datetime(year=2016, month=07, day=06).strftime("%Y-%d-%m"))
 
 # Incrementation depending on MIP table
 __INC__ = {'subhr': 30, '3hr': 3, '6hr': 6, 'day': 1, 'mon': 1, 'yr': 1}
