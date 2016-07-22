@@ -237,8 +237,8 @@ def _date2num(date_axis, units, calendar):
             # If units are 'years since'
             # Define the number of maximum and minimum years to build a date axis covering
             # the whole 'num_axis' period
-            max_years = np.max(years - start_date.year) + 1
-            min_years = np.min(years - start_date.year) - 1
+            max_years = np.max(years - start_date.year + 1)
+            min_years = np.min(years - start_date.year - 1)
             # Create a date axis with one year that spans the entire period by year
             years_axis = np.array([add_year(start_date, yid)
                                   for yid in np.arange(min_years, max_years+2)])
@@ -255,18 +255,19 @@ def _date2num(date_axis, units, calendar):
             # If units are 'months since'
             # Define the number of maximum and minimum months to build a date axis covering
             # the whole 'num_axis' period
-            max_months = np.max(12 * (years - start_date.year)) + 1
-            min_months = np.min(12 * (years - start_date.year)) - 1
+            max_months = np.max(12 * (years - start_date.year + 1))
+            min_months = np.min(12 * (years - start_date.year - 1))
             # Create a date axis with one month that spans the entire period by month
             months_axis = np.array([add_month(start_date, mid)
-                                   for mid in np.arange(min_months, max_months+12)])
+                                   for mid in np.arange(min_months, max_months)])
             # Convert months axis as number of days since time reference
             cdftime = utime(units_as_days, calendar=calendar)
             months_axis_as_days = cdftime.date2num(months_axis)
             # Find closest index for months_axis_as_days in days_axis
             closest_index = np.searchsorted(months_axis_as_days, days_axis)
-            # ???
+            # Compute the difference between closest value of months axis and start date, in number of days
             num = days_axis - months_axis_as_days[closest_index]
+            # Number of days of the corresponding closest months
             den = np.diff(months_axis_as_days)[closest_index]
             return min_months + closest_index + num / den
 
