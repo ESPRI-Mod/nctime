@@ -1,2 +1,2 @@
-include timeaxis/config.ini
+include nctimeaxis/config.ini
 include README.rst

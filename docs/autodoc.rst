@@ -3,9 +3,25 @@
 Code documentation
 ==================
 
-timeaxis.py
-***********
+nctime
+******
+.. automodule:: nctime.nctime
 
-.. automodule:: timeaxis
+overlap
+-------
+.. automodule:: nctime.overlap.main
 
-.. moduleauthor:: Levavasseur, G. <glipsl@ipsl.jussieu.fr> and Laliberte, F. <frederic.laliberte@utoronto.ca>
+axis
+----
+.. automodule:: nctime.axis.main
+.. automodule:: nctime.axis.handler
+.. automodule:: nctime.axis.db
+.. automodule:: nctime.axis.exceptions
+
+utils
+*****
+.. automodule:: esgprep.utils.utils
+.. automodule:: esgprep.utils.time
+.. automodule:: esgprep.utils.exceptions
+
+.. moduleauthor:: Levavasseur Guillaume (CNRS/IPSL) <glipsl@ipsl.jussieu.fr>
