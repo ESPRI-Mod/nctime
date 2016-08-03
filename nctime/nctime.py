@@ -35,15 +35,23 @@ def get_args():
         prog='nctime',
         description="""
         NetCDF files describe all dimensions necessary to work with. In the climate community, this format is widely
-        used following the CF conventions (http://cfconventions.org/). Dimensions such as longitude, latitude and
+        used following the `CF conventions <http://cfconventions.org/>`_. Dimensions such as longitude, latitude and
         time are included in NetCDF files as vectors.|n|n
 
-        The time axis is a key dimension. Unfortunately, this axis often is mistaken in files from coupled climate
+        The time axis is a key dimension. Unfortunately, this time axis often is mistaken in files from coupled climate
         models and leads to flawed studies or unused data. Consequently, these files cannot be used or, even worse,
         produced erroneous results, due to problems in the time axis description.|n|n
 
-        "nctime" is a command-line tool allowing you to easily check if the time axis of your NetCDF file is
-        CF-MIP-compliant.|n|n
+        Moreover, to produce smaller files, the NetCDF files are splitted over the time period. Consequently, the
+        different MIP archives designs include the period dates into the filename. The scheme of chunked files in MIP
+        projects is not fixed and depends on several parameters (the institute, the model, the frequency, etc.). These
+        different schemes lead to unnecessary overlapping files with a more complex folder reading and wasting disk
+        space.|n|n
+
+        "nctime" is a Python toolbox allowing you to easily:|n
+         - Highlight chunked NetCDF files producing overlaps in a time series and delete all chunked overlapping
+         files,|n
+         - Check and rebuild a MIP-compliant time axis of your NetCDF files.|n|n
 
         Note that "nctime" is based on uncorrupted filename period dates and properly-defined times units, time
         calendar and frequency NetCDF attributes.|n|n
