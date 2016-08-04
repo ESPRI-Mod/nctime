@@ -1,11 +1,11 @@
 from setuptools import setup, find_packages
 
 setup(name='nctime',
-      version='3.8.0',
+      version='3.8.1',
       description='Diagnoses NetCDF time axis.',
       author='Levavasseur Guillaume',
       author_email='glipsl@ipsl.jussieu.fr',
-      url='https://github.com/Prodiguer/nctimeaxis',
+      url='https://github.com/Prodiguer/nctime',
       packages=find_packages(),
       include_package_data=True,
       install_requires=['netCDF4>=1.0.8', 'networkx==1.9', 'numpy>=1.8.1', 'nco>=0.0.2'],

@@ -1,5 +1,5 @@
-*********
-time_axis
-*********
+******
+nctime
+******
 
-`See documentation here <http://nctimeaxis.readthedocs.org/en/latest/>`_
+`See documentation here <http://nctime.readthedocs.io/>`_
