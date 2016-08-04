@@ -14,7 +14,7 @@
 
 import os
 import sys
-from mock import MagicMock
+from mock import Mock as MagicMock
 
 # Mock snippets to compile Sphinx documentation on a remote Python virtualenv (ReadTheDocs)
 class Mock(MagicMock):
