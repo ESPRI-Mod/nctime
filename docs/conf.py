@@ -14,8 +14,12 @@
 
 import os
 import sys
+import mock
 
-from mock import Mock as MagicMock
+# Mock snippets to compile Sphinx documentation on a remote Python virtualenv (ReadTheDocs)
+MOCK_MODULES = ['netCDF4', 'netcdftime']
+for mod_name in MOCK_MODULES:
+    sys.modules[mod_name] = mock.Mock()
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -269,14 +273,3 @@ texinfo_documents = [
 
 autodoc_member_order = 'bysource'
 autodoc_default_flags = ['members', 'private-members']
-
-
-# Mock snippets to compile Sphinx documentation on a remote Python virtualenv (ReadTheDocs)
-class Mock(MagicMock):
-    @classmethod
-    def __getattr__(cls, name):
-        return Mock()
-
-
-MOCK_MODULES = ['netCDF4', 'netcdftime']
-sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
