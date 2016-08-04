@@ -10,8 +10,8 @@ import os
 from uuid import uuid4
 
 import nco
+import netCDF4
 import numpy as np
-from netCDF4 import Dataset
 
 from exceptions import *
 from nctime.utils import time
@@ -70,7 +70,7 @@ class File(object):
         self.last_date = None
         # Get time axis length
         try:
-            f = Dataset(self.ffp, 'r')
+            f = netCDF4.Dataset(self.ffp, 'r')
         except IOError:
             raise InvalidNetCDFFile(self.ffp)
         self.length = f.variables['time'].shape[0]
@@ -241,7 +241,7 @@ class File(object):
 
         """
         try:
-            f = Dataset(self.ffp, 'r+')
+            f = netCDF4.Dataset(self.ffp, 'r+')
         except IOError:
             raise InvalidNetCDFFile(self.ffp)
         f.variables[variable][:] = data
@@ -258,7 +258,7 @@ class File(object):
 
         """
         try:
-            f = Dataset(self.ffp, 'r+')
+            f = netCDF4.Dataset(self.ffp, 'r+')
         except IOError:
             raise InvalidNetCDFFile(self.ffp)
         f.variables[variable].__dict__[attribute] = data
