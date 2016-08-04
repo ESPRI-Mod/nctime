@@ -14,7 +14,7 @@
 
 import os
 import sys
-from unittest.mock import MagicMock
+from mock import MagicMock
 
 # Mock snippets to compile Sphinx documentation on a remote Python virtualenv (ReadTheDocs)
 class Mock(MagicMock):
