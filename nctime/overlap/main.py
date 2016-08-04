@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """
-.. module:: nctime.overlap.main.py
    :platform: Unix
    :synopsis: Highlight chunked NetCDF files producing overlap in a time series.
 
@@ -22,25 +21,31 @@ class ProcessingContext(object):
     """
     Encapsulates the following processing context/information for main process:
 
-    +-------------------+-------------+---------------------------+
-    | Attribute         | Type        | Description               |
-    +===================+=============+===========================+
-    | *self*.directory  | *str*       | Variable to scan          |
-    +-------------------+-------------+---------------------------+
-    | *self*.mip        | *str*       | The MIP table from DRS    |
-    +-------------------+-------------+---------------------------+
-    | *self*.remove     | *boolean*   | True if remove mode       |
-    +-------------------+-------------+---------------------------+
-    | *self*.verbose    | *boolean*   | True if verbose mode      |
-    +-------------------+-------------+---------------------------+
-    | *self*.subtree    | *boolean*   | True for sub-period use   |
-    +-------------------+-------------+---------------------------+
-    | *self*.project    | *str*       | MIP project               |
-    +-------------------+-------------+---------------------------+
-    | *self*.cfg        | *callable*  | Configuration file parser |
-    +-------------------+-------------+---------------------------+
-    | *self*.pattern    | *re object* | Filename regex pattern    |
-    +-------------------+-------------+---------------------------+
+    +-----------------------+-------------+---------------------------------+
+    | Attribute             | Type        | Description                     |
+    +=======================+=============+=================================+
+    | *self*.directory      | *str*       | Variable to scan                |
+    +-----------------------+-------------+---------------------------------+
+    | *self*.mip            | *str*       | The MIP table from DRS          |
+    +-----------------------+-------------+---------------------------------+
+    | *self*.remove         | *boolean*   | True if remove mode             |
+    +-----------------------+-------------+---------------------------------+
+    | *self*.verbose        | *boolean*   | True if verbose mode            |
+    +-----------------------+-------------+---------------------------------+
+    | *self*.subtree        | *boolean*   | True for sub-period use         |
+    +-----------------------+-------------+---------------------------------+
+    | *self*.project        | *str*       | MIP project                     |
+    +-----------------------+-------------+---------------------------------+
+    | *self*.pattern        | *re object* | Filename regex pattern          |
+    +-----------------------+-------------+---------------------------------+
+    | *self*.need_instant   | *list*      | Tuples for instant time axis    |
+    +-----------------------+-------------+---------------------------------+
+    | *self*.tunits_default | *str*       | Default time units              |
+    +-----------------------+-------------+---------------------------------+
+    | *self*.ref            | *str*       | First filename as reference     |
+    +-----------------------+-------------+---------------------------------+
+    | *self*.variable       | *str*       | MIP variable                    |
+    +-----------------------+-------------+---------------------------------+
 
     :param *ArgumentParser* args: Parsed command-line arguments
     :returns: The processing context
@@ -151,13 +156,13 @@ def main(args):
         # Add nodes and edges
         graph.add_edge(int(start), int(nxt))
     # Walk through the graph
-    shortest = None
     try:
         # Find shortest path between oldest and latest dates
         shortest = nx.shortest_path(graph,
                                     source=min(zip(*nodes)[1]),
                                     target=max(zip(*nodes)[3]))
         logging.info('Shortest path found')
+        overlaps = get_overlaps(nodes, shortest, overlaps=True)
     except nx.NetworkXNoPath, e:
         if ctx.subtree:
             # Find shortest path of the subtree instead
@@ -166,21 +171,22 @@ def main(args):
             shortest = nx.shortest_path(graph,
                                         source=min(zip(*nodes)[1]),
                                         target=latest)
-            logging.warning('Shortest path found on the longest subtree:')
+            logging.warning('Shortest path found on the longest subtree from start:')
             for filename in get_overlaps(nodes, shortest, overlaps=False):
                 logging.warning(filename)
+            overlaps = get_overlaps(nodes, shortest, overlaps=True)
         else:
             logging.warning('No shortest path found: {0}'.format(str(e)))
+            overlaps = None
     # Print results
-    overlaps = get_overlaps(nodes, shortest, overlaps=True)
     if not overlaps:
         logging.info('No overlapping files')
     else:
-        logging.info('Overlapping files:')
+        logging.warning('Overlapping files:')
         for filename in overlaps:
             logging.warning(filename)
     if ctx.remove:
         for filename in overlaps:
             os.remove('{0}/{1}'.format(ctx.directory, filename))
         logging.warning('{0} overlapping files removed'.format(len(overlaps)))
-    logging.info('Overlaps diagnostic completed')
+    logging.info('Overlap diagnostic completed')

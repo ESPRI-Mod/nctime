@@ -2,11 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-.. module:: nctime.axis.main.py
     :platform: Unix
     :synopsis: Rewrite and/or check time axis of MIP NetCDF files.
-
-.. moduleauthor:: Guillaume Levavasseur <glipsl@ipsl.jussieu.fr>
 
 """
 
@@ -31,37 +28,35 @@ class ProcessingContext(object):
     """
     Encapsulates the following processing context/information for main process:
 
-    +-------------------+-------------+---------------------------------+
-    | Attribute         | Type        | Description                     |
-    +===================+=============+=================================+
-    | *self*.directory  | *str*       | Variable to scan                |
-    +-------------------+-------------+---------------------------------+
-    | *self*.write      | *boolean*   | True if write mode              |
-    +-------------------+-------------+---------------------------------+
-    | *self*.force      | *boolean*   | True if force writing           |
-    +-------------------+-------------+---------------------------------+
-    | *self*.verbose    | *boolean*   | True if verbose mode            |
-    +-------------------+-------------+---------------------------------+
-    | *self*.project    | *str*       | MIP project                     |
-    +-------------------+-------------+---------------------------------+
-    | *self*.checksum   | *str*       | The checksum type               |
-    +-------------------+-------------+---------------------------------+
-    | *self*.cfg        | *callable*  | Configuration file parser       |
-    +-------------------+-------------+---------------------------------+
-    | *self*.pattern    | *re object* | Filename regex pattern          |
-    +-------------------+-------------+---------------------------------+
-    | *self*.calendar   | *str*       | NetCDF calendar attribute       |
-    +-------------------+-------------+---------------------------------+
-    | *self*.frequency  | *str*       | NetCDF frequency attribute      |
-    +-------------------+-------------+---------------------------------+
-    | *self*.variable   | *str*       | MIP variable                    |
-    +-------------------+-------------+---------------------------------+
-    | *self*.realm      | *str*       | NetCDF modeling realm attribute |
-    +-------------------+-------------+---------------------------------+
-    | *self*.tunits     | *str*       | Time units from file            |
-    +-------------------+-------------+---------------------------------+
-    | *self*.funits     | *str*       | Time units from frequency       |
-    +-------------------+-------------+---------------------------------+
+    +-----------------------+-------------+---------------------------------+
+    | Attribute             | Type        | Description                     |
+    +=======================+=============+=================================+
+    | *self*.directory      | *str*       | Variable to scan                |
+    +-----------------------+-------------+---------------------------------+
+    | *self*.write          | *boolean*   | True if write mode              |
+    +-----------------------+-------------+---------------------------------+
+    | *self*.force          | *boolean*   | True if force writing           |
+    +-----------------------+-------------+---------------------------------+
+    | *self*.verbose        | *boolean*   | True if verbose mode            |
+    +-----------------------+-------------+---------------------------------+
+    | *self*.project        | *str*       | MIP project                     |
+    +-----------------------+-------------+---------------------------------+
+    | *self*.db             | *str*       | Database path                   |
+    +-----------------------+-------------+---------------------------------+
+    | *self*.threads        | *int*       | Maximal threads number          |
+    +-----------------------+-------------+---------------------------------+
+    | *self*.checksum_type  | *str*       | The checksum type               |
+    +-----------------------+-------------+---------------------------------+
+    | *self*.pattern        | *re object* | Filename regex pattern          |
+    +-----------------------+-------------+---------------------------------+
+    | *self*.need_instant   | *list*      | Tuples for instant time axis    |
+    +-----------------------+-------------+---------------------------------+
+    | *self*.tunits_default | *str*       | Default time units              |
+    +-----------------------+-------------+---------------------------------+
+    | *self*.ref            | *str*       | First filename as reference     |
+    +-----------------------+-------------+---------------------------------+
+    | *self*.variable       | *str*       | MIP variable                    |
+    +-----------------------+-------------+---------------------------------+
 
     :param *ArgumentParser* args: Parsed command-line arguments
     :returns: The processing context
@@ -151,8 +146,8 @@ def process(inputs):
      * Traceback the status.
 
     :param tuple inputs: A tuple with the filename, the processing context and the time initialization
-    :returns: The time axis status as an :func:`AxisStatus` instance
-    :rtype: *dict*
+    :returns: The updated file handler instance
+    :rtype: *nctime.axis.handler.File*
 
     """
     # Extract processing context and time initialization from input tuple
@@ -257,8 +252,8 @@ def yield_inputs(ctx, tinit):
     """
     Yields all files to process within tuples with the processing context and the time initialization.
 
-    :param ProcessingContext ctx: A :func:`ProcessingContext` class instance
-    :param TimeInit tinit: A :func:`TimeInit` class instance
+    :param nctime.axis.main.ProcessingContext ctx: The processing context
+    :param nctime.utils.time.TimeInit tinit: The time initialization context
     :returns: Attach the processing context and the time initialization to a file processing as an iterator of tuples
     :rtype: *iter*
 
@@ -277,10 +272,17 @@ def wrapper(inputs):
     :raises Error: When a thread-process failed preserving its traceback
 
     """
+    filename, ctx, _ = inputs
+
     try:
         return process(inputs)
-    except:
-        logging.exception('A thread-process fails:')
+    except Exception as e:
+        # Use verbosity to raise the whole threads traceback errors
+        if not ctx.verbose:
+            logging.error('{0} skipped\n{1}: {2}'.format(filename, e.__class__.__name__, e.message))
+        else:
+            logging.exception('{0} failed'.format(filename))
+        return None
 
 
 def main(args):
@@ -300,7 +302,7 @@ def main(args):
     # Set driving time properties (e.g., calendar, frequency and time units) from first file in directory
     tinit = time.TimeInit(ctx)
     # Process
-    pool = ThreadPool(ctx.threads)
+    pool = ThreadPool(int(ctx.threads))
     handlers = pool.imap(wrapper, yield_inputs(ctx, tinit))
     # Persist diagnostics into database
     if ctx.db:
@@ -308,8 +310,9 @@ def main(args):
         if not os.path.isfile(ctx.db):
             logging.warning('Database does not exist')
             db.create(ctx.db)
-        # Commit each diagnostic as a new entry
-        for handler in handlers:
+    # Commit each diagnostic as a new entry
+    for handler in handlers:
+        if ctx.db:
             diagnostic = dict()
             diagnostic['creation_date'] = datetime.now()
             diagnostic.update(ctx.__dict__)
@@ -318,17 +321,17 @@ def main(args):
             diagnostic['status'] = ','.join(handler.status)
             db.insert(ctx.db, diagnostic)
             logging.info('{0} - Diagnostic persisted into database'.format(handler.filename))
-            if ctx.verbose:
-                logging.info('-> Filename: {0}'.format(handler.filename))
-                logging.info('Start: {0}'.format(handler.start_date))
-                logging.info('End: {0}'.format(handler.end_date))
-                logging.info('Last: {0}'.format(handler.last_date))
-                logging.info('Time steps: {0}'.format(handler.length))
-            if ctx.verbose:
-                logging.info('-> Time axis:')
-                logging.info('{0}'.format(fill(' | '.join(map(str, handler.time_axis.tolist())), width=100)))
-                logging.info('-> Theoretical axis:')
-                logging.info('{0}'.format(fill(' | '.join(map(str, handler.time_axis_rebuilt.tolist())), width=100)))
+        if ctx.verbose:
+            logging.info('-> Filename: {0}'.format(handler.filename))
+            logging.info('Start: {0}'.format(handler.start_date))
+            logging.info('End: {0}'.format(handler.end_date))
+            logging.info('Last: {0}'.format(handler.last_date))
+            logging.info('Time steps: {0}'.format(handler.length))
+        if ctx.verbose:
+            logging.info('-> Time axis:')
+            logging.info('{0}'.format(fill(' | '.join(map(str, handler.time_axis.tolist())), width=100)))
+            logging.info('-> Theoretical axis:')
+            logging.info('{0}'.format(fill(' | '.join(map(str, handler.time_axis_rebuilt.tolist())), width=100)))
     # Close tread pool
     pool.close()
     pool.join()

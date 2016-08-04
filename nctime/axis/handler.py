@@ -7,14 +7,15 @@
 """
 
 import os
+from uuid import uuid4
 
 import nco
 import numpy as np
 from netCDF4 import Dataset
-from uuid import uuid4
 
 from exceptions import *
 from nctime.utils import time
+from nctime.utils.exceptions import *
 
 
 class File(object):
@@ -45,7 +46,7 @@ class File(object):
     +------------------+-----------+---------------------------------------------------+
     | *self*.control   | *list*    | Errors status                                     |
     +------------------+-----------+---------------------------------------------------+
-    | *self*.bnds      | *boolean* | True if time boundaries excpected and not mistaken |
+    | *self*.bnds      | *boolean* | True if time bounds excpected and not mistaken    |
     +------------------+-----------+---------------------------------------------------+
     | *self*.checksum  | *str*     | New checksum if modified file                     |
     +------------------+-----------+---------------------------------------------------+
@@ -55,7 +56,7 @@ class File(object):
     +------------------+-----------+---------------------------------------------------+
 
     :returns: The axis status
-    :rtype: *dict*
+    :rtype: *File*
 
     """
 
@@ -68,7 +69,10 @@ class File(object):
         self.end_date = None
         self.last_date = None
         # Get time axis length
-        f = Dataset(self.ffp, 'r')
+        try:
+            f = Dataset(self.ffp, 'r')
+        except IOError:
+            raise InvalidNetCDFFile(self.ffp)
         self.length = f.variables['time'].shape[0]
         # Get time boundaries
         if has_bounds:
@@ -181,14 +185,15 @@ class File(object):
         """
         Rebuilds time axis from date axis, depending on MIP frequency, calendar and instant status.
 
-        :param float start: The numerical date to start (from ``netCDF4.date2num`` or :func:`_date2num`)
+        :param float start: The numerical date to start (from ``netCDF4.date2num`` or \
+        :func:`nctime.utils.time.date2num`)
         :param int inc: The time incrementation
         :param input_units: The time units deduced from the frequency
         :param output_units: The time units from the file
         :param calendar: The time calendar fro NetCDF attributes
         :param boolean is_instant: True if instantaneous time axis
         :returns: The corresponding theoretical time axis
-        :rtype: *float array*
+        :rtype: *numpy.array*
 
         """
         num_axis = np.arange(start=start, stop=start + self.length * inc, step=inc)
@@ -207,14 +212,15 @@ class File(object):
         Rebuilds time boundaries from the start date, depending on MIP frequency, calendar and
         instant status.
 
-        :param float start: The numerical date to start (from ``netCDF4.date2num`` or :func:`_date2num`)
+        :param float start: The numerical date to start (from ``netCDF4.date2num`` or \
+        :func:`nctime.utils.time.date2num`)
         :param int inc: The time incrementation
         :param input_units: The time units deduced from the frequency
         :param output_units: The time units from the file
         :param calendar: The time calendar fro NetCDF attributes
 
-        :returns: The corresponding theoretical time boundaries
-        :rtype: *[n, 2] array*
+        :returns: The corresponding theoretical time boundaries as a [n, 2] array
+        :rtype: *numpy.array*
 
         """
         num_axis_bnds = np.column_stack(((np.arange(start=start,
@@ -234,7 +240,10 @@ class File(object):
         :param float array data: The data array to overwrite
 
         """
-        f = Dataset(self.ffp, 'r+')
+        try:
+            f = Dataset(self.ffp, 'r+')
+        except IOError:
+            raise InvalidNetCDFFile(self.ffp)
         f.variables[variable][:] = data
         f.close()
 
@@ -248,6 +257,9 @@ class File(object):
         :param str data: The string to add to overwrite
 
         """
-        f = Dataset(self.ffp, 'r+')
+        try:
+            f = Dataset(self.ffp, 'r+')
+        except IOError:
+            raise InvalidNetCDFFile(self.ffp)
         f.variables[variable].__dict__[attribute] = data
         f.close()

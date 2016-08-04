@@ -1,5 +1,5 @@
-time_axis
-=========
+``nctime`` toolbox
+==================
 
 .. toctree::
    :maxdepth: 1

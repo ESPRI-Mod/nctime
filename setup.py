@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='nctime',
-      version='3.8',
+      version='3.8.0',
       description='Diagnoses NetCDF time axis.',
       author='Levavasseur Guillaume',
       author_email='glipsl@ipsl.jussieu.fr',
@@ -16,7 +16,7 @@ setup(name='nctime',
                    'Intended Audience :: System Administrators',
                    'Natural Language :: English',
                    'Operating System :: Unix',
-                   'Programming Language :: Python :: 2.5',
+                   'Programming Language :: Python :: 2.6',
                    'Topic :: Scientific/Engineering',
                    'Topic :: Software Development :: Build Tools']
       )

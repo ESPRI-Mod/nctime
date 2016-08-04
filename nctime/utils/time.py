@@ -24,9 +24,9 @@ class TimeInit(object):
     Encapsulates the time properties from first file into processing context.
     These properties has to be used as reference for all file into the directory.
 
-     * The calendar, the frequency and the realm are read from NetCDF global attributes and
+     * The calendar, the frequency and the realm are read from NetCDF global attributes and \
      use to detect instantaneous time axis,
-     * The NetCDF time units attribute has to be unchanged in respect with CF convention and
+     * The NetCDF time units attribute has to be unchanged in respect with CF convention and \
      archives designs.
 
     +-------------------+-------------+---------------------------------+
@@ -47,7 +47,7 @@ class TimeInit(object):
     | *self*.has_bounds | *boolean*   | True if require time bounds     |
     +-------------------+-------------+---------------------------------+
 
-    :param ProcessingContext ctx: A :func:`ProcessingContext` class instance
+    :param ProcessingContext ctx: The processing context
     :raises Error: If NetCDF time units attribute is missing
     :raises Error: If NetCDF frequency attribute is missing
     :raises Error: If NetCDF realm attribute is missing
@@ -57,7 +57,10 @@ class TimeInit(object):
 
     def __init__(self, ctx):
         ref_path = '{directory}/{ref}'.format(**ctx.__dict__)
-        nc = netCDF4.Dataset(ref_path, 'r')
+        try:
+            nc = netCDF4.Dataset(ref_path, 'r')
+        except IOError:
+            raise InvalidNetCDFFile(ref_path)
         # Check required global attributes exist
         for attribute in REQUIRED_ATTRIBUTES:
             if attribute not in nc.ncattrs():

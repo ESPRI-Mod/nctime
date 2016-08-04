@@ -10,6 +10,7 @@ nctime
 overlap
 -------
 .. automodule:: nctime.overlap.main
+.. automodule:: nctime.overlap.exceptions
 
 axis
 ----
@@ -20,8 +21,8 @@ axis
 
 utils
 *****
-.. automodule:: esgprep.utils.utils
-.. automodule:: esgprep.utils.time
-.. automodule:: esgprep.utils.exceptions
+.. automodule:: nctime.utils.utils
+.. automodule:: nctime.utils.time
+.. automodule:: nctime.utils.exceptions
 
 .. moduleauthor:: Levavasseur Guillaume (CNRS/IPSL) <glipsl@ipsl.jussieu.fr>

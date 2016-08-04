@@ -3,20 +3,19 @@
 Configuration
 =============
 
-The only conguration you have to do at least is to define the threads number under the ``[DEFAULT]`` section in the configuration INI file. Edit the ``config.ini`` to set the number of threads you want (default is 4 threads).
+The only conguration you have to do at least is to define:
+ * the maximal threads number (default is 4 threads),
+ * the checksum type (default is SHA256).
+Both under the ``[DEFAULT]`` section in the configuration INI file.
 
 .. code-block:: ini
 
    [DEFAULT]
-   threads_number = 4
-
-The configuration file is included in the package and is in the default installation directory of your Python packages (see ``time_axis -h``). Feel free to copy it and made your own using the ``-i`` option (see :ref:`usage`).
-
-You can also define the checksum type you want in this section. MD5 (default) or SHA256 checksums are supported.
-
-.. code-block:: ini
-
+   max_threads = 3
    checksum_type = SHA256
+
+The configuration file is included in the package and is in the default installation directory of your Python
+packages. Feel free to copy it and made your own using the ``-i`` option (see :ref:`usage`).
 
 
 Add a new project
@@ -32,30 +31,27 @@ Edit the ``config.ini`` as follows:
 
 .. warning:: The ``--project`` option directly refers to the name of "project" sections.
 
-2. Define the *Data Reference Syntax* (DRS) tree of your project on your filesystem. The ``directory_format`` is requiered for auto-detection and uses a regular expression to match the DRS facets of the directory to scan.
-
-.. code-block:: ini
-
-   directory_format = /(?P<root>[\w./-]+)/(?P<project>[\w.-]+)/(?P<facet1>[\w.-]+)/(?P<facet2>[\w.-]+)/(?P<facet3>[\w.-]+)
-
-.. warning:: Feel free to create/modify a tree if necessary using all regex facilities. Nevertheless, your DRS has to include at least the following facets "project", "frequency", "realm" (CMIP5 specific), "variable", "version".
-
-3. Define the filename format of your project. The ``filename_format`` uses a regular expression to match the period dates in filename to process.
+2. Define the filename format of your project. The ``filename_format`` uses a regular expression to match the period
+dates from the filename to process.
 
 .. code-block:: ini
 
    filename_format = ([\w.-]+)_([\w.-]+)_([\w.-]+)_([\w.-]+)_([\w.-]+)_([\d]+)-([\d]+).nc
 
-.. warning:: Feel free to defined a new filename format using all regex facilities.  The filename format must end with two groups of digits. Becareful to keep the ``.nc`` extension because ``time_axis`` only supports NetCDF files.
+.. warning:: Feel free to defined a new filename format using the INI variable patterns.  The
+    filename format must include two groups of digits called ``%(start_period)s`` and ``%(end_period)s``.
 
-4. Declare all tuples of attributes requiering instantaneous time axis. For example, CMIP5 datasets using an instantaneous time axis can be targeted using a tuple compsed by the variable, the frequency and the realm of the DRS.
+.. warning:: ``nctime`` only supports NetCDF files.
+
+3. Declare all tuples of attributes requiring instantaneous time axis. For example, CMIP5 datasets using an
+instantaneous time axis can be targeted using a tuple composed by the variable, the frequency and the realm of the DRS.
 
 .. code-block:: ini
 
    need_instant_time = [(tuple1), (tuple2), ...]
 
-5. Define the default time units if fixed by the DRS of your project.
+4. Define the default time units if fixed by the *Data Reference Syntax* (DRS) of your project.
 
 .. code-block:: ini
 
-    time_units_default = days since 1949-12-01 00:00:00
+   time_units_default = days since 1949-12-01 00:00:00

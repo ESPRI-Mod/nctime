@@ -1,191 +1,257 @@
 .. _usage:
 
-Usage
-=====
+Usage and tutorials
+===================
 
-Here is the command-line help:
+Common usage
+************
 
-.. code-block:: bash
-
-   $> time_axis -h
-   usage: timeaxis.py --project <project_id> [-i $PYTHONUSERSITE/timeaxis/config.ini] [--write]
-                      [--force] [--logdir [$PWD]] [-h] [-v] [-V]
-                      [directory]
-
-   NetCDF files describe all dimensions necessary to work with. In the climate community, this format
-   is widely used following the CF conventions. Dimensions such as longitude, latitude and time are
-   included in NetCDF files as vectors.
-
-   The time axis is a key dimension. Unfortunately, this time axis often is mistaken in files from
-   coupled climate models and leads to flawed studies or unused data.
-
-   "time_axis" is a command-line tool allowing you to easily check and rebuild a MIP-compliant time
-   axis of your downloaded files from the ESGF.
-
-   Note that:
-   (i) "time_axis" is based on uncorrupted filename period dates and properly-defined times units, time
-   calendar and frequency NetCDF attributes.
-   (ii) To rebuild a proper time axis, the dates from filename are expected to set the first time
-   boundary and not the middle of the time interval. This is always the case for the instantaneous axis
-   or frequencies greater than the daily frequency. Consequently, the 3-6 hourly files with an averaged
-   time axis requires a date time correction.
-
-   Time axis status returned:
-   000: Unmodified time axis,
-   001: Corrected time axis because wrong timesteps,
-   002: Corrected time axis because of changing time units,
-   003: Ignored time axis because of inconsistency between last date of time axis and end date of
-   filename period (e.g., wrong time axis length),
-   004: Corrected time axis deleting time boundaries for instant time,
-   005: Ignored averaged time axis without time boundaries.
-
-   See full documentation on http://cmip5-time-axis.readthedocs.org/
-
-   The default values are displayed next to the corresponding flags.
-
-   positional arguments:
-     directory                               Variable path to diagnose.
-
-   optional arguments:
-     --project <project_id>                  Required project name corresponding to a section of the
-                                             configuration file.
-
-     -i $PYTHONUSERSITE/timeaxis/config.ini  Path of configuration INI file.
-
-     --write                                 Rewrites time axis depending on checking.
-                                             THIS ACTION DEFINITELY MODIFY INPUT FILES!
-
-     --force                                 Forces time axis writing overpassing checking step.
-                                             THIS ACTION DEFINITELY MODIFY INPUT FILES!
-
-     --log [$PWD]                            Logfile directory. If not, standard output is used.
-
-     -h, --help                              Show this help message and exit.
-
-     -v                                      Verbose mode.
-
-     -V                                      Program version.
-
-   Developped by:
-   Levavasseur, G. (UPMC/IPSL - glipsl@ipsl.jussieu.fr)
-   Laliberte, F. (ExArch - frederic.laliberte@utoronto.ca)
-
-Tutorials
-*********
-
-Check a MIP variable:
+Specify the project
+-------------------
 
 .. code-block:: bash
 
-   $>time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb --project CMIP5
-   Time diagnostic started for /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb
-   Version:                 v1
-   Frequency:               mon
-   Calendar:                noleap
-   Time units:              days since 0160-01-01
-   Files to process:        1
-   ==> Filename:            ccb_Amon_bcc-csm1-1_1pctCO2_r1i1p1_016001-029912.nc
-   -> Timesteps:            1680
-   -> Instant time:         False
-   -> Time axis status:     000
-   -> Time boundaries:      True
-   -> New checksum:         None
-   Time diagnostic completed (1 files scanned)
+    $> nctime <command> --project <project_id>
 
-Scan a directory with verbosity:
+.. warning:: This ``--project`` argument is always required.
+
+.. warning:: This ``--project`` name has to correspond to a section of the configuration file.
+
+.. warning:: The ``--project`` is case-sensitive.
+
+
+Specify a configuration file
+----------------------------
 
 .. code-block:: bash
 
-   $>time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb --project CMIP5 -v
-   Time diagnostic started for /prodigfs/esg/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb
-   Version:                 v1
-   Frequency:               mon
-   Calendar:                noleap
-   Time units:              days since 0160-01-01
-   Files to process:        1
-   ==> Filename:            ccb_Amon_bcc-csm1-1_1pctCO2_r1i1p1_016001-029912.nc
-   -> Start:                0160-01-01 00:00:00
-   -> End:                  0299-12-01 00:00:00
-   -> Last:                 0299-12-01 00:00:00
-   -> Timesteps:            1680
-   -> Instant time:         False
-   -> Time axis status:     000
-   -> Time boundaries:      True
-   -> New checksum:         None
-   -> Time axis:
-   15.5 | 45.0 | 74.5 | 105.0 | 135.5 | 166.0 | 196.5 | 227.5 | 258.0 | 288.5 | 319.0 | 349.5 | 380.5 |
+   $> nctime <command> -i /path/to/config.ini
+
+.. note:: Default is ``$PWD/config.ini``.
+
+
+Add verbosity
+-------------
+
+.. code-block:: bash
+
+   $> nctime <command> -v
+
+Show help message and exit
+--------------------------
+
+.. code-block:: bash
+
+   $> nctime <command> -h
+
+Use a logfile
+-------------
+
+.. code-block:: bash
+
+   $> nctime <command> --log /path/to/logdir
    [...]
-   50901.0 | 50931.5 | 50962.5 | 50993.0 | 51023.5 | 51054.0 | 51084.5
-   -> Theoretical axis:
-   15.5 | 45.0 | 74.5 | 105.0 | 135.5 | 166.0 | 196.5 | 227.5 | 258.0 | 288.5 | 319.0 | 349.5 | 380.5 |
+   $> cat /path/to/logdir/nctime-YYYYMMDD-HHMMSS-PID.log
    [...]
-   50901.0 | 50931.5 | 50962.5 | 50993.0 | 51023.5 | 51054.0 | 51084.5
-   Time diagnostic completed (1 files scanned)
 
-.. note:: The ``-v`` raises the tracebacks of thread-processes (default is the "silent" mode).
+.. note:: The logfile directory is optional.
 
-To specify the configuration file:
+.. note:: If not submitted the logfile directory is read from the configuration file first or is the current working
+   directory instead. No flag seems the standard output is used.
 
-.. code-block:: bash
+``nctime overlap``
+******************
 
-   $> esg_mapfiles /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb --project CMIP5 -i /path/to/configfile/config.ini
-
-To use a logfile (the logfile directory is optionnal):
-
-.. code-block:: bash
-
-   $>time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb --project CMIP5 --log /path/to/logdir
-
-   $> cat /path/to/logfile/timeaxis-YYYYMMDD-HHMMSS-PID.log
-   YYYY/MM/DD HH:MM:SS AM INFO Time diagnostic started for /prodigfs/esg/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/ccb
-   YYYY/MM/DD HH:MM:SS AM WARNING Version:                 v1
-   YYYY/MM/DD HH:MM:SS AM WARNING Frequency:               mon
-   YYYY/MM/DD HH:MM:SS AM WARNING Calendar:                noleap
-   YYYY/MM/DD HH:MM:SS AM WARNING Time units:              days since 0160-01-01
-   YYYY/MM/DD HH:MM:SS AM INFO Files to process:        1
-   YYYY/MM/DD HH:MM:SS AM INFO ==> Filename:            ccb_Amon_bcc-csm1-1_1pctCO2_r1i1p1_016001-029912.nc
-   YYYY/MM/DD HH:MM:SS AM INFO -> Timesteps:            1680
-   YYYY/MM/DD HH:MM:SS AM INFO -> Instant time:         False
-   YYYY/MM/DD HH:MM:SS AM INFO -> Time axis status:     000
-   YYYY/MM/DD HH:MM:SS AM INFO -> Time boundaries:      True
-   YYYY/MM/DD HH:MM:SS AM INFO -> New checksum:         None
-   YYYY/MM/DD HH:MM:SS AM INFO Time diagnostic completed (1 files scanned)
-   YYYY/MM/DD HH:MM:SS PM INFO ==> Search complete.
-
-The write-mode displays the same information and only modify the input files if necessary.
+Check a MIP variable
+--------------------
 
 .. code-block:: bash
 
-   $> time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/test --project CMIP5 --write
-   Time diagnostic started for /prodigfs/esg/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/test
-   Version:                 v1
-   Frequency:               mon
-   Calendar:                noleap
-   Time units:              days since 0160-01-01
-   Files to process:        1
-   ==> Filename:            ccb_Amon_bcc-csm1-1_1pctCO2_r1i1p1_016001-029912.nc
-   -> Timesteps:            1680
-   -> Instant time:         False
-   -> Time axis status:     001
-   -> Time boundaries:      True
-   -> New checksum:         3c81206ad871acc38b9fa32d738669e9
-   Time diagnostic completed (1 files scanned)
+   $> nctime overlap --project <project_id> /path/to/your/archive/project/variable/ -v
+   YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic started for /path/to/your/archive/project/variable/
+   YYYY/MM/DD HH:MM:SS PM INFO    File    |        Start        |         End         |         Next
+   YYYY/MM/DD HH:MM:SS PM INFO  file1.nc  | 2006-01-01 00:00:00 | 2010-12-01 00:00:00 | 2011-01-01 00:00:00
+   YYYY/MM/DD HH:MM:SS PM INFO  file2.nc  | 2011-01-01 00:00:00 | 2020-12-01 00:00:00 | 2021-01-01 00:00:00
+   YYYY/MM/DD HH:MM:SS PM INFO Shortest path found
+   YYYY/MM/DD HH:MM:SS PM INFO No overlapping files
+   YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic completed
 
-Nevertheless, you can force to overwrite time axis (the checksum is automatically computed again):
+Detect overlapping files
+------------------------
 
 .. code-block:: bash
 
-   $> time_axis /path/to/your/archive/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/test --project CMIP5 --force
-   Time diagnostic started for /prodigfs/esg/CMIP5/output1/BCC/bcc-csm1-1/1pctCO2/mon/atmos/Amon/r1i1p1/v1/test
-   Version:                 v1
-   Frequency:               mon
-   Calendar:                noleap
-   Time units:              days since 0160-01-01
-   Files to process:        1
-   ==> Filename:            ccb_Amon_bcc-csm1-1_1pctCO2_r1i1p1_016001-029912.nc
-   -> Timesteps:            1680
-   -> Instant time:         False
-   -> Time axis status:     000
-   -> Time boundaries:      True
-   -> New checksum:         3c81206ad871acc38b9fa32d738669e9
-   Time diagnostic completed (1 files scanned)
+   $> nctime overlap --project <project_id> /path/to/your/archive/project/variable/ -v
+   YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic started for /path/to/your/archive/project/variable/
+   YYYY/MM/DD HH:MM:SS PM INFO    File    |        Start        |         End         |         Next
+   YYYY/MM/DD HH:MM:SS PM INFO  file1.nc  | 2006-01-01 00:00:00 | 2010-12-01 00:00:00 | 2011-01-01 00:00:00
+   YYYY/MM/DD HH:MM:SS PM INFO  file2.nc  | 2011-01-01 00:00:00 | 2018-12-01 00:00:00 | 2019-01-01 00:00:00
+   YYYY/MM/DD HH:MM:SS PM INFO  file3.nc  | 2011-01-01 00:00:00 | 2020-12-01 00:00:00 | 2021-01-01 00:00:00
+   YYYY/MM/DD HH:MM:SS PM INFO Shortest path found
+   YYYY/MM/DD HH:MM:SS PM WARNING Overlapping files:
+   YYYY/MM/DD HH:MM:SS PM WARNING file2.nc
+   YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic completed
+
+Remove overlapping files
+------------------------
+
+.. code-block:: bash
+
+   $> nctime overlap --project <project_id> /path/to/your/archive/project/variable/ -v --remove
+   YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic started for /path/to/your/archive/project/variable/
+   YYYY/MM/DD HH:MM:SS PM INFO    File    |        Start        |         End         |         Next
+   YYYY/MM/DD HH:MM:SS PM INFO  file1.nc  | 2006-01-01 00:00:00 | 2010-12-01 00:00:00 | 2011-01-01 00:00:00
+   YYYY/MM/DD HH:MM:SS PM INFO  file2.nc  | 2011-01-01 00:00:00 | 2018-12-01 00:00:00 | 2019-01-01 00:00:00
+   YYYY/MM/DD HH:MM:SS PM INFO  file3.nc  | 2011-01-01 00:00:00 | 2020-12-01 00:00:00 | 2021-01-01 00:00:00
+   YYYY/MM/DD HH:MM:SS PM INFO Shortest path found
+   YYYY/MM/DD HH:MM:SS PM WARNING Overlapping files:
+   YYYY/MM/DD HH:MM:SS PM WARNING file2.nc
+   YYYY/MM/DD HH:MM:SS PM WARNING 1 overlapping files removed
+   YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic completed
+
+Detect a time gap
+-----------------
+
+.. code-block:: bash
+
+   $> nctime overlap --project <project_id> /path/to/your/archive/project/variable/ -v
+   YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic started for /path/to/your/archive/project/variable/
+   YYYY/MM/DD HH:MM:SS PM INFO    File    |        Start        |         End         |         Next
+   YYYY/MM/DD HH:MM:SS PM INFO  file1.nc  | 2006-01-01 00:00:00 | 2010-12-01 00:00:00 | 2011-01-01 00:00:00
+   YYYY/MM/DD HH:MM:SS PM INFO  file2.nc  | 2011-01-01 00:00:00 | 2020-12-01 00:00:00 | 2021-01-01 00:00:00
+   YYYY/MM/DD HH:MM:SS PM INFO  file3.nc  | 2041-01-01 00:00:00 | 2050-12-01 00:00:00 | 2051-01-01 00:00:00
+   YYYY/MM/DD HH:MM:SS PM INFO  file4.nc  | 2051-01-01 00:00:00 | 2060-12-01 00:00:00 | 2061-01-01 00:00:00
+   YYYY/MM/DD HH:MM:SS PM INFO  file5.nc  | 2061-01-01 00:00:00 | 2070-12-01 00:00:00 | 2071-01-01 00:00:00
+   YYYY/MM/DD HH:MM:SS PM WARNING No shortest path found: No path between 20060101000000 and 20710101000000.
+   YYYY/MM/DD HH:MM:SS PM INFO No overlapping files
+   YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic completed
+
+Use the longest subtree
+-----------------------
+
+.. note:: If a gap exists in the period sequence, you can use the shortest path on the longest subtree from
+   the period start.
+
+.. code-block:: bash
+
+   $> nctime overlap --project <project_id> /path/to/your/archive/project/variable/ -v
+   YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic started for /path/to/your/archive/project/variable/
+   YYYY/MM/DD HH:MM:SS PM INFO    File    |        Start        |         End         |         Next
+   YYYY/MM/DD HH:MM:SS PM INFO  file1.nc  | 2006-01-01 00:00:00 | 2010-12-01 00:00:00 | 2011-01-01 00:00:00
+   YYYY/MM/DD HH:MM:SS PM INFO  file2.nc  | 2011-01-01 00:00:00 | 2020-12-01 00:00:00 | 2021-01-01 00:00:00
+   YYYY/MM/DD HH:MM:SS PM INFO  file3.nc  | 2041-01-01 00:00:00 | 2050-12-01 00:00:00 | 2051-01-01 00:00:00
+   YYYY/MM/DD HH:MM:SS PM INFO  file4.nc  | 2051-01-01 00:00:00 | 2060-12-01 00:00:00 | 2061-01-01 00:00:00
+   YYYY/MM/DD HH:MM:SS PM INFO  file5.nc  | 2061-01-01 00:00:00 | 2070-12-01 00:00:00 | 2071-01-01 00:00:00
+   YYYY/MM/DD HH:MM:SS PM WARNING Shortest path found on the longest subtree:
+   YYYY/MM/DD HH:MM:SS PM WARNING file1.nc
+   YYYY/MM/DD HH:MM:SS PM WARNING file2.nc
+   YYYY/MM/DD HH:MM:SS PM WARNING Overlapping files:
+   YYYY/MM/DD HH:MM:SS PM WARNING file3.nc
+   YYYY/MM/DD HH:MM:SS PM WARNING file4.nc
+   YYYY/MM/DD HH:MM:SS PM WARNING file5.nc
+   YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic completed
+
+.. warning:: Using the longest subtree flags the rest of the period as an overlap. Consequently, if ``--subtree`` and
+   ``--remove`` are set, ``nctime`` will delete the overlapping files on the longest sub-period and the
+   files of the remaining subtree.
+
+``nctime axis``
+***************
+
+Check a MIP variable
+--------------------
+
+.. code-block:: bash
+
+   $> nctime axis --project <project_id> /path/to/your/archive/project/variable/ -v
+   YYYY/MM/DD HH:MM:SS PM INFO Time axis diagnostic started for /path/to/your/archive/project/variable/
+   YYYY/MM/DD HH:MM:SS PM INFO file1.nc - Time axis seems OK
+   YYYY/MM/DD HH:MM:SS PM INFO file2.nc - Time axis seems OK
+   YYYY/MM/DD HH:MM:SS PM INFO file3.nc - Time axis seems OK
+   YYYY/MM/DD HH:MM:SS PM INFO Time diagnostic completed (3 files scanned)
+
+.. note:: Verbosity will print file information with theoretical time axis and time axis from file.
+
+Detect a wrong time axis
+------------------------
+
+   $> nctime axis --project <project_id> /path/to/your/archive/project/variable/ -v
+   YYYY/MM/DD HH:MM:SS PM INFO Time axis diagnostic started for /path/to/your/archive/project/variable/
+   YYYY/MM/DD HH:MM:SS PM INFO file1.nc - Time axis seems OK
+   YYYY/MM/DD HH:MM:SS PM INFO file2.nc - 001 - Mistaken time axis over one or several time steps
+   YYYY/MM/DD HH:MM:SS PM INFO file3.nc - Time axis seems OK
+   YYYY/MM/DD HH:MM:SS PM INFO Time diagnostic completed (3 files scanned)
+
+Rewrite a wrong time axis
+-------------------------
+
+.. note:: The write mode displays the same information and only modify the input files if necessary. In such a case,
+   the new checksum is computed automatically.
+
+.. code-block:: bash
+
+   $> nctime axis --project <project_id> /path/to/your/archive/project/variable/ -v --write
+   YYYY/MM/DD HH:MM:SS PM INFO Time axis diagnostic started for /path/to/your/archive/project/variable/
+   YYYY/MM/DD HH:MM:SS PM INFO file1.nc - Time axis seems OK
+   YYYY/MM/DD HH:MM:SS PM INFO file2.nc - 001 - Mistaken time axis over one or several time steps
+   YYYY/MM/DD HH:MM:SS PM INFO file3.nc - Time axis seems OK
+   YYYY/MM/DD HH:MM:SS PM INFO Time diagnostic completed (3 files scanned)
+
+Force a time axis rewriting
+---------------------------
+
+.. note:: Anyway, you can force to overwrite time axis (the checksum is automatically computed again).
+
+.. code-block:: bash
+
+   $> nctime axis --project <project_id> /path/to/your/archive/project/variable/ -v --force
+   YYYY/MM/DD HH:MM:SS PM INFO Time axis diagnostic started for /path/to/your/archive/project/variable/
+   YYYY/MM/DD HH:MM:SS PM INFO file1.nc - Time axis seems OK
+   YYYY/MM/DD HH:MM:SS PM INFO file2.nc - 001 - Mistaken time axis over one or several time steps
+   YYYY/MM/DD HH:MM:SS PM INFO file3.nc - Time axis seems OK
+   YYYY/MM/DD HH:MM:SS PM INFO Time diagnostic completed (3 files scanned)
+
+Save diagnostic to an SQL database
+----------------------------------
+
+.. code-block:: bash
+
+   $> nctime axis --project <project_id> /path/to/your/archive/project/variable/ -v --db
+   YYYY/MM/DD HH:MM:SS PM INFO Time axis diagnostic started for /path/to/your/archive/project/variable/
+   YYYY/MM/DD HH:MM:SS PM INFO file1.nc - Time axis seems OK
+   YYYY/MM/DD HH:MM:SS PM INFO file1.nc - Diagnostic persisted into database
+   YYYY/MM/DD HH:MM:SS PM INFO file2.nc - Time axis seems OK
+   YYYY/MM/DD HH:MM:SS PM INFO file2.nc - Diagnostic persisted into database
+   YYYY/MM/DD HH:MM:SS PM INFO file3.nc - Time axis seems OK
+   YYYY/MM/DD HH:MM:SS PM INFO file3.nc - Diagnostic persisted into database
+   YYYY/MM/DD HH:MM:SS PM INFO Time diagnostic completed (3 files scanned)
+
+   $> sqlite3 time_axis.db
+   $sqlite> .schema
+   CREATE TABLE time_axis
+               (id INTEGER PRIMARY KEY,
+               project TEXT,
+               realm TEXT,
+               frequency TEXT,
+               freq_units TEXT,
+               variable TEXT,
+               filename TEXT,
+               start TEXT,
+               end TEXT,
+               last TEXT,
+               length INT,
+               file_units TEXT,
+               status TEXT,
+               file_ref TEXT,
+               ref_units TEXT,
+               calendar TEXT,
+               is_instant INT,
+               has_bounds INT,
+               new_checksum TEXT,
+               full_path TEXT,
+               creation_date TEXT);
+
+.. note:: The database path is optional.
+
+.. note:: If not submitted the database path is read from the configuration file first or in the current working
+   directory instead. No flag seems that the diagnostic is not recorded.

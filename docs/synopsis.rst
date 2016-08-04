@@ -8,7 +8,7 @@ following the `CF conventions <http://cfconventions.org/>`_. Dimensions such as 
 included in NetCDF files as vectors.
 
 Time is a key dimension from NetCDF files that could lead to flawed studies or unused data if misdeclared. ``nctime``
- allows researchers to easily diagnose the time definition of their data to ensure a proper analysis.
+allows researchers to easily diagnose the time definition of their data to ensure a proper analysis.
 
 ``nctime axis``
 ***************
@@ -71,7 +71,7 @@ No duplicated files
 Delete time boundaries if necessary
     An instantaneous time axis do not embed time boundaries. If an instantaneous time axis is detected with time
     boundaries, they are deleted using `NCO operators <http://nco.sourceforge.net/>`_. In this case only, the file is
-     duplicated.
+    duplicated.
 
 CF-MIP time units requirements
     Into a MIP atomic dataset (i.e., the variable level from the DRS tree) the NetCDF files are splitted depending on
@@ -102,8 +102,7 @@ Looking for the shortest path
     ``nctime overlap`` uses a directed graph to find the shortest "date path" between all nodes, covering the whole
     time period. All excluded files from this "date path" are overlapping files. In the case of a gap in the time
     period, ``nctime overlap`` adds the possibility to use the longest subtree from the start date instead (i.e., the
-     most consecutive files).
+    most consecutive files).
 
 Overlap deletion
-    All detected overlaps can be automatically removed using the ``--remove`` argument (see :ref:`usage`). **Becareful,
-    this mode definitely modify the original input directories**.
+    All detected overlaps can be automatically removed using the ``--remove`` argument (see :ref:`usage`).

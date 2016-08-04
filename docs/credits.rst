@@ -16,4 +16,5 @@ Contributors
 Contacts
 ********
 
-To submit bugs, suggestions or ideas, please address your comments to `Guillaume LEVAVASSEUR <glipsl@ipsl.jussieu.fr>`_ or post your issue on our `GitHub repository <https://github.com/Prodiguer/cmip5-time-axis>`_.
+To submit bugs, suggestions or ideas, please address your comments to `Guillaume LEVAVASSEUR <glipsl@ipsl.jussieu.fr>`_
+or post your issue on our `GitHub repository <https://github.com/Prodiguer/cmip5-time-axis>`_.

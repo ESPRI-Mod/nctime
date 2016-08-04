@@ -3,7 +3,7 @@
 
 """
     :platform: Unix
-    :synopsis: Custom exceptions used in this module.
+    :synopsis: Custom exceptions used in this package.
 
 """
 
@@ -72,6 +72,18 @@ class NoConfigValue(Exception):
         self.msg += "\n<section: '{0}'>".format(section)
         for path in paths:
             self.msg += "\n<config file: '{0}'>".format(path)
+        super(self.__class__, self).__init__(self.msg)
+
+
+class InvalidNetCDFFile(Exception):
+    """
+    Raised when not a NetCDF file.
+
+    """
+
+    def __init__(self, path):
+        self.msg = "Invalid or unknown file format. Only support NetCDF file."
+        self.msg += "\n<file: '{0}'>".format(path)
         super(self.__class__, self).__init__(self.msg)
 
 

@@ -9,7 +9,7 @@
 
 import sqlite3
 
-from nctime.utils.constants import *
+from constants import *
 
 
 def connect(db_file):
