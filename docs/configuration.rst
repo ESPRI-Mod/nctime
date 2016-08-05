@@ -6,6 +6,7 @@ Configuration
 The only conguration you have to do at least is to define:
  * the maximal threads number (default is 4 threads),
  * the checksum type (default is SHA256).
+
 Both under the ``[DEFAULT]`` section in the configuration INI file.
 
 .. code-block:: ini
