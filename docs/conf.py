@@ -15,6 +15,8 @@
 import os
 import sys
 
+from mock import Mock as MagicMock
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -105,6 +107,7 @@ pygments_style = 'sphinx'
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 if not on_rtd:  # only import and set the theme if we're building docs locally
     import sphinx_rtd_theme
+
     html_theme = 'sphinx_rtd_theme'
     html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 # otherwise, readthedocs.org uses their theme by default, so no need to specify it
@@ -248,8 +251,12 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    ('index', 'nctime', u'nctime Documentation',
-     u'Levavasseur, G.', 'nctime', 'One line description of project.',
+    ('index',
+     'nctime',
+     u'nctime Documentation',
+     u'Levavasseur, G.',
+     'nctime',
+     'One line description of project.',
      'Miscellaneous'),
 ]
 
@@ -268,13 +275,13 @@ texinfo_documents = [
 autodoc_member_order = 'bysource'
 autodoc_default_flags = ['members', 'private-members']
 
-from mock import Mock as MagicMock
 
 # Mock snippets to compile Sphinx documentation on a remote Python virtualenv (ReadTheDocs)
 class Mock(MagicMock):
     @classmethod
     def __getattr__(cls, name):
-            return Mock()
+        return Mock()
+
 
 MOCK_MODULES = ['h5py', 'netCDF4', 'netcdftime', 'networkx', 'nco', 'numpy']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
