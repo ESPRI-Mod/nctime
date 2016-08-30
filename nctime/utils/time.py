@@ -88,8 +88,10 @@ class TimeInit(object):
         if self.calendar == 'standard' and nc.model_id == 'CMCC-CM':
             self.calendar = 'proleptic_gregorian'
         # Get boolean on instantaneous time axis
+        if 'cell_methods' not in nc.variables[ctx.variable].ncattrs():
+            raise NoNetCDFAttribute('cell_methods', ref_path, ctx.variable)
         self.is_instant = False
-        if (ctx.variable, self.frequency, self.realm) in ctx.need_instant:
+        if 'point' in nc.variables[ctx.variable].cell_methods.lower():
             self.is_instant = True
         # Get boolean on time boundaries
         self.has_bounds = False
@@ -339,12 +341,13 @@ def add_year(date, years_to_add):
     return date_next
 
 
-def get_start_end_dates_from_filename(filename, pattern, frequency, calendar, is_instant=False):
+def get_start_end_dates_from_filename(project, filename, pattern, frequency, calendar, is_instant=False):
     """
     Returns datetime objects for start and end dates from the filename.
     To rebuild a proper time axis, the dates from filename are expected to set the first
     time boundary and not the middle of the time interval.
 
+    :param str project: The project name
     :param str filename: The filename
     :param re Object pattern: The filename pattern as a regex (from `re library \
     <https://docs.python.org/2/library/re.html>`_).
@@ -367,23 +370,28 @@ def get_start_end_dates_from_filename(filename, pattern, frequency, calendar, is
         if frequency in ['3hr', '6hr']:
             # Fix on filename digits for 3hr and 6hr frequencies. 3hr (6hr) files always start
             # at 000000 end at 2100000 (180000) whether the time axis is instantaneous or not.
-            date_index = pattern.search(filename).groups()[-2:].index(date)
-            if is_instant:
-                date_correction = INSTANT_TIME_CORRECTION[frequency][date_index][digits[-6:]]
-                dates.append(num2date(date_correction,
-                                      units='days since ' + date_as_since,
-                                      calendar=calendar))
-            else:
-                date_correction = AVERAGED_TIME_CORRECTION[frequency][date_index][digits[-6:]]
-                dates.append(num2date(date_correction,
-                                      units='days since ' + date_as_since,
-                                      calendar=calendar))
+            dates.append(num2date(TIME_CORRECTION[frequency][key][digits[-6:]],
+                                  units='days since ' + date_as_since,
+                                  calendar=calendar))
+            # if is_instant:
+            #     dates.append(num2date(INSTANT_TIME_CORRECTION[frequency][key][digits[-6:]],
+            #                           units='days since ' + date_as_since,
+            #                           calendar=calendar))
+            # else:
+            #     dates.append(num2date(AVERAGED_TIME_CORRECTION[frequency][key][digits[-6:]],
+            #                           units='days since ' + date_as_since,
+            #                           calendar=calendar))
         else:
             dates.append(num2date(0.0, units='days since ' + date_as_since, calendar=calendar))
     # Append date next to the end date for overlap diagnostic
-    dates.append(num2date(time_inc(frequency)[0],
-                          units=time_inc(frequency)[1] + ' since ' + date_as_since,
-                          calendar=calendar)[0])
+    try:
+        dates.append(num2date(time_inc(frequency)[0],
+                              units=time_inc(frequency)[1] + ' since ' + date_as_since,
+                              calendar=calendar)[0])
+    except TypeError:
+        dates.append(num2date(time_inc(frequency)[0],
+                              units=time_inc(frequency)[1] + ' since ' + date_as_since,
+                              calendar=calendar))
     return dates
 
 

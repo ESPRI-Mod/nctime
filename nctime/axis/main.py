@@ -80,7 +80,6 @@ class ProcessingContext(object):
                 self.threads = MAX_THREADS_DEFAULT
         self.checksum_type = str(cfg.get('DEFAULT', 'checksum_type'))
         self.pattern = utils.translate_filename_format(cfg, self.project)
-        self.need_instant = eval(cfg.get(self.project, 'need_instant_time'))
         if cfg.has_option('time_units_default', self.project):
             self.tunits_default = cfg.get(self.project, 'time_units_default')
         else:
@@ -159,7 +158,8 @@ def process(inputs):
                    has_bounds=init.has_bounds)
 
     # Extract start and end dates from filename
-    start, _, _ = handler.get_start_end_dates(pattern=ctx.pattern,
+    start, _, _ = handler.get_start_end_dates(project=ctx.project,
+                                              pattern=ctx.pattern,
                                               frequency=init.frequency,
                                               units=init.funits,
                                               calendar=init.calendar,
@@ -327,7 +327,7 @@ def main(args):
             logging.info('End: {0}'.format(handler.end_date))
             logging.info('Last: {0}'.format(handler.last_date))
             logging.info('Time steps: {0}'.format(handler.length))
-        if ctx.verbose:
+            logging.info('Is instant: {0}'.format(tinit.is_instant))
             logging.info('-> Time axis:')
             logging.info('{0}'.format(fill(' | '.join(map(str, handler.time_axis.tolist())), width=100)))
             logging.info('-> Theoretical axis:')
