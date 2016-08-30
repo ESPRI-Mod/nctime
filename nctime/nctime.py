@@ -17,7 +17,7 @@ from datetime import datetime
 from utils.utils import MultilineFormatter, init_logging, directory_checker, path_switcher
 
 # Program version
-__version__ = 'v{0} {1}'.format('3.8.1', datetime(year=2016, month=8, day=4).strftime("%Y-%d-%m"))
+__version__ = 'v{0} {1}'.format('3.8.2', datetime(year=2016, month=8, day=30).strftime("%Y-%d-%m"))
 
 
 def get_args():
