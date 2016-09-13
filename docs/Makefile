@@ -182,6 +182,6 @@ buildandcommit: html
 	cd $(BUILDDIR)/html
 	git add .
 	git commit -m "Docs rebuilt"
-	git push origin gh-pages
+	git push origin HEAD:gh-pages
 	@echo "Build finished and commited on gh-pages."
 
