@@ -2,3 +2,5 @@
 
 Frequently asked questions
 ==========================
+
+Hello world !
