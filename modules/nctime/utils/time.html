@@ -147,12 +147,12 @@
 <span class="kn">import</span> <span class="nn">re</span>
 
 <span class="kn">import</span> <span class="nn">netCDF4</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">netcdftime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">netcdftime</span> <span class="kn">import</span> <span class="n">utime</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">netcdftime</span> <span class="k">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">netcdftime</span> <span class="k">import</span> <span class="n">utime</span>
 
-<span class="kn">from</span> <span class="nn">constants</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">exceptions</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">constants</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">exceptions</span> <span class="k">import</span> <span class="o">*</span>
 
 
 <div class="viewcode-block" id="TimeInit"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.TimeInit">[docs]</a><span class="k">class</span> <span class="nc">TimeInit</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -192,7 +192,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">):</span>
-        <span class="n">ref_path</span> <span class="o">=</span> <span class="s1">&#39;{directory}/{ref}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">ctx</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+        <span class="n">ref_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{directory}</span><span class="s1">/</span><span class="si">{ref}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">ctx</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">nc</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">ref_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
@@ -226,17 +226,17 @@
         <span class="c1"># Get boolean on instantaneous time axis</span>
         <span class="k">if</span> <span class="s1">&#39;cell_methods&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">ctx</span><span class="o">.</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">():</span>
             <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span class="s1">&#39;cell_methods&#39;</span><span class="p">,</span> <span class="n">ref_path</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">variable</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">is_instant</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_instant</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="s1">&#39;point&#39;</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">ctx</span><span class="o">.</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">cell_methods</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">is_instant</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_instant</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="c1"># Get boolean on time boundaries</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">has_bounds</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_bounds</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="s1">&#39;time_bnds&#39;</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">has_bounds</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">has_bounds</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">nc</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="TimeInit.control_time_units"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.TimeInit.control_time_units">[docs]</a>    <span class="k">def</span> <span class="nf">control_time_units</span><span class="p">(</span><span class="n">tunits</span><span class="p">,</span> <span class="n">tunits_default</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="TimeInit.control_time_units"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.TimeInit.control_time_units">[docs]</a>    <span class="k">def</span> <span class="nf">control_time_units</span><span class="p">(</span><span class="n">tunits</span><span class="p">,</span> <span class="n">tunits_default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Controls the time units format as at least &quot;days since YYYY-MM-DD&quot;.</span>
 <span class="sd">        The time units can be forced within configuration file using the ``time_units_default`` option.</span>
@@ -248,13 +248,13 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">units</span> <span class="o">=</span> <span class="n">tunits</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-        <span class="n">units</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">unicode</span><span class="p">(</span><span class="s1">&#39;days&#39;</span><span class="p">)</span>
+        <span class="n">units</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">unicode</span><span class="p">(</span><span class="s1">&#39;days&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;-{0}-{1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;01&#39;</span><span class="p">,</span> <span class="s1">&#39;01&#39;</span><span class="p">)</span>
+            <span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;-</span><span class="si">{0}</span><span class="s1">-</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;01&#39;</span><span class="p">,</span> <span class="s1">&#39;01&#39;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;-{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;01&#39;</span><span class="p">)</span>
+            <span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;-</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;01&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">tunits_default</span> <span class="ow">and</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">units</span><span class="p">)</span> <span class="o">!=</span> <span class="n">tunits_default</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Invalid time units. Replace &quot;{0}&quot; by &quot;{1}&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">units</span><span class="p">),</span> <span class="n">tunits_default</span><span class="p">))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Invalid time units. Replace &quot;</span><span class="si">{0}</span><span class="s1">&quot; by &quot;</span><span class="si">{1}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">units</span><span class="p">),</span> <span class="n">tunits_default</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">tunits_default</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">units</span><span class="p">)</span></div>
@@ -477,7 +477,7 @@
     <span class="k">return</span> <span class="n">date_next</span></div>
 
 
-<div class="viewcode-block" id="get_start_end_dates_from_filename"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.get_start_end_dates_from_filename">[docs]</a><span class="k">def</span> <span class="nf">get_start_end_dates_from_filename</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">calendar</span><span class="p">,</span> <span class="n">is_instant</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="get_start_end_dates_from_filename"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.get_start_end_dates_from_filename">[docs]</a><span class="k">def</span> <span class="nf">get_start_end_dates_from_filename</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">calendar</span><span class="p">,</span> <span class="n">is_instant</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns datetime objects for start and end dates from the filename.</span>
 <span class="sd">    To rebuild a proper time axis, the dates from filename are expected to set the first</span>
@@ -495,7 +495,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">dates</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">date_as_since</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">date_as_since</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;start_period&#39;</span><span class="p">,</span> <span class="s1">&#39;end_period&#39;</span><span class="p">]:</span>
         <span class="n">date</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">groupdict</span><span class="p">()[</span><span class="n">key</span><span class="p">]</span>
         <span class="n">digits</span> <span class="o">=</span> <span class="n">untroncated_timestamp</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
@@ -547,7 +547,7 @@
     <span class="k">return</span> <span class="n">inc</span><span class="p">[</span><span class="n">frequency</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="dates2str"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.dates2str">[docs]</a><span class="k">def</span> <span class="nf">dates2str</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="dates2str"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.dates2str">[docs]</a><span class="k">def</span> <span class="nf">dates2str</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prints date in format: %Y%m%d %H:%M:%s.</span>
 
@@ -560,14 +560,14 @@
     <span class="n">strdates</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">date</span> <span class="ow">in</span> <span class="n">dates</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">sep</span><span class="p">:</span>
-            <span class="n">strdates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;{0:04d}-{1:02d}-{2:02d} {3:02d}:{4:02d}:{5:02d}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
+            <span class="n">strdates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:04d}</span><span class="s1">-</span><span class="si">{1:02d}</span><span class="s1">-</span><span class="si">{2:02d}</span><span class="s1"> </span><span class="si">{3:02d}</span><span class="s1">:</span><span class="si">{4:02d}</span><span class="s1">:</span><span class="si">{5:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
                                                                                      <span class="n">date</span><span class="o">.</span><span class="n">month</span><span class="p">,</span>
                                                                                      <span class="n">date</span><span class="o">.</span><span class="n">day</span><span class="p">,</span>
                                                                                      <span class="n">date</span><span class="o">.</span><span class="n">hour</span><span class="p">,</span>
                                                                                      <span class="n">date</span><span class="o">.</span><span class="n">minute</span><span class="p">,</span>
                                                                                      <span class="n">date</span><span class="o">.</span><span class="n">second</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">strdates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;{0:04d}{1:02d}{2:02d}{3:02d}{4:02d}{5:02d}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
+            <span class="n">strdates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:04d}{1:02d}{2:02d}{3:02d}{4:02d}{5:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
                                                                                 <span class="n">date</span><span class="o">.</span><span class="n">month</span><span class="p">,</span>
                                                                                 <span class="n">date</span><span class="o">.</span><span class="n">day</span><span class="p">,</span>
                                                                                 <span class="n">date</span><span class="o">.</span><span class="n">hour</span><span class="p">,</span>
@@ -576,7 +576,7 @@
     <span class="k">return</span> <span class="n">strdates</span></div>
 
 
-<div class="viewcode-block" id="date2str"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.date2str">[docs]</a><span class="k">def</span> <span class="nf">date2str</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="date2str"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.date2str">[docs]</a><span class="k">def</span> <span class="nf">date2str</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prints date in format: %Y%m%d %H:%M:%s.</span>
 
@@ -587,14 +587,14 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">sep</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s1">&#39;{0:04d}-{1:02d}-{2:02d} {3:02d}:{4:02d}:{5:02d}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0:04d}</span><span class="s1">-</span><span class="si">{1:02d}</span><span class="s1">-</span><span class="si">{2:02d}</span><span class="s1"> </span><span class="si">{3:02d}</span><span class="s1">:</span><span class="si">{4:02d}</span><span class="s1">:</span><span class="si">{5:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
                                                                         <span class="n">date</span><span class="o">.</span><span class="n">month</span><span class="p">,</span>
                                                                         <span class="n">date</span><span class="o">.</span><span class="n">day</span><span class="p">,</span>
                                                                         <span class="n">date</span><span class="o">.</span><span class="n">hour</span><span class="p">,</span>
                                                                         <span class="n">date</span><span class="o">.</span><span class="n">minute</span><span class="p">,</span>
                                                                         <span class="n">date</span><span class="o">.</span><span class="n">second</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s1">&#39;{0:04d}{1:02d}{2:02d}{3:02d}{4:02d}{5:02d}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0:04d}{1:02d}{2:02d}{3:02d}{4:02d}{5:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
                                                                    <span class="n">date</span><span class="o">.</span><span class="n">month</span><span class="p">,</span>
                                                                    <span class="n">date</span><span class="o">.</span><span class="n">day</span><span class="p">,</span>
                                                                    <span class="n">date</span><span class="o">.</span><span class="n">hour</span><span class="p">,</span>

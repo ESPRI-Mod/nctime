@@ -143,15 +143,15 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">uuid4</span>
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="k">import</span> <span class="n">uuid4</span>
 
 <span class="kn">import</span> <span class="nn">nco</span>
 <span class="kn">import</span> <span class="nn">netCDF4</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">exceptions</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">nctime.utils</span> <span class="kn">import</span> <span class="n">time</span>
-<span class="kn">from</span> <span class="nn">nctime.utils.exceptions</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">exceptions</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">nctime.utils</span> <span class="k">import</span> <span class="n">time</span>
+<span class="kn">from</span> <span class="nn">nctime.utils.exceptions</span> <span class="k">import</span> <span class="o">*</span>
 
 
 <div class="viewcode-block" id="File"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.handler.File">[docs]</a><span class="k">class</span> <span class="nc">File</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -201,9 +201,9 @@
         <span class="c1"># Retrieve file full path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ffp</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
         <span class="c1"># Start/end period dates from filename</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">end_date</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_date</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_date</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_date</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="c1"># Get time axis length</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">f</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ffp</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
@@ -214,16 +214,16 @@
         <span class="k">if</span> <span class="n">has_bounds</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">time_bounds</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time_bnds&#39;</span><span class="p">][:,</span> <span class="p">:]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">time_bounds</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">time_bounds</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="c1"># Get time axis</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">time_axis</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][:]</span>
         <span class="c1"># Get time units from file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">time_units</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span>
         <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">time_axis_rebuilt</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">time_bounds_rebuilt</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_axis_rebuilt</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_bounds_rebuilt</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">new_checksum</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_checksum</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="File.get_start_end_dates"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.handler.File.get_start_end_dates">[docs]</a>    <span class="k">def</span> <span class="nf">get_start_end_dates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span class="n">calendar</span><span class="p">,</span> <span class="n">is_instant</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -263,7 +263,7 @@
                            <span class="s1">&#39;MD5&#39;</span><span class="p">:</span>    <span class="s1">&#39;md5sum&#39;</span><span class="p">}</span>
         <span class="k">assert</span> <span class="p">(</span><span class="n">checksum_type</span> <span class="ow">in</span> <span class="n">checksum_client</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span> <span class="s1">&#39;Invalid checksum type&#39;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">shell</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="s2">&quot;{0} {1} | awk -F &#39; &#39; &#39;{{ print $1 }}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">checksum_client</span><span class="p">[</span><span class="n">checksum_type</span><span class="p">],</span>
+            <span class="n">shell</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1}</span><span class="s2"> | awk -F &#39; &#39; &#39;{{ print $1 }}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">checksum_client</span><span class="p">[</span><span class="n">checksum_type</span><span class="p">],</span>
                                                                             <span class="bp">self</span><span class="o">.</span><span class="n">ffp</span><span class="p">),</span>
                              <span class="s1">&#39;r&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">shell</span><span class="o">.</span><span class="n">readline</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -282,13 +282,13 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Generate unique filename</span>
-        <span class="n">fftmp</span> <span class="o">=</span> <span class="s1">&#39;{0}/{1}{2}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">()),</span> <span class="s1">&#39;.nc&#39;</span><span class="p">)</span>
+        <span class="n">fftmp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">/</span><span class="si">{1}{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">()),</span> <span class="s1">&#39;.nc&#39;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">nc</span> <span class="o">=</span> <span class="n">nco</span><span class="o">.</span><span class="n">Nco</span><span class="p">()</span>
             <span class="n">nc</span><span class="o">.</span><span class="n">ncks</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ffp</span><span class="p">,</span>
                     <span class="n">output</span><span class="o">=</span><span class="n">fftmp</span><span class="p">,</span>
-                    <span class="n">options</span><span class="o">=</span><span class="s1">&#39;-x -O -v {0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">variable</span><span class="p">))</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="s2">&quot;cat {0} &gt; {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fftmp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ffp</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+                    <span class="n">options</span><span class="o">=</span><span class="s1">&#39;-x -O -v </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">variable</span><span class="p">))</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="s2">&quot;cat </span><span class="si">{0}</span><span class="s2"> &gt; </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fftmp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ffp</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
             <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">fftmp</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">fftmp</span><span class="p">)</span>
@@ -307,19 +307,19 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Generate unique filename</span>
-        <span class="n">fftmp</span> <span class="o">=</span> <span class="s1">&#39;{0}/{1}{2}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">()),</span> <span class="s1">&#39;.nc&#39;</span><span class="p">)</span>
+        <span class="n">fftmp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">/</span><span class="si">{1}{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">()),</span> <span class="s1">&#39;.nc&#39;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">nc</span> <span class="o">=</span> <span class="n">nco</span><span class="o">.</span><span class="n">Nco</span><span class="p">()</span>
             <span class="n">nc</span><span class="o">.</span><span class="n">ncatted</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ffp</span><span class="p">,</span>
                        <span class="n">output</span><span class="o">=</span><span class="n">fftmp</span><span class="p">,</span>
-                       <span class="n">options</span><span class="o">=</span><span class="s1">&#39;-a {0},{1},d,,&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">variable</span><span class="p">))</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="s2">&quot;cat {0} &gt; {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fftmp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ffp</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+                       <span class="n">options</span><span class="o">=</span><span class="s1">&#39;-a </span><span class="si">{0}</span><span class="s1">,</span><span class="si">{1}</span><span class="s1">,d,,&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">variable</span><span class="p">))</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="s2">&quot;cat </span><span class="si">{0}</span><span class="s2"> &gt; </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fftmp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ffp</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
             <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">fftmp</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">fftmp</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">NetCDFAttributeRemoveFail</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ffp</span><span class="p">,</span> <span class="n">variable</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="File.build_time_axis"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.handler.File.build_time_axis">[docs]</a>    <span class="k">def</span> <span class="nf">build_time_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">inc</span><span class="p">,</span> <span class="n">input_units</span><span class="p">,</span> <span class="n">output_units</span><span class="p">,</span> <span class="n">calendar</span><span class="p">,</span> <span class="n">is_instant</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="File.build_time_axis"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.handler.File.build_time_axis">[docs]</a>    <span class="k">def</span> <span class="nf">build_time_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">inc</span><span class="p">,</span> <span class="n">input_units</span><span class="p">,</span> <span class="n">output_units</span><span class="p">,</span> <span class="n">calendar</span><span class="p">,</span> <span class="n">is_instant</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Rebuilds time axis from date axis, depending on MIP frequency, calendar and instant status.</span>
 
