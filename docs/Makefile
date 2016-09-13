@@ -180,6 +180,7 @@ pseudoxml:
 
 gh-pages: html
 	cd $(BUILDDIR)/html
+	pwd
 	git show-ref
 	git add .
 	git commit -m "Docs rebuilt"
