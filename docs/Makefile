@@ -179,7 +179,7 @@ pseudoxml:
 	@echo "Build finished. The pseudo-XML files are in $(BUILDDIR)/pseudoxml."
 
 gh-pages: html
-	cd $(BUILDDIR)/html
+	cd /home/glipsl/work/nctime/docs-build/html
 	pwd
 	git show-ref
 	git add .
