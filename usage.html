@@ -1,0 +1,498 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Usage and tutorials &mdash; nctime 3.8.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="nctime 3.8.1 documentation" href="index.html"/>
+        <link rel="next" title="Frequently asked questions" href="faq.html"/>
+        <link rel="prev" title="Configuration" href="configuration.html"/> 
+
+  
+  <script src="static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> nctime
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.8
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="synopsis.html">Synopsis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage and tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#common-usage">Common usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#specify-the-project">Specify the project</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#specify-a-configuration-file">Specify a configuration file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#add-verbosity">Add verbosity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#show-help-message-and-exit">Show help message and exit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#use-a-logfile">Use a logfile</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#nctime-overlap"><code class="docutils literal"><span class="pre">nctime</span> <span class="pre">overlap</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#check-a-mip-variable">Check a MIP variable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#detect-overlapping-files">Detect overlapping files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#remove-overlapping-files">Remove overlapping files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#detect-a-time-gap">Detect a time gap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#use-the-longest-subtree">Use the longest subtree</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#nctime-axis"><code class="docutils literal"><span class="pre">nctime</span> <span class="pre">axis</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Check a MIP variable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#detect-a-wrong-time-axis">Detect a wrong time axis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rewrite-a-wrong-time-axis">Rewrite a wrong time axis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#force-a-time-axis-rewriting">Force a time axis rewriting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#save-diagnostic-to-an-sql-database">Save diagnostic to an SQL database</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="credits.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc.html">Code documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">nctime</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Usage and tutorials</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="sources/usage.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="usage-and-tutorials">
+<span id="usage"></span><h1>Usage and tutorials<a class="headerlink" href="#usage-and-tutorials" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="common-usage">
+<h2>Common usage<a class="headerlink" href="#common-usage" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="specify-the-project">
+<h3>Specify the project<a class="headerlink" href="#specify-the-project" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime &lt;command&gt; --project &lt;project_id&gt;
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This <code class="docutils literal"><span class="pre">--project</span></code> argument is always required.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This <code class="docutils literal"><span class="pre">--project</span></code> name has to correspond to a section of the configuration file.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The <code class="docutils literal"><span class="pre">--project</span></code> is case-sensitive.</p>
+</div>
+</div>
+<div class="section" id="specify-a-configuration-file">
+<h3>Specify a configuration file<a class="headerlink" href="#specify-a-configuration-file" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime &lt;command&gt; -i /path/to/config.ini
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Default is <code class="docutils literal"><span class="pre">$PWD/config.ini</span></code>.</p>
+</div>
+</div>
+<div class="section" id="add-verbosity">
+<h3>Add verbosity<a class="headerlink" href="#add-verbosity" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime &lt;command&gt; -v
+</pre></div>
+</div>
+</div>
+<div class="section" id="show-help-message-and-exit">
+<h3>Show help message and exit<a class="headerlink" href="#show-help-message-and-exit" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime &lt;command&gt; -h
+</pre></div>
+</div>
+</div>
+<div class="section" id="use-a-logfile">
+<h3>Use a logfile<a class="headerlink" href="#use-a-logfile" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime &lt;command&gt; --log /path/to/logdir
+<span class="o">[</span>...<span class="o">]</span>
+$&gt; cat /path/to/logdir/nctime-YYYYMMDD-HHMMSS-PID.log
+<span class="o">[</span>...<span class="o">]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The logfile directory is optional.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If not submitted the logfile directory is read from the configuration file first or is the current working
+directory instead. No flag seems the standard output is used.</p>
+</div>
+</div>
+</div>
+<div class="section" id="nctime-overlap">
+<h2><code class="docutils literal"><span class="pre">nctime</span> <span class="pre">overlap</span></code><a class="headerlink" href="#nctime-overlap" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="check-a-mip-variable">
+<h3>Check a MIP variable<a class="headerlink" href="#check-a-mip-variable" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime overlap --project &lt;project_id&gt; /path/to/your/archive/project/variable/ -v
+YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic started <span class="k">for</span> /path/to/your/archive/project/variable/
+YYYY/MM/DD HH:MM:SS PM INFO    File    <span class="p">|</span>        Start        <span class="p">|</span>         End         <span class="p">|</span>         Next
+YYYY/MM/DD HH:MM:SS PM INFO  file1.nc  <span class="p">|</span> 2006-01-01 00:00:00 <span class="p">|</span> 2010-12-01 00:00:00 <span class="p">|</span> 2011-01-01 00:00:00
+YYYY/MM/DD HH:MM:SS PM INFO  file2.nc  <span class="p">|</span> 2011-01-01 00:00:00 <span class="p">|</span> 2020-12-01 00:00:00 <span class="p">|</span> 2021-01-01 00:00:00
+YYYY/MM/DD HH:MM:SS PM INFO Shortest path found
+YYYY/MM/DD HH:MM:SS PM INFO No overlapping files
+YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic completed
+</pre></div>
+</div>
+</div>
+<div class="section" id="detect-overlapping-files">
+<h3>Detect overlapping files<a class="headerlink" href="#detect-overlapping-files" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime overlap --project &lt;project_id&gt; /path/to/your/archive/project/variable/ -v
+YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic started <span class="k">for</span> /path/to/your/archive/project/variable/
+YYYY/MM/DD HH:MM:SS PM INFO    File    <span class="p">|</span>        Start        <span class="p">|</span>         End         <span class="p">|</span>         Next
+YYYY/MM/DD HH:MM:SS PM INFO  file1.nc  <span class="p">|</span> 2006-01-01 00:00:00 <span class="p">|</span> 2010-12-01 00:00:00 <span class="p">|</span> 2011-01-01 00:00:00
+YYYY/MM/DD HH:MM:SS PM INFO  file2.nc  <span class="p">|</span> 2011-01-01 00:00:00 <span class="p">|</span> 2018-12-01 00:00:00 <span class="p">|</span> 2019-01-01 00:00:00
+YYYY/MM/DD HH:MM:SS PM INFO  file3.nc  <span class="p">|</span> 2011-01-01 00:00:00 <span class="p">|</span> 2020-12-01 00:00:00 <span class="p">|</span> 2021-01-01 00:00:00
+YYYY/MM/DD HH:MM:SS PM INFO Shortest path found
+YYYY/MM/DD HH:MM:SS PM WARNING Overlapping files:
+YYYY/MM/DD HH:MM:SS PM WARNING file2.nc
+YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic completed
+</pre></div>
+</div>
+</div>
+<div class="section" id="remove-overlapping-files">
+<h3>Remove overlapping files<a class="headerlink" href="#remove-overlapping-files" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime overlap --project &lt;project_id&gt; /path/to/your/archive/project/variable/ -v --remove
+YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic started <span class="k">for</span> /path/to/your/archive/project/variable/
+YYYY/MM/DD HH:MM:SS PM INFO    File    <span class="p">|</span>        Start        <span class="p">|</span>         End         <span class="p">|</span>         Next
+YYYY/MM/DD HH:MM:SS PM INFO  file1.nc  <span class="p">|</span> 2006-01-01 00:00:00 <span class="p">|</span> 2010-12-01 00:00:00 <span class="p">|</span> 2011-01-01 00:00:00
+YYYY/MM/DD HH:MM:SS PM INFO  file2.nc  <span class="p">|</span> 2011-01-01 00:00:00 <span class="p">|</span> 2018-12-01 00:00:00 <span class="p">|</span> 2019-01-01 00:00:00
+YYYY/MM/DD HH:MM:SS PM INFO  file3.nc  <span class="p">|</span> 2011-01-01 00:00:00 <span class="p">|</span> 2020-12-01 00:00:00 <span class="p">|</span> 2021-01-01 00:00:00
+YYYY/MM/DD HH:MM:SS PM INFO Shortest path found
+YYYY/MM/DD HH:MM:SS PM WARNING Overlapping files:
+YYYY/MM/DD HH:MM:SS PM WARNING file2.nc
+YYYY/MM/DD HH:MM:SS PM WARNING <span class="m">1</span> overlapping files removed
+YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic completed
+</pre></div>
+</div>
+</div>
+<div class="section" id="detect-a-time-gap">
+<h3>Detect a time gap<a class="headerlink" href="#detect-a-time-gap" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime overlap --project &lt;project_id&gt; /path/to/your/archive/project/variable/ -v
+YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic started <span class="k">for</span> /path/to/your/archive/project/variable/
+YYYY/MM/DD HH:MM:SS PM INFO    File    <span class="p">|</span>        Start        <span class="p">|</span>         End         <span class="p">|</span>         Next
+YYYY/MM/DD HH:MM:SS PM INFO  file1.nc  <span class="p">|</span> 2006-01-01 00:00:00 <span class="p">|</span> 2010-12-01 00:00:00 <span class="p">|</span> 2011-01-01 00:00:00
+YYYY/MM/DD HH:MM:SS PM INFO  file2.nc  <span class="p">|</span> 2011-01-01 00:00:00 <span class="p">|</span> 2020-12-01 00:00:00 <span class="p">|</span> 2021-01-01 00:00:00
+YYYY/MM/DD HH:MM:SS PM INFO  file3.nc  <span class="p">|</span> 2041-01-01 00:00:00 <span class="p">|</span> 2050-12-01 00:00:00 <span class="p">|</span> 2051-01-01 00:00:00
+YYYY/MM/DD HH:MM:SS PM INFO  file4.nc  <span class="p">|</span> 2051-01-01 00:00:00 <span class="p">|</span> 2060-12-01 00:00:00 <span class="p">|</span> 2061-01-01 00:00:00
+YYYY/MM/DD HH:MM:SS PM INFO  file5.nc  <span class="p">|</span> 2061-01-01 00:00:00 <span class="p">|</span> 2070-12-01 00:00:00 <span class="p">|</span> 2071-01-01 00:00:00
+YYYY/MM/DD HH:MM:SS PM WARNING No shortest path found: No path between <span class="m">20060101000000</span> and 20710101000000.
+YYYY/MM/DD HH:MM:SS PM INFO No overlapping files
+YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic completed
+</pre></div>
+</div>
+</div>
+<div class="section" id="use-the-longest-subtree">
+<h3>Use the longest subtree<a class="headerlink" href="#use-the-longest-subtree" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If a gap exists in the period sequence, you can use the shortest path on the longest subtree from
+the period start.</p>
+</div>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime overlap --project &lt;project_id&gt; /path/to/your/archive/project/variable/ -v
+YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic started <span class="k">for</span> /path/to/your/archive/project/variable/
+YYYY/MM/DD HH:MM:SS PM INFO    File    <span class="p">|</span>        Start        <span class="p">|</span>         End         <span class="p">|</span>         Next
+YYYY/MM/DD HH:MM:SS PM INFO  file1.nc  <span class="p">|</span> 2006-01-01 00:00:00 <span class="p">|</span> 2010-12-01 00:00:00 <span class="p">|</span> 2011-01-01 00:00:00
+YYYY/MM/DD HH:MM:SS PM INFO  file2.nc  <span class="p">|</span> 2011-01-01 00:00:00 <span class="p">|</span> 2020-12-01 00:00:00 <span class="p">|</span> 2021-01-01 00:00:00
+YYYY/MM/DD HH:MM:SS PM INFO  file3.nc  <span class="p">|</span> 2041-01-01 00:00:00 <span class="p">|</span> 2050-12-01 00:00:00 <span class="p">|</span> 2051-01-01 00:00:00
+YYYY/MM/DD HH:MM:SS PM INFO  file4.nc  <span class="p">|</span> 2051-01-01 00:00:00 <span class="p">|</span> 2060-12-01 00:00:00 <span class="p">|</span> 2061-01-01 00:00:00
+YYYY/MM/DD HH:MM:SS PM INFO  file5.nc  <span class="p">|</span> 2061-01-01 00:00:00 <span class="p">|</span> 2070-12-01 00:00:00 <span class="p">|</span> 2071-01-01 00:00:00
+YYYY/MM/DD HH:MM:SS PM WARNING Shortest path found on the longest subtree:
+YYYY/MM/DD HH:MM:SS PM WARNING file1.nc
+YYYY/MM/DD HH:MM:SS PM WARNING file2.nc
+YYYY/MM/DD HH:MM:SS PM WARNING Overlapping files:
+YYYY/MM/DD HH:MM:SS PM WARNING file3.nc
+YYYY/MM/DD HH:MM:SS PM WARNING file4.nc
+YYYY/MM/DD HH:MM:SS PM WARNING file5.nc
+YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic completed
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Using the longest subtree flags the rest of the period as an overlap. Consequently, if <code class="docutils literal"><span class="pre">--subtree</span></code> and
+<code class="docutils literal"><span class="pre">--remove</span></code> are set, <code class="docutils literal"><span class="pre">nctime</span></code> will delete the overlapping files on the longest sub-period and the
+files of the remaining subtree.</p>
+</div>
+</div>
+</div>
+<div class="section" id="nctime-axis">
+<h2><code class="docutils literal"><span class="pre">nctime</span> <span class="pre">axis</span></code><a class="headerlink" href="#nctime-axis" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>Check a MIP variable<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis --project &lt;project_id&gt; /path/to/your/archive/project/variable/ -v
+YYYY/MM/DD HH:MM:SS PM INFO Time axis diagnostic started <span class="k">for</span> /path/to/your/archive/project/variable/
+YYYY/MM/DD HH:MM:SS PM INFO file1.nc - Time axis seems OK
+YYYY/MM/DD HH:MM:SS PM INFO file2.nc - Time axis seems OK
+YYYY/MM/DD HH:MM:SS PM INFO file3.nc - Time axis seems OK
+YYYY/MM/DD HH:MM:SS PM INFO Time diagnostic completed <span class="o">(</span><span class="m">3</span> files scanned<span class="o">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Verbosity will print file information with theoretical time axis and time axis from file.</p>
+</div>
+</div>
+<div class="section" id="detect-a-wrong-time-axis">
+<h3>Detect a wrong time axis<a class="headerlink" href="#detect-a-wrong-time-axis" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div>$&gt; nctime axis &#8211;project &lt;project_id&gt; /path/to/your/archive/project/variable/ -v
+YYYY/MM/DD HH:MM:SS PM INFO Time axis diagnostic started for /path/to/your/archive/project/variable/
+YYYY/MM/DD HH:MM:SS PM INFO file1.nc - Time axis seems OK
+YYYY/MM/DD HH:MM:SS PM INFO file2.nc - 001 - Mistaken time axis over one or several time steps
+YYYY/MM/DD HH:MM:SS PM INFO file3.nc - Time axis seems OK
+YYYY/MM/DD HH:MM:SS PM INFO Time diagnostic completed (3 files scanned)</div></blockquote>
+</div>
+<div class="section" id="rewrite-a-wrong-time-axis">
+<h3>Rewrite a wrong time axis<a class="headerlink" href="#rewrite-a-wrong-time-axis" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The write mode displays the same information and only modify the input files if necessary. In such a case,
+the new checksum is computed automatically.</p>
+</div>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis --project &lt;project_id&gt; /path/to/your/archive/project/variable/ -v --write
+YYYY/MM/DD HH:MM:SS PM INFO Time axis diagnostic started <span class="k">for</span> /path/to/your/archive/project/variable/
+YYYY/MM/DD HH:MM:SS PM INFO file1.nc - Time axis seems OK
+YYYY/MM/DD HH:MM:SS PM INFO file2.nc - <span class="m">001</span> - Mistaken <span class="nb">time</span> axis over one or several <span class="nb">time</span> steps
+YYYY/MM/DD HH:MM:SS PM INFO file3.nc - Time axis seems OK
+YYYY/MM/DD HH:MM:SS PM INFO Time diagnostic completed <span class="o">(</span><span class="m">3</span> files scanned<span class="o">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="force-a-time-axis-rewriting">
+<h3>Force a time axis rewriting<a class="headerlink" href="#force-a-time-axis-rewriting" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Anyway, you can force to overwrite time axis (the checksum is automatically computed again).</p>
+</div>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis --project &lt;project_id&gt; /path/to/your/archive/project/variable/ -v --force
+YYYY/MM/DD HH:MM:SS PM INFO Time axis diagnostic started <span class="k">for</span> /path/to/your/archive/project/variable/
+YYYY/MM/DD HH:MM:SS PM INFO file1.nc - Time axis seems OK
+YYYY/MM/DD HH:MM:SS PM INFO file2.nc - <span class="m">001</span> - Mistaken <span class="nb">time</span> axis over one or several <span class="nb">time</span> steps
+YYYY/MM/DD HH:MM:SS PM INFO file3.nc - Time axis seems OK
+YYYY/MM/DD HH:MM:SS PM INFO Time diagnostic completed <span class="o">(</span><span class="m">3</span> files scanned<span class="o">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="save-diagnostic-to-an-sql-database">
+<h3>Save diagnostic to an SQL database<a class="headerlink" href="#save-diagnostic-to-an-sql-database" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis --project &lt;project_id&gt; /path/to/your/archive/project/variable/ -v --db
+YYYY/MM/DD HH:MM:SS PM INFO Time axis diagnostic started <span class="k">for</span> /path/to/your/archive/project/variable/
+YYYY/MM/DD HH:MM:SS PM INFO file1.nc - Time axis seems OK
+YYYY/MM/DD HH:MM:SS PM INFO file1.nc - Diagnostic persisted into database
+YYYY/MM/DD HH:MM:SS PM INFO file2.nc - Time axis seems OK
+YYYY/MM/DD HH:MM:SS PM INFO file2.nc - Diagnostic persisted into database
+YYYY/MM/DD HH:MM:SS PM INFO file3.nc - Time axis seems OK
+YYYY/MM/DD HH:MM:SS PM INFO file3.nc - Diagnostic persisted into database
+YYYY/MM/DD HH:MM:SS PM INFO Time diagnostic completed <span class="o">(</span><span class="m">3</span> files scanned<span class="o">)</span>
+
+$&gt; sqlite3 time_axis.db
+<span class="nv">$sqlite</span>&gt; .schema
+CREATE TABLE time_axis
+            <span class="o">(</span>id INTEGER PRIMARY KEY,
+            project TEXT,
+            realm TEXT,
+            frequency TEXT,
+            freq_units TEXT,
+            variable TEXT,
+            filename TEXT,
+            start TEXT,
+            end TEXT,
+            last TEXT,
+            length INT,
+            file_units TEXT,
+            status TEXT,
+            file_ref TEXT,
+            ref_units TEXT,
+            calendar TEXT,
+            is_instant INT,
+            has_bounds INT,
+            new_checksum TEXT,
+            full_path TEXT,
+            creation_date TEXT<span class="o">)</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The database path is optional.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If not submitted the database path is read from the configuration file first or in the current working
+directory instead. No flag seems that the diagnostic is not recorded.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="faq.html" class="btn btn-neutral float-right" title="Frequently asked questions" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="configuration.html" class="btn btn-neutral" title="Configuration" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Levavasseur, G..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'3.8.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="static/jquery.js"></script>
+      <script type="text/javascript" src="static/underscore.js"></script>
+      <script type="text/javascript" src="static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

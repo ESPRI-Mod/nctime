@@ -1,0 +1,1642 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Code documentation &mdash; nctime 3.8.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="nctime 3.8.1 documentation" href="index.html"/>
+        <link rel="prev" title="Changelog" href="log.html"/> 
+
+  
+  <script src="static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> nctime
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.8
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="synopsis.html">Synopsis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage and tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="credits.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">Changelog</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Code documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-nctime.nctime">nctime</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-nctime.overlap.main">overlap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-nctime.axis.main">axis</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-nctime.utils.utils">utils</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">nctime</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Code documentation</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="sources/autodoc.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="code-documentation">
+<span id="autodoc"></span><h1>Code documentation<a class="headerlink" href="#code-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-nctime.nctime">
+<span id="nctime"></span><h2>nctime<a class="headerlink" href="#module-nctime.nctime" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-nctime"></span><p><em>Module author: Guillaume Levavasseur &lt;<a class="reference external" href="mailto:glipsl&#37;&#52;&#48;ipsl&#46;jussieu&#46;fr">glipsl<span>&#64;</span>ipsl<span>&#46;</span>jussieu<span>&#46;</span>fr</a>&gt;</em></p>
+<dl class="function">
+<dt id="nctime.nctime.get_args">
+<code class="descclassname">nctime.nctime.</code><code class="descname">get_args</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/nctime.html#get_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.nctime.get_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns parsed command-line arguments. See <code class="docutils literal"><span class="pre">nctime</span> <span class="pre">-h</span></code> for full description.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The corresponding <code class="docutils literal"><span class="pre">argparse</span></code> Namespace</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><em>ArgumentParser</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="section" id="module-nctime.overlap.main">
+<span id="overlap"></span><h3>overlap<a class="headerlink" href="#module-nctime.overlap.main" title="Permalink to this headline">¶</a></h3>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">platform:</th><td class="field-body">Unix</td>
+</tr>
+<tr class="field-even field"><th class="field-name">synopsis:</th><td class="field-body">Highlight chunked NetCDF files producing overlap in a time series.</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="nctime.overlap.main.ProcessingContext">
+<em class="property">class </em><code class="descclassname">nctime.overlap.main.</code><code class="descname">ProcessingContext</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/overlap/main.html#ProcessingContext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.overlap.main.ProcessingContext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encapsulates the following processing context/information for main process:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="19%" />
+<col width="48%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Attribute</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><em>self</em>.directory</td>
+<td><em>str</em></td>
+<td>Variable to scan</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.mip</td>
+<td><em>str</em></td>
+<td>The MIP table from DRS</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.remove</td>
+<td><em>boolean</em></td>
+<td>True if remove mode</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.verbose</td>
+<td><em>boolean</em></td>
+<td>True if verbose mode</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.subtree</td>
+<td><em>boolean</em></td>
+<td>True for sub-period use</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.project</td>
+<td><em>str</em></td>
+<td>MIP project</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.pattern</td>
+<td><em>re object</em></td>
+<td>Filename regex pattern</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.need_instant</td>
+<td><em>list</em></td>
+<td>Tuples for instant time axis</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.tunits_default</td>
+<td><em>str</em></td>
+<td>Default time units</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.ref</td>
+<td><em>str</em></td>
+<td>First filename as reference</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.variable</td>
+<td><em>str</em></td>
+<td>MIP variable</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>ArgumentParser</em>) &#8211; Parsed command-line arguments</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The processing context</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>ProcessingContext</em></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="nctime.overlap.main.ProcessingContext.get_files_list">
+<code class="descname">get_files_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/overlap/main.html#ProcessingContext.get_files_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.overlap.main.ProcessingContext.get_files_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yields all files into a directory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A file iterator</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><em>iter</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.overlap.main.get_overlaps">
+<code class="descclassname">nctime.overlap.main.</code><code class="descname">get_overlaps</code><span class="sig-paren">(</span><em>nodes</em>, <em>shortest</em>, <em>overlaps=True</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/overlap/main.html#get_overlaps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.overlap.main.get_overlaps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yields all matching or overlapping (default) files.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>nodes</strong> (<em>list</em>) &#8211; The directed graph nodes as a list of tuples</li>
+<li><strong>shortest</strong> (<em>list</em>) &#8211; The most consecutive files list (from <cite>nx.DiGraph()</cite>)</li>
+<li><strong>overlaps</strong> (<em>boolean</em>) &#8211; True if overlaps are returned</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The filenames</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>list</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.overlap.main.main">
+<code class="descclassname">nctime.overlap.main.</code><code class="descname">main</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/overlap/main.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.overlap.main.main" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Main process that:</dt>
+<dd><ul class="first last simple">
+<li>Instanciates processing context,</li>
+<li>Deduces start, end and next date from each filenames,</li>
+<li>Builds the DiGraph,</li>
+<li>Detects the shortest path between dates if exists,</li>
+<li>Removes the overlapping files.</li>
+</ul>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>ArgumentParser</em>) &#8211; Parsed command-line arguments</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<span class="target" id="module-nctime.overlap.exceptions"></span><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">platform:</th><td class="field-body">Unix</td>
+</tr>
+<tr class="field-even field"><th class="field-name">synopsis:</th><td class="field-body">Custom exceptions used in this module.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="module-nctime.axis.main">
+<span id="axis"></span><h3>axis<a class="headerlink" href="#module-nctime.axis.main" title="Permalink to this headline">¶</a></h3>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">platform:</th><td class="field-body">Unix</td>
+</tr>
+<tr class="field-even field"><th class="field-name">synopsis:</th><td class="field-body">Rewrite and/or check time axis of MIP NetCDF files.</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="nctime.axis.main.ProcessingContext">
+<em class="property">class </em><code class="descclassname">nctime.axis.main.</code><code class="descname">ProcessingContext</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/main.html#ProcessingContext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.main.ProcessingContext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encapsulates the following processing context/information for main process:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="19%" />
+<col width="48%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Attribute</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><em>self</em>.directory</td>
+<td><em>str</em></td>
+<td>Variable to scan</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.write</td>
+<td><em>boolean</em></td>
+<td>True if write mode</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.force</td>
+<td><em>boolean</em></td>
+<td>True if force writing</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.verbose</td>
+<td><em>boolean</em></td>
+<td>True if verbose mode</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.project</td>
+<td><em>str</em></td>
+<td>MIP project</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.db</td>
+<td><em>str</em></td>
+<td>Database path</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.threads</td>
+<td><em>int</em></td>
+<td>Maximal threads number</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.checksum_type</td>
+<td><em>str</em></td>
+<td>The checksum type</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.pattern</td>
+<td><em>re object</em></td>
+<td>Filename regex pattern</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.need_instant</td>
+<td><em>list</em></td>
+<td>Tuples for instant time axis</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.tunits_default</td>
+<td><em>str</em></td>
+<td>Default time units</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.ref</td>
+<td><em>str</em></td>
+<td>First filename as reference</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.variable</td>
+<td><em>str</em></td>
+<td>MIP variable</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>ArgumentParser</em>) &#8211; Parsed command-line arguments</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The processing context</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>ProcessingContext</em></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="nctime.axis.main.ProcessingContext.get_files_list">
+<code class="descname">get_files_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/main.html#ProcessingContext.get_files_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.main.ProcessingContext.get_files_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yields all files into a directory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A file iterator</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><em>iter</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.axis.main.counted">
+<code class="descclassname">nctime.axis.main.</code><code class="descname">counted</code><span class="sig-paren">(</span><em>fct</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/main.html#counted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.main.counted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator used to count all file process calls.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fct</strong> (<em>callable</em>) &#8211; The function to monitor</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A wrapped function with a <code class="docutils literal"><span class="pre">.called</span></code> attribute</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>callable</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.axis.main.process">
+<code class="descclassname">nctime.axis.main.</code><code class="descname">process</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/main.html#process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.main.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>time_axis_processing(inputs)</p>
+<dl class="docutils">
+<dt>Time axis process that:</dt>
+<dd><ul class="first last simple">
+<li>Deduces start and end dates from filename,</li>
+<li>Rebuilds the theoretical time axis (using frequency, calendar, etc.),</li>
+<li>Compares the theoretical time axis with the time axis from the file,</li>
+<li>Compares the last theoretical date with the end date from the filename,</li>
+<li>Checks if the expected time units keep unchanged,</li>
+<li>Checks the squareness and the consistency of time boundaries,</li>
+<li>Rewrites (with <code class="docutils literal"><span class="pre">--write</span></code> mode) the new time axis,</li>
+<li>Computes the new checksum if modified,</li>
+<li>Traceback the status.</li>
+</ul>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>inputs</strong> (<em>tuple</em>) &#8211; A tuple with the filename, the processing context and the time initialization</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The updated file handler instance</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>nctime.axis.handler.File</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.axis.main.yield_inputs">
+<code class="descclassname">nctime.axis.main.</code><code class="descname">yield_inputs</code><span class="sig-paren">(</span><em>ctx</em>, <em>tinit</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/main.html#yield_inputs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.main.yield_inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yields all files to process within tuples with the processing context and the time initialization.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ctx</strong> (<a class="reference internal" href="#nctime.axis.main.ProcessingContext" title="nctime.axis.main.ProcessingContext"><em>nctime.axis.main.ProcessingContext</em></a>) &#8211; The processing context</li>
+<li><strong>tinit</strong> (<a class="reference internal" href="#nctime.utils.time.TimeInit" title="nctime.utils.time.TimeInit"><em>nctime.utils.time.TimeInit</em></a>) &#8211; The time initialization context</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Attach the processing context and the time initialization to a file processing as an iterator of tuples</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>iter</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.axis.main.wrapper">
+<code class="descclassname">nctime.axis.main.</code><code class="descname">wrapper</code><span class="sig-paren">(</span><em>inputs</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/main.html#wrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.main.wrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transparent wrapper for pool map.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>inputs</strong> (<em>tuple</em>) &#8211; A tuple with the file path and the processing context</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The <a class="reference internal" href="#nctime.axis.main.process" title="nctime.axis.main.process"><code class="xref py py-func docutils literal"><span class="pre">process()</span></code></a> call</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>callable</em></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>Error</strong> &#8211; When a thread-process failed preserving its traceback</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.axis.main.main">
+<code class="descclassname">nctime.axis.main.</code><code class="descname">main</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/main.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.main.main" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Main process that:</dt>
+<dd><ul class="first last simple">
+<li>Instanciates processing context,</li>
+<li>Defines the referenced time properties,</li>
+<li>Instanciates threads pools,</li>
+<li>Prints or logs the time axis diagnostics.</li>
+</ul>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>ArgumentParser</em>) &#8211; Parsed command-line arguments</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<span class="target" id="module-nctime.axis.handler"></span><span class="target" id="module-nctime.axis.handler.py"></span><dl class="class">
+<dt id="nctime.axis.handler.File">
+<em class="property">class </em><code class="descclassname">nctime.axis.handler.</code><code class="descname">File</code><span class="sig-paren">(</span><em>directory</em>, <em>filename</em>, <em>has_bounds</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/handler.html#File"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.handler.File" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handler providing methods to deal with file processing.
+It encapsulates the following file diagnostic to print or save:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="14%" />
+<col width="64%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Attribute</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><em>self</em>.directory</td>
+<td><em>str</em></td>
+<td>Variable to scan</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.file</td>
+<td><em>str</em></td>
+<td>Filename</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.start</td>
+<td><em>str</em></td>
+<td>Start date from filename</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.end</td>
+<td><em>str</em></td>
+<td>End date from filename</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.last</td>
+<td><em>str</em></td>
+<td>Last date from theoretical time axis</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.steps</td>
+<td><em>int</em></td>
+<td>Time axis length</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.instant</td>
+<td><em>boolean</em></td>
+<td>True if instantaneous time axis</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.calendar</td>
+<td><em>str</em></td>
+<td>NetCDF calendar attribute</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.units</td>
+<td><em>str</em></td>
+<td>Expected time units</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.control</td>
+<td><em>list</em></td>
+<td>Errors status</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.bnds</td>
+<td><em>boolean</em></td>
+<td>True if time bounds excpected and not mistaken</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.checksum</td>
+<td><em>str</em></td>
+<td>New checksum if modified file</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.axis</td>
+<td><em>array</em></td>
+<td>Theoretical time axis</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.time</td>
+<td><em>array</em></td>
+<td>Time axis from file</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The axis status</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><em>File</em></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="nctime.axis.handler.File.get_start_end_dates">
+<code class="descname">get_start_end_dates</code><span class="sig-paren">(</span><em>project</em>, <em>pattern</em>, <em>frequency</em>, <em>units</em>, <em>calendar</em>, <em>is_instant</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/handler.html#File.get_start_end_dates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.handler.File.get_start_end_dates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wraps and records <code class="xref py py-func docutils literal"><span class="pre">get_start_end_dates_from_filename()</span></code> results.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>Object pattern</strong> (<em>re</em>) &#8211; The filename pattern as a regex (from <a class="reference external" href="https://docs.python.org/2/library/re.html">re library</a>).</li>
+<li><strong>project</strong> (<em>str</em>) &#8211; The project name</li>
+<li><strong>frequency</strong> (<em>str</em>) &#8211; The time frequency</li>
+<li><strong>units</strong> (<em>str</em>) &#8211; The proper time units</li>
+<li><strong>calendar</strong> (<em>str</em>) &#8211; The NetCDF calendar attribute</li>
+<li><strong>is_instant</strong> (<em>boolean</em>) &#8211; True if instantaneous time axis</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Start and end dates as number of days since the referenced date</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>float</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="nctime.axis.handler.File.checksum">
+<code class="descname">checksum</code><span class="sig-paren">(</span><em>checksum_type</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/handler.html#File.checksum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.handler.File.checksum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does the checksum by the Shell avoiding Python memory limits.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>checksum_type</strong> (<em>str</em>) &#8211; Checksum type</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The checksum</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>str</em></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>Error</strong> &#8211; If the checksum fails</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="nctime.axis.handler.File.nc_var_delete">
+<code class="descname">nc_var_delete</code><span class="sig-paren">(</span><em>variable</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/handler.html#File.nc_var_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.handler.File.nc_var_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a NetCDF variable using NCO operators.
+A unique filename is generated to avoid multithreading errors.
+To overwrite the input file, the source file is dump using the <code class="docutils literal"><span class="pre">cat</span></code> Shell command-line
+to avoid Python memory limit.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>variable</strong> (<em>str</em>) &#8211; The variable to delete</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>Error</strong> &#8211; If the deletion failed</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="nctime.axis.handler.File.nc_att_delete">
+<code class="descname">nc_att_delete</code><span class="sig-paren">(</span><em>variable</em>, <em>attribute</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/handler.html#File.nc_att_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.handler.File.nc_att_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a NetCDF dimension attribute using NCO operators.
+A unique filename is generated to avoid multithreading errors.
+To overwrite the input file, the source file is dump using the <code class="docutils literal"><span class="pre">cat</span></code> Shell command-line
+to avoid Python memory limit.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>attribute</strong> (<em>str</em>) &#8211; The attribute to delete</li>
+<li><strong>variable</strong> (<em>str</em>) &#8211; The variable that has the attribute</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>Error</strong> &#8211; If the deletion failed</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="nctime.axis.handler.File.build_time_axis">
+<code class="descname">build_time_axis</code><span class="sig-paren">(</span><em>start</em>, <em>inc</em>, <em>input_units</em>, <em>output_units</em>, <em>calendar</em>, <em>is_instant=False</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/handler.html#File.build_time_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.handler.File.build_time_axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rebuilds time axis from date axis, depending on MIP frequency, calendar and instant status.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>start</strong> (<em>float</em>) &#8211; The numerical date to start (from <code class="docutils literal"><span class="pre">netCDF4.date2num</span></code> or         <a class="reference internal" href="#nctime.utils.time.date2num" title="nctime.utils.time.date2num"><code class="xref py py-func docutils literal"><span class="pre">nctime.utils.time.date2num()</span></code></a>)</li>
+<li><strong>inc</strong> (<em>int</em>) &#8211; The time incrementation</li>
+<li><strong>input_units</strong> &#8211; The time units deduced from the frequency</li>
+<li><strong>output_units</strong> &#8211; The time units from the file</li>
+<li><strong>calendar</strong> &#8211; The time calendar fro NetCDF attributes</li>
+<li><strong>is_instant</strong> (<em>boolean</em>) &#8211; True if instantaneous time axis</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The corresponding theoretical time axis</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>numpy.array</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="nctime.axis.handler.File.build_time_bounds">
+<code class="descname">build_time_bounds</code><span class="sig-paren">(</span><em>start</em>, <em>inc</em>, <em>input_units</em>, <em>output_units</em>, <em>calendar</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/handler.html#File.build_time_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.handler.File.build_time_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rebuilds time boundaries from the start date, depending on MIP frequency, calendar and
+instant status.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>start</strong> (<em>float</em>) &#8211; The numerical date to start (from <code class="docutils literal"><span class="pre">netCDF4.date2num</span></code> or         <a class="reference internal" href="#nctime.utils.time.date2num" title="nctime.utils.time.date2num"><code class="xref py py-func docutils literal"><span class="pre">nctime.utils.time.date2num()</span></code></a>)</li>
+<li><strong>inc</strong> (<em>int</em>) &#8211; The time incrementation</li>
+<li><strong>input_units</strong> &#8211; The time units deduced from the frequency</li>
+<li><strong>output_units</strong> &#8211; The time units from the file</li>
+<li><strong>calendar</strong> &#8211; The time calendar fro NetCDF attributes</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The corresponding theoretical time boundaries as a [n, 2] array</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>numpy.array</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="nctime.axis.handler.File.nc_var_overwrite">
+<code class="descname">nc_var_overwrite</code><span class="sig-paren">(</span><em>variable</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/handler.html#File.nc_var_overwrite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.handler.File.nc_var_overwrite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rewrite variable to NetCDF file without copy.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>variable</strong> (<em>str</em>) &#8211; The variable to replace</li>
+<li><strong>array data</strong> (<em>float</em>) &#8211; The data array to overwrite</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="nctime.axis.handler.File.nc_att_overwrite">
+<code class="descname">nc_att_overwrite</code><span class="sig-paren">(</span><em>attribute</em>, <em>variable</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/handler.html#File.nc_att_overwrite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.handler.File.nc_att_overwrite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rewrite attribute to NetCDF file without copy.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>attribute</strong> (<em>str</em>) &#8211; THe attribute to replace</li>
+<li><strong>variable</strong> (<em>str</em>) &#8211; The variable that has the attribute</li>
+<li><strong>data</strong> (<em>str</em>) &#8211; The string to add to overwrite</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-nctime.axis.db"></span><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">platform:</th><td class="field-body">Unix</td>
+</tr>
+<tr class="field-even field"><th class="field-name">synopsis:</th><td class="field-body">Insert time diagnostic to SQLite database.</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="nctime.axis.db.connect">
+<code class="descclassname">nctime.axis.db.</code><code class="descname">connect</code><span class="sig-paren">(</span><em>db_file</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/db.html#connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.db.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open connexion to a database. The database is created if not exists.</p>
+<p>When a database is accessed by multiple connections, and one of the processes modifies the database, the SQLite
+database is locked until that transaction is committed. The timeout parameter specifies how long the connection
+should wait for the lock to go away until raising an exception. The default for the timeout parameter is 5.0 sec.</p>
+<p>More info here =&gt; <a class="reference external" href="http://www.sqlite.org/faq.html#q5">http://www.sqlite.org/faq.html#q5</a></p>
+<p>We increase the timeout so we are able to use sqlite3 to run manual query without stopping the script.</p>
+<p>By default, sqlite is in autocommit mode but the sqlite3 python module is not in autocommit mode by default. We
+don&#8217;t want autocommit mode, so we leave it at its default, which will result in a plain &#8220;BEGIN&#8221; statement.
+If you want autocommit mode, then set isolation_level to None.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>db_file</strong> (<em>str</em>) &#8211; The destination file database to connect</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The database connector</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>sqlite3.connect</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.axis.db.close">
+<code class="descclassname">nctime.axis.db.</code><code class="descname">close</code><span class="sig-paren">(</span><em>connexion</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/db.html#close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.db.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close database connexion.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>connexion</strong> (<em>sqlite3.connect</em>) &#8211; A <code class="docutils literal"><span class="pre">sqlite3.connect</span></code> instance</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.axis.db.is_connected">
+<code class="descclassname">nctime.axis.db.</code><code class="descname">is_connected</code><span class="sig-paren">(</span><em>connexion</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/db.html#is_connected"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.db.is_connected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test database connexion.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>connexion</strong> (<em>sqlite3.connect</em>) &#8211; A <code class="docutils literal"><span class="pre">sqlite3.connect</span></code> instance</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if connexion is already established with the database</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>boolean</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.axis.db.create">
+<code class="descclassname">nctime.axis.db.</code><code class="descname">create</code><span class="sig-paren">(</span><em>db_file</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/db.html#create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.db.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the destination database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>db_file</strong> (<em>str</em>) &#8211; The destination file database to create</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.axis.db.insert">
+<code class="descclassname">nctime.axis.db.</code><code class="descname">insert</code><span class="sig-paren">(</span><em>db_file</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/db.html#insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.db.insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert time diagnostic to database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>db_file</strong> (<em>str</em>) &#8211; The destination file database</li>
+<li><strong>data</strong> (<em>dict</em>) &#8211; The serialized data to persist into the database</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<span class="target" id="module-nctime.axis.exceptions"></span><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">platform:</th><td class="field-body">Unix</td>
+</tr>
+<tr class="field-even field"><th class="field-name">synopsis:</th><td class="field-body">Custom exceptions used in this module.</td>
+</tr>
+</tbody>
+</table>
+<dl class="exception">
+<dt id="nctime.axis.exceptions.ChecksumFail">
+<em class="property">exception </em><code class="descclassname">nctime.axis.exceptions.</code><code class="descname">ChecksumFail</code><span class="sig-paren">(</span><em>checksum_type</em>, <em>path</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/exceptions.html#ChecksumFail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.exceptions.ChecksumFail" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when no configuration file found.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="nctime.axis.exceptions.NetCDFVariableRemoveFail">
+<em class="property">exception </em><code class="descclassname">nctime.axis.exceptions.</code><code class="descname">NetCDFVariableRemoveFail</code><span class="sig-paren">(</span><em>variable</em>, <em>path</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/exceptions.html#NetCDFVariableRemoveFail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.exceptions.NetCDFVariableRemoveFail" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when NetCDF variable removal fails.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="nctime.axis.exceptions.NetCDFAttributeRemoveFail">
+<em class="property">exception </em><code class="descclassname">nctime.axis.exceptions.</code><code class="descname">NetCDFAttributeRemoveFail</code><span class="sig-paren">(</span><em>attribute</em>, <em>path</em>, <em>variable=None</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/exceptions.html#NetCDFAttributeRemoveFail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.exceptions.NetCDFAttributeRemoveFail" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when NetCDF attribute removal fails.</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-nctime.utils.utils">
+<span id="utils"></span><h2>utils<a class="headerlink" href="#module-nctime.utils.utils" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">platform:</th><td class="field-body">Unix</td>
+</tr>
+<tr class="field-even field"><th class="field-name">synopsis:</th><td class="field-body">Useful functions to use with this package.</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="nctime.utils.utils.MultilineFormatter">
+<em class="property">class </em><code class="descclassname">nctime.utils.utils.</code><code class="descname">MultilineFormatter</code><span class="sig-paren">(</span><em>prog</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/utils.html#MultilineFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.utils.MultilineFormatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom formatter class for argument parser to use with the Python
+<a class="reference external" href="https://docs.python.org/2/library/argparse.html">argparse</a> module.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nctime.utils.utils.CfgParser">
+<em class="property">class </em><code class="descclassname">nctime.utils.utils.</code><code class="descname">CfgParser</code><a class="reference internal" href="modules/nctime/utils/utils.html#CfgParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.utils.CfgParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom ConfigParser class</p>
+<dl class="method">
+<dt id="nctime.utils.utils.CfgParser.options">
+<code class="descname">options</code><span class="sig-paren">(</span><em>section</em>, <em>defaults=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/utils.html#CfgParser.options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.utils.CfgParser.options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Can get options() with/without defaults.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nctime.utils.utils.CfgParser.read">
+<code class="descname">read</code><span class="sig-paren">(</span><em>filenames</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/utils.html#CfgParser.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.utils.CfgParser.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read and parse a filename or a list of filenames, and records there paths.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.utils.utils.init_logging">
+<code class="descclassname">nctime.utils.utils.</code><code class="descname">init_logging</code><span class="sig-paren">(</span><em>logdir</em>, <em>level='INFO'</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/utils.html#init_logging"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.utils.init_logging" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates the logging configuration (output, message formatting).
+In the case of a logfile, the logfile name is unique and formatted as follows:
+<code class="docutils literal"><span class="pre">name-YYYYMMDD-HHMMSS-JOBID.log</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>logdir</strong> (<em>str</em>) &#8211; The relative or absolute logfile directory. If <code class="docutils literal"><span class="pre">None</span></code> the standard output is used.</li>
+<li><strong>level</strong> (<em>str</em>) &#8211; The log level.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.utils.utils.directory_checker">
+<code class="descclassname">nctime.utils.utils.</code><code class="descname">directory_checker</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/utils.html#directory_checker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.utils.directory_checker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the supplied directory exists. The path is normalized without trailing slash.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<em>str</em>) &#8211; The path list to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The same path list</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>str</em></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>Error</strong> &#8211; If one of the directory does not exist</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.utils.utils.path_switcher">
+<code class="descclassname">nctime.utils.utils.</code><code class="descname">path_switcher</code><span class="sig-paren">(</span><em>flag</em>, <em>args</em>, <em>default='/home/glipsl/work/nctime/nctime/docs'</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/utils.html#path_switcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.utils.path_switcher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Switch to the appropriate path depending on the flag value.
+If simple flag without path, the path is read from configuration file.
+If no path is declared into configuration file, a default path is set.
+If the flag is combined with a path, this path is used.
+No flag is no path.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>flag</strong> (<em>str</em>) &#8211; The argument to evaluate</li>
+<li><strong>args</strong> (<em>ArgumentParser</em>) &#8211; The corresponding <code class="docutils literal"><span class="pre">argparse</span></code> Namespace</li>
+<li><strong>default</strong> (<em>str</em>) &#8211; The default path to set if not supplied</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The appropriate path</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>str</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.utils.utils.config_parse">
+<code class="descclassname">nctime.utils.utils.</code><code class="descname">config_parse</code><span class="sig-paren">(</span><em>path</em>, <em>section</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/utils.html#config_parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.utils.config_parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the configuration file if exists. Tests if required options are declared.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> (<em>str</em>) &#8211; The absolute or relative path of the configuration file</li>
+<li><strong>section</strong> (<em>str</em>) &#8211; The section to parse</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The configuration file parser</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><em>ConfigParser</em></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><strong>Error</strong> &#8211; If no configuration file exists or is empty</li>
+<li><strong>Error</strong> &#8211; If section is missing</li>
+<li><strong>Error</strong> &#8211; If required options are missing</li>
+<li><strong>Error</strong> &#8211; If the configuration file parsing fails</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.utils.utils.translate_filename_format">
+<code class="descclassname">nctime.utils.utils.</code><code class="descname">translate_filename_format</code><span class="sig-paren">(</span><em>cfg</em>, <em>project_section</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/utils.html#translate_filename_format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.utils.translate_filename_format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of regular expression filters associated with the <code class="docutils literal"><span class="pre">directory_format</span></code> option
+in the configuration file. This can be passed to the Python <code class="docutils literal"><span class="pre">re</span></code> methods.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cfg</strong> (<em>RawConfigParser</em>) &#8211; The configuration file parser (as a <code class="xref py py-func docutils literal"><span class="pre">ConfigParser.RawConfigParser()</span></code> class instance)</li>
+<li><strong>project_section</strong> (<em>str</em>) &#8211; The project section name to parse</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The corresponding <code class="docutils literal"><span class="pre">re</span></code> pattern</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.utils.utils.trunc">
+<code class="descclassname">nctime.utils.utils.</code><code class="descname">trunc</code><span class="sig-paren">(</span><em>f</em>, <em>n</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/utils.html#trunc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.utils.trunc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Truncates a float f to n decimal places before rounding</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>f</strong> (<em>float</em>) &#8211; The number to truncates</li>
+<li><strong>n</strong> (<em>int</em>) &#8211; Decimal number to place before rounding</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The corresponding truncated number</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>float</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.utils.utils.find_key">
+<code class="descclassname">nctime.utils.utils.</code><code class="descname">find_key</code><span class="sig-paren">(</span><em>dic</em>, <em>val</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/utils.html#find_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.utils.find_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the dictionary key given the value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>val</strong> (<em>str</em>) &#8211; The value to search</li>
+<li><strong>dic</strong> (<em>dict</em>) &#8211; The dictionnary</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The dictionnary key corresponding to the value</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>str</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<span class="target" id="module-nctime.utils.time"></span><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">platform:</th><td class="field-body">Unix</td>
+</tr>
+<tr class="field-even field"><th class="field-name">synopsis:</th><td class="field-body">Methods used to deal with NetCDF file time axis.</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="nctime.utils.time.TimeInit">
+<em class="property">class </em><code class="descclassname">nctime.utils.time.</code><code class="descname">TimeInit</code><span class="sig-paren">(</span><em>ctx</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#TimeInit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.TimeInit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encapsulates the time properties from first file into processing context.
+These properties has to be used as reference for all file into the directory.</p>
+<blockquote>
+<div><ul class="simple">
+<li>The calendar, the frequency and the realm are read from NetCDF global attributes and      use to detect instantaneous time axis,</li>
+<li>The NetCDF time units attribute has to be unchanged in respect with CF convention and      archives designs.</li>
+</ul>
+</div></blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="20%" />
+<col width="51%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Attribute</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><em>self</em>.calendar</td>
+<td><em>str</em></td>
+<td>NetCDF calendar attribute</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.frequency</td>
+<td><em>str</em></td>
+<td>NetCDF frequency attribute</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.realm</td>
+<td><em>str</em></td>
+<td>NetCDF modeling realm attribute</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.tunits</td>
+<td><em>str</em></td>
+<td>Time units from file</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.funits</td>
+<td><em>str</em></td>
+<td>Time units from frequency</td>
+</tr>
+<tr class="row-odd"><td><em>self</em>.is_instant</td>
+<td><em>boolean</em></td>
+<td>True if instantaneous axis</td>
+</tr>
+<tr class="row-even"><td><em>self</em>.has_bounds</td>
+<td><em>boolean</em></td>
+<td>True if require time bounds</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ctx</strong> (<a class="reference internal" href="#nctime.axis.main.ProcessingContext" title="nctime.axis.main.ProcessingContext"><em>ProcessingContext</em></a>) &#8211; The processing context</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><strong>Error</strong> &#8211; If NetCDF time units attribute is missing</li>
+<li><strong>Error</strong> &#8211; If NetCDF frequency attribute is missing</li>
+<li><strong>Error</strong> &#8211; If NetCDF realm attribute is missing</li>
+<li><strong>Error</strong> &#8211; If NetCDF calendar attribute is missing</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="staticmethod">
+<dt id="nctime.utils.time.TimeInit.control_time_units">
+<em class="property">static </em><code class="descname">control_time_units</code><span class="sig-paren">(</span><em>tunits</em>, <em>tunits_default=None</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#TimeInit.control_time_units"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.TimeInit.control_time_units" title="Permalink to this definition">¶</a></dt>
+<dd><p>Controls the time units format as at least &#8220;days since YYYY-MM-DD&#8221;.
+The time units can be forced within configuration file using the <code class="docutils literal"><span class="pre">time_units_default</span></code> option.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>tunits</strong> (<em>str</em>) &#8211; The NetCDF time units string from file</li>
+<li><strong>tunits_default</strong> &#8211; The default time units that should be used</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The appropriate time units string formatted and controlled depending on the project</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>str</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="nctime.utils.time.TimeInit.convert_time_units">
+<em class="property">static </em><code class="descname">convert_time_units</code><span class="sig-paren">(</span><em>tunits</em>, <em>frequency</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#TimeInit.convert_time_units"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.TimeInit.convert_time_units" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts default time units from file into time units using the MIP frequency.
+As en example, for a 3-hourly file, the time units &#8220;days since YYYY-MM-DD&#8221; becomes
+&#8220;hours since YYYY-MM-DD&#8221;.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>tunits</strong> (<em>str</em>) &#8211; The NetCDF time units string from file</li>
+<li><strong>frequency</strong> (<em>str</em>) &#8211; The time frequency</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The converted time units string</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>str</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.utils.time.untroncated_timestamp">
+<code class="descclassname">nctime.utils.time.</code><code class="descname">untroncated_timestamp</code><span class="sig-paren">(</span><em>timestamp</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#untroncated_timestamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.untroncated_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns proper digits for yearly and monthly truncated timestamps.
+The dates from filename are filled with the 0 digit to reach 14 digits.
+Consequently, yearly dates starts at January 1st and monthly dates starts at first day
+of the month.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timestamp</strong> (<em>str</em>) &#8211; A date string from a filename</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The filled timestamp</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>str</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.utils.time.num2date">
+<code class="descclassname">nctime.utils.time.</code><code class="descname">num2date</code><span class="sig-paren">(</span><em>num_axis</em>, <em>units</em>, <em>calendar</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#num2date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.num2date" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper from <code class="docutils literal"><span class="pre">netCDF4.num2date</span></code> able to handle &#8220;years since&#8221; and &#8220;months since&#8221; units.
+If time units are not &#8220;years since&#8221; or &#8220;months since&#8221;, calls usual <code class="docutils literal"><span class="pre">netcdftime.num2date</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>num_axis</strong> (<em>numpy.array</em>) &#8211; The numerical time axis following units</li>
+<li><strong>units</strong> (<em>str</em>) &#8211; The proper time units</li>
+<li><strong>calendar</strong> (<em>str</em>) &#8211; The NetCDF calendar attribute</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The corresponding date axis</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>array</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.utils.time.date2num">
+<code class="descclassname">nctime.utils.time.</code><code class="descname">date2num</code><span class="sig-paren">(</span><em>date_axis</em>, <em>units</em>, <em>calendar</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#date2num"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.date2num" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper from <code class="docutils literal"><span class="pre">netCDF4.date2num</span></code> able to handle &#8220;years since&#8221; and &#8220;months since&#8221; units.
+If time units are not &#8220;years since&#8221; or &#8220;months since&#8221; calls usual <code class="docutils literal"><span class="pre">netcdftime.date2num</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>date_axis</strong> (<em>numpy.array</em>) &#8211; The date axis following units</li>
+<li><strong>units</strong> (<em>str</em>) &#8211; The proper time units</li>
+<li><strong>calendar</strong> (<em>str</em>) &#8211; The NetCDF calendar attribute</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The corresponding numerical time axis</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>array</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.utils.time.add_month">
+<code class="descclassname">nctime.utils.time.</code><code class="descname">add_month</code><span class="sig-paren">(</span><em>date</em>, <em>months_to_add</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#add_month"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.add_month" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the next month from date.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>date</strong> (<em>netcdftime.datetime</em>) &#8211; Accepts datetime or phony datetime from <code class="docutils literal"><span class="pre">netCDF4.num2date</span></code>.</li>
+<li><strong>months_to_add</strong> (<em>int</em>) &#8211; The number of months to add to the date</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The final date</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>netcdftime.datetime</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.utils.time.add_year">
+<code class="descclassname">nctime.utils.time.</code><code class="descname">add_year</code><span class="sig-paren">(</span><em>date</em>, <em>years_to_add</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#add_year"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.add_year" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the next year from date.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>date</strong> (<em>netcdftime.datetime</em>) &#8211; Accepts datetime or phony datetime from <code class="docutils literal"><span class="pre">netCDF4.num2date</span></code>.</li>
+<li><strong>years_to_add</strong> (<em>int</em>) &#8211; The number of years to add to the date</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The final date</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>netcdftime.datetime</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.utils.time.get_start_end_dates_from_filename">
+<code class="descclassname">nctime.utils.time.</code><code class="descname">get_start_end_dates_from_filename</code><span class="sig-paren">(</span><em>project</em>, <em>filename</em>, <em>pattern</em>, <em>frequency</em>, <em>calendar</em>, <em>is_instant=False</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#get_start_end_dates_from_filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.get_start_end_dates_from_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns datetime objects for start and end dates from the filename.
+To rebuild a proper time axis, the dates from filename are expected to set the first
+time boundary and not the middle of the time interval.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>project</strong> (<em>str</em>) &#8211; The project name</li>
+<li><strong>filename</strong> (<em>str</em>) &#8211; The filename</li>
+<li><strong>Object pattern</strong> (<em>re</em>) &#8211; <p>The filename pattern as a regex (from <a class="reference external" href="https://docs.python.org/2/library/re.html">re library</a>).</p>
+</li>
+<li><strong>frequency</strong> (<em>str</em>) &#8211; The time frequency</li>
+<li><strong>calendar</strong> (<em>str</em>) &#8211; The NetCDF calendar attribute</li>
+<li><strong>is_instant</strong> (<em>boolean</em>) &#8211; True if instantaneous time axis</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><code class="docutils literal"><span class="pre">datetime</span></code> instances for start and end dates from the filename</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>netcdftime.datetime</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.utils.time.time_inc">
+<code class="descclassname">nctime.utils.time.</code><code class="descname">time_inc</code><span class="sig-paren">(</span><em>frequency</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#time_inc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.time_inc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the time incrementation and time units depending on the MIP frequency.
+:param str frequency: The MIP frequency
+:returns: The corresponding time value and units
+:rtype: <em>list</em></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.utils.time.dates2str">
+<code class="descclassname">nctime.utils.time.</code><code class="descname">dates2str</code><span class="sig-paren">(</span><em>dates</em>, <em>sep=True</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#dates2str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.dates2str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints date in format: %Y%m%d %H:%M:%s.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dates</strong> (<em>list</em>) &#8211; A list of datetime or phony datetime objects</li>
+<li><strong>sep</strong> (<em>boolean</em>) &#8211; Print corresponding date with separators if True</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The corresponding formatted date to print</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>str</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.utils.time.date2str">
+<code class="descclassname">nctime.utils.time.</code><code class="descname">date2str</code><span class="sig-paren">(</span><em>date</em>, <em>sep=True</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#date2str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.date2str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints date in format: %Y%m%d %H:%M:%s.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>date</strong> (<em>netcdftime.datetime</em>) &#8211; A datetime or phony datetime objects</li>
+<li><strong>sep</strong> (<em>boolean</em>) &#8211; Print date with separators if True</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The corresponding formatted date to print</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>str</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<span class="target" id="module-nctime.utils.exceptions"></span><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">platform:</th><td class="field-body">Unix</td>
+</tr>
+<tr class="field-even field"><th class="field-name">synopsis:</th><td class="field-body">Custom exceptions used in this package.</td>
+</tr>
+</tbody>
+</table>
+<dl class="exception">
+<dt id="nctime.utils.exceptions.EmptyConfigFile">
+<em class="property">exception </em><code class="descclassname">nctime.utils.exceptions.</code><code class="descname">EmptyConfigFile</code><span class="sig-paren">(</span><em>paths</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/exceptions.html#EmptyConfigFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.exceptions.EmptyConfigFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when configuration file is empty.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="nctime.utils.exceptions.NoConfigFile">
+<em class="property">exception </em><code class="descclassname">nctime.utils.exceptions.</code><code class="descname">NoConfigFile</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/exceptions.html#NoConfigFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.exceptions.NoConfigFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when no configuration file found.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="nctime.utils.exceptions.NoConfigSection">
+<em class="property">exception </em><code class="descclassname">nctime.utils.exceptions.</code><code class="descname">NoConfigSection</code><span class="sig-paren">(</span><em>section</em>, <em>paths</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/exceptions.html#NoConfigSection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.exceptions.NoConfigSection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when no corresponding section found in configuration file.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="nctime.utils.exceptions.NoConfigOption">
+<em class="property">exception </em><code class="descclassname">nctime.utils.exceptions.</code><code class="descname">NoConfigOption</code><span class="sig-paren">(</span><em>option</em>, <em>section</em>, <em>paths</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/exceptions.html#NoConfigOption"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.exceptions.NoConfigOption" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when no corresponding option found in section of the configuration file.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="nctime.utils.exceptions.NoConfigValue">
+<em class="property">exception </em><code class="descclassname">nctime.utils.exceptions.</code><code class="descname">NoConfigValue</code><span class="sig-paren">(</span><em>value</em>, <em>option</em>, <em>section</em>, <em>paths</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/exceptions.html#NoConfigValue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.exceptions.NoConfigValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when no corresponding value found in option of the section from the configuration file.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="nctime.utils.exceptions.InvalidNetCDFFile">
+<em class="property">exception </em><code class="descclassname">nctime.utils.exceptions.</code><code class="descname">InvalidNetCDFFile</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/exceptions.html#InvalidNetCDFFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.exceptions.InvalidNetCDFFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when not a NetCDF file.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="nctime.utils.exceptions.NoNetCDFAttribute">
+<em class="property">exception </em><code class="descclassname">nctime.utils.exceptions.</code><code class="descname">NoNetCDFAttribute</code><span class="sig-paren">(</span><em>attribute</em>, <em>path</em>, <em>variable=None</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/exceptions.html#NoNetCDFAttribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.exceptions.NoNetCDFAttribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when a NetCDF attribute is missing.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="nctime.utils.exceptions.NoNetCDFVariable">
+<em class="property">exception </em><code class="descclassname">nctime.utils.exceptions.</code><code class="descname">NoNetCDFVariable</code><span class="sig-paren">(</span><em>variable</em>, <em>path</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/exceptions.html#NoNetCDFVariable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.exceptions.NoNetCDFVariable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when a NetCDF variable is missing.</p>
+</dd></dl>
+
+<p><em>Module author: Levavasseur Guillaume (CNRS/IPSL) &lt;<a class="reference external" href="mailto:glipsl&#37;&#52;&#48;ipsl&#46;jussieu&#46;fr">glipsl<span>&#64;</span>ipsl<span>&#46;</span>jussieu<span>&#46;</span>fr</a>&gt;</em></p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="log.html" class="btn btn-neutral" title="Changelog" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Levavasseur, G..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'3.8.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="static/jquery.js"></script>
+      <script type="text/javascript" src="static/underscore.js"></script>
+      <script type="text/javascript" src="static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
