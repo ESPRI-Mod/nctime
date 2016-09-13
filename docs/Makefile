@@ -178,7 +178,7 @@ pseudoxml:
 	@echo
 	@echo "Build finished. The pseudo-XML files are in $(BUILDDIR)/pseudoxml."
 
-buildandcommit: html
+gh-pages: html
 	cd $(BUILDDIR)/html
 	git add .
 	git commit -m "Docs rebuilt"
