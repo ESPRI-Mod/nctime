@@ -12,6 +12,7 @@
    credits
    log
    autodoc
+   includeme
    
 Indices and tables
 ==================
