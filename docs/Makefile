@@ -181,7 +181,7 @@ pseudoxml:
 buildandcommit: html
 	cd $(BUILDDIR)/html
 	git add .
-	git commit -m "Docs rebuilt at $(date +'%Y/%m/%d - %H:%M:%S')"
+	git commit -m "Docs rebuilt"
 	git push origin gh-pages
 	@echo "Build finished and commited on gh-pages."
 
