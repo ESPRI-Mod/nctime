@@ -180,8 +180,9 @@ pseudoxml:
 
 gh-pages: html
 	cd $(BUILDDIR)/html
+	git show-ref
 	git add .
 	git commit -m "Docs rebuilt"
-	git push origin HEAD:master
+	git push origin gh-pages
 	@echo "Build finished and commited on gh-pages."
 
