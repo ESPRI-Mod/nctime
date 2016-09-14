@@ -179,11 +179,9 @@ pseudoxml:
 	@echo "Build finished. The pseudo-XML files are in $(BUILDDIR)/pseudoxml."
 
 gh-pages: html
-	cd /home/glipsl/work/nctime/docs-build/html
-	pwd
-	git show-ref
-	git add .
-	git commit -m "Docs rebuilt"
+	cd $(BUILDDIR)/html;\
+	git add .;\
+	git commit -m "Docs rebuilt at $( date +'%Y/%m/%d - %H:%M:%S')";\
 	git push origin gh-pages
 	@echo "Build finished and commited on gh-pages."
 
