@@ -2,4 +2,4 @@
 nctime
 ******
 
-`See documentation here <http://nctime.readthedocs.io/>`_
+`See documentation here <http://prodiguer.github.io/nctime/>`_
