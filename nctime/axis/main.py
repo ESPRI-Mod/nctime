@@ -49,8 +49,6 @@ class ProcessingContext(object):
     +-----------------------+-------------+---------------------------------+
     | *self*.pattern        | *re object* | Filename regex pattern          |
     +-----------------------+-------------+---------------------------------+
-    | *self*.need_instant   | *list*      | Tuples for instant time axis    |
-    +-----------------------+-------------+---------------------------------+
     | *self*.tunits_default | *str*       | Default time units              |
     +-----------------------+-------------+---------------------------------+
     | *self*.ref            | *str*       | First filename as reference     |
@@ -158,12 +156,10 @@ def process(inputs):
                    has_bounds=init.has_bounds)
 
     # Extract start and end dates from filename
-    start, _, _ = handler.get_start_end_dates(project=ctx.project,
-                                              pattern=ctx.pattern,
+    start, _, _ = handler.get_start_end_dates(pattern=ctx.pattern,
                                               frequency=init.frequency,
                                               units=init.funits,
-                                              calendar=init.calendar,
-                                              is_instant=init.is_instant)
+                                              calendar=init.calendar)
 
     # Rebuild a theoretical time axis with high precision
     handler.time_axis_rebuilt = handler.build_time_axis(start=start,

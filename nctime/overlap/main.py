@@ -38,8 +38,6 @@ class ProcessingContext(object):
     +-----------------------+-------------+---------------------------------+
     | *self*.pattern        | *re object* | Filename regex pattern          |
     +-----------------------+-------------+---------------------------------+
-    | *self*.need_instant   | *list*      | Tuples for instant time axis    |
-    +-----------------------+-------------+---------------------------------+
     | *self*.tunits_default | *str*       | Default time units              |
     +-----------------------+-------------+---------------------------------+
     | *self*.ref            | *str*       | First filename as reference     |
@@ -62,7 +60,6 @@ class ProcessingContext(object):
         self.project = args.project
         cfg = utils.config_parse(args.i, self.project)
         self.pattern = utils.translate_filename_format(cfg, self.project)
-        self.need_instant = eval(cfg.get(self.project, 'need_instant_time'))
         if cfg.has_option('time_units_default', self.project):
             self.tunits_default = cfg.get(self.project, 'time_units_default')
         else:
@@ -143,8 +140,7 @@ def main(args):
         start, end, nxt = time.get_start_end_dates_from_filename(filename=filename,
                                                                  pattern=ctx.pattern,
                                                                  frequency=tinit.frequency,
-                                                                 calendar=tinit.calendar,
-                                                                 is_instant=tinit.is_instant)
+                                                                 calendar=tinit.calendar)
         if ctx.verbose:
             logging.info('{0} | {1} | {2} | {3}'.format(filename.center(len(filename) + 2),
                                                         time.date2str(start).center(19),

@@ -341,13 +341,12 @@ def add_year(date, years_to_add):
     return date_next
 
 
-def get_start_end_dates_from_filename(project, filename, pattern, frequency, calendar, is_instant=False):
+def get_start_end_dates_from_filename(filename, pattern, frequency, calendar):
     """
     Returns datetime objects for start and end dates from the filename.
     To rebuild a proper time axis, the dates from filename are expected to set the first
     time boundary and not the middle of the time interval.
 
-    :param str project: The project name
     :param str filename: The filename
     :param re Object pattern: The filename pattern as a regex (from `re library \
     <https://docs.python.org/2/library/re.html>`_).

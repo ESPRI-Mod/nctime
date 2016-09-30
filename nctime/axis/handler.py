@@ -89,27 +89,23 @@ class File(object):
         self.status = list()
         self.new_checksum = None
 
-    def get_start_end_dates(self, project, pattern, frequency, units, calendar, is_instant):
+    def get_start_end_dates(self, pattern, frequency, units, calendar):
         """
         Wraps and records :func:`get_start_end_dates_from_filename` results.
 
         :param re Object pattern: The filename pattern as a regex (from `re library \
         <https://docs.python.org/2/library/re.html>`_).
-        :param str project: The project name
         :param str frequency: The time frequency
         :param str units: The proper time units
         :param str calendar: The NetCDF calendar attribute
-        :param boolean is_instant: True if instantaneous time axis
         :returns: Start and end dates as number of days since the referenced date
         :rtype: *float*
 
         """
-        dates = time.get_start_end_dates_from_filename(project=project,
-                                                       filename=self.filename,
+        dates = time.get_start_end_dates_from_filename(filename=self.filename,
                                                        pattern=pattern,
                                                        frequency=frequency,
-                                                       calendar=calendar,
-                                                       is_instant=is_instant)
+                                                       calendar=calendar)
         self.start_date, self.end_date, _ = time.dates2str(dates)
         return time.date2num(dates, units=units, calendar=calendar)
 
