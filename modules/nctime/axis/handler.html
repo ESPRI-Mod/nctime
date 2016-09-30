@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.axis.handler &mdash; nctime 3.8.1 documentation</title>
+  <title>nctime.axis.handler &mdash; nctime 3.8.3 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="nctime 3.8.1 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 3.8.3 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -225,27 +225,23 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">new_checksum</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="File.get_start_end_dates"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.handler.File.get_start_end_dates">[docs]</a>    <span class="k">def</span> <span class="nf">get_start_end_dates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span class="n">calendar</span><span class="p">,</span> <span class="n">is_instant</span><span class="p">):</span>
+<div class="viewcode-block" id="File.get_start_end_dates"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.handler.File.get_start_end_dates">[docs]</a>    <span class="k">def</span> <span class="nf">get_start_end_dates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span class="n">calendar</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wraps and records :func:`get_start_end_dates_from_filename` results.</span>
 
 <span class="sd">        :param re Object pattern: The filename pattern as a regex (from `re library \</span>
 <span class="sd">        &lt;https://docs.python.org/2/library/re.html&gt;`_).</span>
-<span class="sd">        :param str project: The project name</span>
 <span class="sd">        :param str frequency: The time frequency</span>
 <span class="sd">        :param str units: The proper time units</span>
 <span class="sd">        :param str calendar: The NetCDF calendar attribute</span>
-<span class="sd">        :param boolean is_instant: True if instantaneous time axis</span>
 <span class="sd">        :returns: Start and end dates as number of days since the referenced date</span>
 <span class="sd">        :rtype: *float*</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dates</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">get_start_end_dates_from_filename</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="n">project</span><span class="p">,</span>
-                                                       <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+        <span class="n">dates</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">get_start_end_dates_from_filename</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
                                                        <span class="n">pattern</span><span class="o">=</span><span class="n">pattern</span><span class="p">,</span>
                                                        <span class="n">frequency</span><span class="o">=</span><span class="n">frequency</span><span class="p">,</span>
-                                                       <span class="n">calendar</span><span class="o">=</span><span class="n">calendar</span><span class="p">,</span>
-                                                       <span class="n">is_instant</span><span class="o">=</span><span class="n">is_instant</span><span class="p">)</span>
+                                                       <span class="n">calendar</span><span class="o">=</span><span class="n">calendar</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_date</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">dates2str</span><span class="p">(</span><span class="n">dates</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">date2num</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="n">calendar</span><span class="p">)</span></div>
 
@@ -434,7 +430,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'3.8.1',
+            VERSION:'3.8.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

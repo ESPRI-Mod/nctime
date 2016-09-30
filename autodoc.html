@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Code documentation &mdash; nctime 3.8.1 documentation</title>
+  <title>Code documentation &mdash; nctime 3.8.3 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="nctime 3.8.1 documentation" href="index.html"/>
+    <link rel="top" title="nctime 3.8.3 documentation" href="index.html"/>
         <link rel="prev" title="Changelog" href="log.html"/> 
 
   
@@ -219,19 +219,15 @@
 <td><em>re object</em></td>
 <td>Filename regex pattern</td>
 </tr>
-<tr class="row-odd"><td><em>self</em>.need_instant</td>
-<td><em>list</em></td>
-<td>Tuples for instant time axis</td>
-</tr>
-<tr class="row-even"><td><em>self</em>.tunits_default</td>
+<tr class="row-odd"><td><em>self</em>.tunits_default</td>
 <td><em>str</em></td>
 <td>Default time units</td>
 </tr>
-<tr class="row-odd"><td><em>self</em>.ref</td>
+<tr class="row-even"><td><em>self</em>.ref</td>
 <td><em>str</em></td>
 <td>First filename as reference</td>
 </tr>
-<tr class="row-even"><td><em>self</em>.variable</td>
+<tr class="row-odd"><td><em>self</em>.variable</td>
 <td><em>str</em></td>
 <td>MIP variable</td>
 </tr>
@@ -392,19 +388,15 @@
 <td><em>re object</em></td>
 <td>Filename regex pattern</td>
 </tr>
-<tr class="row-odd"><td><em>self</em>.need_instant</td>
-<td><em>list</em></td>
-<td>Tuples for instant time axis</td>
-</tr>
-<tr class="row-even"><td><em>self</em>.tunits_default</td>
+<tr class="row-odd"><td><em>self</em>.tunits_default</td>
 <td><em>str</em></td>
 <td>Default time units</td>
 </tr>
-<tr class="row-odd"><td><em>self</em>.ref</td>
+<tr class="row-even"><td><em>self</em>.ref</td>
 <td><em>str</em></td>
 <td>First filename as reference</td>
 </tr>
-<tr class="row-even"><td><em>self</em>.variable</td>
+<tr class="row-odd"><td><em>self</em>.variable</td>
 <td><em>str</em></td>
 <td>MIP variable</td>
 </tr>
@@ -646,7 +638,7 @@ It encapsulates the following file diagnostic to print or save:</p>
 </table>
 <dl class="method">
 <dt id="nctime.axis.handler.File.get_start_end_dates">
-<code class="descname">get_start_end_dates</code><span class="sig-paren">(</span><em>project</em>, <em>pattern</em>, <em>frequency</em>, <em>units</em>, <em>calendar</em>, <em>is_instant</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/handler.html#File.get_start_end_dates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.handler.File.get_start_end_dates" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_start_end_dates</code><span class="sig-paren">(</span><em>pattern</em>, <em>frequency</em>, <em>units</em>, <em>calendar</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/handler.html#File.get_start_end_dates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.handler.File.get_start_end_dates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wraps and records <code class="xref py py-func docutils literal"><span class="pre">get_start_end_dates_from_filename()</span></code> results.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -654,11 +646,9 @@ It encapsulates the following file diagnostic to print or save:</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>Object pattern</strong> (<em>re</em>) &#8211; The filename pattern as a regex (from <a class="reference external" href="https://docs.python.org/2/library/re.html">re library</a>).</li>
-<li><strong>project</strong> (<em>str</em>) &#8211; The project name</li>
 <li><strong>frequency</strong> (<em>str</em>) &#8211; The time frequency</li>
 <li><strong>units</strong> (<em>str</em>) &#8211; The proper time units</li>
 <li><strong>calendar</strong> (<em>str</em>) &#8211; The NetCDF calendar attribute</li>
-<li><strong>is_instant</strong> (<em>boolean</em>) &#8211; True if instantaneous time axis</li>
 </ul>
 </td>
 </tr>
@@ -1425,7 +1415,7 @@ If time units are not &#8220;years since&#8221; or &#8220;months since&#8221; ca
 
 <dl class="function">
 <dt id="nctime.utils.time.get_start_end_dates_from_filename">
-<code class="descclassname">nctime.utils.time.</code><code class="descname">get_start_end_dates_from_filename</code><span class="sig-paren">(</span><em>project</em>, <em>filename</em>, <em>pattern</em>, <em>frequency</em>, <em>calendar</em>, <em>is_instant=False</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#get_start_end_dates_from_filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.get_start_end_dates_from_filename" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nctime.utils.time.</code><code class="descname">get_start_end_dates_from_filename</code><span class="sig-paren">(</span><em>filename</em>, <em>pattern</em>, <em>frequency</em>, <em>calendar</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#get_start_end_dates_from_filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.get_start_end_dates_from_filename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns datetime objects for start and end dates from the filename.
 To rebuild a proper time axis, the dates from filename are expected to set the first
 time boundary and not the middle of the time interval.</p>
@@ -1434,7 +1424,6 @@ time boundary and not the middle of the time interval.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>project</strong> (<em>str</em>) &#8211; The project name</li>
 <li><strong>filename</strong> (<em>str</em>) &#8211; The filename</li>
 <li><strong>Object pattern</strong> (<em>re</em>) &#8211; <p>The filename pattern as a regex (from <a class="reference external" href="https://docs.python.org/2/library/re.html">re library</a>).</p>
 </li>
@@ -1612,7 +1601,7 @@ time boundary and not the middle of the time interval.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'3.8.1',
+            VERSION:'3.8.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
