@@ -57,7 +57,7 @@ TIME_CORRECTION = {'3hr': {'start_period': {'000000': 0.0,
 #                                                     '000000': 0.0}}}
 
 # Required NetCDF global attributes
-REQUIRED_ATTRIBUTES = ['project_id', 'model_id', 'modeling_realm', 'frequency']
+REQUIRED_ATTRIBUTES = ['project_id', 'model_id', 'frequency']
 
 # Required NetCDF time attributes
 REQUIRED_TIME_ATTRIBUTES = ['units', 'calendar']
