@@ -17,7 +17,7 @@ from datetime import datetime
 from utils.utils import MultilineFormatter, init_logging, directory_checker, path_switcher
 
 # Program version
-__version__ = 'v{0} {1}'.format('3.8.4', datetime(year=2016, month=11, day=15).strftime("%Y-%d-%m"))
+__version__ = 'v{0} {1}'.format('3.8.5', datetime(year=2016, month=11, day=18).strftime("%Y-%d-%m"))
 
 
 def get_args():
@@ -114,7 +114,8 @@ def get_args():
         help="""
         Logfile directory. <log_dir> is read from configuration |n
         file if not submitted. If no <log_dir>, current working |n
-        directory is used instead. If not, standard output is used.
+        directory is used instead. An existing logfile can be submitted.|n
+        If not, standard output is used.
         """)
     parent.add_argument(
         '-h', '--help',
