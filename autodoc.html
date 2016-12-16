@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Code documentation &mdash; nctime 3.8.4 documentation</title>
+  <title>Code documentation &mdash; nctime 3.8.6 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="nctime 3.8.4 documentation" href="index.html"/>
+    <link rel="top" title="nctime 3.8.6 documentation" href="index.html"/>
         <link rel="prev" title="Changelog" href="log.html"/> 
 
   
@@ -989,16 +989,16 @@ If you want autocommit mode, then set isolation_level to None.</p>
 
 <dl class="function">
 <dt id="nctime.utils.utils.init_logging">
-<code class="descclassname">nctime.utils.utils.</code><code class="descname">init_logging</code><span class="sig-paren">(</span><em>logdir</em>, <em>level='INFO'</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/utils.html#init_logging"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.utils.init_logging" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates the logging configuration (output, message formatting).
-In the case of a logfile, the logfile name is unique and formatted as follows:
-<code class="docutils literal"><span class="pre">name-YYYYMMDD-HHMMSS-JOBID.log</span></code></p>
+<code class="descclassname">nctime.utils.utils.</code><code class="descname">init_logging</code><span class="sig-paren">(</span><em>log</em>, <em>level='INFO'</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/utils.html#init_logging"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.utils.init_logging" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiates the logging configuration (output, date/message formatting).
+If a directory is submitted the logfile name is unique and formatted as follows:
+<code class="docutils literal"><span class="pre">name-YYYYMMDD-HHMMSS-JOBID.log``If</span> <span class="pre">``None</span></code> the standard output is used.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>logdir</strong> (<em>str</em>) &#8211; The relative or absolute logfile directory. If <code class="docutils literal"><span class="pre">None</span></code> the standard output is used.</li>
+<li><strong>log</strong> (<em>str</em>) &#8211; The logfile name or directory.</li>
 <li><strong>level</strong> (<em>str</em>) &#8211; The log level.</li>
 </ul>
 </td>
@@ -1601,7 +1601,7 @@ time boundary and not the middle of the time interval.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'3.8.4',
+            VERSION:'3.8.6',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.utils.utils &mdash; nctime 3.8.4 documentation</title>
+  <title>nctime.utils.utils &mdash; nctime 3.8.6 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="nctime 3.8.4 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 3.8.6 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -233,35 +233,43 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">read_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="init_logging"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.utils.init_logging">[docs]</a><span class="k">def</span> <span class="nf">init_logging</span><span class="p">(</span><span class="n">logdir</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s1">&#39;INFO&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="init_logging"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.utils.init_logging">[docs]</a><span class="k">def</span> <span class="nf">init_logging</span><span class="p">(</span><span class="n">log</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s1">&#39;INFO&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Initiates the logging configuration (output, message formatting).</span>
-<span class="sd">    In the case of a logfile, the logfile name is unique and formatted as follows:</span>
-<span class="sd">    ``name-YYYYMMDD-HHMMSS-JOBID.log``</span>
+<span class="sd">    Initiates the logging configuration (output, date/message formatting).</span>
+<span class="sd">    If a directory is submitted the logfile name is unique and formatted as follows:</span>
+<span class="sd">    ``name-YYYYMMDD-HHMMSS-JOBID.log``If ``None`` the standard output is used.</span>
 
-<span class="sd">    :param str logdir: The relative or absolute logfile directory. If ``None`` the standard output is used.</span>
+<span class="sd">    :param str log: The logfile name or directory.</span>
 <span class="sd">    :param str level: The log level.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">__LOG_LEVELS__</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;CRITICAL&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">,</span>
-                      <span class="s1">&#39;ERROR&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
-                      <span class="s1">&#39;WARNING&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">,</span>
-                      <span class="s1">&#39;INFO&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
-                      <span class="s1">&#39;DEBUG&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
-                      <span class="s1">&#39;NOTSET&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">NOTSET</span><span class="p">}</span>
-    <span class="k">if</span> <span class="n">logdir</span><span class="p">:</span>
-        <span class="n">logfile</span> <span class="o">=</span> <span class="s1">&#39;timeaxis-</span><span class="si">{0}</span><span class="s1">-</span><span class="si">{1}</span><span class="s1">.log&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">-%H%M%S&quot;</span><span class="p">),</span>
-                                                <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">logdir</span><span class="p">):</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">logdir</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">logdir</span><span class="p">,</span> <span class="n">logfile</span><span class="p">),</span>
-                            <span class="n">level</span><span class="o">=</span><span class="n">__LOG_LEVELS__</span><span class="p">[</span><span class="n">level</span><span class="p">],</span>
-                            <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(levelname)s</span><span class="s1"> </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span>
-                            <span class="n">datefmt</span><span class="o">=</span><span class="s1">&#39;%Y/%m/</span><span class="si">%d</span><span class="s1"> %I:%M:%S %p&#39;</span><span class="p">)</span>
+    <span class="n">log_fmt</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(levelname)s</span><span class="s1"> </span><span class="si">%(message)s</span><span class="s1">&#39;</span>
+    <span class="n">log_date_fmt</span> <span class="o">=</span> <span class="s1">&#39;%Y/%m/</span><span class="si">%d</span><span class="s1"> %I:%M:%S %p&#39;</span>
+    <span class="n">log_levels</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;CRITICAL&#39;</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">,</span>
+                      <span class="s1">&#39;ERROR&#39;</span><span class="p">:</span>    <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
+                      <span class="s1">&#39;WARNING&#39;</span><span class="p">:</span>  <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">,</span>
+                      <span class="s1">&#39;INFO&#39;</span><span class="p">:</span>     <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
+                      <span class="s1">&#39;DEBUG&#39;</span><span class="p">:</span>    <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
+                      <span class="s1">&#39;NOTSET&#39;</span><span class="p">:</span>   <span class="n">logging</span><span class="o">.</span><span class="n">NOTSET</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">log</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">log</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">log</span><span class="p">,</span>
+                                <span class="n">level</span><span class="o">=</span><span class="n">log_levels</span><span class="p">[</span><span class="n">level</span><span class="p">],</span>
+                                <span class="nb">format</span><span class="o">=</span><span class="n">log_fmt</span><span class="p">,</span>
+                                <span class="n">datefmt</span><span class="o">=</span><span class="n">log_date_fmt</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logfile</span> <span class="o">=</span> <span class="s1">&#39;timeaxis-</span><span class="si">{0}</span><span class="s1">-</span><span class="si">{1}</span><span class="s1">.log&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">-%H%M%S&quot;</span><span class="p">),</span>
+                                                   <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">log</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">log</span><span class="p">,</span> <span class="n">logfile</span><span class="p">),</span>
+                                <span class="n">level</span><span class="o">=</span><span class="n">log_levels</span><span class="p">[</span><span class="n">level</span><span class="p">],</span>
+                                <span class="nb">format</span><span class="o">=</span><span class="n">log_fmt</span><span class="p">,</span>
+                                <span class="n">datefmt</span><span class="o">=</span><span class="n">log_date_fmt</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">__LOG_LEVELS__</span><span class="p">[</span><span class="n">level</span><span class="p">],</span>
-                            <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(levelname)s</span><span class="s1"> </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span>
-                            <span class="n">datefmt</span><span class="o">=</span><span class="s1">&#39;%Y/%m/</span><span class="si">%d</span><span class="s1"> %I:%M:%S %p&#39;</span><span class="p">)</span></div>
+        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">log_levels</span><span class="p">[</span><span class="n">level</span><span class="p">],</span>
+                            <span class="nb">format</span><span class="o">=</span><span class="n">log_fmt</span><span class="p">,</span>
+                            <span class="n">datefmt</span><span class="o">=</span><span class="n">log_date_fmt</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="directory_checker"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.utils.directory_checker">[docs]</a><span class="k">def</span> <span class="nf">directory_checker</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
@@ -416,7 +424,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'3.8.4',
+            VERSION:'3.8.6',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
