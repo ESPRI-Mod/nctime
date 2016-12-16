@@ -259,5 +259,5 @@ class File(object):
             f = netCDF4.Dataset(self.ffp, 'r+')
         except IOError:
             raise InvalidNetCDFFile(self.ffp)
-        f.variables[variable].__dict__[attribute] = data
+        setattr(f.variables[variable], attribute, data)
         f.close()
