@@ -84,6 +84,8 @@ class File(object):
         self.time_axis = f.variables['time'][:]
         # Get time units from file
         self.time_units = f.variables['time'].units
+        # Get calendar from file
+        self.calendar = f.variables['time'].calendar        
         f.close() ; del f ; gc.collect()
         self.time_axis_rebuilt = None
         self.time_bounds_rebuilt = None
