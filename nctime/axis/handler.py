@@ -7,6 +7,7 @@
 """
 
 import os
+import gc
 from uuid import uuid4
 
 import nco
@@ -83,7 +84,7 @@ class File(object):
         self.time_axis = f.variables['time'][:]
         # Get time units from file
         self.time_units = f.variables['time'].units
-        f.close()
+        f.close() ; del f ; gc.collect()
         self.time_axis_rebuilt = None
         self.time_bounds_rebuilt = None
         self.status = list()

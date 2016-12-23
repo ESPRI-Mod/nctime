@@ -13,7 +13,7 @@ import re
 import sys
 from datetime import datetime
 from functools import wraps
-from multiprocessing.dummy import Pool as ThreadPool
+from multiprocessing import Pool
 from textwrap import fill
 
 import numpy as np
@@ -97,7 +97,7 @@ class ProcessingContext(object):
             if not os.path.isfile(os.path.join(self.directory, filename)):
                 logging.warning('{0} is not a file and was skipped'.format(filename))
                 continue
-            if any(test_fx in filename for test_fx in ['_fx_','_fixed_','_fx.','_fixed.']):
+            if any(test_fx in filename for test_fx in ['_fx_', '_fixed_', '_fx.', '_fixed.']):
                 logging.warning('STOP because "fixed" frequency has no time axis')
                 sys.exit(0)
             if not re.match(self.pattern, filename):
@@ -298,7 +298,7 @@ def main(args):
     # Set driving time properties (e.g., calendar, frequency and time units) from first file in directory
     tinit = time.TimeInit(ctx)
     # Process
-    pool = ThreadPool(int(ctx.threads))
+    pool = Pool(int(ctx.threads))
     handlers = pool.imap(wrapper, yield_inputs(ctx, tinit))
     # Persist diagnostics into database
     if ctx.db:
