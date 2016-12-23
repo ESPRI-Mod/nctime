@@ -97,7 +97,7 @@ class ProcessingContext(object):
             if not os.path.isfile(os.path.join(self.directory, filename)):
                 logging.warning('{0} is not a file and was skipped'.format(filename))
                 continue
-            if ('_fx_' or '_fixed_' or '_fx.' or '_fixed.') in filename:
+            if any(test_fx in filename for test_fx in ['_fx_','_fixed_','_fx.','_fixed.']):
                 logging.warning('STOP because "fixed" frequency has no time axis')
                 sys.exit(0)
             if not re.match(self.pattern, filename):
