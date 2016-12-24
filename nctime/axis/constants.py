@@ -13,3 +13,5 @@ TIMEOUT = 120
 # Default maximum threads number
 MAX_THREADS_DEFAULT = 1
 
+# Errors that return exit code = 1
+EXIT_ERRORS = ['003', '005']

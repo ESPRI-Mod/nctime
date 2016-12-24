@@ -306,6 +306,7 @@ def main(args):
     # Process
     pool = Pool(int(ctx.threads))
     handlers = pool.imap(wrapper, yield_inputs(ctx, tinit))
+    status = [] ; counter = 0
     # Persist diagnostics into database
     if ctx.db:
         # Check if database exists
@@ -314,6 +315,8 @@ def main(args):
             db.create(ctx.db)
     # Commit each diagnostic as a new entry
     for handler in handlers:
+        status.extend(handler.status)
+        counter += 1
         if ctx.db:
             diagnostic = dict()
             diagnostic['creation_date'] = datetime.now()
@@ -337,5 +340,10 @@ def main(args):
     # Close tread pool
     pool.close()
     pool.join()
-    logging.info('Time diagnostic completed ({0} files scanned)'.format(process.called))
-    sys.exit(0)
+    if any([s in EXIT_ERRORS for s in status]):
+        logging.error('Some time axis should be corrected manually ({0} files scanned)'.format(counter))
+        sys.exit(1)
+    else:    
+        logging.info('Time diagnostic completed ({0} files scanned)'.format(counter))
+        sys.exit(0)
+
