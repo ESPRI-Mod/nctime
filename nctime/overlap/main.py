@@ -172,8 +172,9 @@ def main(args):
                 logging.warning(filename)
             overlaps = get_overlaps(nodes, shortest, overlaps=True)
         else:
-            logging.warning('No shortest path found: {0}'.format(str(e)))
-            overlaps = None
+            logging.error('No shortest path found: {0}'.format(str(e)))
+            logging.info('Overlap diagnostic completed')
+            sys.exit(1)
     # Print results
     if not overlaps:
         logging.info('No overlapping files')
