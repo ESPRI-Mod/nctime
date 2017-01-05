@@ -12,7 +12,6 @@ import os
 import re
 import sys
 from datetime import datetime
-from functools import wraps
 from multiprocessing import Pool
 from textwrap import fill
 
@@ -106,27 +105,6 @@ class ProcessingContext(object):
             yield filename
 
 
-def counted(fct):
-    """
-    Decorator used to count all file process calls.
-
-    :param callable fct: The function to monitor
-    :returns: A wrapped function with a ``.called`` attribute
-    :rtype: *callable*
-
-    """
-
-    @wraps(fct)  # Convenience decorator to keep the file_process docstring
-    def wrapper(*args, **kwargs):
-        wrapper.called += 1
-        return fct(*args, **kwargs)
-
-    wrapper.called = 0
-    wrapper.__name__ = fct.__name__
-    return wrapper
-
-
-@counted
 def process(inputs):
     """
     time_axis_processing(inputs)
@@ -222,7 +200,7 @@ def process(inputs):
         handler.status.append('002')
         logging.error('{0} - 002 - Time units must be unchanged for the same dataset.'.format(filename))
 
-     # Check consistency between time units
+    # Check consistency between time units
     if init.calendar != handler.calendar:
         handler.status.append('007')
         logging.error('{0} - 007 - Calendar must be unchanged for the same dataset.'.format(filename))
@@ -290,9 +268,9 @@ def wrapper(inputs):
 def main(args):
     """
     Main process that\:
-     * Instanciates processing context,
+     * Instantiates processing context,
      * Defines the referenced time properties,
-     * Instanciates threads pools,
+     * Instantiates threads pools,
      * Prints or logs the time axis diagnostics.
 
     :param ArgumentParser args: Parsed command-line arguments
@@ -306,7 +284,8 @@ def main(args):
     # Process
     pool = Pool(int(ctx.threads))
     handlers = pool.imap(wrapper, yield_inputs(ctx, tinit))
-    status = [] ; counter = 0
+    status = []
+    counter = 0
     # Persist diagnostics into database
     if ctx.db:
         # Check if database exists
@@ -346,4 +325,3 @@ def main(args):
     else:    
         logging.info('Time diagnostic completed ({0} files scanned)'.format(counter))
         sys.exit(0)
-

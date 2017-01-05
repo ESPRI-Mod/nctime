@@ -17,7 +17,7 @@ from datetime import datetime
 from utils.utils import MultilineFormatter, init_logging, directory_checker, path_switcher
 
 # Program version
-__version__ = 'v{0} {1}'.format('3.9.4', datetime(year=2016, month=12, day=23).strftime("%Y-%d-%m"))
+__version__ = 'v{0} {1}'.format('3.9.5', datetime(year=2017, month=1, day=5).strftime("%Y-%d-%m"))
 
 
 def get_args():
@@ -162,27 +162,21 @@ def get_args():
     overlap._optionals.title = "Optional arguments"
     overlap._positionals.title = "Positional arguments"
     overlap.add_argument(
-        '--mip',
-        metavar='*',
-        nargs='?',
-        default='*',
-        help="""
-        Specifies a MIP table value so as to filter directory|n
-        content (Unix wildcard are allowed).
-        """)
-    overlap.add_argument(
-        '--remove',
+        '--resolve',
         action='store_true',
         default=False,
         help="""
-        Removes overlapping files.|n
+        Resolves overlapping files.|n
         THIS ACTION DEFINITELY MODIFY INPUT DIRECTORY!
         """)
     overlap.add_argument(
-        '--subtree',
+        '--full-overlap-only',
         action='store_true',
         default=False,
-        help="""If a period gap, use the sub-period from the start date.""")
+        help="""
+        Removes only full overlapping files.|n
+        THIS ACTION DEFINITELY MODIFY INPUT DIRECTORY!
+        """)
 
     ###############################
     # Subparser for "nctime axis" #

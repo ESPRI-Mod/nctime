@@ -113,3 +113,15 @@ class NoNetCDFVariable(Exception):
         self.msg = "No variable: '{0}'".format(variable)
         self.msg += "\n<file: '{0}'>".format(path)
         super(self.__class__, self).__init__(self.msg)
+
+
+class NetCDFTimeStepNotFound(Exception):
+    """
+    Raised when a NetCDF time index is not found.
+
+    """
+
+    def __init__(self, value, path):
+        self.msg = "No index for time value: '{0}'".format(value)
+        self.msg += "\n<file: '{0}'>".format(path)
+        super(self.__class__, self).__init__(self.msg)

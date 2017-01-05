@@ -145,7 +145,7 @@ class TimeInit(object):
         return tunits.replace('days', units[frequency])
 
 
-def untroncated_timestamp(timestamp):
+def untruncated_timestamp(timestamp):
     """
     Returns proper digits for yearly and monthly truncated timestamps.
     The dates from filename are filled with the 0 digit to reach 14 digits.
@@ -352,7 +352,6 @@ def get_start_end_dates_from_filename(filename, pattern, frequency, calendar):
     <https://docs.python.org/2/library/re.html>`_).
     :param str frequency: The time frequency
     :param str calendar: The NetCDF calendar attribute
-    :param boolean is_instant: True if instantaneous time axis
     :returns: ``datetime`` instances for start and end dates from the filename
     :rtype: *netcdftime.datetime*
 
@@ -361,7 +360,7 @@ def get_start_end_dates_from_filename(filename, pattern, frequency, calendar):
     date_as_since = None
     for key in ['start_period', 'end_period']:
         date = re.match(pattern, filename).groupdict()[key]
-        digits = untroncated_timestamp(date)
+        digits = untruncated_timestamp(date)
         # Convert string digits to %Y-%m-%d %H:%M:%S format
         date_as_since = ''.join([''.join(triple) for triple in
                                  zip(digits[::2], digits[1::2], ['', '-', '-', ' ', ':', ':', ':'])])[:-1]
@@ -372,14 +371,6 @@ def get_start_end_dates_from_filename(filename, pattern, frequency, calendar):
             dates.append(num2date(TIME_CORRECTION[frequency][key][digits[-6:]],
                                   units='days since ' + date_as_since,
                                   calendar=calendar))
-            # if is_instant:
-            #     dates.append(num2date(INSTANT_TIME_CORRECTION[frequency][key][digits[-6:]],
-            #                           units='days since ' + date_as_since,
-            #                           calendar=calendar))
-            # else:
-            #     dates.append(num2date(AVERAGED_TIME_CORRECTION[frequency][key][digits[-6:]],
-            #                           units='days since ' + date_as_since,
-            #                           calendar=calendar))
         else:
             dates.append(num2date(0.0, units='days since ' + date_as_since, calendar=calendar))
     # Append date next to the end date for overlap diagnostic
@@ -394,12 +385,60 @@ def get_start_end_dates_from_filename(filename, pattern, frequency, calendar):
     return dates
 
 
+def get_first_last_timesteps(ffp):
+    """
+    Returns first and last time steps from time axis of a NetCDF file.
+
+    :param str ffp: The file full path
+    :returns: The first and last timestep
+    :rtype: *int*
+
+    """
+    try:
+        nc = netCDF4.Dataset(ffp, 'r')
+    except IOError:
+            raise InvalidNetCDFFile(ffp)
+    if 'time' not in nc.variables.keys():
+        raise NoNetCDFVariable('time', ffp)
+    first = nc.variables['time'][0]
+    last = nc.variables['time'][-1]
+    nc.close()
+    return first, last
+
+
+def get_next_timestep(ffp, current_timestep):
+    """
+    Returns next time step from time axis given the current one.
+
+    :param str ffp: The file full path
+    :param int current_timestep: The current_timestep
+    :returns: The next timestep
+    :rtype: *int*
+
+    """
+    try:
+        nc = netCDF4.Dataset(ffp, 'r')
+    except IOError:
+            raise InvalidNetCDFFile(ffp)
+    if 'time' not in nc.variables.keys():
+        raise NoNetCDFVariable('time', ffp)
+    try:
+        index = int(np.where(nc.variables['time'][:] == current_timestep)[0][0])
+    except IndexError:
+        raise NetCDFTimeStepNotFound(current_timestep, ffp)
+    next_timestep = nc.variables['time'][index + 1]
+    nc.close()
+    return next_timestep
+
+
 def time_inc(frequency):
     """
     Returns the time incrementation and time units depending on the MIP frequency.
+
     :param str frequency: The MIP frequency
     :returns: The corresponding time value and units
     :rtype: *list*
+
     """
     inc = {'subhr': [30, 'minutes'],
            '3hr':   [3, 'hours'],
@@ -410,47 +449,49 @@ def time_inc(frequency):
     return inc[frequency]
 
 
-def dates2str(dates, sep=True):
+def dates2int(dates):
     """
-    Prints date in format: %Y%m%d %H:%M:%s.
+    Converts (a list of) dates as integers.
 
     :param list dates: A list of datetime or phony datetime objects
-    :param boolean sep: Print corresponding date with separators if True
-    :returns: The corresponding formatted date to print
-    :rtype: *str*
+    :returns: The corresponding formatted integers
+    :rtype: *list* or *int*
 
     """
-    strdates = []
-    for date in dates:
-        if sep:
-            strdates.append('{0:04d}-{1:02d}-{2:02d} {3:02d}:{4:02d}:{5:02d}'.format(date.year,
-                                                                                     date.month,
-                                                                                     date.day,
-                                                                                     date.hour,
-                                                                                     date.minute,
-                                                                                     date.second))
-        else:
-            strdates.append('{0:04d}{1:02d}{2:02d}{3:02d}{4:02d}{5:02d}'.format(date.year,
-                                                                                date.month,
-                                                                                date.day,
-                                                                                date.hour,
-                                                                                date.minute,
-                                                                                date.second))
-    return strdates
+    if isinstance(dates, list):
+        return map(int, dates2str(dates, iso_format=False))
+    else:
+        return int(dates2str(dates, iso_format=False))
 
 
-def date2str(date, sep=True):
+def dates2str(dates, iso_format=True):
     """
-    Prints date in format: %Y%m%d %H:%M:%s.
+    Converts (a list of) dates in format: %Y%m%d %H:%M:%s.
+
+    :param list dates: A list of datetime or phony datetime objects
+    :param boolean iso_format: ISO format date if True
+    :returns: The corresponding formatted strings
+    :rtype: *list* or *str*
+
+    """
+    if isinstance(dates, list):
+        return [date2str(date, iso_format) for date in dates]
+    else:
+        return date2str(dates, iso_format)
+
+
+def date2str(date, iso_format=True):
+    """
+    Converts date in format: %Y%m%d %H:%M:%s.
 
     :param netcdftime.datetime date: A datetime or phony datetime objects
-    :param boolean sep: Print date with separators if True
-    :returns: The corresponding formatted date to print
+    :param boolean iso_format: ISO format date if True
+    :returns: The corresponding formatted string
     :rtype: *str*
 
     """
-    if sep:
-        return '{0:04d}-{1:02d}-{2:02d} {3:02d}:{4:02d}:{5:02d}'.format(date.year,
+    if iso_format:
+        return '{0:04d}-{1:02d}-{2:02d}T{3:02d}:{4:02d}:{5:02d}'.format(date.year,
                                                                         date.month,
                                                                         date.day,
                                                                         date.hour,
@@ -463,3 +504,65 @@ def date2str(date, sep=True):
                                                                    date.hour,
                                                                    date.minute,
                                                                    date.second)
+
+
+def ints2date(dates):
+    """
+    Converts (a list of) integer into corresponding datetime objects.
+
+    :param list dates: A list of formatted integer
+    :returns: The corresponding datetime objects
+    :rtype: *list* or *netcdftime.datetime*
+
+    """
+    if isinstance(dates, list):
+        dates = map(str, dates)
+    else:
+        dates = str(dates)
+    return strs2date(dates, iso_format=False)
+
+
+def strs2date(dates, iso_format=False):
+    """
+    Converts (a list of) formatted string %Y%m%d%H:%M:%s into corresponding datetime objects.
+
+    :param list dates: A list of formatted dated
+    :param boolean iso_format: ISO format date if True
+    :returns: The corresponding datetime objects
+    :rtype: *list* or *netcdftime.datetime*
+
+    """
+    if isinstance(dates, list):
+        return [str2date(date, iso_format) for date in dates]
+    else:
+        return str2date(dates, iso_format)
+
+
+def str2date(date, iso_format=True):
+    """
+    Converts a string format %Y%m%d%H:%M:%s into datetime object.
+
+    :param str date: The formatted date
+    :param boolean iso_format: ISO format date if True
+    :returns: The corresponding datetime
+    :rtype: *netcdftime.datetime*
+
+    """
+    if iso_format:
+        pattern = re.compile(r'^(?P<year>\d{4})-'
+                             r'(?P<month>\d{2})-'
+                             r'(?P<day>\d{2})T'
+                             r'(?P<hour>\d{2}):'
+                             r'(?P<minute>\d{2}):'
+                             r'(?P<second>\d{2})$')
+    else:
+        pattern = re.compile(r'^(?P<year>\d{4})'
+                             r'(?P<month>\d{2})'
+                             r'(?P<day>\d{2})'
+                             r'(?P<hour>\d{2})'
+                             r'(?P<minute>\d{2})'
+                             r'(?P<second>\d{2})$')
+    attr = pattern.match(str(date)).groupdict()
+    for k, v in attr.iteritems():
+        attr[k] = int(v)
+    return datetime(**attr)

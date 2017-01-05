@@ -12,7 +12,9 @@ import os
 import re
 import sys
 
+import nco
 import networkx as nx
+import numpy as np
 
 from nctime.utils import time, utils
 
@@ -26,13 +28,9 @@ class ProcessingContext(object):
     +=======================+=============+=================================+
     | *self*.directory      | *str*       | Variable to scan                |
     +-----------------------+-------------+---------------------------------+
-    | *self*.mip            | *str*       | The MIP table from DRS          |
-    +-----------------------+-------------+---------------------------------+
-    | *self*.remove         | *boolean*   | True if remove mode             |
+    | *self*.resolve        | *boolean*   | True to resolve overlaps        |
     +-----------------------+-------------+---------------------------------+
     | *self*.verbose        | *boolean*   | True if verbose mode            |
-    +-----------------------+-------------+---------------------------------+
-    | *self*.subtree        | *boolean*   | True for sub-period use         |
     +-----------------------+-------------+---------------------------------+
     | *self*.project        | *str*       | MIP project                     |
     +-----------------------+-------------+---------------------------------+
@@ -50,13 +48,11 @@ class ProcessingContext(object):
     :rtype: *ProcessingContext*
 
     """
-
     def __init__(self, args):
         self.directory = args.directory
-        self.mip = args.mip
-        self.remove = args.remove
+        self.resolve = args.resolve
+        self.full_overlap_only = args.full_overlap_only
         self.verbose = args.v
-        self.subtree = args.subtree
         self.project = args.project
         cfg = utils.config_parse(args.i, self.project)
         self.pattern = utils.translate_filename_format(cfg, self.project)
@@ -88,32 +84,82 @@ class ProcessingContext(object):
             yield filename
 
 
-def get_overlaps(nodes, shortest, overlaps=True):
+def get_overlaps(ctx, nodes, shortest):
     """
-    Yields all matching or overlapping (default) files.
+    Returns all overlapping (default) files as a list of tuples.
+    Each tuple gathers:
+     * The filename,
+     * The starting date of file = lower overlap bound
+     * The higher overlap bound
+     * The date to cut the file in order to resolve the overlap
+     * The ending date of file
+     * The ending date + 1 time step.
 
-    :param list nodes: The directed graph nodes as a list of tuples
+    :param nctime.overlap.main.ProcessingContext ctx: The processing context
+    :param dict() nodes: The directed graph nodes as a dictionary
     :param list shortest: The most consecutive files list (from `nx.DiGraph()`)
-    :param boolean overlaps: True if overlaps are returned
     :returns: The filenames
     :rtype: *list*
 
     """
-    match = []
-    for i in range(len(shortest) - 1):
-        match.append(zip(*nodes)[0][zip(*nodes)[1].index(shortest[i]) and
-                                    zip(*nodes)[3].index(shortest[i + 1])])
-    # Find overlapping filenames
-    if overlaps:
-        return list(set(zip(*nodes)[0]).symmetric_difference(set(match)))
-    else:
-        return match
+    overlaps = dict()
+    # Find partial overlapping nodes
+    overlaps['partial'] = dict()
+    for n in range(1, len(shortest)-2):
+        # Get current node dates
+        current_node = nodes[shortest[n]]
+        # Get next node dates
+        next_node = nodes[shortest[n+1]]
+        # Because of the shortest path is selected, difference between bounds should always be positive or zero
+        assert (current_node['next_date'] - next_node['start_date']) >= 0
+        # Get partial overlap if exists
+        # Partial overlap from next_node[1] to current_node[2] (bounds included)
+        # Overlap is hold on the next node (arbitrary)
+        if (current_node['next_date'] - next_node['start_date']) > 0:
+            cutting_timestep = time.get_next_timestep(os.path.join(ctx.directory, shortest[n + 1]),
+                                                      current_node['last_timestep'])
+            overlaps['partial'][shortest[n + 1]] = next_node
+            overlaps['partial'][shortest[n + 1]].update({'end_overlap': current_node['end_date'],
+                                                         'cutting_date': current_node['next_date'],
+                                                         'cutting_timestep': cutting_timestep})
+    # Find full overlapping nodes
+    overlaps['full'] = list(set(nodes.keys()).symmetric_difference(set(shortest[1:-1])))
+    return overlaps
+
+
+def resolve_overlap(ctx, filename, from_date=None, to_date=None, cutting_timestep=None, partial=False):
+    """
+    Resolve overlapping files.
+    If full overlap, the corresponding file is removed.
+    If partial overlap, the corresponding file is truncated into a new one and the old file is removed.
+
+    :param nctime.overlap.main.ProcessingContext ctx: The processing context
+    :param str filename: The filename
+    :param int from_date: Overlap starting date
+    :param int to_date:  Overlap ending date
+    :param int cutting_timestep:  Time step to cut the file
+    :param boolean partial: Resolve partial overlap if True
+
+    """
+    if partial:
+        filename_attr = re.match(ctx.pattern, filename).groupdict()
+        assert len(filename_attr['start_period']) == len(filename_attr['end_period'])
+        from_timestamp = str(from_date)[:len(filename_attr['start_period'])]
+        to_timestamp = str(to_date)[:len(filename_attr['end_period'])]
+        tmp = filename.replace(filename_attr['start_period'], from_timestamp)
+        new_filename = tmp.replace(filename_attr['end_period'], to_timestamp)
+        assert not os.path.exists(os.path.join(ctx.directory, new_filename))
+        nc = nco.Nco()
+        nc.ncks(input=os.path.join(ctx.directory, filename),
+                output=os.path.join(ctx.directory, new_filename),
+                options='-O -d time,{0},,1'.format(cutting_timestep))
+    os.remove(os.path.join(ctx.directory, filename))
 
 
 def main(args):
     """
     Main process that\:
-     * Instanciates processing context,
+     * Instantiates processing context,
      * Deduces start, end and next date from each filenames,
      * Builds the DiGraph,
      * Detects the shortest path between dates if exists,
@@ -122,7 +168,7 @@ def main(args):
     :param ArgumentParser args: Parsed command-line arguments
 
     """
-    # Instantiate processing context from command-line arguments or SYNDA job dictionnary
+    # Instantiate processing context from command-line arguments or SYNDA job dictionary
     ctx = ProcessingContext(args)
     logging.info('Overlap diagnostic started for {0}'.format(ctx.directory))
     # Set driving time properties (e.g., calendar, frequency and time units) from first file in directory
@@ -130,60 +176,100 @@ def main(args):
     # DiGraph creation
     graph = nx.DiGraph()
     graph.clear()
-    nodes = []
-    if ctx.verbose:
-        logging.info('{0} | {1} | {2} | {3}'.format('File'.center(len(ctx.ref) + 2),
-                                                    'Start'.center(19),
-                                                    'End'.center(19),
-                                                    'Next'.center(19)))
+    nodes = dict()
+    logging.info('Create edges from source nodes to target nodes')
     for filename in ctx.get_files_list():
-        start, end, nxt = time.get_start_end_dates_from_filename(filename=filename,
-                                                                 pattern=ctx.pattern,
-                                                                 frequency=tinit.frequency,
-                                                                 calendar=tinit.calendar)
+        # A node is defined by the filename, its start, end and next dates with its first and last timesteps.
+        nodes[filename] = dict()
+        # Get start, end and next date of each file
+        dates = time.get_start_end_dates_from_filename(filename=filename,
+                                                       pattern=ctx.pattern,
+                                                       frequency=tinit.frequency,
+                                                       calendar=tinit.calendar)
+        nodes[filename]['start_date'], nodes[filename]['end_date'], nodes[filename]['next_date'] = time.dates2int(dates)
+        # Get first and last time steps
+        timesteps = time.get_first_last_timesteps(os.path.join(ctx.directory, filename))
+        nodes[filename]['first_timestep'], nodes[filename]['last_timestep'] = timesteps
+
+    # Build starting node
+    start_dates = [nodes[n]['start_date'] for n in nodes]
+    starts = [n for n in nodes if nodes[n]['start_date'] == min(start_dates)]
+    for start in starts:
+        graph.add_edge('START', start)
         if ctx.verbose:
-            logging.info('{0} | {1} | {2} | {3}'.format(filename.center(len(filename) + 2),
-                                                        time.date2str(start).center(19),
-                                                        time.date2str(end).center(19),
-                                                        time.date2str(nxt).center(19)))
-        # A node is defined by its start, end and next dates as a tuple.
-        start, end, nxt = time.dates2str([start, end, nxt], sep=False)
-        nodes.append((filename, int(start), int(end), int(nxt)))
-        # Add nodes and edges
-        graph.add_edge(int(start), int(nxt))
+            logging.info('{0} --> {1}'.format(' START '.center(len(ctx.ref) + 2, '-'),
+                                              start.center(len(ctx.ref) + 2)))
+    # Create graph edges with filenames only
+    end_dates = [nodes[n]['end_date'] for n in nodes]
+    for n in nodes:
+        # Create a fake ending node from all latest files in case of overlaps
+        if nodes[n]['end_date'] == max(end_dates):
+            graph.add_edge(n, 'END')
+            if ctx.verbose:
+                logging.info('{0} --> {1}'.format(n.center(len(ctx.ref) + 2),
+                                                  ' END '.center(len(ctx.ref) + 2, '-')))
+        else:
+            # Get index of the closest node
+            # The closest node is the node with the smallest positive difference
+            # between next current time step and all start dates
+            other_nodes = [x for x in nodes if x is not n]
+            start_dates = [nodes[x]['start_date'] for x in other_nodes]
+            nxts = [i for i, v in enumerate(nodes[n]['next_date'] - np.array(start_dates)) if v >= 0]
+            if nxts:
+                for nxt in nxts:
+                    graph.add_edge(n, other_nodes[nxt])
+                    if ctx.verbose:
+                        logging.info('{0} --> {1}'.format(n.center(len(ctx.ref) + 2),
+                                                          other_nodes[nxt].center(len(ctx.ref) + 2)))
     # Walk through the graph
     try:
         # Find shortest path between oldest and latest dates
-        shortest = nx.shortest_path(graph,
-                                    source=min(zip(*nodes)[1]),
-                                    target=max(zip(*nodes)[3]))
+        shortest = nx.shortest_path(graph, source='START', target='END')
         logging.info('Shortest path found')
-        overlaps = get_overlaps(nodes, shortest, overlaps=True)
     except nx.NetworkXNoPath, e:
-        if ctx.subtree:
-            # Find shortest path of the subtree instead
-            pred, dist = nx.bellman_ford(graph, min(zip(*nodes)[1]))
-            latest = utils.find_key(dist, max(dist.values()))
-            shortest = nx.shortest_path(graph,
-                                        source=min(zip(*nodes)[1]),
-                                        target=latest)
-            logging.warning('Shortest path found on the longest subtree from start:')
-            for filename in get_overlaps(nodes, shortest, overlaps=False):
-                logging.warning(filename)
-            overlaps = get_overlaps(nodes, shortest, overlaps=True)
-        else:
-            logging.error('No shortest path found: {0}'.format(str(e)))
-            logging.info('Overlap diagnostic completed')
-            sys.exit(1)
+        logging.error('No shortest path found: {0}'.format(str(e)))
+        logging.info('Overlap diagnostic completed')
+        sys.exit(1)
+    # Get overlaps
+    overlaps = get_overlaps(ctx, nodes, shortest)
     # Print results
-    if not overlaps:
+    logging.info('{0} --> {1}'.format(' START '.center(len(ctx.ref) + 2, '-'),
+                                      shortest[1].center(len(ctx.ref) + 2)))
+    for i in range(1, len(shortest) - 2):
+        if shortest[i+1] in overlaps['partial']:
+            logging.info('{0} --> {1} < '
+                         'overlap from {2} to {3}'.format(shortest[i].center(len(ctx.ref) + 2),
+                                                          shortest[i + 1].center(len(ctx.ref) + 2),
+                                                          overlaps['partial'][shortest[i+1]]['start_date'],
+                                                          overlaps['partial'][shortest[i+1]]['end_overlap']))
+        else:
+            logging.info('{0} --> {1}'.format(shortest[i].center(len(ctx.ref) + 2),
+                                              shortest[i + 1].center(len(ctx.ref) + 2)))
+    logging.info('{0} --> {1}'.format(shortest[-2].center(len(ctx.ref) + 2),
+                                      ' END '.center(len(ctx.ref) + 2, '-')))
+    if all(not l for l in overlaps.values()):
         logging.info('No overlapping files')
     else:
-        logging.warning('Overlapping files:')
-        for filename in overlaps:
-            logging.warning(filename)
-    if ctx.remove:
-        for filename in overlaps:
-            os.remove('{0}/{1}'.format(ctx.directory, filename))
-        logging.warning('{0} overlapping files removed'.format(len(overlaps)))
+        # Full overlapping files has to be deleted before partial overlapping files are truncated.
+        if overlaps['full']:
+            logging.warning('Full overlapping files:')
+            for node in overlaps['full']:
+                if ctx.resolve:
+                    resolve_overlap(ctx, node, partial=False)
+                    logging.warning('{0} > REMOVED'.format(node))
+                else:
+                    logging.warning(node)
+        if overlaps['partial']:
+            logging.warning('Partial overlapping files:')
+            for node in overlaps['partial']:
+                if ctx.resolve and not ctx.full_overlap_only:
+                    resolve_overlap(ctx,
+                                    filename=node,
+                                    from_date=overlaps['partial'][node]['cutting_date'],
+                                    to_date=overlaps['partial'][node]['end_date'],
+                                    cutting_timestep=overlaps['partial'][node]['cutting_timestep'],
+                                    partial=True)
+                    logging.warning('{0} > TRUNCATED'.format(node))
+                else:
+                    logging.warning(node)
     logging.info('Overlap diagnostic completed')
