@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Code documentation &mdash; nctime 3.8.6 documentation</title>
+  <title>Code documentation &mdash; nctime 3.9.5 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="nctime 3.8.6 documentation" href="index.html"/>
+    <link rel="top" title="nctime 3.9.5 documentation" href="index.html"/>
         <link rel="prev" title="Changelog" href="log.html"/> 
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                3.8
+                3.9
               </div>
             
           
@@ -195,21 +195,13 @@
 <td><em>str</em></td>
 <td>Variable to scan</td>
 </tr>
-<tr class="row-odd"><td><em>self</em>.mip</td>
-<td><em>str</em></td>
-<td>The MIP table from DRS</td>
-</tr>
-<tr class="row-even"><td><em>self</em>.remove</td>
+<tr class="row-odd"><td><em>self</em>.resolve</td>
 <td><em>boolean</em></td>
-<td>True if remove mode</td>
+<td>True to resolve overlaps</td>
 </tr>
-<tr class="row-odd"><td><em>self</em>.verbose</td>
+<tr class="row-even"><td><em>self</em>.verbose</td>
 <td><em>boolean</em></td>
 <td>True if verbose mode</td>
-</tr>
-<tr class="row-even"><td><em>self</em>.subtree</td>
-<td><em>boolean</em></td>
-<td>True for sub-period use</td>
 </tr>
 <tr class="row-odd"><td><em>self</em>.project</td>
 <td><em>str</em></td>
@@ -265,16 +257,27 @@
 
 <dl class="function">
 <dt id="nctime.overlap.main.get_overlaps">
-<code class="descclassname">nctime.overlap.main.</code><code class="descname">get_overlaps</code><span class="sig-paren">(</span><em>nodes</em>, <em>shortest</em>, <em>overlaps=True</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/overlap/main.html#get_overlaps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.overlap.main.get_overlaps" title="Permalink to this definition">¶</a></dt>
-<dd><p>Yields all matching or overlapping (default) files.</p>
+<code class="descclassname">nctime.overlap.main.</code><code class="descname">get_overlaps</code><span class="sig-paren">(</span><em>ctx</em>, <em>nodes</em>, <em>shortest</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/overlap/main.html#get_overlaps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.overlap.main.get_overlaps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all overlapping (default) files as a list of tuples.
+Each tuple gathers:</p>
+<blockquote>
+<div><ul class="simple">
+<li>The filename,</li>
+<li>The starting date of file = lower overlap bound</li>
+<li>The higher overlap bound</li>
+<li>The date to cut the file in order to resolve the overlap</li>
+<li>The ending date of file</li>
+<li>The ending date + 1 time step.</li>
+</ul>
+</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>nodes</strong> (<em>list</em>) &#8211; The directed graph nodes as a list of tuples</li>
+<li><strong>ctx</strong> (<a class="reference internal" href="#nctime.overlap.main.ProcessingContext" title="nctime.overlap.main.ProcessingContext"><em>nctime.overlap.main.ProcessingContext</em></a>) &#8211; The processing context</li>
+<li><strong>nodes</strong> (<em>dict()</em>) &#8211; The directed graph nodes as a dictionary</li>
 <li><strong>shortest</strong> (<em>list</em>) &#8211; The most consecutive files list (from <cite>nx.DiGraph()</cite>)</li>
-<li><strong>overlaps</strong> (<em>boolean</em>) &#8211; True if overlaps are returned</li>
 </ul>
 </td>
 </tr>
@@ -289,12 +292,36 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="nctime.overlap.main.resolve_overlap">
+<code class="descclassname">nctime.overlap.main.</code><code class="descname">resolve_overlap</code><span class="sig-paren">(</span><em>ctx</em>, <em>filename</em>, <em>from_date=None</em>, <em>to_date=None</em>, <em>cutting_timestep=None</em>, <em>partial=False</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/overlap/main.html#resolve_overlap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.overlap.main.resolve_overlap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resolve overlapping files.
+If full overlap, the corresponding file is removed.
+If partial overlap, the corresponding file is truncated into a new one and the old file is removed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ctx</strong> (<a class="reference internal" href="#nctime.overlap.main.ProcessingContext" title="nctime.overlap.main.ProcessingContext"><em>nctime.overlap.main.ProcessingContext</em></a>) &#8211; The processing context</li>
+<li><strong>filename</strong> (<em>str</em>) &#8211; The filename</li>
+<li><strong>from_date</strong> (<em>int</em>) &#8211; Overlap starting date</li>
+<li><strong>to_date</strong> (<em>int</em>) &#8211; Overlap ending date</li>
+<li><strong>cutting_timestep</strong> (<em>int</em>) &#8211; Time step to cut the file</li>
+<li><strong>partial</strong> (<em>boolean</em>) &#8211; Resolve partial overlap if True</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="nctime.overlap.main.main">
 <code class="descclassname">nctime.overlap.main.</code><code class="descname">main</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/overlap/main.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.overlap.main.main" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
 <dt>Main process that:</dt>
 <dd><ul class="first last simple">
-<li>Instanciates processing context,</li>
+<li>Instantiates processing context,</li>
 <li>Deduces start, end and next date from each filenames,</li>
 <li>Builds the DiGraph,</li>
 <li>Detects the shortest path between dates if exists,</li>
@@ -433,26 +460,8 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="nctime.axis.main.counted">
-<code class="descclassname">nctime.axis.main.</code><code class="descname">counted</code><span class="sig-paren">(</span><em>fct</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/main.html#counted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.main.counted" title="Permalink to this definition">¶</a></dt>
-<dd><p>Decorator used to count all file process calls.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fct</strong> (<em>callable</em>) &#8211; The function to monitor</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A wrapped function with a <code class="docutils literal"><span class="pre">.called</span></code> attribute</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>callable</em></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
 <dt id="nctime.axis.main.process">
-<code class="descclassname">nctime.axis.main.</code><code class="descname">process</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/main.html#process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.main.process" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nctime.axis.main.</code><code class="descname">process</code><span class="sig-paren">(</span><em>inputs</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/main.html#process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.main.process" title="Permalink to this definition">¶</a></dt>
 <dd><p>time_axis_processing(inputs)</p>
 <dl class="docutils">
 <dt>Time axis process that:</dt>
@@ -533,9 +542,9 @@
 <dd><dl class="docutils">
 <dt>Main process that:</dt>
 <dd><ul class="first last simple">
-<li>Instanciates processing context,</li>
+<li>Instantiates processing context,</li>
 <li>Defines the referenced time properties,</li>
-<li>Instanciates threads pools,</li>
+<li>Instantiates threads pools,</li>
 <li>Prints or logs the time axis diagnostics.</li>
 </ul>
 </dd>
@@ -1226,7 +1235,7 @@ These properties has to be used as reference for all file into the directory.</p
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ctx</strong> (<a class="reference internal" href="#nctime.axis.main.ProcessingContext" title="nctime.axis.main.ProcessingContext"><em>ProcessingContext</em></a>) &#8211; The processing context</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ctx</strong> (<a class="reference internal" href="#nctime.overlap.main.ProcessingContext" title="nctime.overlap.main.ProcessingContext"><em>ProcessingContext</em></a>) &#8211; The processing context</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
@@ -1293,8 +1302,8 @@ As en example, for a 3-hourly file, the time units &#8220;days since YYYY-MM-DD&
 </dd></dl>
 
 <dl class="function">
-<dt id="nctime.utils.time.untroncated_timestamp">
-<code class="descclassname">nctime.utils.time.</code><code class="descname">untroncated_timestamp</code><span class="sig-paren">(</span><em>timestamp</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#untroncated_timestamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.untroncated_timestamp" title="Permalink to this definition">¶</a></dt>
+<dt id="nctime.utils.time.untruncated_timestamp">
+<code class="descclassname">nctime.utils.time.</code><code class="descname">untruncated_timestamp</code><span class="sig-paren">(</span><em>timestamp</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#untruncated_timestamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.untruncated_timestamp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns proper digits for yearly and monthly truncated timestamps.
 The dates from filename are filled with the 0 digit to reach 14 digits.
 Consequently, yearly dates starts at January 1st and monthly dates starts at first day
@@ -1429,7 +1438,6 @@ time boundary and not the middle of the time interval.</p>
 </li>
 <li><strong>frequency</strong> (<em>str</em>) &#8211; The time frequency</li>
 <li><strong>calendar</strong> (<em>str</em>) &#8211; The NetCDF calendar attribute</li>
-<li><strong>is_instant</strong> (<em>boolean</em>) &#8211; True if instantaneous time axis</li>
 </ul>
 </td>
 </tr>
@@ -1444,29 +1452,122 @@ time boundary and not the middle of the time interval.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="nctime.utils.time.get_first_last_timesteps">
+<code class="descclassname">nctime.utils.time.</code><code class="descname">get_first_last_timesteps</code><span class="sig-paren">(</span><em>ffp</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#get_first_last_timesteps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.get_first_last_timesteps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns first and last time steps from time axis of a NetCDF file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ffp</strong> (<em>str</em>) &#8211; The file full path</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The first and last timestep</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>int</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.utils.time.get_next_timestep">
+<code class="descclassname">nctime.utils.time.</code><code class="descname">get_next_timestep</code><span class="sig-paren">(</span><em>ffp</em>, <em>current_timestep</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#get_next_timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.get_next_timestep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns next time step from time axis given the current one.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ffp</strong> (<em>str</em>) &#8211; The file full path</li>
+<li><strong>current_timestep</strong> (<em>int</em>) &#8211; The current_timestep</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The next timestep</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>int</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="nctime.utils.time.time_inc">
 <code class="descclassname">nctime.utils.time.</code><code class="descname">time_inc</code><span class="sig-paren">(</span><em>frequency</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#time_inc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.time_inc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the time incrementation and time units depending on the MIP frequency.
-:param str frequency: The MIP frequency
-:returns: The corresponding time value and units
-:rtype: <em>list</em></p>
+<dd><p>Returns the time incrementation and time units depending on the MIP frequency.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frequency</strong> (<em>str</em>) &#8211; The MIP frequency</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The corresponding time value and units</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>list</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.utils.time.dates2int">
+<code class="descclassname">nctime.utils.time.</code><code class="descname">dates2int</code><span class="sig-paren">(</span><em>dates</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#dates2int"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.dates2int" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts (a list of) dates as integers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dates</strong> (<em>list</em>) &#8211; A list of datetime or phony datetime objects</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The corresponding formatted integers</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>list</em> or <em>int</em></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="nctime.utils.time.dates2str">
-<code class="descclassname">nctime.utils.time.</code><code class="descname">dates2str</code><span class="sig-paren">(</span><em>dates</em>, <em>sep=True</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#dates2str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.dates2str" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prints date in format: %Y%m%d %H:%M:%s.</p>
+<code class="descclassname">nctime.utils.time.</code><code class="descname">dates2str</code><span class="sig-paren">(</span><em>dates</em>, <em>iso_format=True</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#dates2str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.dates2str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts (a list of) dates in format: %Y%m%d %H:%M:%s.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>dates</strong> (<em>list</em>) &#8211; A list of datetime or phony datetime objects</li>
-<li><strong>sep</strong> (<em>boolean</em>) &#8211; Print corresponding date with separators if True</li>
+<li><strong>iso_format</strong> (<em>boolean</em>) &#8211; ISO format date if True</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The corresponding formatted date to print</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The corresponding formatted strings</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>list</em> or <em>str</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.utils.time.date2str">
+<code class="descclassname">nctime.utils.time.</code><code class="descname">date2str</code><span class="sig-paren">(</span><em>date</em>, <em>iso_format=True</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#date2str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.date2str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts date in format: %Y%m%d %H:%M:%s.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>date</strong> (<em>netcdftime.datetime</em>) &#8211; A datetime or phony datetime objects</li>
+<li><strong>iso_format</strong> (<em>boolean</em>) &#8211; ISO format date if True</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The corresponding formatted string</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>str</em></p>
@@ -1477,23 +1578,65 @@ time boundary and not the middle of the time interval.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="nctime.utils.time.date2str">
-<code class="descclassname">nctime.utils.time.</code><code class="descname">date2str</code><span class="sig-paren">(</span><em>date</em>, <em>sep=True</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#date2str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.date2str" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prints date in format: %Y%m%d %H:%M:%s.</p>
+<dt id="nctime.utils.time.ints2date">
+<code class="descclassname">nctime.utils.time.</code><code class="descname">ints2date</code><span class="sig-paren">(</span><em>dates</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#ints2date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.ints2date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts (a list of) integer into corresponding datetime objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dates</strong> (<em>list</em>) &#8211; A list of formatted integer</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The corresponding datetime objects</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>list</em> or <em>netcdftime.datetime</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.utils.time.strs2date">
+<code class="descclassname">nctime.utils.time.</code><code class="descname">strs2date</code><span class="sig-paren">(</span><em>dates</em>, <em>iso_format=False</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#strs2date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.strs2date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts (a list of) formatted string %Y%m%d%H:%M:%s into corresponding datetime objects.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>date</strong> (<em>netcdftime.datetime</em>) &#8211; A datetime or phony datetime objects</li>
-<li><strong>sep</strong> (<em>boolean</em>) &#8211; Print date with separators if True</li>
+<li><strong>dates</strong> (<em>list</em>) &#8211; A list of formatted dated</li>
+<li><strong>iso_format</strong> (<em>boolean</em>) &#8211; ISO format date if True</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The corresponding formatted date to print</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The corresponding datetime objects</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>str</em></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>list</em> or <em>netcdftime.datetime</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.utils.time.str2date">
+<code class="descclassname">nctime.utils.time.</code><code class="descname">str2date</code><span class="sig-paren">(</span><em>date</em>, <em>iso_format=True</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#str2date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.str2date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a string format %Y%m%d%H:%M:%s into datetime object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>date</strong> (<em>str</em>) &#8211; The formatted date</li>
+<li><strong>iso_format</strong> (<em>boolean</em>) &#8211; ISO format date if True</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The corresponding datetime</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>netcdftime.datetime</em></p>
 </td>
 </tr>
 </tbody>
@@ -1558,6 +1701,12 @@ time boundary and not the middle of the time interval.</p>
 <dd><p>Raised when a NetCDF variable is missing.</p>
 </dd></dl>
 
+<dl class="exception">
+<dt id="nctime.utils.exceptions.NetCDFTimeStepNotFound">
+<em class="property">exception </em><code class="descclassname">nctime.utils.exceptions.</code><code class="descname">NetCDFTimeStepNotFound</code><span class="sig-paren">(</span><em>value</em>, <em>path</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/exceptions.html#NetCDFTimeStepNotFound"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.exceptions.NetCDFTimeStepNotFound" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when a NetCDF time index is not found.</p>
+</dd></dl>
+
 <p><em>Module author: Levavasseur Guillaume (CNRS/IPSL) &lt;<a class="reference external" href="mailto:glipsl&#37;&#52;&#48;ipsl&#46;jussieu&#46;fr">glipsl<span>&#64;</span>ipsl<span>&#46;</span>jussieu<span>&#46;</span>fr</a>&gt;</em></p>
 </div>
 </div>
@@ -1601,7 +1750,7 @@ time boundary and not the middle of the time interval.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'3.8.6',
+            VERSION:'3.9.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
