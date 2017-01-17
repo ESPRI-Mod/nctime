@@ -3,7 +3,7 @@
 Configuration
 =============
 
-The only conguration you have to do at least is to define:
+The only configuration you have to do at least is to define:
  * the maximal threads number (default is 4 threads),
  * the checksum type (default is SHA256).
 

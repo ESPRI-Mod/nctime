@@ -29,10 +29,6 @@ designs include the period dates into the filename. The scheme of chunked files 
 on several parameters (the institute, the model, the frequency, etc.). These different schemes lead to unnecessary
 overlapping files with a more complex folder reading and wasting disk space.
 
-.. warning:: Only complete overlaps are detected. For example, if a file goes from 1991 to 2010 and another goes from
-    2001 to 2020, the overlap is partial. If the second file goes from 2001 to 2010 so the overlap is complete and the
-    second file can be removed without loss of information.
-
 .. note:: ``nctime`` is based on uncorrupted filename period dates and properly-defined times units, time calendar and
     frequency NetCDF attributes.
 

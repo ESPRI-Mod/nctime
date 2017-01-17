@@ -69,9 +69,9 @@ Check a MIP variable
 
    $> nctime overlap --project <project_id> /path/to/your/archive/project/variable/ -v
    YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic started for /path/to/your/archive/project/variable/
-   YYYY/MM/DD HH:MM:SS PM INFO    File    |        Start        |         End         |         Next
-   YYYY/MM/DD HH:MM:SS PM INFO  file1.nc  | 2006-01-01 00:00:00 | 2010-12-01 00:00:00 | 2011-01-01 00:00:00
-   YYYY/MM/DD HH:MM:SS PM INFO  file2.nc  | 2011-01-01 00:00:00 | 2020-12-01 00:00:00 | 2021-01-01 00:00:00
+   YYYY/MM/DD HH:MM:SS PM INFO Create edges from source nodes to target nodes
+   YYYY/MM/DD HH:MM:SS PM INFO -- START -- --> file1.nc
+   YYYY/MM/DD HH:MM:SS PM INFO   file2.nc  --> -- END --
    YYYY/MM/DD HH:MM:SS PM INFO Shortest path found
    YYYY/MM/DD HH:MM:SS PM INFO No overlapping files
    YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic completed
@@ -83,10 +83,10 @@ Detect overlapping files
 
    $> nctime overlap --project <project_id> /path/to/your/archive/project/variable/ -v
    YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic started for /path/to/your/archive/project/variable/
-   YYYY/MM/DD HH:MM:SS PM INFO    File    |        Start        |         End         |         Next
-   YYYY/MM/DD HH:MM:SS PM INFO  file1.nc  | 2006-01-01 00:00:00 | 2010-12-01 00:00:00 | 2011-01-01 00:00:00
-   YYYY/MM/DD HH:MM:SS PM INFO  file2.nc  | 2011-01-01 00:00:00 | 2018-12-01 00:00:00 | 2019-01-01 00:00:00
-   YYYY/MM/DD HH:MM:SS PM INFO  file3.nc  | 2011-01-01 00:00:00 | 2020-12-01 00:00:00 | 2021-01-01 00:00:00
+   YYYY/MM/DD HH:MM:SS PM INFO Create edges from source nodes to target nodes
+   YYYY/MM/DD HH:MM:SS PM INFO -- START -- --> file1.nc
+   YYYY/MM/DD HH:MM:SS PM INFO   file2.nc  --> file2.nc
+   YYYY/MM/DD HH:MM:SS PM INFO   file3.nc  --> -- END --
    YYYY/MM/DD HH:MM:SS PM INFO Shortest path found
    YYYY/MM/DD HH:MM:SS PM WARNING Overlapping files:
    YYYY/MM/DD HH:MM:SS PM WARNING file2.nc
@@ -97,16 +97,15 @@ Remove overlapping files
 
 .. code-block:: bash
 
-   $> nctime overlap --project <project_id> /path/to/your/archive/project/variable/ -v --remove
+   $> nctime overlap --project <project_id> /path/to/your/archive/project/variable/ -v --resolve
    YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic started for /path/to/your/archive/project/variable/
-   YYYY/MM/DD HH:MM:SS PM INFO    File    |        Start        |         End         |         Next
-   YYYY/MM/DD HH:MM:SS PM INFO  file1.nc  | 2006-01-01 00:00:00 | 2010-12-01 00:00:00 | 2011-01-01 00:00:00
-   YYYY/MM/DD HH:MM:SS PM INFO  file2.nc  | 2011-01-01 00:00:00 | 2018-12-01 00:00:00 | 2019-01-01 00:00:00
-   YYYY/MM/DD HH:MM:SS PM INFO  file3.nc  | 2011-01-01 00:00:00 | 2020-12-01 00:00:00 | 2021-01-01 00:00:00
+   YYYY/MM/DD HH:MM:SS PM INFO Create edges from source nodes to target nodes
+   YYYY/MM/DD HH:MM:SS PM INFO -- START -- --> file1.nc
+   YYYY/MM/DD HH:MM:SS PM INFO   file2.nc  --> file2.nc
+   YYYY/MM/DD HH:MM:SS PM INFO   file3.nc  --> -- END --
    YYYY/MM/DD HH:MM:SS PM INFO Shortest path found
    YYYY/MM/DD HH:MM:SS PM WARNING Overlapping files:
-   YYYY/MM/DD HH:MM:SS PM WARNING file2.nc
-   YYYY/MM/DD HH:MM:SS PM WARNING 1 overlapping files removed
+   YYYY/MM/DD HH:MM:SS PM WARNING file2.nc <- REMOVED
    YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic completed
 
 Detect a time gap
@@ -116,44 +115,15 @@ Detect a time gap
 
    $> nctime overlap --project <project_id> /path/to/your/archive/project/variable/ -v
    YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic started for /path/to/your/archive/project/variable/
-   YYYY/MM/DD HH:MM:SS PM INFO    File    |        Start        |         End         |         Next
-   YYYY/MM/DD HH:MM:SS PM INFO  file1.nc  | 2006-01-01 00:00:00 | 2010-12-01 00:00:00 | 2011-01-01 00:00:00
-   YYYY/MM/DD HH:MM:SS PM INFO  file2.nc  | 2011-01-01 00:00:00 | 2020-12-01 00:00:00 | 2021-01-01 00:00:00
-   YYYY/MM/DD HH:MM:SS PM INFO  file3.nc  | 2041-01-01 00:00:00 | 2050-12-01 00:00:00 | 2051-01-01 00:00:00
-   YYYY/MM/DD HH:MM:SS PM INFO  file4.nc  | 2051-01-01 00:00:00 | 2060-12-01 00:00:00 | 2061-01-01 00:00:00
-   YYYY/MM/DD HH:MM:SS PM INFO  file5.nc  | 2061-01-01 00:00:00 | 2070-12-01 00:00:00 | 2071-01-01 00:00:00
-   YYYY/MM/DD HH:MM:SS PM WARNING No shortest path found: No path between 20060101000000 and 20710101000000.
+   YYYY/MM/DD HH:MM:SS PM INFO Create edges from source nodes to target nodes
+   YYYY/MM/DD HH:MM:SS PM INFO -- START -- --> file1.nc
+   YYYY/MM/DD HH:MM:SS PM INFO   file2.nc  --> file2.nc
+   YYYY/MM/DD HH:MM:SS PM INFO   file3.nc  --> -- END --
+   YYYY/MM/DD HH:MM:SS PM WARNING No shortest path found.
    YYYY/MM/DD HH:MM:SS PM INFO No overlapping files
    YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic completed
 
-Use the longest subtree
------------------------
-
-.. note:: If a gap exists in the period sequence, you can use the shortest path on the longest subtree from
-   the period start.
-
-.. code-block:: bash
-
-   $> nctime overlap --project <project_id> /path/to/your/archive/project/variable/ -v
-   YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic started for /path/to/your/archive/project/variable/
-   YYYY/MM/DD HH:MM:SS PM INFO    File    |        Start        |         End         |         Next
-   YYYY/MM/DD HH:MM:SS PM INFO  file1.nc  | 2006-01-01 00:00:00 | 2010-12-01 00:00:00 | 2011-01-01 00:00:00
-   YYYY/MM/DD HH:MM:SS PM INFO  file2.nc  | 2011-01-01 00:00:00 | 2020-12-01 00:00:00 | 2021-01-01 00:00:00
-   YYYY/MM/DD HH:MM:SS PM INFO  file3.nc  | 2041-01-01 00:00:00 | 2050-12-01 00:00:00 | 2051-01-01 00:00:00
-   YYYY/MM/DD HH:MM:SS PM INFO  file4.nc  | 2051-01-01 00:00:00 | 2060-12-01 00:00:00 | 2061-01-01 00:00:00
-   YYYY/MM/DD HH:MM:SS PM INFO  file5.nc  | 2061-01-01 00:00:00 | 2070-12-01 00:00:00 | 2071-01-01 00:00:00
-   YYYY/MM/DD HH:MM:SS PM WARNING Shortest path found on the longest subtree:
-   YYYY/MM/DD HH:MM:SS PM WARNING file1.nc
-   YYYY/MM/DD HH:MM:SS PM WARNING file2.nc
-   YYYY/MM/DD HH:MM:SS PM WARNING Overlapping files:
-   YYYY/MM/DD HH:MM:SS PM WARNING file3.nc
-   YYYY/MM/DD HH:MM:SS PM WARNING file4.nc
-   YYYY/MM/DD HH:MM:SS PM WARNING file5.nc
-   YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic completed
-
-.. warning:: Using the longest subtree flags the rest of the period as an overlap. Consequently, if ``--subtree`` and
-   ``--remove`` are set, ``nctime`` will delete the overlapping files on the longest sub-period and the
-   files of the remaining subtree.
+.. warning:: To resolve only full overlaps please use the ``--full-overlap-only`` flag.
 
 ``nctime axis``
 ***************

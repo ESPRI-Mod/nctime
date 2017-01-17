@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Synopsis &mdash; nctime 3.9.5 documentation</title>
+  <title>Synopsis &mdash; nctime 3.9.6 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="nctime 3.9.5 documentation" href="index.html"/>
+    <link rel="top" title="nctime 3.9.6 documentation" href="index.html"/>
         <link rel="next" title="Installation" href="installation.html"/>
         <link rel="prev" title="nctime toolbox" href="index.html"/> 
 
@@ -164,12 +164,6 @@ daily frequency. Consequently, the 3-6 hourly files with an averaged time axis r
 designs include the period dates into the filename. The scheme of chunked files in MIP projects is not fixed and depends
 on several parameters (the institute, the model, the frequency, etc.). These different schemes lead to unnecessary
 overlapping files with a more complex folder reading and wasting disk space.</p>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">Only complete overlaps are detected. For example, if a file goes from 1991 to 2010 and another goes from
-2001 to 2020, the overlap is partial. If the second file goes from 2001 to 2010 so the overlap is complete and the
-second file can be removed without loss of information.</p>
-</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last"><code class="docutils literal"><span class="pre">nctime</span></code> is based on uncorrupted filename period dates and properly-defined times units, time calendar and
@@ -286,7 +280,7 @@ most consecutive files).</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'3.9.5',
+            VERSION:'3.9.6',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

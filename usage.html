@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Usage and tutorials &mdash; nctime 3.9.5 documentation</title>
+  <title>Usage and tutorials &mdash; nctime 3.9.6 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="nctime 3.9.5 documentation" href="index.html"/>
+    <link rel="top" title="nctime 3.9.6 documentation" href="index.html"/>
         <link rel="next" title="Frequently asked questions" href="faq.html"/>
         <link rel="prev" title="Configuration" href="configuration.html"/> 
 
@@ -99,7 +99,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#detect-overlapping-files">Detect overlapping files</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#remove-overlapping-files">Remove overlapping files</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#detect-a-time-gap">Detect a time gap</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#use-the-longest-subtree">Use the longest subtree</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#nctime-axis"><code class="docutils literal"><span class="pre">nctime</span> <span class="pre">axis</span></code></a><ul>
@@ -229,9 +228,9 @@ directory instead. No flag seems the standard output is used.</p>
 <h3>Check a MIP variable<a class="headerlink" href="#check-a-mip-variable" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime overlap --project &lt;project_id&gt; /path/to/your/archive/project/variable/ -v
 YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic started <span class="k">for</span> /path/to/your/archive/project/variable/
-YYYY/MM/DD HH:MM:SS PM INFO    File    <span class="p">|</span>        Start        <span class="p">|</span>         End         <span class="p">|</span>         Next
-YYYY/MM/DD HH:MM:SS PM INFO  file1.nc  <span class="p">|</span> 2006-01-01 00:00:00 <span class="p">|</span> 2010-12-01 00:00:00 <span class="p">|</span> 2011-01-01 00:00:00
-YYYY/MM/DD HH:MM:SS PM INFO  file2.nc  <span class="p">|</span> 2011-01-01 00:00:00 <span class="p">|</span> 2020-12-01 00:00:00 <span class="p">|</span> 2021-01-01 00:00:00
+YYYY/MM/DD HH:MM:SS PM INFO Create edges from <span class="nb">source</span> nodes to target nodes
+YYYY/MM/DD HH:MM:SS PM INFO -- START -- --&gt; file1.nc
+YYYY/MM/DD HH:MM:SS PM INFO   file2.nc  --&gt; -- END --
 YYYY/MM/DD HH:MM:SS PM INFO Shortest path found
 YYYY/MM/DD HH:MM:SS PM INFO No overlapping files
 YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic completed
@@ -242,10 +241,10 @@ YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic completed
 <h3>Detect overlapping files<a class="headerlink" href="#detect-overlapping-files" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime overlap --project &lt;project_id&gt; /path/to/your/archive/project/variable/ -v
 YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic started <span class="k">for</span> /path/to/your/archive/project/variable/
-YYYY/MM/DD HH:MM:SS PM INFO    File    <span class="p">|</span>        Start        <span class="p">|</span>         End         <span class="p">|</span>         Next
-YYYY/MM/DD HH:MM:SS PM INFO  file1.nc  <span class="p">|</span> 2006-01-01 00:00:00 <span class="p">|</span> 2010-12-01 00:00:00 <span class="p">|</span> 2011-01-01 00:00:00
-YYYY/MM/DD HH:MM:SS PM INFO  file2.nc  <span class="p">|</span> 2011-01-01 00:00:00 <span class="p">|</span> 2018-12-01 00:00:00 <span class="p">|</span> 2019-01-01 00:00:00
-YYYY/MM/DD HH:MM:SS PM INFO  file3.nc  <span class="p">|</span> 2011-01-01 00:00:00 <span class="p">|</span> 2020-12-01 00:00:00 <span class="p">|</span> 2021-01-01 00:00:00
+YYYY/MM/DD HH:MM:SS PM INFO Create edges from <span class="nb">source</span> nodes to target nodes
+YYYY/MM/DD HH:MM:SS PM INFO -- START -- --&gt; file1.nc
+YYYY/MM/DD HH:MM:SS PM INFO   file2.nc  --&gt; file2.nc
+YYYY/MM/DD HH:MM:SS PM INFO   file3.nc  --&gt; -- END --
 YYYY/MM/DD HH:MM:SS PM INFO Shortest path found
 YYYY/MM/DD HH:MM:SS PM WARNING Overlapping files:
 YYYY/MM/DD HH:MM:SS PM WARNING file2.nc
@@ -255,16 +254,15 @@ YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic completed
 </div>
 <div class="section" id="remove-overlapping-files">
 <h3>Remove overlapping files<a class="headerlink" href="#remove-overlapping-files" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime overlap --project &lt;project_id&gt; /path/to/your/archive/project/variable/ -v --remove
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime overlap --project &lt;project_id&gt; /path/to/your/archive/project/variable/ -v --resolve
 YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic started <span class="k">for</span> /path/to/your/archive/project/variable/
-YYYY/MM/DD HH:MM:SS PM INFO    File    <span class="p">|</span>        Start        <span class="p">|</span>         End         <span class="p">|</span>         Next
-YYYY/MM/DD HH:MM:SS PM INFO  file1.nc  <span class="p">|</span> 2006-01-01 00:00:00 <span class="p">|</span> 2010-12-01 00:00:00 <span class="p">|</span> 2011-01-01 00:00:00
-YYYY/MM/DD HH:MM:SS PM INFO  file2.nc  <span class="p">|</span> 2011-01-01 00:00:00 <span class="p">|</span> 2018-12-01 00:00:00 <span class="p">|</span> 2019-01-01 00:00:00
-YYYY/MM/DD HH:MM:SS PM INFO  file3.nc  <span class="p">|</span> 2011-01-01 00:00:00 <span class="p">|</span> 2020-12-01 00:00:00 <span class="p">|</span> 2021-01-01 00:00:00
+YYYY/MM/DD HH:MM:SS PM INFO Create edges from <span class="nb">source</span> nodes to target nodes
+YYYY/MM/DD HH:MM:SS PM INFO -- START -- --&gt; file1.nc
+YYYY/MM/DD HH:MM:SS PM INFO   file2.nc  --&gt; file2.nc
+YYYY/MM/DD HH:MM:SS PM INFO   file3.nc  --&gt; -- END --
 YYYY/MM/DD HH:MM:SS PM INFO Shortest path found
 YYYY/MM/DD HH:MM:SS PM WARNING Overlapping files:
-YYYY/MM/DD HH:MM:SS PM WARNING file2.nc
-YYYY/MM/DD HH:MM:SS PM WARNING <span class="m">1</span> overlapping files removed
+YYYY/MM/DD HH:MM:SS PM WARNING file2.nc &lt;- REMOVED
 YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic completed
 </pre></div>
 </div>
@@ -273,48 +271,18 @@ YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic completed
 <h3>Detect a time gap<a class="headerlink" href="#detect-a-time-gap" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime overlap --project &lt;project_id&gt; /path/to/your/archive/project/variable/ -v
 YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic started <span class="k">for</span> /path/to/your/archive/project/variable/
-YYYY/MM/DD HH:MM:SS PM INFO    File    <span class="p">|</span>        Start        <span class="p">|</span>         End         <span class="p">|</span>         Next
-YYYY/MM/DD HH:MM:SS PM INFO  file1.nc  <span class="p">|</span> 2006-01-01 00:00:00 <span class="p">|</span> 2010-12-01 00:00:00 <span class="p">|</span> 2011-01-01 00:00:00
-YYYY/MM/DD HH:MM:SS PM INFO  file2.nc  <span class="p">|</span> 2011-01-01 00:00:00 <span class="p">|</span> 2020-12-01 00:00:00 <span class="p">|</span> 2021-01-01 00:00:00
-YYYY/MM/DD HH:MM:SS PM INFO  file3.nc  <span class="p">|</span> 2041-01-01 00:00:00 <span class="p">|</span> 2050-12-01 00:00:00 <span class="p">|</span> 2051-01-01 00:00:00
-YYYY/MM/DD HH:MM:SS PM INFO  file4.nc  <span class="p">|</span> 2051-01-01 00:00:00 <span class="p">|</span> 2060-12-01 00:00:00 <span class="p">|</span> 2061-01-01 00:00:00
-YYYY/MM/DD HH:MM:SS PM INFO  file5.nc  <span class="p">|</span> 2061-01-01 00:00:00 <span class="p">|</span> 2070-12-01 00:00:00 <span class="p">|</span> 2071-01-01 00:00:00
-YYYY/MM/DD HH:MM:SS PM WARNING No shortest path found: No path between <span class="m">20060101000000</span> and 20710101000000.
+YYYY/MM/DD HH:MM:SS PM INFO Create edges from <span class="nb">source</span> nodes to target nodes
+YYYY/MM/DD HH:MM:SS PM INFO -- START -- --&gt; file1.nc
+YYYY/MM/DD HH:MM:SS PM INFO   file2.nc  --&gt; file2.nc
+YYYY/MM/DD HH:MM:SS PM INFO   file3.nc  --&gt; -- END --
+YYYY/MM/DD HH:MM:SS PM WARNING No shortest path found.
 YYYY/MM/DD HH:MM:SS PM INFO No overlapping files
-YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic completed
-</pre></div>
-</div>
-</div>
-<div class="section" id="use-the-longest-subtree">
-<h3>Use the longest subtree<a class="headerlink" href="#use-the-longest-subtree" title="Permalink to this headline">¶</a></h3>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If a gap exists in the period sequence, you can use the shortest path on the longest subtree from
-the period start.</p>
-</div>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime overlap --project &lt;project_id&gt; /path/to/your/archive/project/variable/ -v
-YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic started <span class="k">for</span> /path/to/your/archive/project/variable/
-YYYY/MM/DD HH:MM:SS PM INFO    File    <span class="p">|</span>        Start        <span class="p">|</span>         End         <span class="p">|</span>         Next
-YYYY/MM/DD HH:MM:SS PM INFO  file1.nc  <span class="p">|</span> 2006-01-01 00:00:00 <span class="p">|</span> 2010-12-01 00:00:00 <span class="p">|</span> 2011-01-01 00:00:00
-YYYY/MM/DD HH:MM:SS PM INFO  file2.nc  <span class="p">|</span> 2011-01-01 00:00:00 <span class="p">|</span> 2020-12-01 00:00:00 <span class="p">|</span> 2021-01-01 00:00:00
-YYYY/MM/DD HH:MM:SS PM INFO  file3.nc  <span class="p">|</span> 2041-01-01 00:00:00 <span class="p">|</span> 2050-12-01 00:00:00 <span class="p">|</span> 2051-01-01 00:00:00
-YYYY/MM/DD HH:MM:SS PM INFO  file4.nc  <span class="p">|</span> 2051-01-01 00:00:00 <span class="p">|</span> 2060-12-01 00:00:00 <span class="p">|</span> 2061-01-01 00:00:00
-YYYY/MM/DD HH:MM:SS PM INFO  file5.nc  <span class="p">|</span> 2061-01-01 00:00:00 <span class="p">|</span> 2070-12-01 00:00:00 <span class="p">|</span> 2071-01-01 00:00:00
-YYYY/MM/DD HH:MM:SS PM WARNING Shortest path found on the longest subtree:
-YYYY/MM/DD HH:MM:SS PM WARNING file1.nc
-YYYY/MM/DD HH:MM:SS PM WARNING file2.nc
-YYYY/MM/DD HH:MM:SS PM WARNING Overlapping files:
-YYYY/MM/DD HH:MM:SS PM WARNING file3.nc
-YYYY/MM/DD HH:MM:SS PM WARNING file4.nc
-YYYY/MM/DD HH:MM:SS PM WARNING file5.nc
 YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic completed
 </pre></div>
 </div>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">Using the longest subtree flags the rest of the period as an overlap. Consequently, if <code class="docutils literal"><span class="pre">--subtree</span></code> and
-<code class="docutils literal"><span class="pre">--remove</span></code> are set, <code class="docutils literal"><span class="pre">nctime</span></code> will delete the overlapping files on the longest sub-period and the
-files of the remaining subtree.</p>
+<p class="last">To resolve only full overlaps please use the <code class="docutils literal"><span class="pre">--full-overlap-only</span></code> flag.</p>
 </div>
 </div>
 </div>
@@ -468,7 +436,7 @@ directory instead. No flag seems that the diagnostic is not recorded.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'3.9.5',
+            VERSION:'3.9.6',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
