@@ -179,10 +179,14 @@ pseudoxml:
 	@echo
 	@echo "Build finished. The pseudo-XML files are in $(BUILDDIR)/pseudoxml."
 
-gh-pages: html
+gh-pages:
 	cd $(BUILDDIR)/html;\
+    git pull origin gh-pages;\
+    cd -;\
+    $(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html;\
+    cd $(BUILDDIR)/html;\
 	git add .;\
-	git commit -m "Docs rebuilt at $( date +'%Y/%m/%d - %H:%M:%S')";\
+	git commit -m "Docs rebuilt at $(date +'%Y/%m/%d - %H:%M:%S')";\
 	git push origin gh-pages
-	@echo "Build finished and commited on gh-pages."
+	@echo "Build finished and committed on gh-pages."
 

@@ -110,11 +110,11 @@ def init_logging(log, level='INFO'):
     log_fmt = '%(asctime)s %(levelname)s %(message)s'
     log_date_fmt = '%Y/%m/%d %I:%M:%S %p'
     log_levels = {'CRITICAL': logging.CRITICAL,
-                      'ERROR':    logging.ERROR,
-                      'WARNING':  logging.WARNING,
-                      'INFO':     logging.INFO,
-                      'DEBUG':    logging.DEBUG,
-                      'NOTSET':   logging.NOTSET}
+                  'ERROR':    logging.ERROR,
+                  'WARNING':  logging.WARNING,
+                  'INFO':     logging.INFO,
+                  'DEBUG':    logging.DEBUG,
+                  'NOTSET':   logging.NOTSET}
     if log:
         if os.path.isfile(log):
             logging.basicConfig(filename=log,
@@ -123,7 +123,7 @@ def init_logging(log, level='INFO'):
                                 datefmt=log_date_fmt)
         else:
             logfile = 'timeaxis-{0}-{1}.log'.format(datetime.now().strftime("%Y%m%d-%H%M%S"),
-                                                   os.getpid())
+                                                    os.getpid())
             if not os.path.isdir(log):
                 os.makedirs(log)
             logging.basicConfig(filename=os.path.join(log, logfile),
@@ -227,6 +227,8 @@ def translate_filename_format(cfg, project_section):
     pattern = re.sub(re.compile(r'%\((end_period)\)s'), r'(?P<\1>[\d]+)', pattern)
     # Translate all patterns matching %(name)s
     pattern = re.sub(re.compile(r'%\(([^()]*)\)s'), r'(?P<\1>[\w.-]+)', pattern)
+    # Translate extension patterns if exists
+    pattern = re.sub(re.compile(r'\{([^()]*)\}'), r'(\1)', pattern).replace(',', '|')
     return '^{0}$'.format(pattern)
 
 

@@ -86,14 +86,10 @@ class ProcessingContext(object):
 
 def get_overlaps(ctx, nodes, shortest):
     """
-    Returns all overlapping (default) files as a list of tuples.
-    Each tuple gathers:
-     * The filename,
-     * The starting date of file = lower overlap bound
-     * The higher overlap bound
-     * The date to cut the file in order to resolve the overlap
-     * The ending date of file
-     * The ending date + 1 time step.
+    Returns all overlapping (default) files as a list of tuples. Each tuple gathers\:
+     * The higher overlap bound,
+     * The date to cut the file in order to resolve the overlap,
+     * The corresponding cutting timestep.
 
     :param nctime.overlap.main.ProcessingContext ctx: The processing context
     :param dict() nodes: The directed graph nodes as a dictionary
@@ -115,6 +111,8 @@ def get_overlaps(ctx, nodes, shortest):
         # Get partial overlap if exists
         # Partial overlap from next_node[1] to current_node[2] (bounds included)
         # Overlap is hold on the next node (arbitrary)
+        print shortest[n], current_node['next_date']
+        print shortest[n+1], next_node['start_date']
         if (current_node['next_date'] - next_node['start_date']) > 0:
             cutting_timestep = time.get_next_timestep(os.path.join(ctx.directory, shortest[n + 1]),
                                                       current_node['last_timestep'])

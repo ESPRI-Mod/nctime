@@ -425,7 +425,10 @@ def get_next_timestep(ffp, current_timestep):
     try:
         index = int(np.where(nc.variables['time'][:] == current_timestep)[0][0])
     except IndexError:
-        raise NetCDFTimeStepNotFound(current_timestep, ffp)
+        try:
+            index = int(np.where(nc.variables['time'][:] == int(current_timestep))[0][0])
+        except IndexError:
+            raise NetCDFTimeStepNotFound(current_timestep, ffp)
     next_timestep = nc.variables['time'][index + 1]
     nc.close()
     return next_timestep
