@@ -223,13 +223,10 @@
 <div class="viewcode-block" id="get_overlaps"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.main.get_overlaps">[docs]</a><span class="k">def</span> <span class="nf">get_overlaps</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">nodes</span><span class="p">,</span> <span class="n">shortest</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns all overlapping (default) files as a list of tuples.</span>
-<span class="sd">    Each tuple gathers:</span>
-<span class="sd">     * The filename,</span>
-<span class="sd">     * The starting date of file = lower overlap bound</span>
-<span class="sd">     * The higher overlap bound</span>
-<span class="sd">     * The date to cut the file in order to resolve the overlap</span>
-<span class="sd">     * The ending date of file</span>
-<span class="sd">     * The ending date + 1 time step.</span>
+<span class="sd">    Each tuple gathers\:</span>
+<span class="sd">     * The higher overlap bound,</span>
+<span class="sd">     * The date to cut the file in order to resolve the overlap,</span>
+<span class="sd">     * The corresponding cutting timestep.</span>
 
 <span class="sd">    :param nctime.overlap.main.ProcessingContext ctx: The processing context</span>
 <span class="sd">    :param dict() nodes: The directed graph nodes as a dictionary</span>
