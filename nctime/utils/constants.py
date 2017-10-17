@@ -6,6 +6,7 @@
     :synopsis: Constants used in this package.
 
 """
+from datetime import datetime
 
 # Program version
 VERSION = '3.9.7'
