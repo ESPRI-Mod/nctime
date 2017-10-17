@@ -12,12 +12,12 @@
 
 import argparse
 import os
-from datetime import datetime
 
+from utils.constants import *
 from utils.utils import MultilineFormatter, init_logging, directory_checker, path_switcher
 
 # Program version
-__version__ = 'v{0} {1}'.format('3.9.6', datetime(year=2017, month=1, day=17).strftime("%Y-%d-%m"))
+__version__ = 'v{} {}'.format(VERSION, VERSION_DATE)
 
 
 def get_args():

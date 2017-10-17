@@ -16,7 +16,7 @@ import nco
 import networkx as nx
 import numpy as np
 
-from nctime.utils import time, utils
+from utils import time, utils
 
 
 class ProcessingContext(object):

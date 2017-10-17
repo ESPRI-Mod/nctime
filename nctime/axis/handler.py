@@ -13,9 +13,9 @@ import nco
 import netCDF4
 import numpy as np
 
-from exceptions import *
-from nctime.utils import time
-from nctime.utils.exceptions import *
+from custom_exceptions import *
+from utils import time
+from utils.custom_exceptions import *
 
 
 class File(object):
@@ -263,3 +263,20 @@ class File(object):
             raise InvalidNetCDFFile(self.ffp)
         setattr(f.variables[variable], attribute, data)
         f.close()
+
+    def nc_file_rename(self, new_filename):
+        """
+        Rename a NetCDF file.
+
+        :param str new_filename: The new filename to apply
+
+        """
+        ffp = os.path.join(os.path.dirname(self.ffp), new_filename)
+        if os.path.exists(ffp):
+            raise RenamingNetCDFFailed(self.ffp, ffp, exists=True)
+        try:
+            os.rename(self.ffp, ffp)
+        except OSError:
+            raise RenamingNetCDFFailed(self.ffp, ffp)
+        self.ffp = ffp
+        self.filename = new_filename

@@ -1,7 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from setuptools import setup, find_packages
+from nctime.utils.constants import VERSION
 
 setup(name='nctime',
-      version='3.9.6',
+      version=VERSION,
       description='Diagnoses NetCDF time axis.',
       author='Levavasseur Guillaume',
       author_email='glipsl@ipsl.jussieu.fr',

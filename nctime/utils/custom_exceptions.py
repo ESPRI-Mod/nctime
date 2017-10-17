@@ -87,6 +87,22 @@ class InvalidNetCDFFile(Exception):
         super(self.__class__, self).__init__(self.msg)
 
 
+class RenamingNetCDFFailed(Exception):
+    """
+    Raised when NetCDF renaming failed.
+
+    """
+
+    def __init__(self, src, dst, exists=False):
+        self.msg = "Cannot rename NetCDF file."
+        if exists:
+            self.msg = "Such NetCDF file already exists."
+        self.msg += "\n<src: '{0}'>".format(src)
+        self.msg += "\n<dst: '{0}'>".format(dst)
+
+        super(self.__class__, self).__init__(self.msg)
+
+
 class NoNetCDFAttribute(Exception):
     """
     Raised when a NetCDF attribute is missing.

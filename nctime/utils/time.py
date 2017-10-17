@@ -16,7 +16,7 @@ from netcdftime import datetime
 from netcdftime import utime
 
 from constants import *
-from exceptions import *
+from custom_exceptions import *
 
 
 class TimeInit(object):
@@ -165,6 +165,20 @@ def untruncated_timestamp(timestamp):
         return (timestamp + '01').ljust(14, '0')
     else:
         return timestamp.ljust(14, '0')
+
+
+def truncated_timestamp(date, length):
+    """
+    Returns proper digits depending on datetime object.
+
+    :param datetime.datetime date: Datetime or phony datetime object
+    :param int length: The timestamp length expected
+    :returns: The corresponding timestamp
+    :rtype: *str*
+
+    """
+    timestamp = date2str(date, iso_format=False)
+    return timestamp[:length]
 
 
 def num2date(num_axis, units, calendar):

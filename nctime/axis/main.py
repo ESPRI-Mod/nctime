@@ -20,7 +20,7 @@ import numpy as np
 import db
 from constants import *
 from handler import File
-from nctime.utils import time, utils
+from utils import time, utils
 
 
 class ProcessingContext(object):
@@ -159,12 +159,6 @@ def process(inputs):
         if handler.last_date != handler.end_date:
             handler.status.append('003')
             logging.error('{0} - 003 - Last time step differs from end date from filename'.format(filename))
-            if ctx.verbose:
-                axe = fill(' | '.join(map(str, handler.time_axis.tolist())), width=100)
-                logging.info('{0} - Time axis:\n {1}'.format(filename, axe))
-                axe = fill(' | '.join(map(str, handler.time_axis_rebuilt.tolist())), width=100)
-                logging.info('{0} - Theoretical axis:\n {1}'.format(filename, axe))
-            return handler
 
     # Check consistency between instant time and time boundaries
     if init.is_instant and init.has_bounds:
@@ -205,7 +199,15 @@ def process(inputs):
         handler.status.append('007')
         logging.error('{0} - 007 - Calendar must be unchanged for the same dataset.'.format(filename))
 
-    # Rewrite time axis depending on checking
+    # Rewrite filename axis depending on checking
+    if (ctx.write or ctx.force) and set(['003']).intersection(set(handler.status)):
+        timestamp_length = len(re.match(ctx.pattern, handler.filename).groupdict()['end_period'])
+        # Change filename and file full path dynamically
+        handler.nc_file_rename(new_filename=re.sub(time.truncated_timestamp(handler.end_date, timestamp_length),
+                                                   time.truncated_timestamp(handler.last_date, timestamp_length),
+                                                   handler.filename))
+
+    # Remove time boundaries depending on checking
     if (ctx.write or ctx.force) and set(['004']).intersection(set(handler.status)):
         # Delete time bounds and bounds attribute from file if write of force mode
         handler.nc_var_delete(variable='time_bnds')
@@ -221,7 +223,7 @@ def process(inputs):
             handler.nc_var_overwrite('time_bnds', handler.time_bounds_rebuilt)
 
     # Compute checksum at the end of all modifications and after closing file
-    if (ctx.write or ctx.force) and set(['001', '002', '004', '006', '007']).intersection(set(handler.status)):
+    if (ctx.write or ctx.force) and set(['001', '002', '003', '004', '006', '007']).intersection(set(handler.status)):
         handler.new_checksum = handler.checksum(ctx.checksum_type)
 
     # Return file status
@@ -312,10 +314,10 @@ def main(args):
             logging.info('Last: {0}'.format(handler.last_date))
             logging.info('Time steps: {0}'.format(handler.length))
             logging.info('Is instant: {0}'.format(tinit.is_instant))
-            logging.info('-> Time axis:')
-            logging.info('{0}'.format(fill(' | '.join(map(str, handler.time_axis.tolist())), width=100)))
-            logging.info('-> Theoretical axis:')
-            logging.info('{0}'.format(fill(' | '.join(map(str, handler.time_axis_rebuilt.tolist())), width=100)))
+            #  logging.info('-> Time axis:')
+            #  logging.info('{0}'.format(fill(' | '.join(map(str, handler.time_axis.tolist())), width=100)))
+            #  logging.info('-> Theoretical axis:')
+            #  logging.info('{0}'.format(fill(' | '.join(map(str, handler.time_axis_rebuilt.tolist())), width=100)))
     # Close tread pool
     pool.close()
     pool.join()
