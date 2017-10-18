@@ -14,7 +14,7 @@ import argparse
 import os
 
 from utils.constants import *
-from utils.utils import MultilineFormatter, init_logging, directory_checker, path_switcher
+from utils.misc import MultilineFormatter, init_logging, directory_checker, path_switcher
 
 # Program version
 __version__ = 'v{} {}'.format(VERSION, VERSION_DATE)
@@ -288,4 +288,6 @@ def run():
 
 # Main entry point for stand-alone call.
 if __name__ == "__main__":
+    # PyCharm workaround
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
     run()

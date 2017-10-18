@@ -16,7 +16,7 @@ import nco
 import networkx as nx
 import numpy as np
 
-from utils import time, utils
+from nctime.utils import time, misc
 
 
 class ProcessingContext(object):
@@ -54,8 +54,8 @@ class ProcessingContext(object):
         self.full_overlap_only = args.full_overlap_only
         self.verbose = args.v
         self.project = args.project
-        cfg = utils.config_parse(args.i, self.project)
-        self.pattern = utils.translate_filename_format(cfg, self.project)
+        cfg = misc.config_parse(args.i, self.project)
+        self.pattern = misc.translate_filename_format(cfg, self.project)
         if cfg.has_option('time_units_default', self.project):
             self.tunits_default = cfg.get(self.project, 'time_units_default')
         else:

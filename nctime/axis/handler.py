@@ -14,8 +14,8 @@ import netCDF4
 import numpy as np
 
 from custom_exceptions import *
-from utils import time
-from utils.custom_exceptions import *
+from nctime.utils import time
+from nctime.utils.custom_exceptions import *
 
 
 class File(object):

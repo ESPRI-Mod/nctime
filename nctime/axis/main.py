@@ -20,7 +20,7 @@ import numpy as np
 import db
 from constants import *
 from handler import File
-from utils import time, utils
+from nctime.utils import time, misc
 
 
 class ProcessingContext(object):
@@ -67,8 +67,8 @@ class ProcessingContext(object):
         self.force = args.force
         self.verbose = args.v
         self.project = args.project
-        self.db = utils.path_switcher('db', args, default='{0}/{1}'.format(os.getcwd(), 'timeaxis.db'))
-        cfg = utils.config_parse(args.i, self.project)
+        self.db = misc.path_switcher('db', args, default='{0}/{1}'.format(os.getcwd(), 'timeaxis.db'))
+        cfg = misc.config_parse(args.i, self.project)
         self.threads = args.max_threads
         if self.threads == 0:
             if cfg.has_option('DEFAULT', 'max_threads') and cfg.get('DEFAULT', 'max_threads') != '':
@@ -76,7 +76,7 @@ class ProcessingContext(object):
             else:
                 self.threads = MAX_THREADS_DEFAULT
         self.checksum_type = str(cfg.get('DEFAULT', 'checksum_type'))
-        self.pattern = utils.translate_filename_format(cfg, self.project)
+        self.pattern = misc.translate_filename_format(cfg, self.project)
         if cfg.has_option('time_units_default', self.project):
             self.tunits_default = cfg.get(self.project, 'time_units_default')
         else:
@@ -150,7 +150,7 @@ def process(inputs):
     # Check consistency between last time date and end date from filename
     if handler.last_date != handler.end_date:
         # Rebuild a theoretical time axis with low precision
-        handler.time_axis_rebuilt = handler.build_time_axis(start=utils.trunc(start, 5),
+        handler.time_axis_rebuilt = handler.build_time_axis(start=misc.trunc(start, 5),
                                                             inc=time.time_inc(init.frequency)[0],
                                                             input_units=init.funits,
                                                             output_units=init.tunits,
@@ -180,7 +180,7 @@ def process(inputs):
 
     # Check time boundaries squareness if needed
     if init.has_bounds:
-        handler.time_bounds_rebuilt = handler.build_time_bounds(start=utils.trunc(start, 5),
+        handler.time_bounds_rebuilt = handler.build_time_bounds(start=misc.trunc(start, 5),
                                                                 inc=time.time_inc(init.frequency)[0],
                                                                 input_units=init.funits,
                                                                 output_units=init.tunits,

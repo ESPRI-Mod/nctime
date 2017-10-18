@@ -9,10 +9,10 @@
 from datetime import datetime
 
 # Program version
-VERSION = '3.9.7'
+VERSION = '3.9.8'
 
 # Date
-VERSION_DATE = datetime(year=2017, month=10, day=17).strftime("%Y-%d-%m")
+VERSION_DATE = datetime(year=2017, month=10, day=18).strftime("%Y-%d-%m")
 
 # Filename date correction for 3hr and 6hr files
 HALF_HOUR = 0.125 / 6.0
