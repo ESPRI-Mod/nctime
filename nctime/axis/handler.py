@@ -7,6 +7,7 @@
 """
 
 import os
+import re
 from uuid import uuid4
 
 import nco
@@ -46,7 +47,7 @@ class File(object):
     +------------------+-----------+---------------------------------------------------+
     | *self*.control   | *list*    | Errors status                                     |
     +------------------+-----------+---------------------------------------------------+
-    | *self*.bnds      | *boolean* | True if time bounds excpected and not mistaken    |
+    | *self*.bnds      | *boolean* | True if time bounds expected and not mistaken     |
     +------------------+-----------+---------------------------------------------------+
     | *self*.checksum  | *str*     | New checksum if modified file                     |
     +------------------+-----------+---------------------------------------------------+
@@ -64,10 +65,18 @@ class File(object):
         self.directory, self.filename = directory, filename
         # Retrieve file full path
         self.ffp = os.path.join(self.directory, self.filename)
-        # Start/end period dates from filename
+        # Start/end period dates from filename + next/last expected dates
         self.start_date = None
         self.end_date = None
+        self.next_date = None
         self.last_date = None
+        # Filename timestamp length
+        self.timestamp_length = None
+        # Start/end period timestamp from filename + next/last expected timestamps
+        self.start_timestamp = None
+        self.end_timestamp = None
+        self.next_timestamp = None
+        self.last_timestamp = None
         # Get time axis length
         try:
             f = netCDF4.Dataset(self.ffp, 'r')
@@ -84,7 +93,7 @@ class File(object):
         # Get time units from file
         self.time_units = f.variables['time'].units
         # Get calendar from file
-        self.calendar = f.variables['time'].calendar        
+        self.calendar = f.variables['time'].calendar
         f.close()
         self.time_axis_rebuilt = None
         self.time_bounds_rebuilt = None
@@ -104,11 +113,14 @@ class File(object):
         :rtype: *float*
 
         """
+        self.timestamp_length = len(re.match(pattern, self.filename).groupdict()['end_period'])
         dates = time.get_start_end_dates_from_filename(filename=self.filename,
                                                        pattern=pattern,
                                                        frequency=frequency,
                                                        calendar=calendar)
-        self.start_date, self.end_date, _ = time.dates2str(dates)
+        self.start_date, self.end_date, self.next_date = time.dates2str(dates)
+        self.start_timestamp, self.end_timestamp, self.next_timestamp = [
+            time.truncated_timestamp(date, self.timestamp_length) for date in dates]
         return time.date2num(dates, units=units, calendar=calendar)
 
     def checksum(self, checksum_type):
@@ -122,7 +134,7 @@ class File(object):
 
         """
         checksum_client = {'SHA256': 'sha256sum',
-                           'MD5':    'md5sum'}
+                           'MD5': 'md5sum'}
         assert (checksum_type in checksum_client.keys()), 'Invalid checksum type'
         try:
             shell = os.popen("{0} {1} | awk -F ' ' '{{ print $1 }}'".format(checksum_client[checksum_type],
@@ -202,6 +214,7 @@ class File(object):
         else:
             last_date = time.num2date(num_axis[-1], units=input_units, calendar=calendar)
         self.last_date = time.date2str(last_date)
+        self.last_timestamp = time.truncated_timestamp(last_date, self.timestamp_length)
         if not is_instant:
             num_axis += 0.5 * inc
         date_axis = time.num2date(num_axis, units=input_units, calendar=calendar)

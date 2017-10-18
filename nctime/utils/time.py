@@ -12,7 +12,6 @@ import re
 
 import netCDF4
 import numpy as np
-from netcdftime import datetime
 from netcdftime import utime
 
 from constants import *

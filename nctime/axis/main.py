@@ -148,7 +148,7 @@ def process(inputs):
                                                         is_instant=init.is_instant)
 
     # Check consistency between last time date and end date from filename
-    if handler.last_date != handler.end_date:
+    if handler.last_timestamp != handler.end_timestamp:
         # Rebuild a theoretical time axis with low precision
         handler.time_axis_rebuilt = handler.build_time_axis(start=misc.trunc(start, 5),
                                                             inc=time.time_inc(init.frequency)[0],
@@ -156,9 +156,11 @@ def process(inputs):
                                                             output_units=init.tunits,
                                                             calendar=init.calendar,
                                                             is_instant=init.is_instant)
-        if handler.last_date != handler.end_date:
+        if handler.last_timestamp != handler.end_timestamp:
             handler.status.append('003')
-            logging.error('{0} - 003 - Last time step differs from end date from filename'.format(filename))
+            logging.error('{0} - 003 - Last timestamp differs from end timestamp from filename'.format(filename))
+        elif handler.last_date != handler.end_date:
+            logging.warning('{0} - 003 - Last date differs from end date from filename'.format(filename))
 
     # Check consistency between instant time and time boundaries
     if init.is_instant and init.has_bounds:
@@ -201,11 +203,8 @@ def process(inputs):
 
     # Rewrite filename axis depending on checking
     if (ctx.write or ctx.force) and set(['003']).intersection(set(handler.status)):
-        timestamp_length = len(re.match(ctx.pattern, handler.filename).groupdict()['end_period'])
         # Change filename and file full path dynamically
-        handler.nc_file_rename(new_filename=re.sub(time.truncated_timestamp(handler.end_date, timestamp_length),
-                                                   time.truncated_timestamp(handler.last_date, timestamp_length),
-                                                   handler.filename))
+        handler.nc_file_rename(new_filename=re.sub(handler.end_timestamp, handler.last_timestamp, handler.filename))
 
     # Remove time boundaries depending on checking
     if (ctx.write or ctx.force) and set(['004']).intersection(set(handler.status)):
@@ -306,12 +305,12 @@ def main(args):
             diagnostic.update(handler.__dict__)
             diagnostic['status'] = ','.join(handler.status)
             db.insert(ctx.db, diagnostic)
-            logging.info('{0} - Diagnostic persisted into database'.format(handler.filename))
+            logging.info('{} - Diagnostic persisted into database'.format(handler.filename))
         if ctx.verbose:
             logging.info('-> Filename: {0}'.format(handler.filename))
-            logging.info('Start: {0}'.format(handler.start_date))
-            logging.info('End: {0}'.format(handler.end_date))
-            logging.info('Last: {0}'.format(handler.last_date))
+            logging.info('Start: {0} => {1}'.format(handler.start_timestamp, handler.start_date))
+            logging.info('End:   {0} => {1}'.format(handler.end_timestamp, handler.end_date))
+            logging.info('Last:  {0} => {1}'.format(handler.last_timestamp, handler.last_date))
             logging.info('Time steps: {0}'.format(handler.length))
             logging.info('Is instant: {0}'.format(tinit.is_instant))
             #  logging.info('-> Time axis:')
