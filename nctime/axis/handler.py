@@ -15,56 +15,23 @@ import netCDF4
 import numpy as np
 
 from custom_exceptions import *
-from nctime.utils import time
 from nctime.utils.custom_exceptions import *
+from nctime.utils.time import truncated_timestamp, get_start_end_dates_from_filename, dates2str, num2date, date2num
 
 
 class File(object):
     """
     Handler providing methods to deal with file processing.
-    It encapsulates the following file diagnostic to print or save:
-
-    +------------------+-----------+---------------------------------------------------+
-    | Attribute        | Type      | Description                                       |
-    +==================+===========+===================================================+
-    | *self*.directory | *str*     | Variable to scan                                  |
-    +------------------+-----------+---------------------------------------------------+
-    | *self*.file      | *str*     | Filename                                          |
-    +------------------+-----------+---------------------------------------------------+
-    | *self*.start     | *str*     | Start date from filename                          |
-    +------------------+-----------+---------------------------------------------------+
-    | *self*.end       | *str*     | End date from filename                            |
-    +------------------+-----------+---------------------------------------------------+
-    | *self*.last      | *str*     | Last date from theoretical time axis              |
-    +------------------+-----------+---------------------------------------------------+
-    | *self*.steps     | *int*     | Time axis length                                  |
-    +------------------+-----------+---------------------------------------------------+
-    | *self*.instant   | *boolean* | True if instantaneous time axis                   |
-    +------------------+-----------+---------------------------------------------------+
-    | *self*.calendar  | *str*     | NetCDF calendar attribute                         |
-    +------------------+-----------+---------------------------------------------------+
-    | *self*.units     | *str*     | Expected time units                               |
-    +------------------+-----------+---------------------------------------------------+
-    | *self*.control   | *list*    | Errors status                                     |
-    +------------------+-----------+---------------------------------------------------+
-    | *self*.bnds      | *boolean* | True if time bounds expected and not mistaken     |
-    +------------------+-----------+---------------------------------------------------+
-    | *self*.checksum  | *str*     | New checksum if modified file                     |
-    +------------------+-----------+---------------------------------------------------+
-    | *self*.axis      | *array*   | Theoretical time axis                             |
-    +------------------+-----------+---------------------------------------------------+
-    | *self*.time      | *array*   | Time axis from file                               |
-    +------------------+-----------+---------------------------------------------------+
 
     :returns: The axis status
     :rtype: *File*
 
     """
 
-    def __init__(self, directory, filename, has_bounds):
-        self.directory, self.filename = directory, filename
-        # Retrieve file full path
-        self.ffp = os.path.join(self.directory, self.filename)
+    def __init__(self, ffp, has_bounds):
+        self.ffp = ffp
+        # Retrieve directory and filename full path
+        self.directory, self.filename = os.path.split(ffp)
         # Start/end period dates from filename + next/last expected dates
         self.start_date = None
         self.end_date = None
@@ -114,14 +81,14 @@ class File(object):
 
         """
         self.timestamp_length = len(re.match(pattern, self.filename).groupdict()['end_period'])
-        dates = time.get_start_end_dates_from_filename(filename=self.filename,
-                                                       pattern=pattern,
-                                                       frequency=frequency,
-                                                       calendar=calendar)
-        self.start_date, self.end_date, self.next_date = time.dates2str(dates)
+        dates = get_start_end_dates_from_filename(filename=self.filename,
+                                                  pattern=pattern,
+                                                  frequency=frequency,
+                                                  calendar=calendar)
+        self.start_date, self.end_date, self.next_date = dates2str(dates)
         self.start_timestamp, self.end_timestamp, self.next_timestamp = [
-            time.truncated_timestamp(date, self.timestamp_length) for date in dates]
-        return time.date2num(dates, units=units, calendar=calendar)
+            truncated_timestamp(date, self.timestamp_length) for date in dates]
+        return date2num(dates, units=units, calendar=calendar)
 
     def checksum(self, checksum_type):
         """
@@ -137,61 +104,12 @@ class File(object):
                            'MD5': 'md5sum'}
         assert (checksum_type in checksum_client.keys()), 'Invalid checksum type'
         try:
-            shell = os.popen("{0} {1} | awk -F ' ' '{{ print $1 }}'".format(checksum_client[checksum_type],
-                                                                            self.ffp),
+            shell = os.popen("{} {} | awk -F ' ' '{{ print $1 }}'".format(checksum_client[checksum_type],
+                                                                          self.ffp),
                              'r')
             return shell.readline()[:-1]
         except:
             raise ChecksumFail(checksum_type, self.ffp)
-
-    def nc_var_delete(self, variable):
-        """
-        Delete a NetCDF variable using NCO operators.
-        A unique filename is generated to avoid multithreading errors.
-        To overwrite the input file, the source file is dump using the ``cat`` Shell command-line
-        to avoid Python memory limit.
-
-        :param str variable: The variable to delete
-        :raises Error: If the deletion failed
-
-        """
-        # Generate unique filename
-        fftmp = '{0}/{1}{2}'.format(self.directory, str(uuid4()), '.nc')
-        try:
-            nc = nco.Nco()
-            nc.ncks(input=self.ffp,
-                    output=fftmp,
-                    options='-x -O -v {0}'.format(variable))
-            os.popen("cat {0} > {1}".format(fftmp, self.ffp), 'r')
-            os.remove(fftmp)
-        except:
-            os.remove(fftmp)
-            raise NetCDFVariableRemoveFail(variable, self.ffp)
-
-    def nc_att_delete(self, variable, attribute):
-        """
-        Delete a NetCDF dimension attribute using NCO operators.
-        A unique filename is generated to avoid multithreading errors.
-        To overwrite the input file, the source file is dump using the ``cat`` Shell command-line
-        to avoid Python memory limit.
-
-        :param str attribute: The attribute to delete
-        :param str variable: The variable that has the attribute
-        :raises Error: If the deletion failed
-
-        """
-        # Generate unique filename
-        fftmp = '{0}/{1}{2}'.format(self.directory, str(uuid4()), '.nc')
-        try:
-            nc = nco.Nco()
-            nc.ncatted(input=self.ffp,
-                       output=fftmp,
-                       options='-a {0},{1},d,,'.format(attribute, variable))
-            os.popen("cat {0} > {1}".format(fftmp, self.ffp), 'r')
-            os.remove(fftmp)
-        except:
-            os.remove(fftmp)
-            raise NetCDFAttributeRemoveFail(attribute, self.ffp, variable)
 
     def build_time_axis(self, start, inc, input_units, output_units, calendar, is_instant=False):
         """
@@ -210,15 +128,15 @@ class File(object):
         """
         num_axis = np.arange(start=start, stop=start + self.length * inc, step=inc)
         if input_units.split(' ')[0] in ['years', 'months']:
-            last_date = time.num2date(num_axis[-1], units=input_units, calendar=calendar)[0]
+            last_date = num2date(num_axis[-1], units=input_units, calendar=calendar)[0]
         else:
-            last_date = time.num2date(num_axis[-1], units=input_units, calendar=calendar)
-        self.last_date = time.date2str(last_date)
-        self.last_timestamp = time.truncated_timestamp(last_date, self.timestamp_length)
+            last_date = num2date(num_axis[-1], units=input_units, calendar=calendar)
+        self.last_date = dates2str(last_date)
+        self.last_timestamp = truncated_timestamp(last_date, self.timestamp_length)
         if not is_instant:
             num_axis += 0.5 * inc
-        date_axis = time.num2date(num_axis, units=input_units, calendar=calendar)
-        return time.date2num(date_axis, units=output_units, calendar=calendar)
+        date_axis = num2date(num_axis, units=input_units, calendar=calendar)
+        return date2num(date_axis, units=output_units, calendar=calendar)
 
     def build_time_bounds(self, start, inc, input_units, output_units, calendar):
         """
@@ -242,8 +160,57 @@ class File(object):
                                          (np.arange(start=start,
                                                     stop=start + (self.length + 1) * inc,
                                                     step=inc)[1:])))
-        date_axis_bnds = time.num2date(num_axis_bnds, units=input_units, calendar=calendar)
-        return time.date2num(date_axis_bnds, units=output_units, calendar=calendar)
+        date_axis_bnds = num2date(num_axis_bnds, units=input_units, calendar=calendar)
+        return date2num(date_axis_bnds, units=output_units, calendar=calendar)
+
+    def nc_var_delete(self, variable):
+        """
+        Delete a NetCDF variable using NCO operators.
+        A unique filename is generated to avoid multithreading errors.
+        To overwrite the input file, the source file is dump using the ``cat`` Shell command-line
+        to avoid Python memory limit.
+
+        :param str variable: The variable to delete
+        :raises Error: If the deletion failed
+
+        """
+        # Generate unique filename
+        fftmp = '{}/{}{}'.format(self.directory, str(uuid4()), '.nc')
+        try:
+            nc = nco.Nco()
+            nc.ncks(input=self.ffp,
+                    output=fftmp,
+                    options='-x -O -v {}'.format(variable))
+            os.popen("cat {} > {}".format(fftmp, self.ffp), 'r')
+            os.remove(fftmp)
+        except:
+            os.remove(fftmp)
+            raise NetCDFVariableRemoveFail(variable, self.ffp)
+
+    def nc_att_delete(self, variable, attribute):
+        """
+        Delete a NetCDF dimension attribute using NCO operators.
+        A unique filename is generated to avoid multithreading errors.
+        To overwrite the input file, the source file is dump using the ``cat`` Shell command-line
+        to avoid Python memory limit.
+
+        :param str attribute: The attribute to delete
+        :param str variable: The variable that has the attribute
+        :raises Error: If the deletion failed
+
+        """
+        # Generate unique filename
+        fftmp = '{}/{}{}'.format(self.directory, str(uuid4()), '.nc')
+        try:
+            nc = nco.Nco()
+            nc.ncatted(input=self.ffp,
+                       output=fftmp,
+                       options='-a {},{},d,,'.format(attribute, variable))
+            os.popen("cat {} > {}".format(fftmp, self.ffp), 'r')
+            os.remove(fftmp)
+        except:
+            os.remove(fftmp)
+            raise NetCDFAttributeRemoveFail(attribute, self.ffp, variable)
 
     def nc_var_overwrite(self, variable, data):
         """

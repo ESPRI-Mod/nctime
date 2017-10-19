@@ -8,6 +8,7 @@
 """
 
 import logging
+import os
 import re
 
 import netCDF4
@@ -21,32 +22,15 @@ from custom_exceptions import *
 class TimeInit(object):
     """
     Encapsulates the time properties from first file into processing context.
-    These properties has to be used as reference for all file into the directory.
+    These properties has to be used as reference for all files into the directory.
 
      * The calendar, the frequency and the realm are read from NetCDF global attributes and \
      use to detect instantaneous time axis,
      * The NetCDF time units attribute has to be unchanged in respect with CF convention and \
      archives designs.
 
-    +-------------------+-------------+---------------------------------+
-    | Attribute         | Type        | Description                     |
-    +===================+=============+=================================+
-    | *self*.calendar   | *str*       | NetCDF calendar attribute       |
-    +-------------------+-------------+---------------------------------+
-    | *self*.frequency  | *str*       | NetCDF frequency attribute      |
-    +-------------------+-------------+---------------------------------+
-    | *self*.realm      | *str*       | NetCDF modeling realm attribute |
-    +-------------------+-------------+---------------------------------+
-    | *self*.tunits     | *str*       | Time units from file            |
-    +-------------------+-------------+---------------------------------+
-    | *self*.funits     | *str*       | Time units from frequency       |
-    +-------------------+-------------+---------------------------------+
-    | *self*.is_instant | *boolean*   | True if instantaneous axis      |
-    +-------------------+-------------+---------------------------------+
-    | *self*.has_bounds | *boolean*   | True if require time bounds     |
-    +-------------------+-------------+---------------------------------+
-
-    :param ProcessingContext ctx: The processing context
+    :param str ref: The reference file full path
+    :param str tunits_default: The default time units if exists
     :raises Error: If NetCDF time units attribute is missing
     :raises Error: If NetCDF frequency attribute is missing
     :raises Error: If NetCDF realm attribute is missing
@@ -54,23 +38,23 @@ class TimeInit(object):
 
     """
 
-    def __init__(self, ctx):
-        ref_path = '{directory}/{ref}'.format(**ctx.__dict__)
+    def __init__(self, ref, tunits_default=None):
+        variable = unicode(os.path.basename(ref).split('_')[0])
         try:
-            nc = netCDF4.Dataset(ref_path, 'r')
+            nc = netCDF4.Dataset(ref, 'r')
         except IOError:
-            raise InvalidNetCDFFile(ref_path)
+            raise InvalidNetCDFFile(ref)
         # Check required global attributes exist
         for attribute in REQUIRED_ATTRIBUTES:
             if attribute not in nc.ncattrs():
-                raise NoNetCDFAttribute(attribute, ref_path)
+                raise NoNetCDFAttribute(attribute, ref)
         # Check time variable exists
         if 'time' not in nc.variables.keys():
-            raise NoNetCDFVariable('time', ref_path)
+            raise NoNetCDFVariable('time', ref)
         # Check required time attributes exist
         for attribute in REQUIRED_TIME_ATTRIBUTES:
             if attribute not in nc.variables['time'].ncattrs():
-                raise NoNetCDFAttribute(attribute, ref_path, 'time')
+                raise NoNetCDFAttribute(attribute, ref, 'time')
         # Get realm
         if nc.project_id == 'CORDEX':
             self.realm = 'atmos'
@@ -79,7 +63,7 @@ class TimeInit(object):
         # Get frequency
         self.frequency = nc.frequency
         # Get time units (i.e., days since ...)
-        self.tunits = self.control_time_units(nc.variables['time'].units, ctx.tunits_default)
+        self.tunits = self.control_time_units(nc.variables['time'].units, tunits_default)
         # Convert time units into frequency units (i.e., months/year/hours since ...)
         self.funits = self.convert_time_units(self.tunits, self.frequency)
         # Get calendar
@@ -87,10 +71,10 @@ class TimeInit(object):
         if self.calendar == 'standard' and nc.model_id == 'CMCC-CM':
             self.calendar = 'proleptic_gregorian'
         # Get boolean on instantaneous time axis
-        if 'cell_methods' not in nc.variables[ctx.variable].ncattrs():
-            raise NoNetCDFAttribute('cell_methods', ref_path, ctx.variable)
+        if 'cell_methods' not in nc.variables[variable].ncattrs():
+            raise NoNetCDFAttribute('cell_methods', ref, variable)
         self.is_instant = False
-        if 'point' in nc.variables[ctx.variable].cell_methods.lower():
+        if 'point' in nc.variables[variable].cell_methods.lower():
             self.is_instant = True
         # Get boolean on time boundaries
         self.has_bounds = False
@@ -113,11 +97,11 @@ class TimeInit(object):
         units = tunits.split()
         units[0] = unicode('days')
         if len(units[2].split('-')) == 1:
-            units[2] += '-{0}-{1}'.format('01', '01')
+            units[2] += '-{}-{}'.format('01', '01')
         elif len(units[2].split('-')) == 2:
-            units[2] += '-{0}'.format('01')
+            units[2] += '-{}'.format('01')
         if tunits_default and ' '.join(units) != tunits_default:
-            logging.warning('Invalid time units. Replace "{0}" by "{1}"'.format(' '.join(units), tunits_default))
+            logging.warning('Invalid time units. Replace "{}" by "{}"'.format(' '.join(units), tunits_default))
             return tunits_default
         else:
             return ' '.join(units)
@@ -136,11 +120,11 @@ class TimeInit(object):
 
         """
         units = {'subhr': 'minutes',
-                 '3hr':   'hours',
-                 '6hr':   'hours',
-                 'day':   'days',
-                 'mon':   'months',
-                 'yr':    'years'}
+                 '3hr': 'hours',
+                 '6hr': 'hours',
+                 'day': 'days',
+                 'mon': 'months',
+                 'yr': 'years'}
         return tunits.replace('days', units[frequency])
 
 
@@ -365,7 +349,7 @@ def get_start_end_dates_from_filename(filename, pattern, frequency, calendar):
     <https://docs.python.org/2/library/re.html>`_).
     :param str frequency: The time frequency
     :param str calendar: The NetCDF calendar attribute
-    :returns: ``datetime`` instances for start and end dates from the filename
+    :returns: Start and end dates from the filename
     :rtype: *netcdftime.datetime*
 
     """
@@ -410,7 +394,7 @@ def get_first_last_timesteps(ffp):
     try:
         nc = netCDF4.Dataset(ffp, 'r')
     except IOError:
-            raise InvalidNetCDFFile(ffp)
+        raise InvalidNetCDFFile(ffp)
     if 'time' not in nc.variables.keys():
         raise NoNetCDFVariable('time', ffp)
     first = nc.variables['time'][0]
@@ -432,7 +416,7 @@ def get_next_timestep(ffp, current_timestep):
     try:
         nc = netCDF4.Dataset(ffp, 'r')
     except IOError:
-            raise InvalidNetCDFFile(ffp)
+        raise InvalidNetCDFFile(ffp)
     if 'time' not in nc.variables.keys():
         raise NoNetCDFVariable('time', ffp)
     try:
@@ -457,11 +441,11 @@ def time_inc(frequency):
 
     """
     inc = {'subhr': [30, 'minutes'],
-           '3hr':   [3, 'hours'],
-           '6hr':   [6, 'hours'],
-           'day':   [1, 'days'],
-           'mon':   [1, 'months'],
-           'yr':    [1, 'years']}
+           '3hr': [3, 'hours'],
+           '6hr': [6, 'hours'],
+           'day': [1, 'days'],
+           'mon': [1, 'months'],
+           'yr': [1, 'years']}
     return inc[frequency]
 
 
@@ -484,7 +468,7 @@ def dates2str(dates, iso_format=True):
     """
     Converts (a list of) dates in format: %Y%m%d %H:%M:%s.
 
-    :param list dates: A list of datetime or phony datetime objects
+    :param netcdftime.datetime/list dates: A list of datetime or phony datetime objects
     :param boolean iso_format: ISO format date if True
     :returns: The corresponding formatted strings
     :rtype: *list* or *str*
@@ -542,7 +526,7 @@ def strs2date(dates, iso_format=False):
     """
     Converts (a list of) formatted string %Y%m%d%H:%M:%s into corresponding datetime objects.
 
-    :param list dates: A list of formatted dated
+    :param list/str dates: A list of formatted dated
     :param boolean iso_format: ISO format date if True
     :returns: The corresponding datetime objects
     :rtype: *list* or *netcdftime.datetime*
@@ -565,7 +549,7 @@ def str2date(date, iso_format=True):
 
     """
     if iso_format:
-        pattern = re.compile(r'^(?P<year>\d{4})-'
+        pattern = re.compile(r'^(?P<year>\d{})-'
                              r'(?P<month>\d{2})-'
                              r'(?P<day>\d{2})T'
                              r'(?P<hour>\d{2}):'

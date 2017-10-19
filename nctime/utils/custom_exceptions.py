@@ -8,71 +8,9 @@
 """
 
 
-class EmptyConfigFile(Exception):
-    """
-    Raised when configuration file is empty.
-
-    """
-
-    def __init__(self, paths):
-        self.msg = "Empty configuration parser."
-        for path in paths:
-            self.msg += "\n<config file: '{0}'>".format(path)
-        super(self.__class__, self).__init__(self.msg)
-
-
-class NoConfigFile(Exception):
-    """
-    Raised when no configuration file found.
-
-    """
-
-    def __init__(self, path):
-        self.msg = "No or not a file"
-        self.msg += "\n<config file: '{0}'>".format(path)
-        super(self.__class__, self).__init__(self.msg)
-
-
-class NoConfigSection(Exception):
-    """
-    Raised when no corresponding section found in configuration file.
-
-    """
-
-    def __init__(self, section, paths):
-        self.msg = "No section: '{0}'".format(section)
-        for path in paths:
-            self.msg += "\n<config file: '{0}'>".format(path)
-        super(self.__class__, self).__init__(self.msg)
-
-
-class NoConfigOption(Exception):
-    """
-    Raised when no corresponding option found in section of the configuration file.
-
-    """
-
-    def __init__(self, option, section, paths):
-        self.msg = "No option: '{0}'".format(option)
-        self.msg += "\n<section: '{0}'>".format(section)
-        for path in paths:
-            self.msg += "\n<config file: '{0}'>".format(path)
-        super(self.__class__, self).__init__(self.msg)
-
-
-class NoConfigValue(Exception):
-    """
-    Raised when no corresponding value found in option of the section from the configuration file.
-
-    """
-
-    def __init__(self, value, option, section, paths):
-        self.msg = "No value: '{0}'".format(value)
-        self.msg += "\n<option: '{0}'>".format(option)
-        self.msg += "\n<section: '{0}'>".format(section)
-        for path in paths:
-            self.msg += "\n<config file: '{0}'>".format(path)
-        super(self.__class__, self).__init__(self.msg)
+###############################
+# Exceptions for NetCDF files #
+###############################
 
 
 class InvalidNetCDFFile(Exception):
@@ -82,8 +20,8 @@ class InvalidNetCDFFile(Exception):
     """
 
     def __init__(self, path):
-        self.msg = "Invalid or unknown file format. Only support NetCDF file."
-        self.msg += "\n<file: '{0}'>".format(path)
+        self.msg = "Invalid or corrupted NetCDF file."
+        self.msg += "\n<file: '{}'>".format(path)
         super(self.__class__, self).__init__(self.msg)
 
 
@@ -96,9 +34,9 @@ class RenamingNetCDFFailed(Exception):
     def __init__(self, src, dst, exists=False):
         self.msg = "Cannot rename NetCDF file."
         if exists:
-            self.msg = "Such NetCDF file already exists."
-        self.msg += "\n<src: '{0}'>".format(src)
-        self.msg += "\n<dst: '{0}'>".format(dst)
+            self.msg = "NetCDF file already exists."
+        self.msg += "\n<src: '{}'>".format(src)
+        self.msg += "\n<dst: '{}'>".format(dst)
 
         super(self.__class__, self).__init__(self.msg)
 
@@ -110,12 +48,11 @@ class NoNetCDFAttribute(Exception):
     """
 
     def __init__(self, attribute, path, variable=None):
+        self.msg = "Attribute not found"
+        self.msg += "\n<attribute: '{}'>".format(attribute)
         if variable:
-            self.msg = "No attribute: '{0}'".format(attribute)
-            self.msg += "\n<variable: '{0}'>".format(variable)
-        else:
-            self.msg = "No global attribute: '{0}'".format(attribute)
-        self.msg += "\n<file: '{0}'>".format(path)
+            self.msg += "\n<variable: '{}'>".format(variable)
+        self.msg += "\n<file: '{}'>".format(path)
         super(self.__class__, self).__init__(self.msg)
 
 
@@ -126,8 +63,9 @@ class NoNetCDFVariable(Exception):
     """
 
     def __init__(self, variable, path):
-        self.msg = "No variable: '{0}'".format(variable)
-        self.msg += "\n<file: '{0}'>".format(path)
+        self.msg = "Variable not found"
+        self.msg += "\n<variable: '{}'>".format(variable)
+        self.msg += "\n<file: '{}'>".format(path)
         super(self.__class__, self).__init__(self.msg)
 
 
@@ -138,6 +76,52 @@ class NetCDFTimeStepNotFound(Exception):
     """
 
     def __init__(self, value, path):
-        self.msg = "No index for time value: '{0}'".format(value)
-        self.msg += "\n<file: '{0}'>".format(path)
+        self.msg = "Time value not found"
+        self.msg = "\n<value: '{}'>".format(value)
+        self.msg += "\n<file: '{}'>".format(path)
+        super(self.__class__, self).__init__(self.msg)
+
+
+############################
+# Miscellaneous exceptions #
+############################
+
+
+class KeyNotFound(Exception):
+    """
+    Raised when a class key is not found.
+
+    """
+
+    def __init__(self, key, keys=None):
+        self.msg = "Key not found"
+        self.msg += "\n<key: '{}'>".format(key)
+        if keys:
+            self.msg += "\n<found keys: '{}'>".format(', '.join(keys))
+        super(self.__class__, self).__init__(self.msg)
+
+
+class ChecksumClientNotFound(Exception):
+    """
+    Raised when checksum client not found on operating system.
+
+    """
+
+    def __init__(self, client):
+        self.msg = "Checksum client not found."
+        self.msg += "\n<client: '{}'>".format(client)
+        super(self.__class__, self).__init__(self.msg)
+
+
+class ChecksumFail(Exception):
+    """
+    Raised when a checksum fails.
+
+    """
+
+    def __init__(self, path, checksum_type=None):
+        self.msg = "Checksum failed"
+        if checksum_type:
+            self.msg += "\n<checksum type: '{}'>".format(checksum_type)
+        self.msg += "\n<file: '{}'>".format(path)
         super(self.__class__, self).__init__(self.msg)
