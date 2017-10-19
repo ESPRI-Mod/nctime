@@ -98,9 +98,7 @@ INI_HELP = \
 
 LOG_HELP = \
     """
-    Logfile directory. <log_dir> is read from configuration |n
-    file if not submitted. If no <log_dir>, current working |n
-    directory is used instead. An existing logfile can be submitted.|n
+    Logfile directory.|n
     If not, standard output is used.
 
     """
@@ -187,7 +185,7 @@ AXIS_DESC = \
     000: Unmodified time axis,|n
     001: Corrected time axis because wrong time steps,|n
     002: Corrected time axis because of changing time units,|n
-    003: Ignored time axis because of inconsistency between last date of time axis and end date of filename
+    003: Corrected time axis because of inconsistency between last date of time axis and end date of filename
     period (e.g., wrong time axis length),|n
     004: Corrected time axis deleting time boundaries for instant time,|n
     005: Ignored averaged time axis without time boundaries,|n
@@ -220,10 +218,8 @@ FORCE_HELP = \
 
 DB_HELP = \
     """
-    SQLite database path to persist diagnostics. <db_path> is |n
-    read from configuration file if not submitted. If no <db_path>, |n
-    current working directory is used instead. If not, time |n
-    diagnostic is not saved.
+    SQLite database file to persist diagnostics.|n
+    If not, time diagnostic is not saved.
 
     """
 

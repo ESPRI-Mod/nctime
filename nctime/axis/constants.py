@@ -14,4 +14,4 @@ TIMEOUT = 120
 MAX_THREADS_DEFAULT = 1
 
 # Errors that return exit code = 1
-EXIT_ERRORS = ['003', '005']
+EXIT_ERRORS = ['005']
