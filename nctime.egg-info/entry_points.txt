@@ -1,0 +1,3 @@
+[console_scripts]
+nctime = nctime.nctime:run
+
