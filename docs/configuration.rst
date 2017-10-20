@@ -3,56 +3,51 @@
 Configuration
 =============
 
-The only configuration you have to do at least is to define:
- * the maximal threads number (default is 4 threads),
- * the checksum type (default is SHA256).
+``nctime`` works according to
+`the configuration INI file(s) of the ESGF nodes <https://acme-climate.atlassian.net/wiki/x/JADm>`_.
 
-Both under the ``[DEFAULT]`` section in the configuration INI file.
+Location
+********
 
-.. code-block:: ini
+On an ESGF node, the configuration directory containing those INI files is ``/esg/config/esgcet``, that is the default
+for ``nctime``. In the case you are running ``nctime`` outside of an ESGF node, the directory gathering all ``.ini``
+files has to be submitted using the ``-i`` option (see :ref:`usage`).
 
-   [DEFAULT]
-   max_threads = 3
-   checksum_type = SHA256
+``esg.ini``
+***********
 
-The configuration file is included in the package and is in the default installation directory of your Python
-packages. Feel free to copy it and made your own using the ``-i`` option (see :ref:`usage`).
+This INI file gathers all required information to configure the datanode regarding to data publication (e.g.,
+PostgreSQL access, THREDDS configuration, etc.).
 
-
-Add a new project
-*****************
-
-Edit the ``config.ini`` as follows:
-
-1. Define your "project" section in brackets:
+The only configuration in this section is to define the checksum client and checksum
+type under the ``[default]`` section. Edit the file to set the Shell command line to use (default is ``sha256sum``).
 
 .. code-block:: ini
 
-   [your_project]
+    [default]
+    checksum = sha256sum | SHA256
 
-.. warning:: The ``--project`` option directly refers to the name of "project" sections.
+.. note:: If ``esg.ini`` is unfound, the default is SHA256.
 
-2. Define the filename format of your project. The ``filename_format`` uses a regular expression to match the period
-dates from the filename to process.
+``esg.<project_id>.ini``
+************************
 
-.. code-block:: ini
+Those INI files declare all facets and allowed values according to the Data Reference Syntax (DRS) and the controlled
+vocabularies of the corresponding project. Preset ``esg.<project_id>.ini`` files have been properly built by
+ESGF community for the following projects:
 
-   filename_format = ([\w.-]+)_([\w.-]+)_([\w.-]+)_([\w.-]+)_([\w.-]+)_([\d]+)-([\d]+).nc
+ * CMIP6
+ * CMIP5
+ * CORDEX
+ * CORDEX-Adjust
+ * EUCLIPSE
+ * GeoMIP
+ * input4MIPs
+ * obs4MIPs
+ * PMIP3
+ * LUCID
+ * PRIMAVERA
+ * TAMIP
+ * ISIMIP-FT
 
-.. warning:: Feel free to defined a new filename format using the INI variable patterns.  The
-    filename format must include two groups of digits called ``%(start_period)s`` and ``%(end_period)s``.
-
-.. warning:: ``nctime`` only supports NetCDF files.
-
-3. Declare all tuples of attributes requiring instantaneous time axis. For example, CMIP5 datasets using an
-instantaneous time axis can be targeted using a tuple composed by the variable, the frequency and the realm of the DRS.
-
-.. code-block:: ini
-
-   need_instant_time = [(tuple1), (tuple2), ...]
-
-4. Define the default time units if fixed by the *Data Reference Syntax* (DRS) of your project.
-
-.. code-block:: ini
-
-   time_units_default = days since 1949-12-01 00:00:00
+Currently, ``nctime`` has been tested and supports CMIP5-like and CORDEX-like projects.

@@ -6,7 +6,7 @@ Credits
 Developer/Author
 ****************
 
-`Guillaume LEVAVASSEUR <glipsl@ipsl.jussieu.fr>`_ (`UPMC <http://www.upmc.fr/>`_/`IPSL <https://www.ipsl.fr/>`_)
+`Guillaume LEVAVASSEUR <glipsl@ipsl.fr>`_ (`UPMC <http://www.upmc.fr/>`_/`IPSL <https://www.ipsl.fr/>`_)
 
 Contributors
 ************
@@ -16,5 +16,5 @@ Contributors
 Contacts
 ********
 
-To submit bugs, suggestions or ideas, please address your comments to `Guillaume LEVAVASSEUR <glipsl@ipsl.jussieu.fr>`_
-or post your issue on our `GitHub repository <https://github.com/Prodiguer/cmip5-time-axis>`_.
+To submit bugs, suggestions or ideas, please address your comments to `Guillaume LEVAVASSEUR <glipsl@ipsl.fr>`_
+or post your issue on our `GitHub repository <https://github.com/Prodiguer/nctime/issues>`_.

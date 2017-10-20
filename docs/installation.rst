@@ -1,5 +1,6 @@
 .. _installation:
 
+
 Installation
 ============
 
@@ -40,6 +41,9 @@ Installation from GitHub
 Dependencies
 ************
 
+Linux distribution with Python 2.6+ is required. ``nctime`` uses the following basic Python libraries. Ensure that
+your Python environment includes:
+
 ``nctime`` uses the following basic Python libraries includes in Python 2.5+. Becareful your Python environment
 includes:
 
@@ -48,43 +52,20 @@ includes:
  * `sys <https://docs.python.org/2/library/sys.html>`_
  * `logging <https://docs.python.org/2/library/logging.html>`_
  * `argparse <https://docs.python.org/2/library/argparse.html>`_
- * `ConfigParser <https://docs.python.org/2/library/configparser.html>`_
+ * `importlib <https://docs.python.org/2/library/importlib.html>`_
+ * `ESGConfigParser <https://pypi.python.org/pypi/ESGConfigParser>`_
  * `datetime <https://docs.python.org/2/library/datetime.html>`_
  * `textwrap <https://docs.python.org/2/library/textwrap.html>`_
- * `functools <https://docs.python.org/2/library/functools.html>`_
  * `multiprocessing <https://docs.python.org/2/library/multiprocessing.html>`_
  * `uuid <https://docs.python.org/2/library/uuid.html>`_
  * `sqlite3 <https://docs.python.org/2.6/library/sqlite3.html>`_
 
-Please install the ``numpy``, ``netCDF4``, ``nco`` and ``networkx`` libraries not included in most Python distributions
-using the usual PIP command-line:
+Some required libraries are not included in most Python distributions. Please install them using the usual PIP command:
 
-.. code-block:: bash
-
-   pip install numpy
-   pip install netCDF
-   pip install nco
-   pip install networkx
-
-or download and install the sources from PyPi:
-
-.. code-block:: bash
-
-    wget https://pypi.python.org/packages/source/n/numpy/numpy-1.9.2.tar.gz#md5=a1ed53432dbcd256398898d35bc8e645
-    cd numpy-1.9.2/
-    python setup.py install
-
-    wget https://pypi.python.org/packages/source/n/netCDF4/netCDF4-1.2.1.tar.gz#md5=9d9a7015ee98ec6766adc811d95b82c3
-    cd netCDF4-1.2.1/
-    python setup.py install
-
-    wget https://pypi.python.org/packages/ae/9e/cea585e1964f8282881577033cd94ba30b89c0a883f1a59ede1d332bd4da/networkx-1.9.tar.gz#md5=683ca697a9ad782cb78b247cbb5b51d6
-    cd networkx-1.9/
-    python setup.py install
-
-    wget https://pypi.python.org/packages/55/26/5b2d3b0edafafd85d1d1eeef341812fde6a1337ce473c430fcac90dc638d/nco-0.0.2.tar.gz#md5=bf7f543f7ffb5739eaf6466ca7e60c38
-    cd nco-0.0.2/
-    python setup.py install
+ * `netCDF4 <http://unidata.github.io/netcdf4-python/>`_
+ * `netcdftime <https://github.com/Unidata/netcdftime>`_
+ * `nco <https://pypi.python.org/pypi/nco>`_
+ * `numpy <http://www.numpy.org/>`_
+ * `networkx <https://networkx.github.io/>`_
 
 .. warning:: To support some corrections, `NCO operators <http://nco.sourceforge.net/#Binaries>`_ must be installed.
-

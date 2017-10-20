@@ -1,227 +1,80 @@
 .. _usage:
 
-Usage and tutorials
-===================
 
-Common usage
-************
+Generic usage
+=============
 
-Specify the project
--------------------
+.. note:: All the following arguments can be safely combined and add to the subcommand arguments.
 
-.. code-block:: bash
-
-    $> nctime <command> --project <project_id>
-
-.. warning:: This ``--project`` argument is always required.
-
-.. warning:: This ``--project`` name has to correspond to a section of the configuration file.
-
-.. warning:: The ``--project`` is case-sensitive.
-
-
-Specify a configuration file
-----------------------------
+Check the help
+**************
 
 .. code-block:: bash
 
-   $> nctime <command> -i /path/to/config.ini
+    $> nctime -h
+    $> nctime SUBCOMMAND -h
 
-.. note:: Default is ``$PWD/config.ini``.
+Check the version
+*****************
 
+.. code-block:: bash
+
+    $> nctime -V
 
 Add verbosity
--------------
+*************
 
 .. code-block:: bash
 
-   $> nctime <command> -v
+    $> nctime SUBCOMMAND -v
 
-Show help message and exit
---------------------------
+Specify the project
+*******************
+
+The ``--project`` argument is used to parse the corresponding configuration INI file. It is **always required**
+(except for ``fetch-ini`` subcommand). This argument is case-sensitive and has to correspond to a section name of
+the configuration file(s).
 
 .. code-block:: bash
 
-   $> nctime <command> -h
+    $> nctime SUBCOMMAND --project PROJECT_ID
+
+Submit a configuration directory
+********************************
+
+By default, the configuration files are fetched or read from ``/esg/config/esgcet`` that is the usual configuration
+directory on ESGF nodes. If you're preparing your data outside of an ESGF node, you can submit another directory to
+fetch and read the configuration files.
+
+.. code-block:: bash
+
+    $> nctime SUBCOMMAND -i /PATH/TO/CONFIG/
+
+.. note::
+    In the case of ``fetch-ini`` subcommand, if you're not on an ESGF node and ``/esg/config/esgcet`` doesn't exist,
+    the configuration file(s) are fetched into an ``ini`` folder in your working directory.
 
 Use a logfile
--------------
+*************
+
+All errors and exceptions are logged into a file named ``nctime-YYYYMMDD-HHMMSS-PID.err``.
+Other information are logged into a file named ``nctime-YYYYMMDD-HHMMSS-PID.log`` only if ``--log`` is submitted.
+If not, the standard output is used following the verbose mode.
+By default, the logfiles are stored in a ``logs`` folder created in your current working directory (if not exists).
+It can be changed by adding a optional logfile directory to the flag.
 
 .. code-block:: bash
 
-   $> nctime <command> --log /path/to/logdir
-   [...]
-   $> cat /path/to/logdir/nctime-YYYYMMDD-HHMMSS-PID.log
-   [...]
+    $> nctime SUBCOMMAND --log
+    $> nctime SUBCOMMAND --log /PATH/TO/LOGDIR/
 
-.. note:: The logfile directory is optional.
+Use multiprocessing
+*******************
 
-.. note:: If not submitted the logfile directory is read from the configuration file first or is the current working
-   directory instead. No flag seems the standard output is used.
-
-``nctime overlap``
-******************
-
-Check a MIP variable
---------------------
+``nctime`` uses a multiprocessing interface. This is useful to process a large amount of data, especially in the case
+of ``axis`` subcommands with file checksum computation. Set the number of maximal threads to simultaneously process
+several files (4 threads is the default and one seems sequential processing).
 
 .. code-block:: bash
 
-   $> nctime overlap --project <project_id> /path/to/your/archive/project/variable/ -v
-   YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic started for /path/to/your/archive/project/variable/
-   YYYY/MM/DD HH:MM:SS PM INFO Create edges from source nodes to target nodes
-   YYYY/MM/DD HH:MM:SS PM INFO -- START -- --> file1.nc
-   YYYY/MM/DD HH:MM:SS PM INFO   file2.nc  --> -- END --
-   YYYY/MM/DD HH:MM:SS PM INFO Shortest path found
-   YYYY/MM/DD HH:MM:SS PM INFO No overlapping files
-   YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic completed
-
-Detect overlapping files
-------------------------
-
-.. code-block:: bash
-
-   $> nctime overlap --project <project_id> /path/to/your/archive/project/variable/ -v
-   YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic started for /path/to/your/archive/project/variable/
-   YYYY/MM/DD HH:MM:SS PM INFO Create edges from source nodes to target nodes
-   YYYY/MM/DD HH:MM:SS PM INFO -- START -- --> file1.nc
-   YYYY/MM/DD HH:MM:SS PM INFO   file2.nc  --> file2.nc
-   YYYY/MM/DD HH:MM:SS PM INFO   file3.nc  --> -- END --
-   YYYY/MM/DD HH:MM:SS PM INFO Shortest path found
-   YYYY/MM/DD HH:MM:SS PM WARNING Overlapping files:
-   YYYY/MM/DD HH:MM:SS PM WARNING file2.nc
-   YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic completed
-
-Remove overlapping files
-------------------------
-
-.. code-block:: bash
-
-   $> nctime overlap --project <project_id> /path/to/your/archive/project/variable/ -v --resolve
-   YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic started for /path/to/your/archive/project/variable/
-   YYYY/MM/DD HH:MM:SS PM INFO Create edges from source nodes to target nodes
-   YYYY/MM/DD HH:MM:SS PM INFO -- START -- --> file1.nc
-   YYYY/MM/DD HH:MM:SS PM INFO   file2.nc  --> file2.nc
-   YYYY/MM/DD HH:MM:SS PM INFO   file3.nc  --> -- END --
-   YYYY/MM/DD HH:MM:SS PM INFO Shortest path found
-   YYYY/MM/DD HH:MM:SS PM WARNING Overlapping files:
-   YYYY/MM/DD HH:MM:SS PM WARNING file2.nc <- REMOVED
-   YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic completed
-
-Detect a time gap
------------------
-
-.. code-block:: bash
-
-   $> nctime overlap --project <project_id> /path/to/your/archive/project/variable/ -v
-   YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic started for /path/to/your/archive/project/variable/
-   YYYY/MM/DD HH:MM:SS PM INFO Create edges from source nodes to target nodes
-   YYYY/MM/DD HH:MM:SS PM INFO -- START -- --> file1.nc
-   YYYY/MM/DD HH:MM:SS PM INFO   file2.nc  --> file2.nc
-   YYYY/MM/DD HH:MM:SS PM INFO   file3.nc  --> -- END --
-   YYYY/MM/DD HH:MM:SS PM WARNING No shortest path found.
-   YYYY/MM/DD HH:MM:SS PM INFO No overlapping files
-   YYYY/MM/DD HH:MM:SS PM INFO Overlap diagnostic completed
-
-.. warning:: To resolve only full overlaps please use the ``--full-overlap-only`` flag.
-
-``nctime axis``
-***************
-
-Check a MIP variable
---------------------
-
-.. code-block:: bash
-
-   $> nctime axis --project <project_id> /path/to/your/archive/project/variable/ -v
-   YYYY/MM/DD HH:MM:SS PM INFO Time axis diagnostic started for /path/to/your/archive/project/variable/
-   YYYY/MM/DD HH:MM:SS PM INFO file1.nc - Time axis seems OK
-   YYYY/MM/DD HH:MM:SS PM INFO file2.nc - Time axis seems OK
-   YYYY/MM/DD HH:MM:SS PM INFO file3.nc - Time axis seems OK
-   YYYY/MM/DD HH:MM:SS PM INFO Time diagnostic completed (3 files scanned)
-
-.. note:: Verbosity will print file information with theoretical time axis and time axis from file.
-
-Detect a wrong time axis
-------------------------
-
-   $> nctime axis --project <project_id> /path/to/your/archive/project/variable/ -v
-   YYYY/MM/DD HH:MM:SS PM INFO Time axis diagnostic started for /path/to/your/archive/project/variable/
-   YYYY/MM/DD HH:MM:SS PM INFO file1.nc - Time axis seems OK
-   YYYY/MM/DD HH:MM:SS PM INFO file2.nc - 001 - Mistaken time axis over one or several time steps
-   YYYY/MM/DD HH:MM:SS PM INFO file3.nc - Time axis seems OK
-   YYYY/MM/DD HH:MM:SS PM INFO Time diagnostic completed (3 files scanned)
-
-Rewrite a wrong time axis
--------------------------
-
-.. note:: The write mode displays the same information and only modify the input files if necessary. In such a case,
-   the new checksum is computed automatically.
-
-.. code-block:: bash
-
-   $> nctime axis --project <project_id> /path/to/your/archive/project/variable/ -v --write
-   YYYY/MM/DD HH:MM:SS PM INFO Time axis diagnostic started for /path/to/your/archive/project/variable/
-   YYYY/MM/DD HH:MM:SS PM INFO file1.nc - Time axis seems OK
-   YYYY/MM/DD HH:MM:SS PM INFO file2.nc - 001 - Mistaken time axis over one or several time steps
-   YYYY/MM/DD HH:MM:SS PM INFO file3.nc - Time axis seems OK
-   YYYY/MM/DD HH:MM:SS PM INFO Time diagnostic completed (3 files scanned)
-
-Force a time axis rewriting
----------------------------
-
-.. note:: Anyway, you can force to overwrite time axis (the checksum is automatically computed again).
-
-.. code-block:: bash
-
-   $> nctime axis --project <project_id> /path/to/your/archive/project/variable/ -v --force
-   YYYY/MM/DD HH:MM:SS PM INFO Time axis diagnostic started for /path/to/your/archive/project/variable/
-   YYYY/MM/DD HH:MM:SS PM INFO file1.nc - Time axis seems OK
-   YYYY/MM/DD HH:MM:SS PM INFO file2.nc - 001 - Mistaken time axis over one or several time steps
-   YYYY/MM/DD HH:MM:SS PM INFO file3.nc - Time axis seems OK
-   YYYY/MM/DD HH:MM:SS PM INFO Time diagnostic completed (3 files scanned)
-
-Save diagnostic to an SQL database
-----------------------------------
-
-.. code-block:: bash
-
-   $> nctime axis --project <project_id> /path/to/your/archive/project/variable/ -v --db
-   YYYY/MM/DD HH:MM:SS PM INFO Time axis diagnostic started for /path/to/your/archive/project/variable/
-   YYYY/MM/DD HH:MM:SS PM INFO file1.nc - Time axis seems OK
-   YYYY/MM/DD HH:MM:SS PM INFO file1.nc - Diagnostic persisted into database
-   YYYY/MM/DD HH:MM:SS PM INFO file2.nc - Time axis seems OK
-   YYYY/MM/DD HH:MM:SS PM INFO file2.nc - Diagnostic persisted into database
-   YYYY/MM/DD HH:MM:SS PM INFO file3.nc - Time axis seems OK
-   YYYY/MM/DD HH:MM:SS PM INFO file3.nc - Diagnostic persisted into database
-   YYYY/MM/DD HH:MM:SS PM INFO Time diagnostic completed (3 files scanned)
-
-   $> sqlite3 time_axis.db
-   $sqlite> .schema
-   CREATE TABLE time_axis
-               (id INTEGER PRIMARY KEY,
-               project TEXT,
-               realm TEXT,
-               frequency TEXT,
-               freq_units TEXT,
-               variable TEXT,
-               filename TEXT,
-               start TEXT,
-               end TEXT,
-               last TEXT,
-               length INT,
-               file_units TEXT,
-               status TEXT,
-               file_ref TEXT,
-               ref_units TEXT,
-               calendar TEXT,
-               is_instant INT,
-               has_bounds INT,
-               new_checksum TEXT,
-               full_path TEXT,
-               creation_date TEXT);
-
-.. note:: The database path is optional.
-
-.. note:: If not submitted the database path is read from the configuration file first or in the current working
-   directory instead. No flag seems that the diagnostic is not recorded.
+    $> nctime SUBCOMMAND --max-threads 4
