@@ -8,9 +8,11 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.utils.time &mdash; nctime 3.9.6 documentation</title>
+  <title>nctime.utils.time &mdash; nctime 3.4.0 documentation</title>
   
 
+  
+  
   
   
 
@@ -30,7 +32,10 @@
   
 
   
-    <link rel="top" title="nctime 3.9.6 documentation" href="../../../index.html"/>
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="nctime 3.4.0 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -40,6 +45,7 @@
 
 <body class="wy-body-for-nav" role="document">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -59,7 +65,7 @@
             
             
               <div class="version">
-                3.9
+                3.4
               </div>
             
           
@@ -80,11 +86,15 @@
           
             
             
-                <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../synopsis.html">Synopsis</a></li>
+              
+            
+            
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage and tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Generic usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overlap.html">Check time series continuity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../axis.html">Check time axis squareness</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently asked questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../credits.html">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../log.html">Changelog</a></li>
@@ -101,8 +111,10 @@
 
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../../../index.html">nctime</a>
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">nctime</a>
+        
       </nav>
 
 
@@ -115,19 +127,36 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../../../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="../../index.html">Module code</a> &raquo;</li>
-      
-    <li>nctime.utils.time</li>
+        
+      <li>nctime.utils.time</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
+            
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -144,46 +173,29 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 
 <span class="kn">import</span> <span class="nn">netCDF4</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">netcdftime</span> <span class="k">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">netcdftime</span> <span class="k">import</span> <span class="n">utime</span>
 
 <span class="kn">from</span> <span class="nn">constants</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">exceptions</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">custom_exceptions</span> <span class="k">import</span> <span class="o">*</span>
 
 
 <div class="viewcode-block" id="TimeInit"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.TimeInit">[docs]</a><span class="k">class</span> <span class="nc">TimeInit</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Encapsulates the time properties from first file into processing context.</span>
-<span class="sd">    These properties has to be used as reference for all file into the directory.</span>
+<span class="sd">    These properties has to be used as reference for all files into the directory.</span>
 
 <span class="sd">     * The calendar, the frequency and the realm are read from NetCDF global attributes and \</span>
 <span class="sd">     use to detect instantaneous time axis,</span>
 <span class="sd">     * The NetCDF time units attribute has to be unchanged in respect with CF convention and \</span>
 <span class="sd">     archives designs.</span>
 
-<span class="sd">    +-------------------+-------------+---------------------------------+</span>
-<span class="sd">    | Attribute         | Type        | Description                     |</span>
-<span class="sd">    +===================+=============+=================================+</span>
-<span class="sd">    | *self*.calendar   | *str*       | NetCDF calendar attribute       |</span>
-<span class="sd">    +-------------------+-------------+---------------------------------+</span>
-<span class="sd">    | *self*.frequency  | *str*       | NetCDF frequency attribute      |</span>
-<span class="sd">    +-------------------+-------------+---------------------------------+</span>
-<span class="sd">    | *self*.realm      | *str*       | NetCDF modeling realm attribute |</span>
-<span class="sd">    +-------------------+-------------+---------------------------------+</span>
-<span class="sd">    | *self*.tunits     | *str*       | Time units from file            |</span>
-<span class="sd">    +-------------------+-------------+---------------------------------+</span>
-<span class="sd">    | *self*.funits     | *str*       | Time units from frequency       |</span>
-<span class="sd">    +-------------------+-------------+---------------------------------+</span>
-<span class="sd">    | *self*.is_instant | *boolean*   | True if instantaneous axis      |</span>
-<span class="sd">    +-------------------+-------------+---------------------------------+</span>
-<span class="sd">    | *self*.has_bounds | *boolean*   | True if require time bounds     |</span>
-<span class="sd">    +-------------------+-------------+---------------------------------+</span>
-
-<span class="sd">    :param ProcessingContext ctx: The processing context</span>
+<span class="sd">    :param str ref: The reference file full path</span>
+<span class="sd">    :param str tunits_default: The default time units if exists</span>
 <span class="sd">    :raises Error: If NetCDF time units attribute is missing</span>
 <span class="sd">    :raises Error: If NetCDF frequency attribute is missing</span>
 <span class="sd">    :raises Error: If NetCDF realm attribute is missing</span>
@@ -191,23 +203,23 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">):</span>
-        <span class="n">ref_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{directory}</span><span class="s1">/</span><span class="si">{ref}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">ctx</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">tunits_default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">variable</span> <span class="o">=</span> <span class="n">unicode</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">nc</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">ref_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+            <span class="n">nc</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InvalidNetCDFFile</span><span class="p">(</span><span class="n">ref_path</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">InvalidNetCDFFile</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span>
         <span class="c1"># Check required global attributes exist</span>
         <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">REQUIRED_ATTRIBUTES</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">attribute</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">():</span>
-                <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">ref_path</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">ref</span><span class="p">)</span>
         <span class="c1"># Check time variable exists</span>
         <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="n">NoNetCDFVariable</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">ref_path</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">NoNetCDFVariable</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">ref</span><span class="p">)</span>
         <span class="c1"># Check required time attributes exist</span>
         <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">REQUIRED_TIME_ATTRIBUTES</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">attribute</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">():</span>
-                <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">ref_path</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
         <span class="c1"># Get realm</span>
         <span class="k">if</span> <span class="n">nc</span><span class="o">.</span><span class="n">project_id</span> <span class="o">==</span> <span class="s1">&#39;CORDEX&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">realm</span> <span class="o">=</span> <span class="s1">&#39;atmos&#39;</span>
@@ -216,7 +228,7 @@
         <span class="c1"># Get frequency</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">frequency</span>
         <span class="c1"># Get time units (i.e., days since ...)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tunits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">control_time_units</span><span class="p">(</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">tunits_default</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tunits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">control_time_units</span><span class="p">(</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="n">tunits_default</span><span class="p">)</span>
         <span class="c1"># Convert time units into frequency units (i.e., months/year/hours since ...)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">funits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_time_units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tunits</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">)</span>
         <span class="c1"># Get calendar</span>
@@ -224,10 +236,10 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">calendar</span> <span class="o">==</span> <span class="s1">&#39;standard&#39;</span> <span class="ow">and</span> <span class="n">nc</span><span class="o">.</span><span class="n">model_id</span> <span class="o">==</span> <span class="s1">&#39;CMCC-CM&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">calendar</span> <span class="o">=</span> <span class="s1">&#39;proleptic_gregorian&#39;</span>
         <span class="c1"># Get boolean on instantaneous time axis</span>
-        <span class="k">if</span> <span class="s1">&#39;cell_methods&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">ctx</span><span class="o">.</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span class="s1">&#39;cell_methods&#39;</span><span class="p">,</span> <span class="n">ref_path</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">variable</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;cell_methods&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span class="s1">&#39;cell_methods&#39;</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">variable</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_instant</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="s1">&#39;point&#39;</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">ctx</span><span class="o">.</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">cell_methods</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+        <span class="k">if</span> <span class="s1">&#39;point&#39;</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">cell_methods</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">is_instant</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="c1"># Get boolean on time boundaries</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">has_bounds</span> <span class="o">=</span> <span class="kc">False</span>
@@ -250,11 +262,11 @@
         <span class="n">units</span> <span class="o">=</span> <span class="n">tunits</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
         <span class="n">units</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">unicode</span><span class="p">(</span><span class="s1">&#39;days&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;-</span><span class="si">{0}</span><span class="s1">-</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;01&#39;</span><span class="p">,</span> <span class="s1">&#39;01&#39;</span><span class="p">)</span>
+            <span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;-</span><span class="si">{}</span><span class="s1">-</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;01&#39;</span><span class="p">,</span> <span class="s1">&#39;01&#39;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;-</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;01&#39;</span><span class="p">)</span>
+            <span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;-</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;01&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">tunits_default</span> <span class="ow">and</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">units</span><span class="p">)</span> <span class="o">!=</span> <span class="n">tunits_default</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Invalid time units. Replace &quot;</span><span class="si">{0}</span><span class="s1">&quot; by &quot;</span><span class="si">{1}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">units</span><span class="p">),</span> <span class="n">tunits_default</span><span class="p">))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Invalid time units. Replace &quot;</span><span class="si">{}</span><span class="s1">&quot; by &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">units</span><span class="p">),</span> <span class="n">tunits_default</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">tunits_default</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">units</span><span class="p">)</span></div>
@@ -273,11 +285,11 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;subhr&#39;</span><span class="p">:</span> <span class="s1">&#39;minutes&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;3hr&#39;</span><span class="p">:</span>   <span class="s1">&#39;hours&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;6hr&#39;</span><span class="p">:</span>   <span class="s1">&#39;hours&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;day&#39;</span><span class="p">:</span>   <span class="s1">&#39;days&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;mon&#39;</span><span class="p">:</span>   <span class="s1">&#39;months&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;yr&#39;</span><span class="p">:</span>    <span class="s1">&#39;years&#39;</span><span class="p">}</span>
+                 <span class="s1">&#39;3hr&#39;</span><span class="p">:</span> <span class="s1">&#39;hours&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;6hr&#39;</span><span class="p">:</span> <span class="s1">&#39;hours&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="s1">&#39;days&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;mon&#39;</span><span class="p">:</span> <span class="s1">&#39;months&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;yr&#39;</span><span class="p">:</span> <span class="s1">&#39;years&#39;</span><span class="p">}</span>
         <span class="k">return</span> <span class="n">tunits</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;days&#39;</span><span class="p">,</span> <span class="n">units</span><span class="p">[</span><span class="n">frequency</span><span class="p">])</span></div></div>
 
 
@@ -301,6 +313,20 @@
         <span class="k">return</span> <span class="p">(</span><span class="n">timestamp</span> <span class="o">+</span> <span class="s1">&#39;01&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">timestamp</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="truncated_timestamp"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.truncated_timestamp">[docs]</a><span class="k">def</span> <span class="nf">truncated_timestamp</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns proper digits depending on datetime object.</span>
+
+<span class="sd">    :param datetime.datetime date: Datetime or phony datetime object</span>
+<span class="sd">    :param int length: The timestamp length expected</span>
+<span class="sd">    :returns: The corresponding timestamp</span>
+<span class="sd">    :rtype: *str*</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">date2str</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">iso_format</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">timestamp</span><span class="p">[:</span><span class="n">length</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="num2date"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.num2date">[docs]</a><span class="k">def</span> <span class="nf">num2date</span><span class="p">(</span><span class="n">num_axis</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span class="n">calendar</span><span class="p">):</span>
@@ -488,13 +514,13 @@
 <span class="sd">    &lt;https://docs.python.org/2/library/re.html&gt;`_).</span>
 <span class="sd">    :param str frequency: The time frequency</span>
 <span class="sd">    :param str calendar: The NetCDF calendar attribute</span>
-<span class="sd">    :returns: ``datetime`` instances for start and end dates from the filename</span>
+<span class="sd">    :returns: Start and end dates from the filename</span>
 <span class="sd">    :rtype: *netcdftime.datetime*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">dates</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">date_as_since</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;start_period&#39;</span><span class="p">,</span> <span class="s1">&#39;end_period&#39;</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;period_start&#39;</span><span class="p">,</span> <span class="s1">&#39;period_end&#39;</span><span class="p">]:</span>
         <span class="n">date</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">groupdict</span><span class="p">()[</span><span class="n">key</span><span class="p">]</span>
         <span class="n">digits</span> <span class="o">=</span> <span class="n">untruncated_timestamp</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
         <span class="c1"># Convert string digits to %Y-%m-%d %H:%M:%S format</span>
@@ -533,7 +559,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">nc</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">ffp</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InvalidNetCDFFile</span><span class="p">(</span><span class="n">ffp</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">InvalidNetCDFFile</span><span class="p">(</span><span class="n">ffp</span><span class="p">)</span>
     <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="k">raise</span> <span class="n">NoNetCDFVariable</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">ffp</span><span class="p">)</span>
     <span class="n">first</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
@@ -555,7 +581,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">nc</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">ffp</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InvalidNetCDFFile</span><span class="p">(</span><span class="n">ffp</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">InvalidNetCDFFile</span><span class="p">(</span><span class="n">ffp</span><span class="p">)</span>
     <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="k">raise</span> <span class="n">NoNetCDFVariable</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">ffp</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
@@ -580,11 +606,11 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">inc</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;subhr&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="s1">&#39;minutes&#39;</span><span class="p">],</span>
-           <span class="s1">&#39;3hr&#39;</span><span class="p">:</span>   <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;hours&#39;</span><span class="p">],</span>
-           <span class="s1">&#39;6hr&#39;</span><span class="p">:</span>   <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;hours&#39;</span><span class="p">],</span>
-           <span class="s1">&#39;day&#39;</span><span class="p">:</span>   <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;days&#39;</span><span class="p">],</span>
-           <span class="s1">&#39;mon&#39;</span><span class="p">:</span>   <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;months&#39;</span><span class="p">],</span>
-           <span class="s1">&#39;yr&#39;</span><span class="p">:</span>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;years&#39;</span><span class="p">]}</span>
+           <span class="s1">&#39;3hr&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;hours&#39;</span><span class="p">],</span>
+           <span class="s1">&#39;6hr&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;hours&#39;</span><span class="p">],</span>
+           <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;days&#39;</span><span class="p">],</span>
+           <span class="s1">&#39;mon&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;months&#39;</span><span class="p">],</span>
+           <span class="s1">&#39;yr&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;years&#39;</span><span class="p">]}</span>
     <span class="k">return</span> <span class="n">inc</span><span class="p">[</span><span class="n">frequency</span><span class="p">]</span></div>
 
 
@@ -607,7 +633,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts (a list of) dates in format: %Y%m%d %H:%M:%s.</span>
 
-<span class="sd">    :param list dates: A list of datetime or phony datetime objects</span>
+<span class="sd">    :param netcdftime.datetime/list dates: A list of datetime or phony datetime objects</span>
 <span class="sd">    :param boolean iso_format: ISO format date if True</span>
 <span class="sd">    :returns: The corresponding formatted strings</span>
 <span class="sd">    :rtype: *list* or *str*</span>
@@ -665,7 +691,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts (a list of) formatted string %Y%m%d%H:%M:%s into corresponding datetime objects.</span>
 
-<span class="sd">    :param list dates: A list of formatted dated</span>
+<span class="sd">    :param list/str dates: A list of formatted dated</span>
 <span class="sd">    :param boolean iso_format: ISO format date if True</span>
 <span class="sd">    :returns: The corresponding datetime objects</span>
 <span class="sd">    :rtype: *list* or *netcdftime.datetime*</span>
@@ -688,25 +714,28 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">iso_format</span><span class="p">:</span>
-        <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^(?P&lt;year&gt;\d</span><span class="si">{4}</span><span class="s1">)-&#39;</span>
-                             <span class="s1">r&#39;(?P&lt;month&gt;\d</span><span class="si">{2}</span><span class="s1">)-&#39;</span>
-                             <span class="s1">r&#39;(?P&lt;day&gt;\d</span><span class="si">{2}</span><span class="s1">)T&#39;</span>
-                             <span class="s1">r&#39;(?P&lt;hour&gt;\d</span><span class="si">{2}</span><span class="s1">):&#39;</span>
-                             <span class="s1">r&#39;(?P&lt;minute&gt;\d</span><span class="si">{2}</span><span class="s1">):&#39;</span>
-                             <span class="s1">r&#39;(?P&lt;second&gt;\d</span><span class="si">{2}</span><span class="s1">)$&#39;</span><span class="p">)</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^(?P&lt;year&gt;\d</span><span class="si">{}</span><span class="s1">)-&#39;</span>
+                             <span class="sa">r</span><span class="s1">&#39;(?P&lt;month&gt;\d</span><span class="si">{2}</span><span class="s1">)-&#39;</span>
+                             <span class="sa">r</span><span class="s1">&#39;(?P&lt;day&gt;\d</span><span class="si">{2}</span><span class="s1">)T&#39;</span>
+                             <span class="sa">r</span><span class="s1">&#39;(?P&lt;hour&gt;\d</span><span class="si">{2}</span><span class="s1">):&#39;</span>
+                             <span class="sa">r</span><span class="s1">&#39;(?P&lt;minute&gt;\d</span><span class="si">{2}</span><span class="s1">):&#39;</span>
+                             <span class="sa">r</span><span class="s1">&#39;(?P&lt;second&gt;\d</span><span class="si">{2}</span><span class="s1">)$&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;^(?P&lt;year&gt;\d</span><span class="si">{4}</span><span class="s1">)&#39;</span>
-                             <span class="s1">r&#39;(?P&lt;month&gt;\d</span><span class="si">{2}</span><span class="s1">)&#39;</span>
-                             <span class="s1">r&#39;(?P&lt;day&gt;\d</span><span class="si">{2}</span><span class="s1">)&#39;</span>
-                             <span class="s1">r&#39;(?P&lt;hour&gt;\d</span><span class="si">{2}</span><span class="s1">)&#39;</span>
-                             <span class="s1">r&#39;(?P&lt;minute&gt;\d</span><span class="si">{2}</span><span class="s1">)&#39;</span>
-                             <span class="s1">r&#39;(?P&lt;second&gt;\d</span><span class="si">{2}</span><span class="s1">)$&#39;</span><span class="p">)</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^(?P&lt;year&gt;\d</span><span class="si">{4}</span><span class="s1">)&#39;</span>
+                             <span class="sa">r</span><span class="s1">&#39;(?P&lt;month&gt;\d</span><span class="si">{2}</span><span class="s1">)&#39;</span>
+                             <span class="sa">r</span><span class="s1">&#39;(?P&lt;day&gt;\d</span><span class="si">{2}</span><span class="s1">)&#39;</span>
+                             <span class="sa">r</span><span class="s1">&#39;(?P&lt;hour&gt;\d</span><span class="si">{2}</span><span class="s1">)&#39;</span>
+                             <span class="sa">r</span><span class="s1">&#39;(?P&lt;minute&gt;\d</span><span class="si">{2}</span><span class="s1">)&#39;</span>
+                             <span class="sa">r</span><span class="s1">&#39;(?P&lt;second&gt;\d</span><span class="si">{2}</span><span class="s1">)$&#39;</span><span class="p">)</span>
     <span class="n">attr</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">))</span><span class="o">.</span><span class="n">groupdict</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
         <span class="n">attr</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">datetime</span><span class="p">(</span><span class="o">**</span><span class="n">attr</span><span class="p">)</span></div>
 </pre></div>
 
+           </div>
+           <div class="articleComments">
+            
            </div>
           </div>
           <footer>
@@ -738,10 +767,11 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'3.9.6',
+            VERSION:'3.4.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="../../../static/jquery.js"></script>

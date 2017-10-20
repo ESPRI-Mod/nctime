@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Frequently asked questions &mdash; nctime 3.4.0 documentation</title>
+  <title>Check time series continuity &mdash; nctime 3.4.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="nctime 3.4.0 documentation" href="index.html"/>
-        <link rel="next" title="Credits" href="credits.html"/>
-        <link rel="prev" title="Check time axis squareness" href="axis.html"/> 
+        <link rel="next" title="Check time axis squareness" href="axis.html"/>
+        <link rel="prev" title="Generic usage" href="usage.html"/> 
 
   
   <script src="static/js/modernizr.min.js"></script>
@@ -94,9 +94,15 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Generic usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="overlap.html">Check time series continuity</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Check time series continuity</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#detects-overlaps-or-time-gaps">Detects overlaps or time gaps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#remove-overlapping-files">Remove overlapping files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#remove-full-overlapping-files-only">Remove full overlapping files only</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#exit-status">Exit status</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="axis.html">Check time axis squareness</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="credits.html">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="log.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="autodoc.html">Code documentation</a></li>
@@ -144,13 +150,13 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Frequently asked questions</li>
+      <li>Check time series continuity</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="sources/faq.rst.txt" rel="nofollow"> View page source</a>
+            <a href="sources/overlap.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -163,8 +169,56 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="frequently-asked-questions">
-<span id="faq"></span><h1>Frequently asked questions<a class="headerlink" href="#frequently-asked-questions" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="check-time-series-continuity">
+<span id="overlap"></span><h1>Check time series continuity<a class="headerlink" href="#check-time-series-continuity" title="Permalink to this headline">¶</a></h1>
+<p>To produce smaller files, the NetCDF files are splitted over the time period. Consequently, the different archives
+designs include the period dates into the filename. This scheme of chunked files in projects is not fixed and depends
+on several parameters (the institute, the model, the time frequency, etc.). These different schemes lead to unnecessary
+overlapping files with a more complex folder reading and wasting disk space. In addition, errors in the data production
+or publication workflows can lead to broken time series.</p>
+<p><code class="docutils literal"><span class="pre">nctime</span> <span class="pre">overlap</span></code> is designed to easily highlight broken time series or chunked NetCDF files
+producing overlaps in a time series. It is able to delete all chunked overlapping files in your variable
+directories in order to save disk space.</p>
+<div class="section" id="detects-overlaps-or-time-gaps">
+<h2>Detects overlaps or time gaps<a class="headerlink" href="#detects-overlaps-or-time-gaps" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime overlap --project PROJECT_ID /PATH/TO/SCAN/
+</pre></div>
+</div>
+</div>
+<div class="section" id="remove-overlapping-files">
+<h2>Remove overlapping files<a class="headerlink" href="#remove-overlapping-files" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime overlap --project PROJECT_ID /PATH/TO/SCAN/ --resolve
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">We highly recommend to activate <code class="docutils literal"><span class="pre">--resolve</span></code> after a first dry-checking. This will potentially
+remove and/or rename files. Be careful to activate <code class="docutils literal"><span class="pre">--resolve</span></code> when you are sure about errors.</p>
+</div>
+</div>
+<div class="section" id="remove-full-overlapping-files-only">
+<h2>Remove full overlapping files only<a class="headerlink" href="#remove-full-overlapping-files-only" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime overlap --project PROJECT_ID /PATH/TO/SCAN/ --resolve --full-overlap-only
+</pre></div>
+</div>
+</div>
+<div class="section" id="exit-status">
+<h2>Exit status<a class="headerlink" href="#exit-status" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="first docutils">
+<dt>Status = 0</dt>
+<dd>A shorted path have been found among the time series. Overlaps resolved if exists.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Status = 1</dt>
+<dd>Time series is broken.</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
 </div>
 
 
@@ -177,10 +231,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="credits.html" class="btn btn-neutral float-right" title="Credits" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="axis.html" class="btn btn-neutral float-right" title="Check time axis squareness" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="axis.html" class="btn btn-neutral" title="Check time axis squareness" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="usage.html" class="btn btn-neutral" title="Generic usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -1,0 +1,367 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Check time axis squareness &mdash; nctime 3.4.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="nctime 3.4.0 documentation" href="index.html"/>
+        <link rel="next" title="Frequently asked questions" href="faq.html"/>
+        <link rel="prev" title="Check time series continuity" href="overlap.html"/> 
+
+  
+  <script src="static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> nctime
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Generic usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overlap.html">Check time series continuity</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Check time axis squareness</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#rebuilt-and-check-time-axis">Rebuilt and check time axis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#rewrite-a-wrong-time-axis">Rewrite a wrong time axis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#force-time-axis-rewriting">Force time axis rewriting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#save-diagnostic-into-an-sql-database">Save diagnostic into an SQL database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#time-axis-status">Time axis status</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#exit-status">Exit status</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="credits.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc.html">Code documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">nctime</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Check time axis squareness</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="sources/axis.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="check-time-axis-squareness">
+<span id="axis"></span><h1>Check time axis squareness<a class="headerlink" href="#check-time-axis-squareness" title="Permalink to this headline">¶</a></h1>
+<p>Time is a key dimension from NetCDF files. Unfortunately, the time axis is often mistaken in files from coupled climate models and leads to flawed studies or
+unused data. Consequently, these files cannot be used or, even worse, produced erroneous results, due to problems in the
+time axis description.</p>
+<blockquote>
+<div>Time axis status returned:<a href="#id1"><span class="problematic" id="id2">|</span></a>n
+000: Unmodified time axis,|n
+001: Corrected time axis because wrong time steps,|n
+002: Corrected time axis because of changing time units,|n
+003: Corrected time axis because of inconsistency between last date of time axis and end date of filename
+period (e.g., wrong time axis length),|n
+004: Corrected time axis deleting time boundaries for instant time,|n
+005: Ignored averaged time axis without time boundaries,|n
+006: Corrected time bounds because wrong time steps.|n|n</div></blockquote>
+<div class="section" id="rebuilt-and-check-time-axis">
+<h2>Rebuilt and check time axis<a class="headerlink" href="#rebuilt-and-check-time-axis" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis --project PROJECT_ID /PATH/TO/SCAN/
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">To rebuild a proper time axis, the dates from filename are expected to set the first time boundary and
+not the middle of the time interval. This is always the case for the instantaneous axis or frequencies
+greater than the daily frequency. Consequently, the 3-6 hourly files with an averaged time axis requires a
+date time correction.</p>
+</div>
+</div>
+<div class="section" id="rewrite-a-wrong-time-axis">
+<h2>Rewrite a wrong time axis<a class="headerlink" href="#rewrite-a-wrong-time-axis" title="Permalink to this headline">¶</a></h2>
+<p>It displays the same information as above but also modify the input files if necessary. In such a case, the
+new checksum is computed automatically.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --write
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">We highly recommend to activate <code class="docutils literal"><span class="pre">--write</span></code> after a first dry-checking. This will definitely modify
+your input files. Be careful to activate <code class="docutils literal"><span class="pre">--write</span></code> when you are sure about time errors.</p>
+</div>
+</div>
+<div class="section" id="force-time-axis-rewriting">
+<h2>Force time axis rewriting<a class="headerlink" href="#force-time-axis-rewriting" title="Permalink to this headline">¶</a></h2>
+<p>Anyway, you can force to overwrite time axis (the checksum is automatically computed again).</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --force
+</pre></div>
+</div>
+</div>
+<div class="section" id="save-diagnostic-into-an-sql-database">
+<h2>Save diagnostic into an SQL database<a class="headerlink" href="#save-diagnostic-into-an-sql-database" title="Permalink to this headline">¶</a></h2>
+<p>When checking a large amount of file, it could be useful to serialize and record the checking results.
+<code class="docutils literal"><span class="pre">nctime</span> <span class="pre">axis</span></code> can store the time axis status properties into an SQLite database.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --db
+$&gt; nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --db DB_FILE
+$&gt; sqlite3 ./timeaxis.db
+<span class="nv">$sqlite</span>&gt; .schema
+CREATE TABLE time_axis
+            <span class="o">(</span>id INTEGER PRIMARY KEY,
+            project TEXT,
+            realm TEXT,
+            frequency TEXT,
+            freq_units TEXT,
+            variable TEXT,
+            filename TEXT,
+            start TEXT,
+            end TEXT,
+            last TEXT,
+            length INT,
+            file_units TEXT,
+            status TEXT,
+            file_ref TEXT,
+            ref_units TEXT,
+            calendar TEXT,
+            is_instant INT,
+            has_bounds INT,
+            new_checksum TEXT,
+            full_path TEXT,
+            creation_date TEXT<span class="o">)</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The database path is optional. Default is <code class="docutils literal"><span class="pre">CWD/timeaxis.db</span></code>.</p>
+</div>
+</div>
+<div class="section" id="time-axis-status">
+<h2>Time axis status<a class="headerlink" href="#time-axis-status" title="Permalink to this headline">¶</a></h2>
+<p>Time axis error codes:</p>
+<blockquote>
+<div><ul class="simple">
+<li>000: Time axis seems OK</li>
+<li>001: Mistaken time axis over one or several time steps</li>
+<li>002: Time units must be unchanged for the same dataset</li>
+<li>003: Last timestamp differs from end timestamp of filename</li>
+<li>004: An instantaneous time axis should not embed time boundaries</li>
+<li>005: An averaged time axis should embed time boundaries</li>
+<li>006: Mistaken time bounds over one or several time steps</li>
+<li>007: Calendar must be unchanged for the same dataset</li>
+<li>008: Last date differs from end date of filename</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="exit-status">
+<h2>Exit status<a class="headerlink" href="#exit-status" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="first docutils">
+<dt>Status = 0</dt>
+<dd>All the files have been successfully scanned and the time axis seems correct or have been corrected.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Status = 1</dt>
+<dd>Some time axis contains remains and should be manually corrected.</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="faq.html" class="btn btn-neutral float-right" title="Frequently asked questions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="overlap.html" class="btn btn-neutral" title="Check time series continuity" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Levavasseur, G..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'3.4.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="static/jquery.js"></script>
+      <script type="text/javascript" src="static/underscore.js"></script>
+      <script type="text/javascript" src="static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

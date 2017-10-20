@@ -8,9 +8,11 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.axis.main &mdash; nctime 3.9.6 documentation</title>
+  <title>nctime.axis.main &mdash; nctime 3.4.0 documentation</title>
   
 
+  
+  
   
   
 
@@ -30,7 +32,10 @@
   
 
   
-    <link rel="top" title="nctime 3.9.6 documentation" href="../../../index.html"/>
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="nctime 3.4.0 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -40,6 +45,7 @@
 
 <body class="wy-body-for-nav" role="document">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -59,7 +65,7 @@
             
             
               <div class="version">
-                3.9
+                3.4
               </div>
             
           
@@ -80,11 +86,15 @@
           
             
             
-                <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../synopsis.html">Synopsis</a></li>
+              
+            
+            
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage and tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Generic usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overlap.html">Check time series continuity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../axis.html">Check time axis squareness</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently asked questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../credits.html">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../log.html">Changelog</a></li>
@@ -101,8 +111,10 @@
 
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../../../index.html">nctime</a>
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">nctime</a>
+        
       </nav>
 
 
@@ -115,19 +127,36 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../../../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="../../index.html">Module code</a> &raquo;</li>
-      
-    <li>nctime.axis.main</li>
+        
+      <li>nctime.axis.main</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
+            
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -146,102 +175,18 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Pool</span>
-<span class="kn">from</span> <span class="nn">textwrap</span> <span class="k">import</span> <span class="n">fill</span>
+<span class="kn">from</span> <span class="nn">netcdftime</span> <span class="k">import</span> <span class="n">datetime</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="kn">import</span> <span class="nn">db</span>
 <span class="kn">from</span> <span class="nn">constants</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">db</span>
+<span class="kn">from</span> <span class="nn">context</span> <span class="k">import</span> <span class="n">ProcessingContext</span>
 <span class="kn">from</span> <span class="nn">handler</span> <span class="k">import</span> <span class="n">File</span>
-<span class="kn">from</span> <span class="nn">nctime.utils</span> <span class="k">import</span> <span class="n">time</span><span class="p">,</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">nctime.utils.misc</span> <span class="k">import</span> <span class="n">trunc</span>
+<span class="kn">from</span> <span class="nn">nctime.utils.time</span> <span class="k">import</span> <span class="n">time_inc</span>
 
 
-<div class="viewcode-block" id="ProcessingContext"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.main.ProcessingContext">[docs]</a><span class="k">class</span> <span class="nc">ProcessingContext</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Encapsulates the following processing context/information for main process:</span>
-
-<span class="sd">    +-----------------------+-------------+---------------------------------+</span>
-<span class="sd">    | Attribute             | Type        | Description                     |</span>
-<span class="sd">    +=======================+=============+=================================+</span>
-<span class="sd">    | *self*.directory      | *str*       | Variable to scan                |</span>
-<span class="sd">    +-----------------------+-------------+---------------------------------+</span>
-<span class="sd">    | *self*.write          | *boolean*   | True if write mode              |</span>
-<span class="sd">    +-----------------------+-------------+---------------------------------+</span>
-<span class="sd">    | *self*.force          | *boolean*   | True if force writing           |</span>
-<span class="sd">    +-----------------------+-------------+---------------------------------+</span>
-<span class="sd">    | *self*.verbose        | *boolean*   | True if verbose mode            |</span>
-<span class="sd">    +-----------------------+-------------+---------------------------------+</span>
-<span class="sd">    | *self*.project        | *str*       | MIP project                     |</span>
-<span class="sd">    +-----------------------+-------------+---------------------------------+</span>
-<span class="sd">    | *self*.db             | *str*       | Database path                   |</span>
-<span class="sd">    +-----------------------+-------------+---------------------------------+</span>
-<span class="sd">    | *self*.threads        | *int*       | Maximal threads number          |</span>
-<span class="sd">    +-----------------------+-------------+---------------------------------+</span>
-<span class="sd">    | *self*.checksum_type  | *str*       | The checksum type               |</span>
-<span class="sd">    +-----------------------+-------------+---------------------------------+</span>
-<span class="sd">    | *self*.pattern        | *re object* | Filename regex pattern          |</span>
-<span class="sd">    +-----------------------+-------------+---------------------------------+</span>
-<span class="sd">    | *self*.tunits_default | *str*       | Default time units              |</span>
-<span class="sd">    +-----------------------+-------------+---------------------------------+</span>
-<span class="sd">    | *self*.ref            | *str*       | First filename as reference     |</span>
-<span class="sd">    +-----------------------+-------------+---------------------------------+</span>
-<span class="sd">    | *self*.variable       | *str*       | MIP variable                    |</span>
-<span class="sd">    +-----------------------+-------------+---------------------------------+</span>
-
-<span class="sd">    :param *ArgumentParser* args: Parsed command-line arguments</span>
-<span class="sd">    :returns: The processing context</span>
-<span class="sd">    :rtype: *ProcessingContext*</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">directory</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">directory</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">write</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">write</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">force</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">force</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">v</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">project</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">project</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">path_switcher</span><span class="p">(</span><span class="s1">&#39;db&#39;</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">/</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;timeaxis.db&#39;</span><span class="p">))</span>
-        <span class="n">cfg</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">config_parse</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">threads</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">max_threads</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">threads</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">cfg</span><span class="o">.</span><span class="n">has_option</span><span class="p">(</span><span class="s1">&#39;DEFAULT&#39;</span><span class="p">,</span> <span class="s1">&#39;max_threads&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;DEFAULT&#39;</span><span class="p">,</span> <span class="s1">&#39;max_threads&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">threads</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;DEFAULT&#39;</span><span class="p">,</span> <span class="s1">&#39;max_threads&#39;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">threads</span> <span class="o">=</span> <span class="n">MAX_THREADS_DEFAULT</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">checksum_type</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;DEFAULT&#39;</span><span class="p">,</span> <span class="s1">&#39;checksum_type&#39;</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">translate_filename_format</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">cfg</span><span class="o">.</span><span class="n">has_option</span><span class="p">(</span><span class="s1">&#39;time_units_default&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tunits_default</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">,</span> <span class="s1">&#39;time_units_default&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tunits_default</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_files_list</span><span class="p">()</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">variable</span> <span class="o">=</span> <span class="n">unicode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-
-<div class="viewcode-block" id="ProcessingContext.get_files_list"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.main.ProcessingContext.get_files_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_files_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Yields all files into a directory.</span>
-
-<span class="sd">        :returns: A file iterator</span>
-<span class="sd">        :rtype: *iter*</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">filename</span><span class="p">)):</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> is not a file and was skipped&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
-                <span class="k">continue</span>
-            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">test_fx</span> <span class="ow">in</span> <span class="n">filename</span> <span class="k">for</span> <span class="n">test_fx</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;_fx_&#39;</span><span class="p">,</span> <span class="s1">&#39;_fixed_&#39;</span><span class="p">,</span> <span class="s1">&#39;_fx.&#39;</span><span class="p">,</span> <span class="s1">&#39;_fixed.&#39;</span><span class="p">]):</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;STOP because &quot;fixed&quot; frequency has no time axis&#39;</span><span class="p">)</span>
-                <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> has invalid filename and was skipped&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
-                <span class="k">continue</span>
-            <span class="k">yield</span> <span class="n">filename</span></div></div>
-
-
-<div class="viewcode-block" id="process"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.main.process">[docs]</a><span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="n">inputs</span><span class="p">):</span>
+<div class="viewcode-block" id="process"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.main.process">[docs]</a><span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="n">collector_input</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    time_axis_processing(inputs)</span>
 
@@ -256,213 +201,166 @@
 <span class="sd">     * Computes the new checksum if modified,</span>
 <span class="sd">     * Traceback the status.</span>
 
-<span class="sd">    :param tuple inputs: A tuple with the filename, the processing context and the time initialization</span>
+<span class="sd">    :param tuple collector_input: A tuple with the file path and the processing context</span>
 <span class="sd">    :returns: The updated file handler instance</span>
 <span class="sd">    :rtype: *nctime.axis.handler.File*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Extract processing context and time initialization from input tuple</span>
-    <span class="n">filename</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">init</span> <span class="o">=</span> <span class="n">inputs</span>
-
-    <span class="c1"># Instantiate file handle from input tuple</span>
-    <span class="n">handler</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span>
-                   <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
-                   <span class="n">has_bounds</span><span class="o">=</span><span class="n">init</span><span class="o">.</span><span class="n">has_bounds</span><span class="p">)</span>
-
-    <span class="c1"># Extract start and end dates from filename</span>
-    <span class="n">start</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">get_start_end_dates</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span>
-                                              <span class="n">frequency</span><span class="o">=</span><span class="n">init</span><span class="o">.</span><span class="n">frequency</span><span class="p">,</span>
-                                              <span class="n">units</span><span class="o">=</span><span class="n">init</span><span class="o">.</span><span class="n">funits</span><span class="p">,</span>
-                                              <span class="n">calendar</span><span class="o">=</span><span class="n">init</span><span class="o">.</span><span class="n">calendar</span><span class="p">)</span>
-
-    <span class="c1"># Rebuild a theoretical time axis with high precision</span>
-    <span class="n">handler</span><span class="o">.</span><span class="n">time_axis_rebuilt</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">build_time_axis</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
-                                                        <span class="n">inc</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time_inc</span><span class="p">(</span><span class="n">init</span><span class="o">.</span><span class="n">frequency</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
-                                                        <span class="n">input_units</span><span class="o">=</span><span class="n">init</span><span class="o">.</span><span class="n">funits</span><span class="p">,</span>
-                                                        <span class="n">output_units</span><span class="o">=</span><span class="n">init</span><span class="o">.</span><span class="n">tunits</span><span class="p">,</span>
-                                                        <span class="n">calendar</span><span class="o">=</span><span class="n">init</span><span class="o">.</span><span class="n">calendar</span><span class="p">,</span>
-                                                        <span class="n">is_instant</span><span class="o">=</span><span class="n">init</span><span class="o">.</span><span class="n">is_instant</span><span class="p">)</span>
-
-    <span class="c1"># Check consistency between last time date and end date from filename</span>
-    <span class="k">if</span> <span class="n">handler</span><span class="o">.</span><span class="n">last_date</span> <span class="o">!=</span> <span class="n">handler</span><span class="o">.</span><span class="n">end_date</span><span class="p">:</span>
-        <span class="c1"># Rebuild a theoretical time axis with low precision</span>
-        <span class="n">handler</span><span class="o">.</span><span class="n">time_axis_rebuilt</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">build_time_axis</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">trunc</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
-                                                            <span class="n">inc</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time_inc</span><span class="p">(</span><span class="n">init</span><span class="o">.</span><span class="n">frequency</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
-                                                            <span class="n">input_units</span><span class="o">=</span><span class="n">init</span><span class="o">.</span><span class="n">funits</span><span class="p">,</span>
-                                                            <span class="n">output_units</span><span class="o">=</span><span class="n">init</span><span class="o">.</span><span class="n">tunits</span><span class="p">,</span>
-                                                            <span class="n">calendar</span><span class="o">=</span><span class="n">init</span><span class="o">.</span><span class="n">calendar</span><span class="p">,</span>
-                                                            <span class="n">is_instant</span><span class="o">=</span><span class="n">init</span><span class="o">.</span><span class="n">is_instant</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">handler</span><span class="o">.</span><span class="n">last_date</span> <span class="o">!=</span> <span class="n">handler</span><span class="o">.</span><span class="n">end_date</span><span class="p">:</span>
-            <span class="n">handler</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;003&#39;</span><span class="p">)</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> - 003 - Last time step differs from end date from filename&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-                <span class="n">axe</span> <span class="o">=</span> <span class="n">fill</span><span class="p">(</span><span class="s1">&#39; | &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">handler</span><span class="o">.</span><span class="n">time_axis</span><span class="o">.</span><span class="n">tolist</span><span class="p">())),</span> <span class="n">width</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> - Time axis:</span><span class="se">\n</span><span class="s1"> </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">axe</span><span class="p">))</span>
-                <span class="n">axe</span> <span class="o">=</span> <span class="n">fill</span><span class="p">(</span><span class="s1">&#39; | &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">handler</span><span class="o">.</span><span class="n">time_axis_rebuilt</span><span class="o">.</span><span class="n">tolist</span><span class="p">())),</span> <span class="n">width</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> - Theoretical axis:</span><span class="se">\n</span><span class="s1"> </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">axe</span><span class="p">))</span>
-            <span class="k">return</span> <span class="n">handler</span>
-
-    <span class="c1"># Check consistency between instant time and time boundaries</span>
-    <span class="k">if</span> <span class="n">init</span><span class="o">.</span><span class="n">is_instant</span> <span class="ow">and</span> <span class="n">init</span><span class="o">.</span><span class="n">has_bounds</span><span class="p">:</span>
-        <span class="n">handler</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;004&#39;</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> - 004 - An instantaneous time axis should not embed time boundaries&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
-
-    <span class="c1"># Check consistency between averaged time and time boundaries</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">init</span><span class="o">.</span><span class="n">is_instant</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">init</span><span class="o">.</span><span class="n">has_bounds</span><span class="p">:</span>
-        <span class="n">handler</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;005&#39;</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> - 005 - An averaged time axis should embed time boundaries&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
-
-    <span class="c1"># Check time axis squareness</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">time_axis_rebuilt</span><span class="p">,</span> <span class="n">handler</span><span class="o">.</span><span class="n">time_axis</span><span class="p">):</span>
-        <span class="n">handler</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;001&#39;</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> - 001 - Mistaken time axis over one or several time steps&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">handler</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;000&#39;</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> - Time axis seems OK&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
-
-    <span class="c1"># Check time boundaries squareness if needed</span>
-    <span class="k">if</span> <span class="n">init</span><span class="o">.</span><span class="n">has_bounds</span><span class="p">:</span>
-        <span class="n">handler</span><span class="o">.</span><span class="n">time_bounds_rebuilt</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">build_time_bounds</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">trunc</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
-                                                                <span class="n">inc</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time_inc</span><span class="p">(</span><span class="n">init</span><span class="o">.</span><span class="n">frequency</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
-                                                                <span class="n">input_units</span><span class="o">=</span><span class="n">init</span><span class="o">.</span><span class="n">funits</span><span class="p">,</span>
-                                                                <span class="n">output_units</span><span class="o">=</span><span class="n">init</span><span class="o">.</span><span class="n">tunits</span><span class="p">,</span>
-                                                                <span class="n">calendar</span><span class="o">=</span><span class="n">init</span><span class="o">.</span><span class="n">calendar</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">time_bounds_rebuilt</span><span class="p">,</span> <span class="n">handler</span><span class="o">.</span><span class="n">time_bounds</span><span class="p">):</span>
-            <span class="n">handler</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;006&#39;</span><span class="p">)</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> - 006 - Mistaken time bounds over one or several time steps&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
-
-    <span class="c1"># Check consistency between time units</span>
-    <span class="k">if</span> <span class="n">init</span><span class="o">.</span><span class="n">tunits</span> <span class="o">!=</span> <span class="n">handler</span><span class="o">.</span><span class="n">time_units</span><span class="p">:</span>
-        <span class="n">handler</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;002&#39;</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> - 002 - Time units must be unchanged for the same dataset.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
-
-    <span class="c1"># Check consistency between time units</span>
-    <span class="k">if</span> <span class="n">init</span><span class="o">.</span><span class="n">calendar</span> <span class="o">!=</span> <span class="n">handler</span><span class="o">.</span><span class="n">calendar</span><span class="p">:</span>
-        <span class="n">handler</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;007&#39;</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> - 007 - Calendar must be unchanged for the same dataset.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
-
-    <span class="c1"># Rewrite time axis depending on checking</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">write</span> <span class="ow">or</span> <span class="n">ctx</span><span class="o">.</span><span class="n">force</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;004&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">status</span><span class="p">)):</span>
-        <span class="c1"># Delete time bounds and bounds attribute from file if write of force mode</span>
-        <span class="n">handler</span><span class="o">.</span><span class="n">nc_var_delete</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="s1">&#39;time_bnds&#39;</span><span class="p">)</span>
-        <span class="n">handler</span><span class="o">.</span><span class="n">nc_att_delete</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;bounds&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
-
-    <span class="c1"># Rewrite time axis depending on checking</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">write</span> <span class="ow">and</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;001&#39;</span><span class="p">,</span> <span class="s1">&#39;002&#39;</span><span class="p">,</span> <span class="s1">&#39;006&#39;</span><span class="p">,</span> <span class="s1">&#39;007&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">status</span><span class="p">)))</span> <span class="ow">or</span> <span class="n">ctx</span><span class="o">.</span><span class="n">force</span><span class="p">:</span>
-        <span class="n">handler</span><span class="o">.</span><span class="n">nc_var_overwrite</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">handler</span><span class="o">.</span><span class="n">time_axis_rebuilt</span><span class="p">)</span>
-        <span class="n">handler</span><span class="o">.</span><span class="n">nc_att_overwrite</span><span class="p">(</span><span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">init</span><span class="o">.</span><span class="n">tunits</span><span class="p">)</span>
-        <span class="n">handler</span><span class="o">.</span><span class="n">nc_att_overwrite</span><span class="p">(</span><span class="s1">&#39;calendar&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">init</span><span class="o">.</span><span class="n">calendar</span><span class="p">)</span>
-        <span class="c1"># Rewrite time boundaries if needed</span>
-        <span class="k">if</span> <span class="n">init</span><span class="o">.</span><span class="n">has_bounds</span><span class="p">:</span>
-            <span class="n">handler</span><span class="o">.</span><span class="n">nc_var_overwrite</span><span class="p">(</span><span class="s1">&#39;time_bnds&#39;</span><span class="p">,</span> <span class="n">handler</span><span class="o">.</span><span class="n">time_bounds_rebuilt</span><span class="p">)</span>
-
-    <span class="c1"># Compute checksum at the end of all modifications and after closing file</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">write</span> <span class="ow">or</span> <span class="n">ctx</span><span class="o">.</span><span class="n">force</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;001&#39;</span><span class="p">,</span> <span class="s1">&#39;002&#39;</span><span class="p">,</span> <span class="s1">&#39;004&#39;</span><span class="p">,</span> <span class="s1">&#39;006&#39;</span><span class="p">,</span> <span class="s1">&#39;007&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">status</span><span class="p">)):</span>
-        <span class="n">handler</span><span class="o">.</span><span class="n">new_checksum</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">checksum</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">checksum_type</span><span class="p">)</span>
-
-    <span class="c1"># Return file status</span>
-    <span class="k">return</span> <span class="n">handler</span></div>
-
-
-<div class="viewcode-block" id="yield_inputs"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.main.yield_inputs">[docs]</a><span class="k">def</span> <span class="nf">yield_inputs</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">tinit</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Yields all files to process within tuples with the processing context and the time initialization.</span>
-
-<span class="sd">    :param nctime.axis.main.ProcessingContext ctx: The processing context</span>
-<span class="sd">    :param nctime.utils.time.TimeInit tinit: The time initialization context</span>
-<span class="sd">    :returns: Attach the processing context and the time initialization to a file processing as an iterator of tuples</span>
-<span class="sd">    :rtype: *iter*</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">ctx</span><span class="o">.</span><span class="n">get_files_list</span><span class="p">():</span>
-        <span class="k">yield</span> <span class="n">filename</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">tinit</span></div>
-
-
-<div class="viewcode-block" id="wrapper"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.main.wrapper">[docs]</a><span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">inputs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Transparent wrapper for pool map.</span>
-
-<span class="sd">    :param tuple inputs: A tuple with the file path and the processing context</span>
-<span class="sd">    :returns: The :func:`process` call</span>
-<span class="sd">    :rtype: *callable*</span>
-<span class="sd">    :raises Error: When a thread-process failed preserving its traceback</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">filename</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">inputs</span>
-
+    <span class="c1"># Deserialize inputs from collector</span>
+    <span class="n">ffp</span><span class="p">,</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">collector_input</span>
+    <span class="c1"># Block to avoid program stop if a thread fails</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">process</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="c1"># Use verbosity to raise the whole threads traceback errors</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">ctx</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> skipped</span><span class="se">\n</span><span class="si">{1}</span><span class="s1">: </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">))</span>
+        <span class="c1"># Instantiate file handler</span>
+        <span class="n">fh</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">ffp</span><span class="o">=</span><span class="n">ffp</span><span class="p">,</span> <span class="n">has_bounds</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">has_bounds</span><span class="p">)</span>
+
+        <span class="c1"># Extract start and end dates from filename</span>
+        <span class="n">start</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">get_start_end_dates</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span>
+                                             <span class="n">frequency</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">frequency</span><span class="p">,</span>
+                                             <span class="n">units</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">funits</span><span class="p">,</span>
+                                             <span class="n">calendar</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">calendar</span><span class="p">)</span>
+        <span class="c1"># Rebuild a theoretical time axis with high precision</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">time_axis_rebuilt</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">build_time_axis</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
+                                                  <span class="n">inc</span><span class="o">=</span><span class="n">time_inc</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">frequency</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                                                  <span class="n">input_units</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">funits</span><span class="p">,</span>
+                                                  <span class="n">output_units</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">tunits</span><span class="p">,</span>
+                                                  <span class="n">calendar</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">calendar</span><span class="p">,</span>
+                                                  <span class="n">is_instant</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">is_instant</span><span class="p">)</span>
+        <span class="c1"># Check consistency between last time date and end date from filename</span>
+        <span class="k">if</span> <span class="n">fh</span><span class="o">.</span><span class="n">last_timestamp</span> <span class="o">!=</span> <span class="n">fh</span><span class="o">.</span><span class="n">end_timestamp</span><span class="p">:</span>
+            <span class="c1"># Rebuild a theoretical time axis with low precision</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">time_axis_rebuilt</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">build_time_axis</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">trunc</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+                                                      <span class="n">inc</span><span class="o">=</span><span class="n">time_inc</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">frequency</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                                                      <span class="n">input_units</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">funits</span><span class="p">,</span>
+                                                      <span class="n">output_units</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">tunits</span><span class="p">,</span>
+                                                      <span class="n">calendar</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">calendar</span><span class="p">,</span>
+                                                      <span class="n">is_instant</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">is_instant</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">fh</span><span class="o">.</span><span class="n">last_timestamp</span> <span class="o">!=</span> <span class="n">fh</span><span class="o">.</span><span class="n">end_timestamp</span><span class="p">:</span>
+                <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;003&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">fh</span><span class="o">.</span><span class="n">last_date</span> <span class="o">!=</span> <span class="n">fh</span><span class="o">.</span><span class="n">end_date</span><span class="p">:</span>
+                <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;008&#39;</span><span class="p">)</span>
+        <span class="c1"># Check consistency between instant time and time boundaries</span>
+        <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">is_instant</span> <span class="ow">and</span> <span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">has_bounds</span><span class="p">:</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;004&#39;</span><span class="p">)</span>
+        <span class="c1"># Check consistency between averaged time and time boundaries</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">is_instant</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">has_bounds</span><span class="p">:</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;005&#39;</span><span class="p">)</span>
+        <span class="c1"># Check time axis squareness</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">time_axis_rebuilt</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">time_axis</span><span class="p">):</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;001&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> failed&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;000&#39;</span><span class="p">)</span>
+        <span class="c1"># Check time boundaries squareness if needed</span>
+        <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">has_bounds</span><span class="p">:</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">time_bounds_rebuilt</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">build_time_bounds</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">trunc</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+                                                          <span class="n">inc</span><span class="o">=</span><span class="n">time_inc</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">frequency</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                                                          <span class="n">input_units</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">funits</span><span class="p">,</span>
+                                                          <span class="n">output_units</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">tunits</span><span class="p">,</span>
+                                                          <span class="n">calendar</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">calendar</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">time_bounds_rebuilt</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">time_bounds</span><span class="p">):</span>
+                <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;006&#39;</span><span class="p">)</span>
+        <span class="c1"># Check consistency between time units</span>
+        <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">tunits</span> <span class="o">!=</span> <span class="n">fh</span><span class="o">.</span><span class="n">time_units</span><span class="p">:</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;002&#39;</span><span class="p">)</span>
+        <span class="c1"># Check consistency between time units</span>
+        <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">calendar</span> <span class="o">!=</span> <span class="n">fh</span><span class="o">.</span><span class="n">calendar</span><span class="p">:</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;007&#39;</span><span class="p">)</span>
+        <span class="c1"># Rename file depending on checking</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">write</span> <span class="ow">or</span> <span class="n">ctx</span><span class="o">.</span><span class="n">force</span><span class="p">)</span> <span class="ow">and</span> <span class="p">{</span><span class="s1">&#39;003&#39;</span><span class="p">}</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="p">)):</span>
+            <span class="c1"># Change filename and file full path dynamically</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">nc_file_rename</span><span class="p">(</span><span class="n">new_filename</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">end_timestamp</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">last_timestamp</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
+        <span class="c1"># Remove time boundaries depending on checking</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">write</span> <span class="ow">or</span> <span class="n">ctx</span><span class="o">.</span><span class="n">force</span><span class="p">)</span> <span class="ow">and</span> <span class="p">{</span><span class="s1">&#39;004&#39;</span><span class="p">}</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="p">)):</span>
+            <span class="c1"># Delete time bounds and bounds attribute from file if write of force mode</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">nc_var_delete</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="s1">&#39;time_bnds&#39;</span><span class="p">)</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">nc_att_delete</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;bounds&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+        <span class="c1"># Rewrite time axis depending on checking</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">write</span> <span class="ow">and</span> <span class="p">{</span><span class="s1">&#39;001&#39;</span><span class="p">,</span> <span class="s1">&#39;002&#39;</span><span class="p">,</span> <span class="s1">&#39;006&#39;</span><span class="p">,</span> <span class="s1">&#39;007&#39;</span><span class="p">}</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="p">)))</span> <span class="ow">or</span> <span class="n">ctx</span><span class="o">.</span><span class="n">force</span><span class="p">:</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">nc_var_overwrite</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">time_axis_rebuilt</span><span class="p">)</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">nc_att_overwrite</span><span class="p">(</span><span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">tunits</span><span class="p">)</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">nc_att_overwrite</span><span class="p">(</span><span class="s1">&#39;calendar&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">calendar</span><span class="p">)</span>
+            <span class="c1"># Rewrite time boundaries if needed</span>
+            <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">has_bounds</span><span class="p">:</span>
+                <span class="n">fh</span><span class="o">.</span><span class="n">nc_var_overwrite</span><span class="p">(</span><span class="s1">&#39;time_bnds&#39;</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">time_bounds_rebuilt</span><span class="p">)</span>
+        <span class="c1"># Compute checksum at the end of all modifications and after closing file</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">write</span> <span class="ow">or</span> <span class="n">ctx</span><span class="o">.</span><span class="n">force</span><span class="p">)</span> <span class="ow">and</span> <span class="p">{</span><span class="s1">&#39;001&#39;</span><span class="p">,</span> <span class="s1">&#39;002&#39;</span><span class="p">,</span> <span class="s1">&#39;003&#39;</span><span class="p">,</span> <span class="s1">&#39;004&#39;</span><span class="p">,</span> <span class="s1">&#39;006&#39;</span><span class="p">,</span> <span class="s1">&#39;007&#39;</span><span class="p">}</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="p">)):</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">new_checksum</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">checksum</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">checksum_type</span><span class="p">)</span>
+        <span class="c1"># Print file status</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Filename: </span><span class="si">{}</span><span class="s2"></span>
+<span class="s2">                                   Start: </span><span class="si">{}</span><span class="s2"> = </span><span class="si">{}</span><span class="s2"></span>
+<span class="s2">                                   End:   </span><span class="si">{}</span><span class="s2"> = </span><span class="si">{}</span><span class="s2"></span>
+<span class="s2">                                   Last:  </span><span class="si">{}</span><span class="s2"> = </span><span class="si">{}</span><span class="s2"></span>
+<span class="s2">                                   Time steps: </span><span class="si">{}</span><span class="s2"></span>
+<span class="s2">                                   Is instant: </span><span class="si">{}</span><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+                                                            <span class="n">fh</span><span class="o">.</span><span class="n">start_timestamp</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">start_date</span><span class="p">,</span>
+                                                            <span class="n">fh</span><span class="o">.</span><span class="n">end_timestamp</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">end_date</span><span class="p">,</span>
+                                                            <span class="n">fh</span><span class="o">.</span><span class="n">last_timestamp</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">last_date</span><span class="p">,</span>
+                                                            <span class="n">fh</span><span class="o">.</span><span class="n">length</span><span class="p">,</span>
+                                                            <span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">is_instant</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\n</span><span class="s2">                                   Status: </span><span class="si">{}</span><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">STATUS</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">{</span><span class="s1">&#39;000&#39;</span><span class="p">,</span> <span class="s1">&#39;008&#39;</span><span class="p">}</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="p">)):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">{</span><span class="s1">&#39;008&#39;</span><span class="p">}</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="p">)):</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="c1"># Return file status</span>
+        <span class="k">return</span> <span class="n">fh</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> skipped</span><span class="se">\n</span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ffp</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">))</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.main.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.main.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Main process that\:</span>
+<span class="sd">    Main process that:</span>
+
 <span class="sd">     * Instantiates processing context,</span>
 <span class="sd">     * Defines the referenced time properties,</span>
 <span class="sd">     * Instantiates threads pools,</span>
 <span class="sd">     * Prints or logs the time axis diagnostics.</span>
 
-<span class="sd">    :param ArgumentParser args: Parsed command-line arguments</span>
+<span class="sd">    :param ArgumentParser args: Command-line arguments parser</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Instantiate processing context from command-line arguments</span>
-    <span class="n">ctx</span> <span class="o">=</span> <span class="n">ProcessingContext</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Time axis diagnostic started for </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">))</span>
-    <span class="c1"># Set driving time properties (e.g., calendar, frequency and time units) from first file in directory</span>
-    <span class="n">tinit</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">TimeInit</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span>
-    <span class="c1"># Process</span>
-    <span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">threads</span><span class="p">))</span>
-    <span class="n">handlers</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">wrapper</span><span class="p">,</span> <span class="n">yield_inputs</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">tinit</span><span class="p">))</span>
-    <span class="n">status</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="c1"># Persist diagnostics into database</span>
-    <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">db</span><span class="p">:</span>
-        <span class="c1"># Check if database exists</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">db</span><span class="p">):</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Database does not exist&#39;</span><span class="p">)</span>
-            <span class="n">db</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">db</span><span class="p">)</span>
-    <span class="c1"># Commit each diagnostic as a new entry</span>
-    <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="n">handlers</span><span class="p">:</span>
-        <span class="n">status</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">status</span><span class="p">)</span>
-        <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">db</span><span class="p">:</span>
-            <span class="n">diagnostic</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-            <span class="n">diagnostic</span><span class="p">[</span><span class="s1">&#39;creation_date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-            <span class="n">diagnostic</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
-            <span class="n">diagnostic</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">tinit</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
-            <span class="n">diagnostic</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span>
-            <span class="n">diagnostic</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">status</span><span class="p">)</span>
-            <span class="n">db</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">db</span><span class="p">,</span> <span class="n">diagnostic</span><span class="p">)</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> - Diagnostic persisted into database&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;-&gt; Filename: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Start: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">start_date</span><span class="p">))</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;End: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">end_date</span><span class="p">))</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Last: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">last_date</span><span class="p">))</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Time steps: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">length</span><span class="p">))</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Is instant: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tinit</span><span class="o">.</span><span class="n">is_instant</span><span class="p">))</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;-&gt; Time axis:&#39;</span><span class="p">)</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fill</span><span class="p">(</span><span class="s1">&#39; | &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">handler</span><span class="o">.</span><span class="n">time_axis</span><span class="o">.</span><span class="n">tolist</span><span class="p">())),</span> <span class="n">width</span><span class="o">=</span><span class="mi">100</span><span class="p">)))</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;-&gt; Theoretical axis:&#39;</span><span class="p">)</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fill</span><span class="p">(</span><span class="s1">&#39; | &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">handler</span><span class="o">.</span><span class="n">time_axis_rebuilt</span><span class="o">.</span><span class="n">tolist</span><span class="p">())),</span> <span class="n">width</span><span class="o">=</span><span class="mi">100</span><span class="p">)))</span>
-    <span class="c1"># Close tread pool</span>
-    <span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
-    <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">s</span> <span class="ow">in</span> <span class="n">EXIT_ERRORS</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">status</span><span class="p">]):</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Some time axis should be corrected manually (</span><span class="si">{0}</span><span class="s1"> files scanned)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">counter</span><span class="p">))</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>    
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Time diagnostic completed (</span><span class="si">{0}</span><span class="s1"> files scanned)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">counter</span><span class="p">))</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+    <span class="k">for</span> <span class="n">directory</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">directory</span><span class="p">:</span>
+        <span class="c1"># Instantiate processing context</span>
+        <span class="k">with</span> <span class="n">ProcessingContext</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">directory</span><span class="p">)</span> <span class="k">as</span> <span class="n">ctx</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Time axis diagnostic started for </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">))</span>
+            <span class="c1"># Process supplied files</span>
+            <span class="n">handlers</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ctx</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">sources</span><span class="p">)]</span>
+            <span class="n">ctx</span><span class="o">.</span><span class="n">scan_files</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">handlers</span><span class="p">)</span>
+            <span class="c1"># Persist diagnostics into database</span>
+            <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">db</span><span class="p">:</span>
+                <span class="c1"># Check if database exists</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">db</span><span class="p">):</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Database does not exist&#39;</span><span class="p">)</span>
+                    <span class="n">db</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">db</span><span class="p">)</span>
+            <span class="c1"># Commit each diagnostic as a new entry</span>
+            <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="n">handlers</span><span class="p">:</span>
+                <span class="n">ctx</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">status</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">db</span><span class="p">:</span>
+                    <span class="n">diagnostic</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+                    <span class="n">diagnostic</span><span class="p">[</span><span class="s1">&#39;creation_date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">_to_real_datetime</span><span class="p">()</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">-%H%M%S&quot;</span><span class="p">)</span>
+                    <span class="n">diagnostic</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+                    <span class="n">diagnostic</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+                    <span class="n">diagnostic</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+                    <span class="n">diagnostic</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">status</span><span class="p">)</span>
+                    <span class="n">db</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">db</span><span class="p">,</span> <span class="n">diagnostic</span><span class="p">)</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> - Diagnostic persisted into database&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;-&gt; Filename: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Start: </span><span class="si">{}</span><span class="s1"> =&gt; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">start_timestamp</span><span class="p">,</span> <span class="n">handler</span><span class="o">.</span><span class="n">start_date</span><span class="p">))</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;End:   </span><span class="si">{}</span><span class="s1"> =&gt; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">end_timestamp</span><span class="p">,</span> <span class="n">handler</span><span class="o">.</span><span class="n">end_date</span><span class="p">))</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Last:  </span><span class="si">{}</span><span class="s1"> =&gt; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">last_timestamp</span><span class="p">,</span> <span class="n">handler</span><span class="o">.</span><span class="n">last_date</span><span class="p">))</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Time steps: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">handler</span><span class="o">.</span><span class="n">length</span><span class="p">))</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Is instant: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">is_instant</span><span class="p">))</span></div>
 </pre></div>
 
+           </div>
+           <div class="articleComments">
+            
            </div>
           </div>
           <footer>
@@ -494,10 +392,11 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'3.9.6',
+            VERSION:'3.4.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="../../../static/jquery.js"></script>

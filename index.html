@@ -8,9 +8,11 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime toolbox &mdash; nctime 3.9.6 documentation</title>
+  <title>nctime toolbox &mdash; nctime 3.4.0 documentation</title>
   
 
+  
+  
   
   
 
@@ -30,8 +32,11 @@
   
 
   
-    <link rel="top" title="nctime 3.9.6 documentation" href="#"/>
-        <link rel="next" title="Synopsis" href="synopsis.html"/> 
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="nctime 3.4.0 documentation" href="#"/>
+        <link rel="next" title="Installation" href="installation.html"/> 
 
   
   <script src="static/js/modernizr.min.js"></script>
@@ -40,6 +45,7 @@
 
 <body class="wy-body-for-nav" role="document">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -59,7 +65,7 @@
             
             
               <div class="version">
-                3.9
+                3.4
               </div>
             
           
@@ -80,11 +86,15 @@
           
             
             
-                <ul>
-<li class="toctree-l1"><a class="reference internal" href="synopsis.html">Synopsis</a></li>
+              
+            
+            
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage and tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Generic usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overlap.html">Check time series continuity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="axis.html">Check time axis squareness</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="credits.html">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="log.html">Changelog</a></li>
@@ -101,8 +111,10 @@
 
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="#">nctime</a>
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">nctime</a>
+        
       </nav>
 
 
@@ -111,36 +123,64 @@
         <div class="rst-content">
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="#">Docs</a> &raquo;</li>
-      
-    <li><code class="docutils literal"><span class="pre">nctime</span></code> toolbox</li>
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li><code class="docutils literal"><span class="pre">nctime</span></code> toolbox</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
-            <a href="sources/index.txt" rel="nofollow"> View page source</a>
+            
+            <a href="sources/index.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
   <div class="section" id="nctime-toolbox">
-<h1><code class="docutils literal"><span class="pre">nctime</span></code> toolbox<a class="headerlink" href="#nctime-toolbox" title="Permalink to this headline">¶</a></h1>
+<span id="index"></span><h1><code class="docutils literal"><span class="pre">nctime</span></code> toolbox<a class="headerlink" href="#nctime-toolbox" title="Permalink to this headline">¶</a></h1>
+<p>NetCDF files describe all dimensions necessary to work with. In the climate community, this format is widely used
+following the <a class="reference external" href="http://cfconventions.org/">CF conventions</a>. Dimensions such as longitude, latitude and time are
+included in NetCDF files as vectors.</p>
+<p>Time is a key dimension from NetCDF files that could lead to flawed studies or unused data if misdeclared. <code class="docutils literal"><span class="pre">nctime</span></code>
+allows researchers to easily diagnose the time definition of their data to ensure a proper analysis.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal"><span class="pre">nctime</span></code> is based on uncorrupted filename period dates and properly-defined times units, time calendar
+and frequency NetCDF attributes.</p>
+</div>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="synopsis.html">Synopsis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage and tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Generic usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overlap.html">Check time series continuity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="axis.html">Check time axis squareness</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="credits.html">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="log.html">Changelog</a></li>
@@ -159,12 +199,15 @@
 
 
            </div>
+           <div class="articleComments">
+            
+           </div>
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="synopsis.html" class="btn btn-neutral float-right" title="Synopsis" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
     </div>
@@ -196,10 +239,11 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'3.9.6',
+            VERSION:'3.4.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="static/jquery.js"></script>

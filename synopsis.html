@@ -8,9 +8,11 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Synopsis &mdash; nctime 3.9.6 documentation</title>
+  <title>Synopsis &mdash; nctime 3.4.0 documentation</title>
   
 
+  
+  
   
   
 
@@ -30,9 +32,10 @@
   
 
   
-    <link rel="top" title="nctime 3.9.6 documentation" href="index.html"/>
-        <link rel="next" title="Installation" href="installation.html"/>
-        <link rel="prev" title="nctime toolbox" href="index.html"/> 
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="nctime 3.4.0 documentation" href="index.html"/> 
 
   
   <script src="static/js/modernizr.min.js"></script>
@@ -41,6 +44,7 @@
 
 <body class="wy-body-for-nav" role="document">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -60,7 +64,7 @@
             
             
               <div class="version">
-                3.9
+                3.4
               </div>
             
           
@@ -81,16 +85,15 @@
           
             
             
-                <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Synopsis</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#nctime-axis"><code class="docutils literal"><span class="pre">nctime</span> <span class="pre">axis</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#nctime-overlap"><code class="docutils literal"><span class="pre">nctime</span> <span class="pre">overlap</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#key-features">Key features</a></li>
-</ul>
-</li>
+              
+            
+            
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage and tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Generic usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overlap.html">Check time series continuity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="axis.html">Check time axis squareness</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="credits.html">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="log.html">Changelog</a></li>
@@ -107,8 +110,10 @@
 
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">nctime</a>
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">nctime</a>
+        
       </nav>
 
 
@@ -117,23 +122,40 @@
         <div class="rst-content">
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="index.html">Docs</a> &raquo;</li>
-      
-    <li>Synopsis</li>
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Synopsis</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
-            <a href="sources/synopsis.txt" rel="nofollow"> View page source</a>
+            
+            <a href="sources/synopsis.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -219,7 +241,7 @@ file level. Each file is processed by a thread that runs the time axis diagnosti
 <dt>Tracebacks</dt>
 <dd>The threads-processes do not shutdown the main process of <code class="docutils literal"><span class="pre">nctime</span> <span class="pre">axis</span></code> run. If an error occurs on a thread, the
 traceback of the child-process is not raised to the main process. To help you to have a fast debug, the tracebacks
-of each threads can be raised using the <code class="docutils literal"><span class="pre">-v</span></code> option (see <a class="reference internal" href="usage.html#usage"><span class="std std-ref">Usage and tutorials</span></a>).</dd>
+of each threads can be raised using the <code class="docutils literal"><span class="pre">-v</span></code> option (see <a class="reference internal" href="usage.html#usage"><span class="std std-ref">Generic usage</span></a>).</dd>
 <dt>Use a logfile</dt>
 <dd>You can initiate a logger instead of the standard output. This could be useful for automatic workflows. The
 logfile name is automatically defined and unique (using the the job&#8217;s name, the date and the job&#8217;s PID). You can
@@ -234,24 +256,18 @@ time period. All excluded files from this &#8220;date path&#8221; are overlappin
 period, <code class="docutils literal"><span class="pre">nctime</span> <span class="pre">overlap</span></code> adds the possibility to use the longest subtree from the start date instead (i.e., the
 most consecutive files).</dd>
 <dt>Overlap deletion</dt>
-<dd>All detected overlaps can be automatically removed using the <code class="docutils literal"><span class="pre">--remove</span></code> argument (see <a class="reference internal" href="usage.html#usage"><span class="std std-ref">Usage and tutorials</span></a>).</dd>
+<dd>All detected overlaps can be automatically removed using the <code class="docutils literal"><span class="pre">--remove</span></code> argument (see <a class="reference internal" href="usage.html#usage"><span class="std std-ref">Generic usage</span></a>).</dd>
 </dl>
 </div>
 </div>
 
 
            </div>
+           <div class="articleComments">
+            
+           </div>
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="index.html" class="btn btn-neutral" title="nctime toolbox" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>
@@ -280,10 +296,11 @@ most consecutive files).</dd>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'3.9.6',
+            VERSION:'3.4.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="static/jquery.js"></script>
