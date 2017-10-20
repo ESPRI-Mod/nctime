@@ -168,13 +168,13 @@
  | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
- | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#I"><strong>I</strong></a>
+ | <a href="#K"><strong>K</strong></a>
+ | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
- | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
@@ -190,6 +190,8 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autodoc.html#nctime.utils.time.add_year">add_year() (in module nctime.utils.time)</a>
+</li>
+      <li><a href="autodoc.html#nctime.utils.collector.Collector.attach">attach() (nctime.utils.collector.Collector method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -209,17 +211,19 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="autodoc.html#nctime.utils.utils.CfgParser">CfgParser (class in nctime.utils.utils)</a>
-</li>
       <li><a href="autodoc.html#nctime.axis.handler.File.checksum">checksum() (nctime.axis.handler.File method)</a>
 </li>
-      <li><a href="autodoc.html#nctime.axis.exceptions.ChecksumFail">ChecksumFail</a>
+      <li><a href="autodoc.html#nctime.utils.custom_exceptions.ChecksumClientNotFound">ChecksumClientNotFound</a>
+</li>
+      <li><a href="autodoc.html#nctime.axis.custom_exceptions.ChecksumFail">ChecksumFail</a>, <a href="autodoc.html#nctime.utils.custom_exceptions.ChecksumFail">[1]</a>
 </li>
       <li><a href="autodoc.html#nctime.axis.db.close">close() (in module nctime.axis.db)</a>
 </li>
+      <li><a href="autodoc.html#nctime.utils.misc.cmd_exists">cmd_exists() (in module nctime.utils.misc)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="autodoc.html#nctime.utils.utils.config_parse">config_parse() (in module nctime.utils.utils)</a>
+      <li><a href="autodoc.html#nctime.utils.collector.Collector">Collector (class in nctime.utils.collector)</a>
 </li>
       <li><a href="autodoc.html#nctime.axis.db.connect">connect() (in module nctime.axis.db)</a>
 </li>
@@ -239,21 +243,15 @@
 </li>
       <li><a href="autodoc.html#nctime.utils.time.date2str">date2str() (in module nctime.utils.time)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autodoc.html#nctime.utils.time.dates2int">dates2int() (in module nctime.utils.time)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autodoc.html#nctime.utils.time.dates2str">dates2str() (in module nctime.utils.time)</a>
 </li>
-      <li><a href="autodoc.html#nctime.utils.utils.directory_checker">directory_checker() (in module nctime.utils.utils)</a>
+      <li><a href="autodoc.html#nctime.utils.parser.DirectoryChecker.directory_checker">directory_checker() (nctime.utils.parser.DirectoryChecker static method)</a>
 </li>
-  </ul></td>
-</tr></table>
-
-<h2 id="E">E</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="autodoc.html#nctime.utils.exceptions.EmptyConfigFile">EmptyConfigFile</a>
+      <li><a href="autodoc.html#nctime.utils.parser.DirectoryChecker">DirectoryChecker (class in nctime.utils.parser)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -263,9 +261,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autodoc.html#nctime.axis.handler.File">File (class in nctime.axis.handler)</a>
 </li>
+      <li><a href="autodoc.html#nctime.utils.collector.Filter">Filter (class in nctime.utils.collector)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="autodoc.html#nctime.utils.utils.find_key">find_key() (in module nctime.utils.utils)</a>
+      <li><a href="autodoc.html#nctime.utils.misc.LogFilter.filter">filter() (nctime.utils.misc.LogFilter method)</a>
+</li>
+      <li><a href="autodoc.html#nctime.utils.collector.Collector.first">first() (nctime.utils.collector.Collector method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -275,12 +277,18 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autodoc.html#nctime.nctime.get_args">get_args() (in module nctime.nctime)</a>
 </li>
-      <li><a href="autodoc.html#nctime.utils.time.get_first_last_timesteps">get_first_last_timesteps() (in module nctime.utils.time)</a>
+      <li><a href="autodoc.html#nctime.axis.context.ProcessingContext.get_checksum_client">get_checksum_client() (nctime.axis.context.ProcessingContext method)</a>
+
+      <ul>
+        <li><a href="autodoc.html#nctime.overlap.context.ProcessingContext.get_checksum_client">(nctime.overlap.context.ProcessingContext method)</a>
 </li>
-      <li><a href="autodoc.html#nctime.utils.time.get_next_timestep">get_next_timestep() (in module nctime.utils.time)</a>
+      </ul></li>
+      <li><a href="autodoc.html#nctime.utils.time.get_first_last_timesteps">get_first_last_timesteps() (in module nctime.utils.time)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autodoc.html#nctime.utils.time.get_next_timestep">get_next_timestep() (in module nctime.utils.time)</a>
+</li>
       <li><a href="autodoc.html#nctime.overlap.main.get_overlaps">get_overlaps() (in module nctime.overlap.main)</a>
 </li>
       <li><a href="autodoc.html#nctime.axis.handler.File.get_start_end_dates">get_start_end_dates() (nctime.axis.handler.File method)</a>
@@ -293,7 +301,7 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="autodoc.html#nctime.utils.utils.init_logging">init_logging() (in module nctime.utils.utils)</a>
+      <li><a href="autodoc.html#nctime.utils.misc.init_logging">init_logging() (in module nctime.utils.misc)</a>
 </li>
       <li><a href="autodoc.html#nctime.axis.db.insert">insert() (in module nctime.axis.db)</a>
 </li>
@@ -301,9 +309,25 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="autodoc.html#nctime.utils.time.ints2date">ints2date() (in module nctime.utils.time)</a>
 </li>
-      <li><a href="autodoc.html#nctime.utils.exceptions.InvalidNetCDFFile">InvalidNetCDFFile</a>
+      <li><a href="autodoc.html#nctime.utils.custom_exceptions.InvalidNetCDFFile">InvalidNetCDFFile</a>
 </li>
       <li><a href="autodoc.html#nctime.axis.db.is_connected">is_connected() (in module nctime.axis.db)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="K">K</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autodoc.html#nctime.utils.custom_exceptions.KeyNotFound">KeyNotFound</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autodoc.html#nctime.utils.misc.LogFilter">LogFilter (class in nctime.utils.misc)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -311,7 +335,11 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="autodoc.html#nctime.utils.utils.MultilineFormatter">MultilineFormatter (class in nctime.utils.utils)</a>
+      <li><a href="autodoc.html#nctime.utils.misc.match">match() (in module nctime.utils.misc)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autodoc.html#nctime.utils.parser.MultilineFormatter">MultilineFormatter (class in nctime.utils.parser)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -331,9 +359,13 @@
 </li>
       <li><a href="autodoc.html#module-nctime">nctime (module)</a>
 </li>
-      <li><a href="autodoc.html#module-nctime.axis.db">nctime.axis.db (module)</a>
+      <li><a href="autodoc.html#module-nctime.axis.constants">nctime.axis.constants (module)</a>
 </li>
-      <li><a href="autodoc.html#module-nctime.axis.exceptions">nctime.axis.exceptions (module)</a>
+      <li><a href="autodoc.html#module-nctime.axis.context">nctime.axis.context (module)</a>
+</li>
+      <li><a href="autodoc.html#module-nctime.axis.custom_exceptions">nctime.axis.custom_exceptions (module)</a>
+</li>
+      <li><a href="autodoc.html#module-nctime.axis.db">nctime.axis.db (module)</a>
 </li>
       <li><a href="autodoc.html#module-nctime.axis.handler">nctime.axis.handler (module)</a>
 </li>
@@ -343,43 +375,39 @@
 </li>
       <li><a href="autodoc.html#module-nctime.nctime">nctime.nctime (module)</a>
 </li>
-      <li><a href="autodoc.html#module-nctime.overlap.main">nctime.overlap.main (module)</a>
+      <li><a href="autodoc.html#module-nctime.overlap.constants">nctime.overlap.constants (module)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="autodoc.html#module-nctime.utils.exceptions">nctime.utils.exceptions (module)</a>
+      <li><a href="autodoc.html#module-nctime.overlap.context">nctime.overlap.context (module)</a>
+</li>
+      <li><a href="autodoc.html#module-nctime.overlap.custom_exceptions">nctime.overlap.custom_exceptions (module)</a>
+</li>
+      <li><a href="autodoc.html#module-nctime.overlap.main">nctime.overlap.main (module)</a>
+</li>
+      <li><a href="autodoc.html#module-nctime.utils.collector">nctime.utils.collector (module)</a>
+</li>
+      <li><a href="autodoc.html#module-nctime.utils.constants">nctime.utils.constants (module)</a>
+</li>
+      <li><a href="autodoc.html#module-nctime.utils.custom_exceptions">nctime.utils.custom_exceptions (module)</a>
+</li>
+      <li><a href="autodoc.html#module-nctime.utils.misc">nctime.utils.misc (module)</a>
+</li>
+      <li><a href="autodoc.html#module-nctime.utils.parser">nctime.utils.parser (module)</a>
 </li>
       <li><a href="autodoc.html#module-nctime.utils.time">nctime.utils.time (module)</a>
 </li>
-      <li><a href="autodoc.html#module-nctime.utils.utils">nctime.utils.utils (module)</a>
+      <li><a href="autodoc.html#nctime.axis.custom_exceptions.NetCDFAttributeRemoveFail">NetCDFAttributeRemoveFail</a>
 </li>
-      <li><a href="autodoc.html#nctime.axis.exceptions.NetCDFAttributeRemoveFail">NetCDFAttributeRemoveFail</a>
+      <li><a href="autodoc.html#nctime.utils.custom_exceptions.NetCDFTimeStepNotFound">NetCDFTimeStepNotFound</a>
 </li>
-      <li><a href="autodoc.html#nctime.utils.exceptions.NetCDFTimeStepNotFound">NetCDFTimeStepNotFound</a>
+      <li><a href="autodoc.html#nctime.axis.custom_exceptions.NetCDFVariableRemoveFail">NetCDFVariableRemoveFail</a>
 </li>
-      <li><a href="autodoc.html#nctime.axis.exceptions.NetCDFVariableRemoveFail">NetCDFVariableRemoveFail</a>
+      <li><a href="autodoc.html#nctime.utils.custom_exceptions.NoNetCDFAttribute">NoNetCDFAttribute</a>
 </li>
-      <li><a href="autodoc.html#nctime.utils.exceptions.NoConfigFile">NoConfigFile</a>
-</li>
-      <li><a href="autodoc.html#nctime.utils.exceptions.NoConfigOption">NoConfigOption</a>
-</li>
-      <li><a href="autodoc.html#nctime.utils.exceptions.NoConfigSection">NoConfigSection</a>
-</li>
-      <li><a href="autodoc.html#nctime.utils.exceptions.NoConfigValue">NoConfigValue</a>
-</li>
-      <li><a href="autodoc.html#nctime.utils.exceptions.NoNetCDFAttribute">NoNetCDFAttribute</a>
-</li>
-      <li><a href="autodoc.html#nctime.utils.exceptions.NoNetCDFVariable">NoNetCDFVariable</a>
+      <li><a href="autodoc.html#nctime.utils.custom_exceptions.NoNetCDFVariable">NoNetCDFVariable</a>
 </li>
       <li><a href="autodoc.html#nctime.utils.time.num2date">num2date() (in module nctime.utils.time)</a>
-</li>
-  </ul></td>
-</tr></table>
-
-<h2 id="O">O</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="autodoc.html#nctime.utils.utils.CfgParser.options">options() (nctime.utils.utils.CfgParser method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -387,19 +415,23 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="autodoc.html#nctime.utils.utils.path_switcher">path_switcher() (in module nctime.utils.utils)</a>
+      <li><a href="autodoc.html#nctime.axis.main.process">process() (in module nctime.axis.main)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="autodoc.html#nctime.axis.main.process">process() (in module nctime.axis.main)</a>
+      <li><a href="autodoc.html#nctime.axis.context.ProcessingContext">ProcessingContext (class in nctime.axis.context)</a>
+
+      <ul>
+        <li><a href="autodoc.html#nctime.overlap.context.ProcessingContext">(class in nctime.overlap.context)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="autodoc.html#nctime.utils.utils.CfgParser.read">read() (nctime.utils.utils.CfgParser method)</a>
+      <li><a href="autodoc.html#nctime.utils.custom_exceptions.RenamingNetCDFFailed">RenamingNetCDFFailed</a>
 </li>
       <li><a href="autodoc.html#nctime.overlap.main.resolve_overlap">resolve_overlap() (in module nctime.overlap.main)</a>
 </li>
@@ -435,9 +467,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="autodoc.html#nctime.utils.utils.translate_filename_format">translate_filename_format() (in module nctime.utils.utils)</a>
-</li>
-      <li><a href="autodoc.html#nctime.utils.utils.trunc">trunc() (in module nctime.utils.utils)</a>
+      <li><a href="autodoc.html#nctime.utils.misc.trunc">trunc() (in module nctime.utils.misc)</a>
 </li>
       <li><a href="autodoc.html#nctime.utils.time.truncated_timestamp">truncated_timestamp() (in module nctime.utils.time)</a>
 </li>
