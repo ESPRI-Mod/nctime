@@ -162,7 +162,7 @@ def run():
     # Get command-line arguments
     args = get_args()
     # Initialize logger depending on log and verbose mode
-    init_logging(log=args.log, verbose=args.v)
+    init_logging(log=args.log)
     # Run program
     module_name = args.cmd.lower().replace('-', '')
     main = import_module('.main', package='nctime.{}'.format(module_name))

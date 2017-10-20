@@ -7,6 +7,7 @@
 
 """
 import logging
+import os
 import sys
 
 import networkx as nx
@@ -39,9 +40,10 @@ class ProcessingContext(object):
         self.tunits_default = None
         if self.project in DEFAULT_TIME_UNITS.keys():
             self.tunits_default = DEFAULT_TIME_UNITS[self.project]
-        self.shortest = None
+        self.path = []
         self.full_overlaps = None
         self.partial_overlaps = None
+        self.broken = False
 
     def __enter__(self):
         # Get checksum client
@@ -55,40 +57,43 @@ class ProcessingContext(object):
         # Exclude hidden non-NetCDF files
         self.sources.FileFilter['base_filter'] = ('^[!.].*\.nc$', True)
         # Exclude fixed frequency
-        self.sources.FileFilter['base_filter'] = ('(_fx_|_fixed_|_fx.|_fixed.)', True)
+        self.sources.FileFilter['frequency_filter'] = ('(_fx_|_fixed_|_fx.|_fixed.)', True)
         # Get first file for reference
-        self.ref = self.sources.first()
+        self.ref = self.sources.first()[0]
+        self.display = len(os.path.basename(self.ref))
         # Set driving time properties
         self.tinit = TimeInit(ref=self.ref, tunits_default=self.tunits_default)
         # DiGraph creation
         self.graph = nx.DiGraph()
+        return self
 
     def __exit__(self, *exc):
         # Decline outputs depending on the scan results
         # Default is sys.exit(0)
-        if self.shortest:
-            logging.info('Shortest path found')
-        else:
-            logging.error('No shortest path found. Time series is broken.')
-            sys.exit(1)
-        # Print results
         # Print first node
-        logging.info('{} --> {}'.format(' START '.center(len(self.ref) + 2, '-'),
-                                        self.shortest[1].center(len(self.ref) + 2)))
-        for i in range(1, len(self.shortest) - 2):
-            if self.shortest[i + 1] in self.partial_overlaps:
+        logging.info('{} --> {}'.format(' START '.center(self.display + 2, '-'),
+                                        self.path[1].center(self.display + 2)))
+        # Print intermediate nodes
+        for i in range(1, len(self.path) - 2):
+            if self.partial_overlaps and self.path[i + 1] in self.partial_overlaps:
                 logging.info('{} --> {} < '
-                             'overlap from {} to {}'.format(self.shortest[i].center(len(self.ref) + 2),
-                                                            self.shortest[i + 1].center(len(self.ref) + 2),
-                                                            self.partial_overlaps[self.shortest[i + 1]]['start_date'],
-                                                            self.partial_overlaps[self.shortest[i + 1]][
+                             'overlap from {} to {}'.format(self.path[i].center(self.display + 2),
+                                                            self.path[i + 1].center(self.display + 2),
+                                                            self.partial_overlaps[self.path[i + 1]]['start_date'],
+                                                            self.partial_overlaps[self.path[i + 1]][
                                                                 'end_overlap']))
             else:
-                logging.info('{} --> {}'.format(self.shortest[i].center(len(self.ref) + 2),
-                                                self.shortest[i + 1].center(len(self.ref) + 2)))
+                logging.info('{} --> {}'.format(self.path[i].center(self.display + 2),
+                                                self.path[i + 1].center(self.display + 2)))
         # Print last node
-        logging.info('{} --> {}'.format(self.shortest[-2].center(len(self.ref) + 2),
-                                        ' END '.center(len(self.ref) + 2, '-')))
+        logging.info('{} --> {}'.format(self.path[-2].center(self.display + 2),
+                                        ' END '.center(self.display + 2, '-')))
+        # Print analyse result
+        if self.broken:
+            logging.error('Time series is broken.')
+            sys.exit(1)
+        else:
+            logging.info('Shortest path found')
         # Print overlaps if exists
         if not self.full_overlaps and not self.partial_overlaps:
             logging.info('No overlapping files')

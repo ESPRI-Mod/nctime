@@ -43,7 +43,9 @@ class ProcessingContext(object):
         if self.project in DEFAULT_TIME_UNITS.keys():
             self.tunits_default = DEFAULT_TIME_UNITS[self.project]
         self.threads = args.max_threads
-        self.db = os.path.realpath(args.db)
+        self.db = None
+        if args.db:
+            self.db = os.path.realpath(args.db)
         self.scan_files = None
         self.status = []
 
@@ -59,11 +61,12 @@ class ProcessingContext(object):
         # Exclude hidden and/or non-NetCDF files
         self.sources.FileFilter['base_filter'] = ('^[!.].*\.nc$', True)
         # Exclude fixed frequency
-        self.sources.FileFilter['base_filter'] = ('(_fx_|_fixed_|_fx.|_fixed.)', True)
+        self.sources.FileFilter['frequency_filter'] = ('(_fx_|_fixed_|_fx.|_fixed.)', True)
         # Set driving time properties
-        self.tinit = TimeInit(ref=self.sources.first(), tunits_default=self.tunits_default)
+        self.tinit = TimeInit(ref=self.sources.first()[0], tunits_default=self.tunits_default)
         # Init threads pool
         self.pool = ThreadPool(int(self.threads))
+        return self
 
     def __exit__(self, *exc):
         # Close tread pool
@@ -71,12 +74,12 @@ class ProcessingContext(object):
         self.pool.join()
         # Decline outputs depending on the scan results
         # Default is sys.exit(0)
-        if any([s in EXIT_ERRORS for s in self.status]):
-            logging.error('Some time axis should be corrected manually ({} files scanned)'.format(self.scan_files))
-            sys.exit(1)
-        else:
-            logging.info('Time diagnostic completed ({} files scanned)'.format(self.scan_files))
-            sys.exit(0)
+        # if any([s in EXIT_ERRORS for s in self.status]):
+        #     logging.error('Some time axis should be corrected manually ({} files scanned)'.format(self.scan_files))
+        #     sys.exit(1)
+        # else:
+        #     logging.info('Time diagnostic completed ({} files scanned)'.format(self.scan_files))
+        #     sys.exit(0)
 
     def get_checksum_client(self):
         """

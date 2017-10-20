@@ -80,7 +80,7 @@ class File(object):
         :rtype: *float*
 
         """
-        self.timestamp_length = len(re.match(pattern, self.filename).groupdict()['end_period'])
+        self.timestamp_length = len(re.match(pattern, self.filename).groupdict()['period_end'])
         dates = get_start_end_dates_from_filename(filename=self.filename,
                                                   pattern=pattern,
                                                   frequency=frequency,

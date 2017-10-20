@@ -10,10 +10,10 @@
 import logging
 import os
 import re
-from datetime import datetime
+from netcdftime import datetime
 
 import numpy as np
-
+from constants import *
 import db
 from context import ProcessingContext
 from handler import File
@@ -71,24 +71,19 @@ def process(collector_input):
                                                       is_instant=ctx.tinit.is_instant)
             if fh.last_timestamp != fh.end_timestamp:
                 fh.status.append('003')
-                logging.error('{} - 003 - Last timestamp differs from end timestamp from filename'.format(fh.filename))
             elif fh.last_date != fh.end_date:
-                logging.warning('{} - 003 - Last date differs from end date from filename'.format(fh.filename))
+                fh.status.append('008')
         # Check consistency between instant time and time boundaries
         if ctx.tinit.is_instant and ctx.tinit.has_bounds:
             fh.status.append('004')
-            logging.error('{} - 004 - An instantaneous time axis should not embed time boundaries'.format(fh.filename))
         # Check consistency between averaged time and time boundaries
         if not ctx.tinit.is_instant and not ctx.tinit.has_bounds:
             fh.status.append('005')
-            logging.error('{} - 005 - An averaged time axis should embed time boundaries'.format(fh.filename))
         # Check time axis squareness
         if not np.array_equal(fh.time_axis_rebuilt, fh.time_axis):
             fh.status.append('001')
-            logging.error('{} - 001 - Mistaken time axis over one or several time steps'.format(fh.filename))
         else:
             fh.status.append('000')
-            logging.info('{} - Time axis seems OK'.format(fh.filename))
         # Check time boundaries squareness if needed
         if ctx.tinit.has_bounds:
             fh.time_bounds_rebuilt = fh.build_time_bounds(start=trunc(start, 5),
@@ -98,15 +93,12 @@ def process(collector_input):
                                                           calendar=ctx.tinit.calendar)
             if not np.array_equal(fh.time_bounds_rebuilt, fh.time_bounds):
                 fh.status.append('006')
-                logging.error('{} - 006 - Mistaken time bounds over one or several time steps'.format(fh.filename))
         # Check consistency between time units
         if ctx.tinit.tunits != fh.time_units:
             fh.status.append('002')
-            logging.error('{} - 002 - Time units must be unchanged for the same dataset.'.format(fh.filename))
         # Check consistency between time units
         if ctx.tinit.calendar != fh.calendar:
             fh.status.append('007')
-            logging.error('{} - 007 - Calendar must be unchanged for the same dataset.'.format(fh.filename))
         # Rename file depending on checking
         if (ctx.write or ctx.force) and {'003'}.intersection(set(fh.status)):
             # Change filename and file full path dynamically
@@ -127,6 +119,27 @@ def process(collector_input):
         # Compute checksum at the end of all modifications and after closing file
         if (ctx.write or ctx.force) and {'001', '002', '003', '004', '006', '007'}.intersection(set(fh.status)):
             fh.new_checksum = fh.checksum(ctx.checksum_type)
+        # Print file status
+        msg = """Filename: {}
+                                   Start: {} = {}
+                                   End:   {} = {}
+                                   Last:  {} = {}
+                                   Time steps: {}
+                                   Is instant: {}""".format(fh.filename,
+                                                            fh.start_timestamp, fh.start_date,
+                                                            fh.end_timestamp, fh.end_date,
+                                                            fh.last_timestamp, fh.last_date,
+                                                            fh.length,
+                                                            ctx.tinit.is_instant)
+        for s in fh.status:
+            msg += """\n                                   Status: {}""".format(STATUS[s])
+        if not {'000', '008'}.intersection(set(fh.status)):
+            logging.error(msg)
+        else:
+            if {'008'}.intersection(set(fh.status)):
+                logging.warning(msg)
+            else:
+                logging.info(msg)
         # Return file status
         return fh
     except Exception as e:
@@ -164,7 +177,7 @@ def run(args):
                 ctx.status.extend(handler.status)
                 if ctx.db:
                     diagnostic = dict()
-                    diagnostic['creation_date'] = datetime.now()
+                    diagnostic['creation_date'] = datetime(1, 1, 1)._to_real_datetime().now().strftime("%Y%m%d-%H%M%S")
                     diagnostic.update(ctx.__dict__)
                     diagnostic.update(ctx.tinit.__dict__)
                     diagnostic.update(handler.__dict__)

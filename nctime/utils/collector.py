@@ -34,7 +34,7 @@ class Collector(object):
             for filename in sorted(filenames):
                 ffp = os.path.join(root, filename)
                 if os.path.isfile(ffp) and self.FileFilter(filename):
-                    yield ffp
+                    yield self.attach(ffp)
 
     def __len__(self):
         """

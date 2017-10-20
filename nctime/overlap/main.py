@@ -47,8 +47,6 @@ def get_overlaps(directory, nodes, shortest):
         # Get partial overlap if exists
         # Partial overlap from next_node[1] to current_node[2] (bounds included)
         # Overlap is hold on the next node (arbitrary)
-        print shortest[n], current_node['next_date']
-        print shortest[n + 1], next_node['start_date']
         if (current_node['next_date'] - next_node['start_date']) > 0:
             cutting_timestep = get_next_timestep(os.path.join(directory, shortest[n + 1]),
                                                  current_node['last_timestep'])
@@ -78,11 +76,11 @@ def resolve_overlap(directory, pattern, filename, from_date=None, to_date=None, 
     """
     if partial:
         filename_attr = re.match(pattern, filename).groupdict()
-        assert len(filename_attr['start_period']) == len(filename_attr['end_period'])
-        from_timestamp = str(from_date)[:len(filename_attr['start_period'])]
-        to_timestamp = str(to_date)[:len(filename_attr['end_period'])]
-        tmp = filename.replace(filename_attr['start_period'], from_timestamp)
-        new_filename = tmp.replace(filename_attr['end_period'], to_timestamp)
+        assert len(filename_attr['period_start']) == len(filename_attr['period_end'])
+        from_timestamp = str(from_date)[:len(filename_attr['period_start'])]
+        to_timestamp = str(to_date)[:len(filename_attr['period_end'])]
+        tmp = filename.replace(filename_attr['period_start'], from_timestamp)
+        new_filename = tmp.replace(filename_attr['period_end'], to_timestamp)
         assert not os.path.exists(os.path.join(directory, new_filename))
         nc = nco.Nco()
         nc.ncks(input=os.path.join(directory, filename),
@@ -99,6 +97,7 @@ def run(args):
      * Deduces start, end and next date from each filenames,
      * Builds the DiGraph,
      * Detects the shortest path between dates if exists,
+     * Detects broken path between dates if exists,
      * Removes the overlapping files.
 
     :param ArgumentParser args: Command-line arguments parser
@@ -111,7 +110,8 @@ def run(args):
             ctx.graph.clear()
             nodes = dict()
             logging.info('Create edges from source nodes to target nodes')
-            for filename in ctx.sources():
+            for ffp in ctx.sources:
+                filename = os.path.basename(ffp)
                 # A node is defined by the filename, its start, end and next dates with its first and last timesteps.
                 nodes[filename] = dict()
                 # Get start, end and next date of each file
@@ -122,7 +122,7 @@ def run(args):
                 nodes[filename]['start_date'], nodes[filename]['end_date'], nodes[filename]['next_date'] = dates2int(
                     dates)
                 # Get first and last time steps
-                timesteps = get_first_last_timesteps(os.path.join(ctx.directory, filename))
+                timesteps = get_first_last_timesteps(ffp)
                 nodes[filename]['first_timestep'], nodes[filename]['last_timestep'] = timesteps
 
             # Build starting node
@@ -131,17 +131,18 @@ def run(args):
             for start in starts:
                 ctx.graph.add_edge('START', start)
                 if ctx.verbose:
-                    logging.info('{} --> {}'.format(' START '.center(len(ctx.ref) + 2, '-'),
-                                                    start.center(len(ctx.ref) + 2)))
+                    logging.info('{} --> {}'.format(' START '.center(ctx.display + 2, '-'),
+                                                    start.center(ctx.display + 2)))
             # Create graph edges with filenames only
             end_dates = [nodes[n]['end_date'] for n in nodes]
+            other_nodes = []
             for n in nodes:
                 # Create a fake ending node from all latest files in case of overlaps
                 if nodes[n]['end_date'] == max(end_dates):
                     ctx.graph.add_edge(n, 'END')
                     if ctx.verbose:
-                        logging.info('{} --> {}'.format(n.center(len(ctx.ref) + 2),
-                                                        ' END '.center(len(ctx.ref) + 2, '-')))
+                        logging.info('{} --> {}'.format(n.center(ctx.display + 2),
+                                                        ' END '.center(ctx.display + 2, '-')))
                 else:
                     # Get index of the closest node
                     # The closest node is the node with the smallest positive difference
@@ -153,16 +154,31 @@ def run(args):
                         for nxt in nxts:
                             ctx.graph.add_edge(n, other_nodes[nxt])
                             if ctx.verbose:
-                                logging.info('{} --> {}'.format(n.center(len(ctx.ref) + 2),
-                                                                other_nodes[nxt].center(len(ctx.ref) + 2)))
+                                logging.info('{} --> {}'.format(n.center(ctx.display + 2),
+                                                                other_nodes[nxt].center(ctx.display + 2)))
             # Walk through the graph
             try:
                 # Find shortest path between oldest and latest dates
-                ctx.shortest = nx.shortest_path(ctx.graph, source='START', target='END')
+                ctx.path = nx.shortest_path(ctx.graph, source='START', target='END')
                 # Get overlaps
-                ctx.full_overlaps, ctx.partial_overlaps = get_overlaps(ctx.directory, nodes, ctx.shortest)
+                ctx.full_overlaps, ctx.partial_overlaps = get_overlaps(ctx.directory, nodes, ctx.path)
             except nx.NetworkXNoPath:
-                pass
+                ctx.broken = True
+                next_node = 'START'
+                while next_node != 'END':
+                    paths = nx.shortest_path(ctx.graph, source=next_node).values()
+                    path_lengths = [len(p) for p in paths]
+                    longest_path = paths[path_lengths.index(max(path_lengths))]
+                    ctx.path.extend(longest_path)
+                    if longest_path[-1] != 'END':
+                        # Get index of the closest next node after break
+                        # The closest next node is the node with the smallest negative difference
+                        # between next current time stem and all start dates
+                        diff = list(nodes[longest_path[-1]]['next_date'] - np.array(start_dates))
+                        next_node = other_nodes[diff.index(max([i for i in diff if i < 0]))]
+                        ctx.path.append('BREAK')
+                    else:
+                        next_node = 'END'
 
             # Resolve overlaps
             if ctx.resolve:

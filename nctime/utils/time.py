@@ -355,7 +355,7 @@ def get_start_end_dates_from_filename(filename, pattern, frequency, calendar):
     """
     dates = []
     date_as_since = None
-    for key in ['start_period', 'end_period']:
+    for key in ['period_start', 'period_end']:
         date = re.match(pattern, filename).groupdict()[key]
         digits = untruncated_timestamp(date)
         # Convert string digits to %Y-%m-%d %H:%M:%S format

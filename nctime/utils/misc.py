@@ -33,18 +33,17 @@ class LogFilter(object):
         return log_record.levelno <= self.level
 
 
-def init_logging(log, verbose=False, level='INFO'):
+def init_logging(log, level='INFO'):
     """
     Initiates the logging configuration (output, date/message formatting).
     If a directory is submitted the logfile name is unique and formatted as follows:
     ``name-YYYYMMDD-HHMMSS-JOBID.log``If ``None`` the standard output is used.
 
     :param str log: The logfile directory.
-    :param boolean verbose: Verbose mode.
     :param str level: The log level.
 
     """
-    logname = 'esgprep-{}-{}'.format(datetime.now().strftime("%Y%m%d-%H%M%S"), os.getpid())
+    logname = 'nctime-{}-{}'.format(datetime(1, 1, 1)._to_real_datetime().now().strftime("%Y%m%d-%H%M%S"), os.getpid())
     formatter = logging.Formatter(fmt='%(levelname)-10s %(asctime)s %(message)s')
     if log:
         if not os.path.isdir(log):
@@ -56,12 +55,9 @@ def init_logging(log, verbose=False, level='INFO'):
     if log:
         handler = logging.FileHandler(filename='{}.log'.format(logfile), delay=True)
     else:
-        if verbose:
-            handler = logging.StreamHandler()
-        else:
-            handler = logging.NullHandler()
+        handler = logging.StreamHandler()
     handler.setLevel(logging.__dict__[level])
-    handler.addFilter(LogFilter(logging.WARNING))
+    handler.addFilter(LogFilter(logging.CRITICAL))
     handler.setFormatter(formatter)
     logging.getLogger().addHandler(handler)
 
