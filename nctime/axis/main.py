@@ -184,10 +184,3 @@ def run(args):
                     diagnostic['status'] = ','.join(handler.status)
                     db.insert(ctx.db, diagnostic)
                     logging.info('{} - Diagnostic persisted into database'.format(handler.filename))
-                if ctx.verbose:
-                    logging.info('-> Filename: {}'.format(handler.filename))
-                    logging.info('Start: {} => {}'.format(handler.start_timestamp, handler.start_date))
-                    logging.info('End:   {} => {}'.format(handler.end_timestamp, handler.end_date))
-                    logging.info('Last:  {} => {}'.format(handler.last_timestamp, handler.last_date))
-                    logging.info('Time steps: {}'.format(handler.length))
-                    logging.info('Is instant: {}'.format(ctx.tinit.is_instant))

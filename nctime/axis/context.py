@@ -74,12 +74,12 @@ class ProcessingContext(object):
         self.pool.join()
         # Decline outputs depending on the scan results
         # Default is sys.exit(0)
-        # if any([s in EXIT_ERRORS for s in self.status]):
-        #     logging.error('Some time axis should be corrected manually ({} files scanned)'.format(self.scan_files))
-        #     sys.exit(1)
-        # else:
-        #     logging.info('Time diagnostic completed ({} files scanned)'.format(self.scan_files))
-        #     sys.exit(0)
+        if any([s in EXIT_ERRORS for s in self.status]):
+            logging.error('Some time axis should be corrected manually ({} files scanned)'.format(self.scan_files))
+            sys.exit(1)
+        else:
+            logging.info('Time diagnostic completed ({} files scanned)'.format(self.scan_files))
+            sys.exit(0)
 
     def get_checksum_client(self):
         """

@@ -59,7 +59,7 @@ class ProcessingContext(object):
         # Exclude fixed frequency
         self.sources.FileFilter['frequency_filter'] = ('(_fx_|_fixed_|_fx.|_fixed.)', True)
         # Get first file for reference
-        self.ref = self.sources.first()[0]
+        self.ref = self.sources.first()
         self.display = len(os.path.basename(self.ref))
         # Set driving time properties
         self.tinit = TimeInit(ref=self.ref, tunits_default=self.tunits_default)
