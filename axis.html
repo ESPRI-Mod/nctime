@@ -176,16 +176,6 @@
 <p>Time is a key dimension from NetCDF files. Unfortunately, the time axis is often mistaken in files from coupled climate models and leads to flawed studies or
 unused data. Consequently, these files cannot be used or, even worse, produced erroneous results, due to problems in the
 time axis description.</p>
-<blockquote>
-<div>Time axis status returned:<a href="#id1"><span class="problematic" id="id2">|</span></a>n
-000: Unmodified time axis,|n
-001: Corrected time axis because wrong time steps,|n
-002: Corrected time axis because of changing time units,|n
-003: Corrected time axis because of inconsistency between last date of time axis and end date of filename
-period (e.g., wrong time axis length),|n
-004: Corrected time axis deleting time boundaries for instant time,|n
-005: Ignored averaged time axis without time boundaries,|n
-006: Corrected time bounds because wrong time steps.|n|n</div></blockquote>
 <div class="section" id="rebuilt-and-check-time-axis">
 <h2>Rebuilt and check time axis<a class="headerlink" href="#rebuilt-and-check-time-axis" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis --project PROJECT_ID /PATH/TO/SCAN/
