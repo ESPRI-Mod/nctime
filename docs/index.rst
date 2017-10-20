@@ -12,7 +12,7 @@ Time is a key dimension from NetCDF files that could lead to flawed studies or u
 allows researchers to easily diagnose the time definition of their data to ensure a proper analysis.
 
 .. note:: ``nctime`` is based on uncorrupted filename period dates and properly-defined times units, time calendar
-    and frequency NetCDF attributes.|n|n
+    and frequency NetCDF attributes.
 
 .. toctree::
    :maxdepth: 1

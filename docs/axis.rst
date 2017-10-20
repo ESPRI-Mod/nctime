@@ -8,18 +8,6 @@ Time is a key dimension from NetCDF files. Unfortunately, the time axis is often
 unused data. Consequently, these files cannot be used or, even worse, produced erroneous results, due to problems in the
 time axis description.
 
-
-
-    Time axis status returned:|n
-    000: Unmodified time axis,|n
-    001: Corrected time axis because wrong time steps,|n
-    002: Corrected time axis because of changing time units,|n
-    003: Corrected time axis because of inconsistency between last date of time axis and end date of filename
-    period (e.g., wrong time axis length),|n
-    004: Corrected time axis deleting time boundaries for instant time,|n
-    005: Ignored averaged time axis without time boundaries,|n
-    006: Corrected time bounds because wrong time steps.|n|n
-
 Rebuilt and check time axis
 ***************************
 
