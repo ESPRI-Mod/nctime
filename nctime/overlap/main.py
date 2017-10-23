@@ -18,7 +18,7 @@ import numpy as np
 from context import ProcessingContext
 from nctime.utils.time import get_next_timestep, get_start_end_dates_from_filename, \
     get_first_last_timesteps, dates2int
-
+from itertools import combinations, permutations
 
 def get_overlaps(directory, nodes, shortest):
     """
@@ -144,18 +144,19 @@ def run(args):
                         logging.info('{} --> {}'.format(n.center(ctx.display + 2),
                                                         ' END '.center(ctx.display + 2, '-')))
                 else:
-                    # Get index of the closest node
-                    # The closest node is the node with the smallest positive difference
-                    # between next current time step and all start dates
+                    # A node is a "backward" node when the difference between the next current time step
+                    # and its start date is positive.
+                    # To ensure continuity path, edges has to only exist with backward nodes.
                     other_nodes = [x for x in nodes if x is not n]
                     start_dates = [nodes[x]['start_date'] for x in other_nodes]
+                    # Find index of "backwards" nodes
                     nxts = [i for i, v in enumerate(nodes[n]['next_date'] - np.array(start_dates)) if v >= 0]
-                    if nxts:
-                        for nxt in nxts:
-                            ctx.graph.add_edge(n, other_nodes[nxt])
-                            if ctx.verbose:
-                                logging.info('{} --> {}'.format(n.center(ctx.display + 2),
-                                                                other_nodes[nxt].center(ctx.display + 2)))
+                    nxts = [other_nodes[i] for i in nxts]
+                    for nxt in nxts:
+                        ctx.graph.add_edge(n, nxt)
+                        if ctx.verbose:
+                            logging.info('{} --> {}'.format(n.center(ctx.display + 2),
+                                                            nxt.center(ctx.display + 2)))
             # Walk through the graph
             try:
                 # Find shortest path between oldest and latest dates
@@ -164,22 +165,26 @@ def run(args):
                 ctx.full_overlaps, ctx.partial_overlaps = get_overlaps(ctx.directory, nodes, ctx.path)
             except nx.NetworkXNoPath:
                 ctx.broken = True
-                next_node = 'START'
-                while next_node != 'END':
-                    paths = nx.shortest_path(ctx.graph, source=next_node).values()
-                    path_lengths = [len(p) for p in paths]
-                    longest_path = paths[path_lengths.index(max(path_lengths))]
-                    ctx.path.extend(longest_path)
-                    if longest_path[-1] != 'END':
-                        # Get index of the closest next node after break
-                        # The closest next node is the node with the smallest negative difference
-                        # between next current time stem and all start dates
-                        diff = list(nodes[longest_path[-1]]['next_date'] - np.array(start_dates))
-                        next_node = other_nodes[diff.index(max([i for i in diff if i < 0]))]
+                ctx.path.append('START')
+                for n in sorted(nodes.keys()):
+                    ctx.path.append(n)
+                    # A node is a "forward" node when the difference between the next current time step
+                    # and its start date is negative.
+                    # A path gap exists from a node when no edges exist with ALL "forwards" nodes.
+                    other_nodes = [x for x in nodes if x is not n]
+                    start_dates = [nodes[x]['start_date'] for x in other_nodes]
+                    # Find index of "forward" nodes
+                    nxts = [i for i, v in enumerate(nodes[n]['next_date'] - np.array(start_dates)) if v <= 0]
+                    nxts = [other_nodes[i] for i in nxts]
+                    # Find available targets from graph
+                    try:
+                        avail_targets = zip(*ctx.graph.edges(n))[1]
+                    except IndexError:
+                        avail_targets = []
+                    # If no "forward" nodes in edges target = BREAK
+                    if not set(nxts).intersection(avail_targets):
                         ctx.path.append('BREAK')
-                    else:
-                        next_node = 'END'
-
+                ctx.path.append('END')
             # Resolve overlaps
             if ctx.resolve:
                 # Full overlapping files has to be deleted before partial overlapping files are truncated.

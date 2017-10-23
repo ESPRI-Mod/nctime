@@ -71,29 +71,25 @@ class ProcessingContext(object):
         # Decline outputs depending on the scan results
         # Default is sys.exit(0)
         # Print first node
-        logging.info('{} --> {}'.format(' START '.center(self.display + 2, '-'),
-                                        self.path[1].center(self.display + 2)))
+        m = ' START '.center(self.display + 2, '-')
+        msg = '\n                                   {}'.format(m)
         # Print intermediate nodes
         for i in range(1, len(self.path) - 2):
-            if self.partial_overlaps and self.path[i + 1] in self.partial_overlaps:
-                logging.info('{} --> {} < '
-                             'overlap from {} to {}'.format(self.path[i].center(self.display + 2),
-                                                            self.path[i + 1].center(self.display + 2),
-                                                            self.partial_overlaps[self.path[i + 1]]['start_date'],
-                                                            self.partial_overlaps[self.path[i + 1]][
-                                                                'end_overlap']))
-            else:
-                logging.info('{} --> {}'.format(self.path[i].center(self.display + 2),
-                                                self.path[i + 1].center(self.display + 2)))
+            m = ' {} '.format(self.path[i]).center(self.display + 2, '~')
+            if self.partial_overlaps and self.path[i] in self.partial_overlaps:
+                m = ' {} < overlap from {} to {} '.format(self.path[i].center(self.display + 2),
+                                                          self.partial_overlaps[self.path[i]]['start_date'],
+                                                          self.partial_overlaps[self.path[i]]['end_overlap'])
+            msg += '\n                                   {}'.format(m)
         # Print last node
-        logging.info('{} --> {}'.format(self.path[-2].center(self.display + 2),
-                                        ' END '.center(self.display + 2, '-')))
+        m = ' END '.center(self.display + 2, '-')
+        msg += '\n                                   {}'.format(m)
         # Print analyse result
         if self.broken:
-            logging.error('Time series is broken.')
+            logging.error('Time series broken: {}'.format(msg))
             sys.exit(1)
         else:
-            logging.info('Shortest path found')
+            logging.info('Shortest path found: {}'.format(msg))
         # Print overlaps if exists
         if not self.full_overlaps and not self.partial_overlaps:
             logging.info('No overlapping files')
