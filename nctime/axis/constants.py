@@ -14,7 +14,7 @@ TIMEOUT = 120
 MAX_THREADS_DEFAULT = 1
 
 # Errors that return exit code = 1
-EXIT_ERRORS = ['005']
+EXIT_ERRORS = ['005','999']
 
 # Status messages
 STATUS = {'000': 'Time axis seems OK',
@@ -25,4 +25,6 @@ STATUS = {'000': 'Time axis seems OK',
           '005': 'An averaged time axis should embed time boundaries',
           '006': 'Mistaken time bounds over one or several time steps',
           '007': 'Calendar must be unchanged for the same dataset',
-          '008': 'Last date differs from end date of filename'}
+          '008': 'Last date differs from end date of filename',
+          '999': 'Other error'}
+
