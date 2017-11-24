@@ -106,7 +106,7 @@ def process(collector_input):
         # Remove time boundaries depending on checking
         if (ctx.write or ctx.force) and {'004'}.intersection(set(fh.status)):
             # Delete time bounds and bounds attribute from file if write of force mode
-            fh.nc_var_delete(variable='time_bnds')
+            fh.nc_var_delete(variable=TIME_BNDS_VAR_NAME[project])
             fh.nc_att_delete(attribute='bounds', variable='time')
         # Rewrite time axis depending on checking
         if (ctx.write and {'001', '002', '006', '007'}.intersection(set(fh.status))) or ctx.force:
@@ -115,7 +115,7 @@ def process(collector_input):
             fh.nc_att_overwrite('calendar', 'time', ctx.tinit.calendar)
             # Rewrite time boundaries if needed
             if ctx.tinit.has_bounds:
-                fh.nc_var_overwrite('time_bnds', fh.time_bounds_rebuilt)
+                fh.nc_var_overwrite(TIME_BNDS_VAR_NAME[project], fh.time_bounds_rebuilt)
         # Compute checksum at the end of all modifications and after closing file
         if (ctx.write or ctx.force) and {'001', '002', '003', '004', '006', '007'}.intersection(set(fh.status)):
             fh.new_checksum = fh.checksum(ctx.checksum_type)
