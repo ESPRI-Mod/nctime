@@ -63,7 +63,7 @@ class ProcessingContext(object):
         # Exclude fixed frequency
         self.sources.FileFilter['frequency_filter'] = ('(_fx_|_fixed_|_fx.|_fixed.)', True)
         # Set driving time properties
-        self.tinit = TimeInit(ref=self.sources.first()[0], tunits_default=self.tunits_default)
+        self.tinit = TimeInit(project=self.project, ref=self.sources.first()[0], tunits_default=self.tunits_default)
         # Init threads pool
         self.pool = ThreadPool(int(self.threads))
         return self

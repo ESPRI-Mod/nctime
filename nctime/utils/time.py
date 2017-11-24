@@ -38,16 +38,18 @@ class TimeInit(object):
 
     """
 
-    def __init__(self, ref, tunits_default=None):
+    def __init__(self, project, ref, tunits_default=None):
         variable = unicode(os.path.basename(ref).split('_')[0])
         try:
             nc = netCDF4.Dataset(ref, 'r')
         except IOError:
             raise InvalidNetCDFFile(ref)
-        # Check required global attributes exist
-        for attribute in REQUIRED_ATTRIBUTES:
-            if attribute not in nc.ncattrs():
-                raise NoNetCDFAttribute(attribute, ref)
+        # Check and set required global attributes
+        for attr, name in REQUIRED_ATTRIBUTES[project].iteritems():
+            if name not in nc.ncattrs():
+                raise NoNetCDFAttribute(name, ref)
+            else:
+                setattr(self, attr, getattr(nc, name))
         # Check time variable exists
         if 'time' not in nc.variables.keys():
             raise NoNetCDFVariable('time', ref)
@@ -55,21 +57,12 @@ class TimeInit(object):
         for attribute in REQUIRED_TIME_ATTRIBUTES:
             if attribute not in nc.variables['time'].ncattrs():
                 raise NoNetCDFAttribute(attribute, ref, 'time')
-        # Get realm
-        if nc.project_id == 'CORDEX':
-            self.realm = 'atmos'
-        else:
-            self.realm = nc.modeling_realm
-        # Get frequency
-        self.frequency = nc.frequency
         # Get time units (i.e., days since ...)
         self.tunits = self.control_time_units(nc.variables['time'].units, tunits_default)
         # Convert time units into frequency units (i.e., months/year/hours since ...)
         self.funits = self.convert_time_units(self.tunits, self.frequency)
         # Get calendar
         self.calendar = nc.variables['time'].calendar
-        if self.calendar == 'standard' and nc.model_id == 'CMCC-CM':
-            self.calendar = 'proleptic_gregorian'
         # Get boolean on instantaneous time axis
         if 'cell_methods' not in nc.variables[variable].ncattrs():
             raise NoNetCDFAttribute('cell_methods', ref, variable)
@@ -78,7 +71,7 @@ class TimeInit(object):
             self.is_instant = True
         # Get boolean on time boundaries
         self.has_bounds = False
-        if 'time_bnds' in nc.variables.keys():
+        if 'time_bnds' or 'time_bounds' in nc.variables.keys():
             self.has_bounds = True
         nc.close()
 

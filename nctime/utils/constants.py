@@ -9,7 +9,7 @@
 from netcdftime import datetime
 
 # Program version
-VERSION = '4.0.0'
+VERSION = '4.0.1'
 
 # Date
 VERSION_DATE = datetime(year=2017, month=11, day=24).strftime("%Y-%d-%m")
@@ -199,7 +199,14 @@ DEFAULT_TIME_UNITS = {'cordex': 'days since 1949-12-01 00:00:00',
                       'cordex-adjust': 'days since 1949-12-01 00:00:00'}
 
 # Required NetCDF global attributes
-REQUIRED_ATTRIBUTES = ['project_id', 'model_id', 'frequency']
+REQUIRED_ATTRIBUTES = {'cmip5': {'realm': 'modeling_realm',
+                                 'frequency': 'frequency'},
+                       'cordex': {'realm': 'modeling_realm',
+                                  'frequency': 'frequency'},
+                       'cordex-adjust': {'realm': 'modeling_realm',
+                                         'frequency': 'frequency'},
+                       'cmip6': {'realm': 'realm',
+                                 'frequency': 'frequency'}}
 
 # Required NetCDF time attributes
 REQUIRED_TIME_ATTRIBUTES = ['units', 'calendar']

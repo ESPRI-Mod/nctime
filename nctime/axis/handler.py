@@ -52,7 +52,10 @@ class File(object):
         self.length = f.variables['time'].shape[0]
         # Get time boundaries
         if has_bounds:
-            self.time_bounds = f.variables['time_bnds'][:, :]
+            try:
+                self.time_bounds = f.variables['time_bnds'][:, :]
+            except KeyError:
+                self.time_bounds = f.variables['time_bounds'][:, :]
         else:
             self.time_bounds = None
         # Get time axis
