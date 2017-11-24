@@ -62,7 +62,7 @@ class ProcessingContext(object):
         self.ref = self.sources.first()
         self.display = len(os.path.basename(self.ref))
         # Set driving time properties
-        self.tinit = TimeInit(ref=self.ref, tunits_default=self.tunits_default)
+        self.tinit = TimeInit(project=self.project, ref=self.ref, tunits_default=self.tunits_default)
         # DiGraph creation
         self.graph = nx.DiGraph()
         return self
