@@ -12,7 +12,7 @@ from netcdftime import datetime
 VERSION = '4.0.2'
 
 # Date
-VERSION_DATE = datetime(year=2017, month=11, day=24).strftime("%Y-%d-%m")
+VERSION_DATE = datetime(year=2018, month=4, day=11).strftime("%Y-%d-%m")
 
 # Help
 PROGRAM_DESC = \
@@ -210,6 +210,3 @@ REQUIRED_ATTRIBUTES = {'cmip5': {'realm': 'modeling_realm',
 
 # Required NetCDF time attributes
 REQUIRED_TIME_ATTRIBUTES = ['units', 'calendar']
-
-# Required options
-REQUIRED_OPTIONS = ['checksum_type', 'filename_format']

@@ -76,30 +76,30 @@ def create(db_file):
     connexion = connect(db_file)
     # Create destination table
     connexion.execute(
-            """
-            CREATE TABLE IF NOT EXISTS time_axis
-            (id INTEGER PRIMARY KEY,
-            project TEXT,
-            realm TEXT,
-            frequency TEXT,
-            freq_units TEXT,
-            variable TEXT,
-            filename TEXT,
-            start TEXT,
-            end TEXT,
-            last TEXT,
-            length INT,
-            file_units TEXT,
-            status TEXT,
-            file_ref TEXT,
-            ref_units TEXT,
-            calendar TEXT,
-            is_instant INT,
-            has_bounds INT,
-            new_checksum TEXT,
-            full_path TEXT,
-            creation_date TEXT)
-            """
+        """
+        CREATE TABLE IF NOT EXISTS time_axis
+        (id INTEGER PRIMARY KEY,
+        project TEXT,
+        realm TEXT,
+        frequency TEXT,
+        freq_units TEXT,
+        variable TEXT,
+        filename TEXT,
+        start TEXT,
+        end TEXT,
+        last TEXT,
+        length INT,
+        file_units TEXT,
+        status TEXT,
+        file_ref TEXT,
+        ref_units TEXT,
+        calendar TEXT,
+        is_instant INT,
+        has_bounds INT,
+        new_checksum TEXT,
+        full_path TEXT,
+        creation_date TEXT)
+        """
     )
     # Commit changes
     connexion.commit()
@@ -119,30 +119,30 @@ def insert(db_file, data):
     connexion = connect(db_file)
     # Insert a new entry
     connexion.execute(
-            """
-            INSERT INTO time_axis VALUES
-            (NULL,
-            :project,
-            :realm,
-            :frequency,
-            :funits,
-            :variable,
-            :filename,
-            :start_date,
-            :end_date,
-            :last_date,
-            :length,
-            :time_units,
-            :status,
-            :ref,
-            :tunits,
-            :calendar,
-            :is_instant,
-            :has_bounds,
-            :new_checksum,
-            :ffp,
-            :creation_date)
-            """, data
+        """
+        INSERT INTO time_axis VALUES
+        (NULL,
+        :project,
+        :realm,
+        :frequency,
+        :funits,
+        :variable,
+        :filename,
+        :start_date,
+        :end_date,
+        :last_date,
+        :length,
+        :time_units,
+        :status,
+        :ref,
+        :tunits,
+        :calendar,
+        :is_instant,
+        :has_bounds,
+        :new_checksum,
+        :ffp,
+        :creation_date)
+        """, data
     )
     # Commit changes
     connexion.commit()

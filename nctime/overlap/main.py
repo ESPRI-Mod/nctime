@@ -18,7 +18,7 @@ import numpy as np
 from context import ProcessingContext
 from nctime.utils.time import get_next_timestep, get_start_end_dates_from_filename, \
     get_first_last_timesteps, dates2int
-from itertools import combinations, permutations
+
 
 def get_overlaps(directory, nodes, shortest):
     """

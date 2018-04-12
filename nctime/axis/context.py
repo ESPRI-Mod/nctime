@@ -56,12 +56,12 @@ class ProcessingContext(object):
         self.cfg = SectionParser(section='project:{}'.format(self.project), directory=self.config_dir)
         self.pattern = self.cfg.translate('filename_format')
         # Init data collector
-        self.sources = Collector(source=self.directory, data=self)
+        self.sources = Collector(sources=self.directory, data=self)
         # Init collector filter
         # Exclude hidden and/or non-NetCDF files
-        self.sources.FileFilter['base_filter'] = ('^[!.].*\.nc$', True)
+        self.sources.FileFilter.add(regex='^.*\.nc$')
         # Exclude fixed frequency
-        self.sources.FileFilter['frequency_filter'] = ('(_fx_|_fixed_|_fx.|_fixed.)', True)
+        self.sources.FileFilter.add(regex='(_fx_|_fixed_|_fx.|_fixed.)', inclusive=False)
         # Set driving time properties
         self.tinit = TimeInit(project=self.project, ref=self.sources.first()[0], tunits_default=self.tunits_default)
         # Init threads pool

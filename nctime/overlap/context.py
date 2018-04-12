@@ -52,12 +52,12 @@ class ProcessingContext(object):
         self.cfg = SectionParser(section='project:{}'.format(self.project), directory=self.config_dir)
         self.pattern = self.cfg.translate('filename_format')
         # Init data collector
-        self.sources = Collector(source=self.directory)
+        self.sources = Collector(sources=self.directory)
         # Init collector filter
         # Exclude hidden non-NetCDF files
-        self.sources.FileFilter['base_filter'] = ('^[!.].*\.nc$', True)
+        self.sources.FileFilter.add(regex='^.*\.nc$')
         # Exclude fixed frequency
-        self.sources.FileFilter['frequency_filter'] = ('(_fx_|_fixed_|_fx.|_fixed.)', True)
+        self.sources.FileFilter.add(regex='(_fx_|_fixed_|_fx.|_fixed.)', inclusive=False)
         # Get first file for reference
         self.ref = self.sources.first()
         self.display = len(os.path.basename(self.ref))

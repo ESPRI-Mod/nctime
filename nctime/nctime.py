@@ -12,7 +12,6 @@
 
 import argparse
 import os
-import sys
 from importlib import import_module
 
 from utils.constants import *
@@ -150,7 +149,7 @@ def get_args():
         help=DB_HELP)
     axis.add_argument(
         '--max-threads',
-        metavar=4,
+        metavar='4',
         type=int,
         default=4,
         help=MAX_THREADS_HELP)
@@ -164,12 +163,9 @@ def run():
     # Initialize logger depending on log and verbose mode
     init_logging(log=args.log)
     # Run program
-    module_name = args.cmd.lower().replace('-', '')
-    main = import_module('.main', package='nctime.{}'.format(module_name))
+    main = import_module('.main', package='nctime.{}'.format(args.cmd))
     main.run(args)
 
 
 if __name__ == "__main__":
-    # PyCharm workaround
-    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
     run()

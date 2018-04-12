@@ -70,9 +70,9 @@ class TimeInit(object):
         if 'point' in nc.variables[variable].cell_methods.lower():
             self.is_instant = True
         # Get boolean on time boundaries
-        self.has_bounds = False
-        if 'time_bnds' or 'time_bounds' in nc.variables.keys():
-            self.has_bounds = True
+        self.bounds = None
+        if 'bounds' in nc.variables['time'].ncattrs():
+            self.bounds = nc.variables['time'].bounds
         nc.close()
 
     @staticmethod

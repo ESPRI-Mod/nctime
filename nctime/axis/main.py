@@ -10,11 +10,12 @@
 import logging
 import os
 import re
-from netcdftime import datetime
 
 import numpy as np
-from constants import *
+from netcdftime import datetime
+
 import db
+from constants import *
 from context import ProcessingContext
 from handler import File
 from nctime.utils.misc import trunc
@@ -46,7 +47,7 @@ def process(collector_input):
     # Block to avoid program stop if a thread fails
     try:
         # Instantiate file handler
-        fh = File(ffp=ffp, has_bounds=ctx.tinit.has_bounds)
+        fh = File(ffp=ffp)
 
         # Extract start and end dates from filename
         start, _, _ = fh.get_start_end_dates(pattern=ctx.pattern,
@@ -74,10 +75,10 @@ def process(collector_input):
             elif fh.last_date != fh.end_date:
                 fh.status.append('008')
         # Check consistency between instant time and time boundaries
-        if ctx.tinit.is_instant and ctx.tinit.has_bounds:
+        if ctx.tinit.is_instant and ctx.tinit.bounds:
             fh.status.append('004')
         # Check consistency between averaged time and time boundaries
-        if not ctx.tinit.is_instant and not ctx.tinit.has_bounds:
+        if not ctx.tinit.is_instant and not ctx.tinit.bounds:
             fh.status.append('005')
         # Check time axis squareness
         if not np.array_equal(fh.time_axis_rebuilt, fh.time_axis):
@@ -85,7 +86,7 @@ def process(collector_input):
         else:
             fh.status.append('000')
         # Check time boundaries squareness if needed
-        if ctx.tinit.has_bounds:
+        if ctx.tinit.bounds:
             fh.time_bounds_rebuilt = fh.build_time_bounds(start=trunc(start, 5),
                                                           inc=time_inc(ctx.tinit.frequency)[0],
                                                           input_units=ctx.tinit.funits,
@@ -106,7 +107,7 @@ def process(collector_input):
         # Remove time boundaries depending on checking
         if (ctx.write or ctx.force) and {'004'}.intersection(set(fh.status)):
             # Delete time bounds and bounds attribute from file if write of force mode
-            fh.nc_var_delete(variable=TIME_BNDS_VAR_NAME[project])
+            fh.nc_var_delete(variable=ctx.tinit.bounds)
             fh.nc_att_delete(attribute='bounds', variable='time')
         # Rewrite time axis depending on checking
         if (ctx.write and {'001', '002', '006', '007'}.intersection(set(fh.status))) or ctx.force:
@@ -114,8 +115,8 @@ def process(collector_input):
             fh.nc_att_overwrite('units', 'time', ctx.tinit.tunits)
             fh.nc_att_overwrite('calendar', 'time', ctx.tinit.calendar)
             # Rewrite time boundaries if needed
-            if ctx.tinit.has_bounds:
-                fh.nc_var_overwrite(TIME_BNDS_VAR_NAME[project], fh.time_bounds_rebuilt)
+            if ctx.tinit.bounds:
+                fh.nc_var_overwrite(ctx.tinit.bounds, fh.time_bounds_rebuilt)
         # Compute checksum at the end of all modifications and after closing file
         if (ctx.write or ctx.force) and {'001', '002', '003', '004', '006', '007'}.intersection(set(fh.status)):
             fh.new_checksum = fh.checksum(ctx.checksum_type)
@@ -183,5 +184,6 @@ def run(args):
                     diagnostic.update(ctx.tinit.__dict__)
                     diagnostic.update(handler.__dict__)
                     diagnostic['status'] = ','.join(handler.status)
+                    diagnostic['has_bounds'] = True if ctx.tinit.bounds else False
                     db.insert(ctx.db, diagnostic)
                     logging.info('{} - Diagnostic persisted into database'.format(handler.filename))
