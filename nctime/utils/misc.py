@@ -11,8 +11,34 @@ import logging
 import os
 import re
 from datetime import datetime
-
+from netCDF4 import Dataset
 from constants import *
+from custom_exceptions import *
+
+class ncopen(object):
+    """
+    Properly opens a netCDF file
+
+    :param str path: The netCDF file full path
+    :returns: The netCDF dataset object
+    :rtype: *netCDF4.Dataset*
+
+    """
+
+    def __init__(self, path, mode='r'):
+        self.path = path
+        self.mode = mode
+        self.nc = None
+
+    def __enter__(self):
+        try:
+            self.nc = Dataset(self.path, self.mode)
+        except IOError:
+            raise InvalidNetCDFFile(self.path)
+        return self.nc
+
+    def __exit__(self, *exc):
+        self.nc.close()
 
 
 class LogFilter(object):

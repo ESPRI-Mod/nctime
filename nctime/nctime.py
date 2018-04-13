@@ -12,6 +12,7 @@
 
 import argparse
 import os
+import sys
 from importlib import import_module
 
 from utils.constants import *
@@ -168,4 +169,5 @@ def run():
 
 
 if __name__ == "__main__":
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
     run()

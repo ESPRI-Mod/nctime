@@ -197,16 +197,3 @@ TIME_CORRECTION = {'3hr': {'period_start': {'000000': 0.0,
 # Default time units
 DEFAULT_TIME_UNITS = {'cordex': 'days since 1949-12-01 00:00:00',
                       'cordex-adjust': 'days since 1949-12-01 00:00:00'}
-
-# Required NetCDF global attributes
-REQUIRED_ATTRIBUTES = {'cmip5': {'realm': 'modeling_realm',
-                                 'frequency': 'frequency'},
-                       'cordex': {'realm': 'modeling_realm',
-                                  'frequency': 'frequency'},
-                       'cordex-adjust': {'realm': 'modeling_realm',
-                                         'frequency': 'frequency'},
-                       'cmip6': {'realm': 'realm',
-                                 'frequency': 'frequency'}}
-
-# Required NetCDF time attributes
-REQUIRED_TIME_ATTRIBUTES = ['units', 'calendar']

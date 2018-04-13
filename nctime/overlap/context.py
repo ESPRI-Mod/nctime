@@ -15,8 +15,6 @@ from ESGConfigParser import SectionParser
 
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
-from nctime.utils.custom_exceptions import *
-from nctime.utils.misc import cmd_exists
 from nctime.utils.time import TimeInit
 
 
@@ -30,8 +28,8 @@ class ProcessingContext(object):
 
     """
 
-    def __init__(self, args):
-        self.directory = args.directory
+    def __init__(self, args, directory):
+        self.directory = directory
         self.config_dir = args.i
         self.resolve = args.resolve
         self.full_overlap_only = args.full_overlap_only
@@ -46,13 +44,11 @@ class ProcessingContext(object):
         self.broken = False
 
     def __enter__(self):
-        # Get checksum client
-        self.checksum_client, self.checksum_type = self.get_checksum_client()
         # Init configuration parser
         self.cfg = SectionParser(section='project:{}'.format(self.project), directory=self.config_dir)
-        self.pattern = self.cfg.translate('filename_format')
+        self.pattern = self.cfg.translate('filename_format', version_pattern=False)
         # Init data collector
-        self.sources = Collector(source=self.directory)
+        self.sources = Collector(sources=self.directory)
         # Init collector filter
         # Exclude hidden non-NetCDF files
         self.sources.FileFilter.add(regex='^.*\.nc$')
@@ -62,7 +58,7 @@ class ProcessingContext(object):
         self.ref = self.sources.first()
         self.display = len(os.path.basename(self.ref))
         # Set driving time properties
-        self.tinit = TimeInit(project=self.project, ref=self.ref, tunits_default=self.tunits_default)
+        self.tinit = TimeInit(ref=self.ref, tunits_default=self.tunits_default)
         # DiGraph creation
         self.graph = nx.DiGraph()
         return self
@@ -74,7 +70,7 @@ class ProcessingContext(object):
         m = ' START '.center(self.display + 2, '-')
         msg = '\n                                   {}'.format(m)
         # Print intermediate nodes
-        for i in range(1, len(self.path) - 2):
+        for i in range(1, len(self.path) - 1):
             m = ' {} '.format(self.path[i]).center(self.display + 2, '~')
             if self.partial_overlaps and self.path[i] in self.partial_overlaps:
                 m = ' {} < overlap from {} to {} '.format(self.path[i].center(self.display + 2),
@@ -107,22 +103,3 @@ class ProcessingContext(object):
                     logging.warning('{} > TO TRUNCATE'.format(node))
         # End
         logging.info('Overlap diagnostic completed')
-
-    def get_checksum_client(self):
-        """
-        Gets the checksum client to use.
-        Be careful to Exception constants by reading two different sections.
-
-        :returns: The checksum client
-        :rtype: *str*
-
-        """
-        _cfg = SectionParser(section='DEFAULT', directory=self.config_dir)
-        if _cfg.has_option('DEFAULT', 'checksum'):
-            checksum_client, checksum_type = _cfg.get_options_from_table('checksum')[0]
-        else:  # Use SHA256 as default because esg.ini not mandatory in configuration directory
-            checksum_client, checksum_type = 'sha256sum', 'SHA256'
-        if not cmd_exists(checksum_client):
-            raise ChecksumClientNotFound(checksum_client)
-        else:
-            return checksum_client, checksum_type

@@ -24,20 +24,21 @@ class Collector(object):
 
     """
 
-    def __init__(self, source, data=None):
-        self.source = source
+    def __init__(self, sources, data=None):
+        self.sources = sources
         self.data = data
         self.FileFilter = FilterCollection()
         self.PathFilter = FilterCollection()
-        assert os.path.isdir(self.source), 'No such directory: {}'.format(self.source)
+        assert isinstance(self.sources, list)
 
     def __iter__(self):
-        for root, _, filenames in os.walk(source, followlinks=True):
-            if self.PathFilter(root):
-                for filename in sorted(filenames):
-                    ffp = os.path.join(root, filename)
-                    if os.path.isfile(ffp) and self.FileFilter(filename):
-                        yield self.attach(ffp)
+        for source in self.sources:
+            for root, _, filenames in os.walk(source, followlinks=True):
+                if self.PathFilter(root):
+                    for filename in sorted(filenames):
+                        ffp = os.path.join(root, filename)
+                        if os.path.isfile(ffp) and self.FileFilter(filename):
+                            yield self.attach(ffp)
 
     def __len__(self):
         """

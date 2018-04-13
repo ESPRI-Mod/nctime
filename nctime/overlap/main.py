@@ -106,7 +106,10 @@ def run(args):
     for directory in args.directory:
         # Instantiate processing context
         with ProcessingContext(args, directory) as ctx:
-            logging.info('Overlap diagnostic started for {}'.format(ctx.directory))
+            logging.info('==> Overlap diagnostic started')
+
+            # Creer un arbre pour chaque filename "pattern"
+
             ctx.graph.clear()
             nodes = dict()
             logging.info('Create edges from source nodes to target nodes')
@@ -124,7 +127,6 @@ def run(args):
                 # Get first and last time steps
                 timesteps = get_first_last_timesteps(ffp)
                 nodes[filename]['first_timestep'], nodes[filename]['last_timestep'] = timesteps
-
             # Build starting node
             start_dates = [nodes[n]['start_date'] for n in nodes]
             starts = [n for n in nodes if nodes[n]['start_date'] == min(start_dates)]
