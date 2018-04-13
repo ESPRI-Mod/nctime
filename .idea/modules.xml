@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/cmip5-time-axis.iml" filepath="$PROJECT_DIR$/.idea/cmip5-time-axis.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/nctime.iml" filepath="$PROJECT_DIR$/.idea/nctime.iml" />
     </modules>
   </component>
 </project>
