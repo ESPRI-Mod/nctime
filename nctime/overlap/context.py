@@ -30,12 +30,12 @@ class ProcessingContext(object):
 
     """
 
-    def __init__(self, args, directory):
-        self.directory = directory
+    def __init__(self, args):
+        self.directory = args.directory
         self.config_dir = args.i
         self.resolve = args.resolve
         self.full_overlap_only = args.full_overlap_only
-        self.verbose = args.v
+        self.verbose = args.debug
         self.project = args.project
         self.tunits_default = None
         if self.project in DEFAULT_TIME_UNITS.keys():
@@ -52,7 +52,7 @@ class ProcessingContext(object):
         self.cfg = SectionParser(section='project:{}'.format(self.project), directory=self.config_dir)
         self.pattern = self.cfg.translate('filename_format')
         # Init data collector
-        self.sources = Collector(sources=self.directory)
+        self.sources = Collector(source=self.directory)
         # Init collector filter
         # Exclude hidden non-NetCDF files
         self.sources.FileFilter.add(regex='^.*\.nc$')

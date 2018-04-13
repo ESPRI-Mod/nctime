@@ -45,7 +45,7 @@ def get_args():
         action='help',
         help=HELP)
     main.add_argument(
-        '-V',
+        '-v',
         action='version',
         version='%(prog)s ({})'.format(__version__),
         help=VERSION_HELP)
@@ -88,7 +88,7 @@ def get_args():
         action='help',
         help=HELP)
     parent.add_argument(
-        '-v',
+        '--debug',
         action='store_true',
         default=False,
         help=VERBOSE_HELP)
