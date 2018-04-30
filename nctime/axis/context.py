@@ -17,8 +17,6 @@ from ESGConfigParser import SectionParser
 from constants import *
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
-from nctime.utils.custom_exceptions import *
-from nctime.utils.misc import cmd_exists
 from nctime.utils.time import TimeInit
 
 

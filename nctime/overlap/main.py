@@ -7,19 +7,18 @@
 
 """
 
+import itertools
 import logging
 import os
-import itertools
-
 import re
-from handler import Filename
+
 import nco
 import networkx as nx
 import numpy as np
-from copy import deepcopy as copy
+
 from context import ProcessingContext
-from nctime.utils.time import get_next_timestep, get_start_end_dates_from_filename, \
-    get_first_last_timesteps, dates2int
+from handler import Filename
+from nctime.utils.time import get_next_timestep
 
 
 def get_overlaps(g, shortest):
@@ -175,6 +174,7 @@ def create_edges(graph_inputs):
         logging.debug('Graph: {} :: Edge {} --> END'.format(id, end))
     # Finally update graph
     ctx.graph.set_graph(id, g)
+
 
 def evaluate_graph(graph_inputs):
     # Deserialize inputs from graph call

@@ -8,17 +8,16 @@
 """
 
 import logging
-import os
 import re
 
 import netCDF4
 import numpy as np
-from fuzzywuzzy import fuzz, process
 from netcdftime import utime
 
 from constants import *
 from custom_exceptions import *
 from misc import ncopen
+
 
 class TimeInit(object):
     """
@@ -49,6 +48,7 @@ class TimeInit(object):
             # Get reference calendar
             if 'calendar' not in nc.variables['time'].ncattrs(): raise NoNetCDFAttribute('calendar', ref, 'time')
             self.calendar = nc.variables['time'].calendar
+
 
 def control_time_units(tunits, tunits_default=None):
     """

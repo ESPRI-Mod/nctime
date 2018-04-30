@@ -7,19 +7,21 @@
 """
 
 import hashlib
+import logging
 import os
 import re
 from uuid import uuid4
-from fuzzywuzzy import fuzz, process
-import logging
+
 import nco
-import netCDF4
 import numpy as np
+from fuzzywuzzy import fuzz, process
 
 from custom_exceptions import *
 from nctime.utils.custom_exceptions import *
-from nctime.utils.time import truncated_timestamp, get_start_end_dates_from_filename, dates2str, num2date, date2num, convert_time_units, control_time_units
 from nctime.utils.misc import ncopen
+from nctime.utils.time import truncated_timestamp, get_start_end_dates_from_filename, dates2str, num2date, date2num, \
+    control_time_units
+
 
 class File(object):
     """
@@ -83,7 +85,8 @@ class File(object):
             self.calendar = nc.variables['time'].calendar
             # Get boolean on instantaneous time axis
             variable = unicode(self.filename.split('_')[0])
-            if 'cell_methods' not in nc.variables[variable].ncattrs(): raise NoNetCDFAttribute('cell_methods', self.ffp, variable)
+            if 'cell_methods' not in nc.variables[variable].ncattrs(): raise NoNetCDFAttribute('cell_methods', self.ffp,
+                                                                                               variable)
             self.is_instant = False
             if 'point' in nc.variables[variable].cell_methods.lower():
                 self.is_instant = True

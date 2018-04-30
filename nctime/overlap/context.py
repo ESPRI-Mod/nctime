@@ -11,8 +11,8 @@ import os
 import sys
 from multiprocessing.dummy import Pool as ThreadPool
 
-import networkx as nx
 from ESGConfigParser import SectionParser
+
 from handler import Graph
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
@@ -73,7 +73,8 @@ class ProcessingContext(object):
         # Default is sys.exit(0)
         # Print analyse result
         if self.broken:
-            logging.error('Some broken time period should be corrected manually ({} files scanned)'.format(self.scan_files))
+            logging.error(
+                'Some broken time period should be corrected manually ({} files scanned)'.format(self.scan_files))
             sys.exit(1)
         elif self.overlaps:
             logging.error('Some time period have overlaps to fix ({} files scanned)'.format(self.scan_files))

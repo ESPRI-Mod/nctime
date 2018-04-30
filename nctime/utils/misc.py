@@ -11,9 +11,12 @@ import logging
 import os
 import re
 from datetime import datetime
+
 from netCDF4 import Dataset
+
 from constants import *
 from custom_exceptions import *
+
 
 class ncopen(object):
     """
