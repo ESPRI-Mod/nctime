@@ -93,6 +93,12 @@ def get_args():
         action='store_true',
         default=False,
         help=VERBOSE_HELP)
+    parent.add_argument(
+        '--max-threads',
+        metavar='4',
+        type=int,
+        default=4,
+        help=MAX_THREADS_HELP)
 
     ##################################
     # Subparser for "nctime overlap" #
@@ -148,12 +154,6 @@ def get_args():
         const='{}/{}'.format(os.getcwd(), 'timeaxis.db'),
         nargs='?',
         help=DB_HELP)
-    axis.add_argument(
-        '--max-threads',
-        metavar='4',
-        type=int,
-        default=4,
-        help=MAX_THREADS_HELP)
 
     return main.parse_args()
 
@@ -161,8 +161,9 @@ def get_args():
 def run():
     # Get command-line arguments
     args = get_args()
-    # Initialize logger depending on log and verbose mode
-    init_logging(log=args.log)
+    # Initialize logger
+    level = 'DEBUG' if args.debug else 'INFO'
+    init_logging(log=args.log, level=level)
     # Run program
     main = import_module('.main', package='nctime.{}'.format(args.cmd))
     main.run(args)

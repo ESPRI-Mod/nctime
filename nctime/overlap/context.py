@@ -9,10 +9,11 @@
 import logging
 import os
 import sys
+from multiprocessing.dummy import Pool as ThreadPool
 
 import networkx as nx
 from ESGConfigParser import SectionParser
-
+from handler import Graph
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
 from nctime.utils.time import TimeInit
@@ -28,78 +29,55 @@ class ProcessingContext(object):
 
     """
 
-    def __init__(self, args, directory):
-        self.directory = directory
+    def __init__(self, args):
+        self.directory = args.directory
         self.config_dir = args.i
         self.resolve = args.resolve
         self.full_overlap_only = args.full_overlap_only
-        self.verbose = args.debug
         self.project = args.project
         self.tunits_default = None
+        self.threads = args.max_threads
         if self.project in DEFAULT_TIME_UNITS.keys():
             self.tunits_default = DEFAULT_TIME_UNITS[self.project]
-        self.path = []
-        self.full_overlaps = None
-        self.partial_overlaps = None
+        self.overlaps = False
         self.broken = False
+        self.scan_files = None
 
     def __enter__(self):
         # Init configuration parser
         self.cfg = SectionParser(section='project:{}'.format(self.project), directory=self.config_dir)
-        self.pattern = self.cfg.translate('filename_format', version_pattern=False)
+        self.pattern = self.cfg.translate('filename_format')
         # Init data collector
-        self.sources = Collector(sources=self.directory)
+        self.sources = Collector(sources=self.directory, data=self)
         # Init collector filter
         # Exclude hidden non-NetCDF files
         self.sources.FileFilter.add(regex='^.*\.nc$')
         # Exclude fixed frequency
         self.sources.FileFilter.add(regex='(_fx_|_fixed_|_fx.|_fixed.)', inclusive=False)
         # Get first file for reference
-        self.ref = self.sources.first()
+        self.ref = self.sources.first()[0]
         self.display = len(os.path.basename(self.ref))
         # Set driving time properties
         self.tinit = TimeInit(ref=self.ref, tunits_default=self.tunits_default)
         # DiGraph creation
-        self.graph = nx.DiGraph()
+        self.graph = Graph()
+        # Init threads pool
+        self.pool = ThreadPool(int(self.threads))
         return self
 
     def __exit__(self, *exc):
+        # Close tread pool
+        self.pool.close()
+        self.pool.join()
         # Decline outputs depending on the scan results
         # Default is sys.exit(0)
-        # Print first node
-        m = ' START '.center(self.display + 2, '-')
-        msg = '\n                                   {}'.format(m)
-        # Print intermediate nodes
-        for i in range(1, len(self.path) - 1):
-            m = ' {} '.format(self.path[i]).center(self.display + 2, '~')
-            if self.partial_overlaps and self.path[i] in self.partial_overlaps:
-                m = ' {} < overlap from {} to {} '.format(self.path[i].center(self.display + 2),
-                                                          self.partial_overlaps[self.path[i]]['start_date'],
-                                                          self.partial_overlaps[self.path[i]]['end_overlap'])
-            msg += '\n                                   {}'.format(m)
-        # Print last node
-        m = ' END '.center(self.display + 2, '-')
-        msg += '\n                                   {}'.format(m)
         # Print analyse result
         if self.broken:
-            logging.error('Time series broken: {}'.format(msg))
+            logging.error('Some broken time period should be corrected manually ({} files scanned)'.format(self.scan_files))
             sys.exit(1)
+        elif self.overlaps:
+            logging.error('Some time period have overlaps to fix ({} files scanned)'.format(self.scan_files))
+            sys.exit(2)
         else:
-            logging.info('Shortest path found: {}'.format(msg))
-        # Print overlaps if exists
-        if not self.full_overlaps and not self.partial_overlaps:
-            logging.info('No overlapping files')
-        else:
-            logging.warning('Overlapping files:')
-            for node in self.full_overlaps:
-                if self.resolve:
-                    logging.warning('{} > REMOVED'.format(node))
-                else:
-                    logging.warning('{} > TO REMOVE'.format(node))
-            for node in self.partial_overlaps:
-                if self.resolve and not self.full_overlap_only:
-                    logging.warning('{} > TRUNCATED'.format(node))
-                else:
-                    logging.warning('{} > TO TRUNCATE'.format(node))
-        # End
-        logging.info('Overlap diagnostic completed')
+            logging.info('Time diagnostic completed ({} files scanned)'.format(self.scan_files))
+            sys.exit(0)

@@ -9,8 +9,31 @@
 
 import os
 import re
+import sys
 from uuid import uuid4 as uuid
 from nctime.utils.misc import match
+
+class Collecting:
+    """
+    Spinner pending data collection.
+
+    """
+    STATES = ('/', '-', '\\', '|')
+    step = 0
+
+    def __init__(self, spinner):
+        self.spinner = spinner
+        self.next()
+
+    def next(self):
+        """
+        Print collector spinner
+
+        """
+        if self.spinner:
+            sys.stdout.write('\rCollecting data... {}'.format(Collecting.STATES[Collecting.step % 4]))
+            sys.stdout.flush()
+        Collecting.step += 1
 
 
 class Collector(object):
@@ -24,7 +47,8 @@ class Collector(object):
 
     """
 
-    def __init__(self, sources, data=None):
+    def __init__(self, sources, spinner=True, data=None):
+        self.spinner = spinner
         self.sources = sources
         self.data = data
         self.FileFilter = FilterCollection()
@@ -42,15 +66,19 @@ class Collector(object):
 
     def __len__(self):
         """
-        Returns collector length.
+        Returns collector length with animation.
 
         :returns: The number of items in the collector.
         :rtype: *int*
 
         """
+        progress = Collecting(self.spinner)
         s = 0
         for _ in self.__iter__():
+            progress.next()
             s += 1
+        sys.stdout.write('\r\033[K')
+        sys.stdout.flush()
         return s
 
     def attach(self, item):

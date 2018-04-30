@@ -37,7 +37,7 @@ class ProcessingContext(object):
         self.config_dir = args.i
         self.write = args.write
         self.force = args.force
-        self.verbose = args.debug
+        self.debug = args.debug
         self.project = args.project
         self.tunits_default = None
         if self.project in DEFAULT_TIME_UNITS.keys():
@@ -52,9 +52,9 @@ class ProcessingContext(object):
     def __enter__(self):
         # Init configuration parser
         self.cfg = SectionParser(section='project:{}'.format(self.project), directory=self.config_dir)
-        self.pattern = self.cfg.translate('filename_format', version_pattern=False)
+        self.pattern = self.cfg.translate('filename_format')
         # Init data collector
-        self.sources = Collector(sources=self.directory, data=self)
+        self.sources = Collector(sources=self.directory, spinner=False, data=self)
         # Init collector filter
         # Exclude hidden and/or non-NetCDF files
         self.sources.FileFilter.add(regex='^.*\.nc$')

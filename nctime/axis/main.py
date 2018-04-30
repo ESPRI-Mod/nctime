@@ -145,10 +145,9 @@ def process(collector_input):
         # Return file status
         return fh
     except Exception as e:
-        logging.exception(e)
-        #ctx.status.append('999')
-        #logging.error('{} skipped\n{}: {}'.format(ffp, e.__class__.__name__, e.message))
-        #return None
+        ctx.status.append('999')
+        logging.error('{} skipped\n{}: {}'.format(ffp, e.__class__.__name__, e.message))
+        return None
 
 
 def run(args):
