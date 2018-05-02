@@ -12,7 +12,36 @@ import os
 import re
 from datetime import datetime
 
+from netCDF4 import Dataset
+
 from constants import *
+from custom_exceptions import *
+
+
+class ncopen(object):
+    """
+    Properly opens a netCDF file
+
+    :param str path: The netCDF file full path
+    :returns: The netCDF dataset object
+    :rtype: *netCDF4.Dataset*
+
+    """
+
+    def __init__(self, path, mode='r'):
+        self.path = path
+        self.mode = mode
+        self.nc = None
+
+    def __enter__(self):
+        try:
+            self.nc = Dataset(self.path, self.mode)
+        except IOError:
+            raise InvalidNetCDFFile(self.path)
+        return self.nc
+
+    def __exit__(self, *exc):
+        self.nc.close()
 
 
 class LogFilter(object):
@@ -44,7 +73,7 @@ def init_logging(log, level='INFO'):
 
     """
     logname = 'nctime-{}-{}'.format(datetime(1, 1, 1)._to_real_datetime().now().strftime("%Y%m%d-%H%M%S"), os.getpid())
-    formatter = logging.Formatter(fmt='%(levelname)-10s %(asctime)s %(message)s')
+    formatter = logging.Formatter(fmt='%(message)s')
     if log:
         if not os.path.isdir(log):
             os.makedirs(log)
@@ -90,19 +119,21 @@ def cmd_exists(cmd):
     )
 
 
-def match(pattern, string, negative=False):
+def match(pattern, string, inclusive=True):
     """
     Validates a string against a regular expression.
     Only match at the beginning of the string.
+    Default is to match inclusive regex.
 
     :param str pattern: The regular expression to match
     :param str string: The string to test
-    :param boolean negative: True if negative matching (i.e., exclude the regex)
+    :param boolean inclusive: False if negative matching (i.e., exclude the regex)
     :returns: True if it matches
     :rtype: *boolean*
 
     """
-    if negative:
-        return True if not re.search(pattern, string) else False
-    else:
+    # Assert inclusive and exclusive flag are mutually exclusive
+    if inclusive:
         return True if re.search(pattern, string) else False
+    else:
+        return True if not re.search(pattern, string) else False

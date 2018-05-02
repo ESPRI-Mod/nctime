@@ -9,10 +9,10 @@
 from netcdftime import datetime
 
 # Program version
-VERSION = '4.0.2'
+VERSION = '4.1.0'
 
 # Date
-VERSION_DATE = datetime(year=2017, month=11, day=24).strftime("%Y-%d-%m")
+VERSION_DATE = datetime(year=2018, month=5, day=2).strftime("%Y-%d-%m")
 
 # Help
 PROGRAM_DESC = \
@@ -88,6 +88,12 @@ VERBOSE_HELP = \
 
     """
 
+ERRORS_ONLY_HELP = \
+    """
+    Shows error(s) only: overlaps and broken|n
+    time periods.
+
+    """
 DIRECTORY_HELP = \
     """
     One or more variable directories to diagnose.|n
@@ -197,19 +203,3 @@ TIME_CORRECTION = {'3hr': {'period_start': {'000000': 0.0,
 # Default time units
 DEFAULT_TIME_UNITS = {'cordex': 'days since 1949-12-01 00:00:00',
                       'cordex-adjust': 'days since 1949-12-01 00:00:00'}
-
-# Required NetCDF global attributes
-REQUIRED_ATTRIBUTES = {'cmip5': {'realm': 'modeling_realm',
-                                 'frequency': 'frequency'},
-                       'cordex': {'realm': 'modeling_realm',
-                                  'frequency': 'frequency'},
-                       'cordex-adjust': {'realm': 'modeling_realm',
-                                         'frequency': 'frequency'},
-                       'cmip6': {'realm': 'realm',
-                                 'frequency': 'frequency'}}
-
-# Required NetCDF time attributes
-REQUIRED_TIME_ATTRIBUTES = ['units', 'calendar']
-
-# Required options
-REQUIRED_OPTIONS = ['checksum_type', 'filename_format']

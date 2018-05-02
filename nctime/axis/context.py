@@ -17,8 +17,6 @@ from ESGConfigParser import SectionParser
 from constants import *
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
-from nctime.utils.custom_exceptions import *
-from nctime.utils.misc import cmd_exists
 from nctime.utils.time import TimeInit
 
 
@@ -32,12 +30,12 @@ class ProcessingContext(object):
 
     """
 
-    def __init__(self, args, directory):
-        self.directory = directory
+    def __init__(self, args):
+        self.directory = args.directory
         self.config_dir = args.i
         self.write = args.write
         self.force = args.force
-        self.verbose = args.v
+        self.debug = args.debug
         self.project = args.project
         self.tunits_default = None
         if self.project in DEFAULT_TIME_UNITS.keys():
@@ -50,20 +48,18 @@ class ProcessingContext(object):
         self.status = []
 
     def __enter__(self):
-        # Get checksum client
-        self.checksum_client, self.checksum_type = self.get_checksum_client()
         # Init configuration parser
         self.cfg = SectionParser(section='project:{}'.format(self.project), directory=self.config_dir)
         self.pattern = self.cfg.translate('filename_format')
         # Init data collector
-        self.sources = Collector(source=self.directory, data=self)
+        self.sources = Collector(sources=self.directory, spinner=False, data=self)
         # Init collector filter
         # Exclude hidden and/or non-NetCDF files
-        self.sources.FileFilter['base_filter'] = ('^[!.].*\.nc$', True)
+        self.sources.FileFilter.add(regex='^.*\.nc$')
         # Exclude fixed frequency
-        self.sources.FileFilter['frequency_filter'] = ('(_fx_|_fixed_|_fx.|_fixed.)', True)
+        self.sources.FileFilter.add(regex='(_fx_|_fixed_|_fx.|_fixed.|_.fx_)', inclusive=False)
         # Set driving time properties
-        self.tinit = TimeInit(project=self.project, ref=self.sources.first()[0], tunits_default=self.tunits_default)
+        self.tinit = TimeInit(ref=self.sources.first()[0], tunits_default=self.tunits_default)
         # Init threads pool
         self.pool = ThreadPool(int(self.threads))
         return self
@@ -78,24 +74,5 @@ class ProcessingContext(object):
             logging.error('Some time axis should be corrected manually ({} files scanned)'.format(self.scan_files))
             sys.exit(1)
         else:
-            logging.info('Time diagnostic completed ({} files scanned)'.format(self.scan_files))
+            print('All time axis seem correct ({} files scanned)'.format(self.scan_files))
             sys.exit(0)
-
-    def get_checksum_client(self):
-        """
-        Gets the checksum client to use.
-        Be careful to Exception constants by reading two different sections.
-
-        :returns: The checksum client
-        :rtype: *str*
-
-        """
-        _cfg = SectionParser(section='DEFAULT', directory=self.config_dir)
-        if _cfg.has_option('DEFAULT', 'checksum'):
-            checksum_client, checksum_type = _cfg.get_options_from_table('checksum')[0]
-        else:  # Use SHA256 as default because esg.ini not mandatory in configuration directory
-            checksum_client, checksum_type = 'sha256sum', 'SHA256'
-        if not cmd_exists(checksum_client):
-            raise ChecksumClientNotFound(checksum_client)
-        else:
-            return checksum_client, checksum_type

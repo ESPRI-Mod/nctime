@@ -86,33 +86,6 @@ class NetCDFTimeStepNotFound(Exception):
 # Miscellaneous exceptions #
 ############################
 
-
-class KeyNotFound(Exception):
-    """
-    Raised when a class key is not found.
-
-    """
-
-    def __init__(self, key, keys=None):
-        self.msg = "Key not found"
-        self.msg += "\n<key: '{}'>".format(key)
-        if keys:
-            self.msg += "\n<found keys: '{}'>".format(', '.join(keys))
-        super(self.__class__, self).__init__(self.msg)
-
-
-class ChecksumClientNotFound(Exception):
-    """
-    Raised when checksum client not found on operating system.
-
-    """
-
-    def __init__(self, client):
-        self.msg = "Checksum client not found."
-        self.msg += "\n<client: '{}'>".format(client)
-        super(self.__class__, self).__init__(self.msg)
-
-
 class ChecksumFail(Exception):
     """
     Raised when a checksum fails.

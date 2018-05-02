@@ -8,7 +8,6 @@
 """
 
 import logging
-import os
 import re
 
 import netCDF4
@@ -17,6 +16,7 @@ from netcdftime import utime
 
 from constants import *
 from custom_exceptions import *
+from misc import ncopen
 
 
 class TimeInit(object):
@@ -38,87 +38,71 @@ class TimeInit(object):
 
     """
 
-    def __init__(self, project, ref, tunits_default=None):
-        variable = unicode(os.path.basename(ref).split('_')[0])
-        try:
-            nc = netCDF4.Dataset(ref, 'r')
-        except IOError:
-            raise InvalidNetCDFFile(ref)
-        # Check and set required global attributes
-        for attr, name in REQUIRED_ATTRIBUTES[project].iteritems():
-            if name not in nc.ncattrs():
-                raise NoNetCDFAttribute(name, ref)
-            else:
-                setattr(self, attr, getattr(nc, name))
-        # Check time variable exists
-        if 'time' not in nc.variables.keys():
-            raise NoNetCDFVariable('time', ref)
-        # Check required time attributes exist
-        for attribute in REQUIRED_TIME_ATTRIBUTES:
-            if attribute not in nc.variables['time'].ncattrs():
-                raise NoNetCDFAttribute(attribute, ref, 'time')
-        # Get time units (i.e., days since ...)
-        self.tunits = self.control_time_units(nc.variables['time'].units, tunits_default)
-        # Convert time units into frequency units (i.e., months/year/hours since ...)
-        self.funits = self.convert_time_units(self.tunits, self.frequency)
-        # Get calendar
-        self.calendar = nc.variables['time'].calendar
-        # Get boolean on instantaneous time axis
-        if 'cell_methods' not in nc.variables[variable].ncattrs():
-            raise NoNetCDFAttribute('cell_methods', ref, variable)
-        self.is_instant = False
-        if 'point' in nc.variables[variable].cell_methods.lower():
-            self.is_instant = True
-        # Get boolean on time boundaries
-        self.has_bounds = False
-        if 'time_bnds' or 'time_bounds' in nc.variables.keys():
-            self.has_bounds = True
-        nc.close()
+    def __init__(self, ref, tunits_default=None):
+        with ncopen(ref) as nc:
+            # Check time variable exists
+            if 'time' not in nc.variables.keys(): raise NoNetCDFVariable('time', ref)
+            # Get reference time units
+            if 'units' not in nc.variables['time'].ncattrs(): raise NoNetCDFAttribute('units', ref, 'time')
+            self.tunits = control_time_units(nc.variables['time'].units, tunits_default)
+            # Get reference calendar
+            if 'calendar' not in nc.variables['time'].ncattrs(): raise NoNetCDFAttribute('calendar', ref, 'time')
+            self.calendar = nc.variables['time'].calendar
 
-    @staticmethod
-    def control_time_units(tunits, tunits_default=None):
-        """
-        Controls the time units format as at least "days since YYYY-MM-DD".
-        The time units can be forced within configuration file using the ``time_units_default`` option.
 
-        :param str tunits: The NetCDF time units string from file
-        :param tunits_default: The default time units that should be used
-        :returns: The appropriate time units string formatted and controlled depending on the project
-        :rtype: *str*
+def control_time_units(tunits, tunits_default=None):
+    """
+    Controls the time units format as at least "days since YYYY-MM-DD".
+    The time units can be forced within configuration file using the ``time_units_default`` option.
 
-        """
-        units = tunits.split()
-        units[0] = unicode('days')
-        if len(units[2].split('-')) == 1:
-            units[2] += '-{}-{}'.format('01', '01')
-        elif len(units[2].split('-')) == 2:
-            units[2] += '-{}'.format('01')
-        if tunits_default and ' '.join(units) != tunits_default:
-            logging.warning('Invalid time units. Replace "{}" by "{}"'.format(' '.join(units), tunits_default))
-            return tunits_default
-        else:
-            return ' '.join(units)
+    :param str tunits: The NetCDF time units string from file
+    :param tunits_default: The default time units that should be used
+    :returns: The appropriate time units string formatted and controlled depending on the project
+    :rtype: *str*
 
-    @staticmethod
-    def convert_time_units(tunits, frequency):
-        """
-        Converts default time units from file into time units using the MIP frequency.
-        As en example, for a 3-hourly file, the time units "days since YYYY-MM-DD" becomes
-        "hours since YYYY-MM-DD".
+    """
+    units = tunits.split()
+    units[0] = unicode('days')
+    if len(units[2].split('-')) == 1:
+        units[2] += '-{}-{}'.format('01', '01')
+    elif len(units[2].split('-')) == 2:
+        units[2] += '-{}'.format('01')
+    if tunits_default and ' '.join(units) != tunits_default:
+        logging.warning('Invalid time units. Replace "{}" by "{}"'.format(' '.join(units), tunits_default))
+        return tunits_default
+    else:
+        return ' '.join(units)
 
-        :param str tunits: The NetCDF time units string from file
-        :param str frequency: The time frequency
-        :returns: The converted time units string
-        :rtype: *str*
 
-        """
-        units = {'subhr': 'minutes',
-                 '3hr': 'hours',
-                 '6hr': 'hours',
-                 'day': 'days',
-                 'mon': 'months',
-                 'yr': 'years'}
-        return tunits.replace('days', units[frequency])
+def convert_time_units(tunits, frequency):
+    """
+    Converts default time units from file into time units using the MIP frequency.
+    As en example, for a 3-hourly file, the time units "days since YYYY-MM-DD" becomes
+    "hours since YYYY-MM-DD".
+
+    :param str tunits: The NetCDF time units string from file
+    :param str frequency: The time frequency
+    :returns: The converted time units string
+    :rtype: *str*
+
+    """
+    units = {'subhr': 'minutes',
+             'subhrPt': 'minutes',
+             '1hr': 'hours',
+             '1hrCM': 'hours',
+             '1hrPt': 'hours',
+             '3hr': 'hours',
+             '3hrPt': 'hours',
+             '6hr': 'hours',
+             '6hrPt': 'hours',
+             'day': 'days',
+             'dec': 'years',
+             'mon': 'months',
+             'monC': 'months',
+             'monPtv': 'months',
+             'yr': 'years',
+             'yrPt': 'years'}
+    return tunits.replace('days', units[frequency])
 
 
 def untruncated_timestamp(timestamp):
@@ -384,16 +368,12 @@ def get_first_last_timesteps(ffp):
     :rtype: *int*
 
     """
-    try:
-        nc = netCDF4.Dataset(ffp, 'r')
-    except IOError:
-        raise InvalidNetCDFFile(ffp)
-    if 'time' not in nc.variables.keys():
-        raise NoNetCDFVariable('time', ffp)
-    first = nc.variables['time'][0]
-    last = nc.variables['time'][-1]
-    nc.close()
-    return first, last
+    with ncopen(ffp) as nc:
+        if 'time' not in nc.variables.keys():
+            raise NoNetCDFVariable('time', ffp)
+        first = nc.variables['time'][0]
+        last = nc.variables['time'][-1]
+        return first, last
 
 
 def get_next_timestep(ffp, current_timestep):
@@ -406,22 +386,18 @@ def get_next_timestep(ffp, current_timestep):
     :rtype: *int*
 
     """
-    try:
-        nc = netCDF4.Dataset(ffp, 'r')
-    except IOError:
-        raise InvalidNetCDFFile(ffp)
-    if 'time' not in nc.variables.keys():
-        raise NoNetCDFVariable('time', ffp)
-    try:
-        index = int(np.where(nc.variables['time'][:] == current_timestep)[0][0])
-    except IndexError:
+    with ncopen(ffp) as nc:
+        if 'time' not in nc.variables.keys():
+            raise NoNetCDFVariable('time', ffp)
         try:
-            index = int(np.where(nc.variables['time'][:] == int(current_timestep))[0][0])
+            index = int(np.where(nc.variables['time'][:] == current_timestep)[0][0])
         except IndexError:
-            raise NetCDFTimeStepNotFound(current_timestep, ffp)
-    next_timestep = nc.variables['time'][index + 1]
-    nc.close()
-    return next_timestep
+            try:
+                index = int(np.where(nc.variables['time'][:] == int(current_timestep))[0][0])
+            except IndexError:
+                raise NetCDFTimeStepNotFound(current_timestep, ffp)
+        next_timestep = nc.variables['time'][index + 1]
+        return next_timestep
 
 
 def time_inc(frequency):
@@ -434,11 +410,21 @@ def time_inc(frequency):
 
     """
     inc = {'subhr': [30, 'minutes'],
+           'subhrPt': [30, 'minutes'],
+           '1hr': [1, 'hours'],
+           '1hrCM': [1, 'hours'],
+           '1hrPt': [1, 'hours'],
            '3hr': [3, 'hours'],
+           '3hrPt': [3, 'hours'],
            '6hr': [6, 'hours'],
+           '6hrPt': [6, 'hours'],
            'day': [1, 'days'],
+           'dec': [10, 'years'],
            'mon': [1, 'months'],
-           'yr': [1, 'years']}
+           'monC': [1, 'months'],
+           'monPtv': [1, 'months'],
+           'yr': [1, 'years'],
+           'yrPt': [1, 'years']}
     return inc[frequency]
 
 

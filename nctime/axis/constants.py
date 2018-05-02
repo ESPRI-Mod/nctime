@@ -10,11 +10,8 @@
 # Database connexion timeout (in sec)
 TIMEOUT = 120
 
-# Default maximum threads number
-MAX_THREADS_DEFAULT = 1
-
 # Errors that return exit code = 1
-EXIT_ERRORS = ['005','999']
+EXIT_ERRORS = ['005', '999']
 
 # Status messages
 STATUS = {'000': 'Time axis seems OK',
@@ -27,4 +24,3 @@ STATUS = {'000': 'Time axis seems OK',
           '007': 'Calendar must be unchanged for the same dataset',
           '008': 'Last date differs from end date of filename',
           '999': 'Other error'}
-

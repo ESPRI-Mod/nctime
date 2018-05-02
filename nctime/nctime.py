@@ -46,7 +46,7 @@ def get_args():
         action='help',
         help=HELP)
     main.add_argument(
-        '-V',
+        '-v',
         action='version',
         version='%(prog)s ({})'.format(__version__),
         help=VERSION_HELP)
@@ -88,11 +88,23 @@ def get_args():
         '-h', '--help',
         action='help',
         help=HELP)
-    parent.add_argument(
-        '-v',
+    group = parent.add_mutually_exclusive_group(required=False)
+    group.add_argument(
+        '--debug',
         action='store_true',
         default=False,
         help=VERBOSE_HELP)
+    group.add_argument(
+        '--errors-only',
+        action='store_true',
+        default=False,
+        help=ERRORS_ONLY_HELP)
+    parent.add_argument(
+        '--max-threads',
+        metavar='4',
+        type=int,
+        default=4,
+        help=MAX_THREADS_HELP)
 
     ##################################
     # Subparser for "nctime overlap" #
@@ -148,12 +160,6 @@ def get_args():
         const='{}/{}'.format(os.getcwd(), 'timeaxis.db'),
         nargs='?',
         help=DB_HELP)
-    axis.add_argument(
-        '--max-threads',
-        metavar=4,
-        type=int,
-        default=4,
-        help=MAX_THREADS_HELP)
 
     return main.parse_args()
 
@@ -161,15 +167,19 @@ def get_args():
 def run():
     # Get command-line arguments
     args = get_args()
-    # Initialize logger depending on log and verbose mode
-    init_logging(log=args.log)
+    # Initialize logger
+    if args.errors_only:
+        level = 'ERROR'
+    elif args.debug:
+        level = 'DEBUG'
+    else:
+        level = 'INFO'
+    init_logging(log=args.log, level=level)
     # Run program
-    module_name = args.cmd.lower().replace('-', '')
-    main = import_module('.main', package='nctime.{}'.format(module_name))
+    main = import_module('.main', package='nctime.{}'.format(args.cmd))
     main.run(args)
 
 
 if __name__ == "__main__":
-    # PyCharm workaround
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
     run()

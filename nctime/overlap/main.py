@@ -7,6 +7,7 @@
 
 """
 
+import itertools
 import logging
 import os
 import re
@@ -16,20 +17,20 @@ import networkx as nx
 import numpy as np
 
 from context import ProcessingContext
-from nctime.utils.time import get_next_timestep, get_start_end_dates_from_filename, \
-    get_first_last_timesteps, dates2int
-from itertools import combinations, permutations
+from handler import Filename
+from nctime.utils.time import get_next_timestep
 
-def get_overlaps(directory, nodes, shortest):
+
+def get_overlaps(g, shortest):
     """
-    Returns all overlapping (default) files as a list of tuples. Each tuple gathers\:
+    Returns all overlapping files (default) as a list of tuples. Each tuple gathers\:
      * The higher overlap bound,
      * The date to cut the file in order to resolve the overlap,
      * The corresponding cutting timestep.
 
     :param str directory: The directory scanned
-    :param dict nodes: The directed graph nodes as a dictionary
-    :param list shortest: The most consecutive files list (from `nx.DiGraph()`)
+    :param networkx.DiGraph() g: The directed graph
+    :param list shortest: The most consecutive files list (from `nx.DiGraph().shortest_path`)
     :returns: The filenames
     :rtype: *list*
 
@@ -39,24 +40,23 @@ def get_overlaps(directory, nodes, shortest):
     overlaps['partial'] = dict()
     for n in range(1, len(shortest) - 2):
         # Get current node dates
-        current_node = nodes[shortest[n]]
+        current_node = g.node[shortest[n]]
         # Get next node dates
-        next_node = nodes[shortest[n + 1]]
+        next_node = g.node[shortest[n + 1]]
         # Because of the shortest path is selected, difference between bounds should always be positive or zero
-        assert (current_node['next_date'] - next_node['start_date']) >= 0
+        assert (current_node['next'] - next_node['start']) >= 0
         # Get partial overlap if exists
         # Partial overlap from next_node[1] to current_node[2] (bounds included)
         # Overlap is hold on the next node (arbitrary)
-        if (current_node['next_date'] - next_node['start_date']) > 0:
-            cutting_timestep = get_next_timestep(os.path.join(directory, shortest[n + 1]),
-                                                 current_node['last_timestep'])
+        if (current_node['next'] - next_node['start']) > 0:
+            cutting_timestep = get_next_timestep(next_node['path'], current_node['last_step'])
             overlaps['partial'][shortest[n + 1]] = next_node
-            overlaps['partial'][shortest[n + 1]].update({'end_overlap': current_node['end_date'],
-                                                         'cutting_date': current_node['next_date'],
+            overlaps['partial'][shortest[n + 1]].update({'end_overlap': current_node['end'],
+                                                         'cutting_date': current_node['next'],
                                                          'cutting_timestep': cutting_timestep})
     # Find full overlapping nodes
-    overlaps['full'] = list(set(nodes.keys()).symmetric_difference(set(shortest[1:-1])))
-    return overlaps['full'], overlaps['partial']
+    overlaps['full'] = list(set(g.nodes()).symmetric_difference(set(shortest)))
+    return overlaps['partial'], overlaps['full']
 
 
 def resolve_overlap(directory, pattern, filename, from_date=None, to_date=None, cutting_timestep=None, partial=False):
@@ -89,6 +89,179 @@ def resolve_overlap(directory, pattern, filename, from_date=None, to_date=None, 
     os.remove(os.path.join(directory, filename))
 
 
+def create_nodes(collector_input):
+    """
+    Creates the node into the corresponding Graph().
+    One directed graph per dataset. Each file is analysed to be a node in its graph.
+    A node is a filename with some attributes:
+
+     * start = the start date of the file sub-period
+     * end = the end date of the file sub-period
+     * next = the date next to the end date depending on the frequency, the calendar, etc.
+     * first_step = the first time axis step
+     * last_step = the last time axis step
+     * path = the file full path
+
+    :param tuple collector_input: A tuple with the file path and the processing context
+
+    """
+    # Deserialize inputs from collector
+    ffp, ctx = collector_input
+    # Block to avoid program stop if a thread fails
+    try:
+        # Instantiate filename handler
+        fh = Filename(ffp=ffp)
+        # Extract start and end dates from filename
+        fh.get_start_end_dates(pattern=ctx.pattern,
+                               calendar=ctx.tinit.calendar)
+        # Create corresponding DiGraph if not exist
+        if not ctx.graph.has_graph(fh.id):
+            ctx.graph.set_graph(fh.id)
+        # Retrieve corresponding graph
+        g = ctx.graph.get_graph(fh.id)
+        # Update/add current file as node with dates as attributes
+        g.add_node(fh.filename, start=fh.start_date,
+                   end=fh.end_date,
+                   next=fh.next_date,
+                   first_step=fh.first_timestep,
+                   last_step=fh.last_timestep,
+                   path=fh.ffp)
+        # Update graph
+        ctx.graph.set_graph(fh.id, g)
+    except KeyboardInterrupt:
+        raise
+    except Exception as e:
+        logging.error('{} skipped\n{}: {}'.format(ffp, e.__class__.__name__, e.message))
+        return None
+
+
+def create_edges(graph_inputs):
+    """
+    Creates the edges between nodes into the corresponding Graph().
+    One directed graph per dataset.
+
+     * Builds the "START" node with the appropriate edges to the nodes with the earliest start date
+     * Builds the "END" node with the appropriate edges from the nodes with the latest end date
+     * Builds edges between a node and its "backwards" nodes
+
+    :param tuple graph_input: A tuple with the graph id, the graph object and the processing context
+
+    """
+    # Deserialize inputs from graph call
+    id, g, ctx = graph_inputs
+    # Create edges with backward nodes
+    # A node is a "backward" node when the difference between the next current time step
+    # and its start date is positive.
+    # To ensure continuity path, edges has to only exist with backward nodes.
+    for node, next_date in g.nodes(data='next'):
+        # Considering one node, get the others in the graph
+        other_nodes = [x for x in g.nodes() if x is not node]
+        # Get the start dates of the other nodes
+        other_start_dates = [g.node[x]['start'] for x in other_nodes]
+        # Find the index with a positive or null different between their start date and
+        # the next date of the considered node
+        indexes = [i for i, v in enumerate(next_date - np.array(other_start_dates)) if v >= 0]
+        # Get all "next" nodes for the current node
+        next_nodes = [other_nodes[i] for i in indexes]
+        # For each next node, build the corresponding edge in the graph
+        for next_node in next_nodes:
+            g.add_edge(node, next_node)
+            logging.debug('Graph: {} :: Edge {} --> {}'.format(id, node, next_node))
+    # Find the node(s) with the earliest date
+    start_dates = zip(*g.nodes(data='start'))[1]
+    starts = [n for n in g.nodes() if g.nodes[n]['start'] == min(start_dates)]
+    # Find the node(s) with the latest date
+    end_dates = zip(*g.nodes(data='end'))[1]
+    ends = [n for n in g.nodes() if g.nodes[n]['end'] == max(end_dates)]
+    # Build starting node with edges to first node(s)
+    for start in starts:
+        g.add_edge('START', start)
+        logging.debug('Graph: {} :: Edge START --> {}'.format(id, start))
+    # Build ending node with edges from latest node(s)
+    for end in ends:
+        g.add_edge(end, 'END')
+        logging.debug('Graph: {} :: Edge {} --> END'.format(id, end))
+    # Finally update graph
+    ctx.graph.set_graph(id, g)
+
+
+def evaluate_graph(graph_inputs):
+    """
+    Evaluate the directed graph looking for a shortest path between "START" and "END" nodes.
+    If a shorted path is found, it looks for the potential overlaps.
+    Partial and full overlaps are supported.
+    If no shortest path found, it creates a new node "BREAK" in the path.
+
+    :param tuple graph_input: A tuple with the graph id, the graph object and the processing context
+
+    """
+    # Deserialize inputs from graph call
+    id, g, ctx = graph_inputs
+    path = list()
+    full_overlaps, partial_overlaps = None, None
+    # Walk through the graph
+    try:
+        # Find shortest path between oldest and latest dates
+        path = nx.shortest_path(g, source='START', target='END')
+        # Get overlaps
+        full_overlaps, partial_overlaps = get_overlaps(g, path)
+        if full_overlaps or partial_overlaps:
+            ctx.overlaps = True
+    except nx.NetworkXNoPath:
+        ctx.broken = True
+        for node in sorted(g.nodes()):
+            if node not in ['START', 'END']:
+                path.append(node)
+                # A node is a "forward" node when the difference between the next current time step
+                # and its start date is negative.
+                # A path gap exists from a node when no edges exist with ALL "forwards" nodes.
+                # Considering one node, get the others in the graph
+                other_nodes = [x for x in g.nodes() if x not in ['START', node, 'END']]
+                # Get the start dates of the other nodes
+                other_start_dates = [g.node[x]['start'] for x in other_nodes]
+                # Find the index with a negative or null difference between their start date and
+                # the next date of the considered node
+                indexes = [i for i, v in enumerate(g.node[node]['next'] - np.array(other_start_dates)) if v <= 0]
+                # Get all "next" nodes for the current node
+                next_nodes = [other_nodes[i] for i in indexes]
+                # Find available targets from graph
+                try:
+                    avail_targets = zip(*g.edges(node))[1]
+                except IndexError:
+                    avail_targets = []
+                # If no "forward" nodes in edges target = BREAK
+                if not set(next_nodes).intersection(avail_targets):
+                    path.append('BREAK')
+    return path, full_overlaps, partial_overlaps
+
+
+def format_path(path, partial_overlaps, full_overlaps):
+    """
+    Formats the message to print as a diagnostic.
+    It walks through the evaluated path of the directed graph and print the filenames with useful info.
+
+    :param list path: The node path as a result of the directed graph evaluation
+    :param dict partial_overlaps: Dictionary of partial overlaps
+    :param list full_overlaps: List of full overlapping files
+    :returns: The formatted diagnostic to print
+    :rtype: *str*
+
+    """
+    msg = ''
+    for i in range(1, len(path) - 1):
+        m = '  {}'.format(path[i])
+        if partial_overlaps and path[i] in partial_overlaps:
+            m = '[ {} <-- overlap from {} to {} ] '.format(path[i],
+                                                           partial_overlaps[path[i]]['start'],
+                                                           partial_overlaps[path[i]]['end_overlap'])
+        msg += '\n{}'.format(m)
+    if full_overlaps:
+        for n in full_overlaps:
+            m = '[ {} <-- to remove ]'.format(n)
+            msg += '\n{}'.format(m)
+    return msg
+
+
 def run(args):
     """
     Main process that:
@@ -103,88 +276,28 @@ def run(args):
     :param ArgumentParser args: Command-line arguments parser
 
     """
-    for directory in args.directory:
-        # Instantiate processing context
-        with ProcessingContext(args, directory) as ctx:
-            logging.info('Overlap diagnostic started for {}'.format(ctx.directory))
-            ctx.graph.clear()
-            nodes = dict()
-            logging.info('Create edges from source nodes to target nodes')
-            for ffp in ctx.sources:
-                filename = os.path.basename(ffp)
-                # A node is defined by the filename, its start, end and next dates with its first and last timesteps.
-                nodes[filename] = dict()
-                # Get start, end and next date of each file
-                dates = get_start_end_dates_from_filename(filename=filename,
-                                                          pattern=ctx.pattern,
-                                                          frequency=ctx.tinit.frequency,
-                                                          calendar=ctx.tinit.calendar)
-                nodes[filename]['start_date'], nodes[filename]['end_date'], nodes[filename]['next_date'] = dates2int(
-                    dates)
-                # Get first and last time steps
-                timesteps = get_first_last_timesteps(ffp)
-                nodes[filename]['first_timestep'], nodes[filename]['last_timestep'] = timesteps
-
-            # Build starting node
-            start_dates = [nodes[n]['start_date'] for n in nodes]
-            starts = [n for n in nodes if nodes[n]['start_date'] == min(start_dates)]
-            for start in starts:
-                ctx.graph.add_edge('START', start)
-                if ctx.verbose:
-                    logging.info('{} --> {}'.format(' START '.center(ctx.display + 2, '-'),
-                                                    start.center(ctx.display + 2)))
-            # Create graph edges with filenames only
-            end_dates = [nodes[n]['end_date'] for n in nodes]
-            other_nodes = []
-            for n in nodes:
-                # Create a fake ending node from all latest files in case of overlaps
-                if nodes[n]['end_date'] == max(end_dates):
-                    ctx.graph.add_edge(n, 'END')
-                    if ctx.verbose:
-                        logging.info('{} --> {}'.format(n.center(ctx.display + 2),
-                                                        ' END '.center(ctx.display + 2, '-')))
+    # Instantiate processing context
+    with ProcessingContext(args) as ctx:
+        print("Analysing data, please wait...\r")
+        # Process supplied files to create nodes in appropriate directed graph
+        handlers = [x for x in ctx.pool.imap(create_nodes, ctx.sources)]
+        ctx.scan_files = len(handlers)
+        # Process each directed graph to create appropriate edges
+        _ = [x for x in itertools.imap(create_edges, ctx.graph(data=ctx))]
+        # Evaluate each graph if a shortest path exist
+        for path, partial_overlaps, full_overlaps in itertools.imap(evaluate_graph, ctx.graph(data=ctx)):
+            # Print path
+            msg = format_path(path, partial_overlaps, full_overlaps)
+            # Print analyse result
+            if ctx.broken:
+                # A broken time period cannot be evaluated for overlaps (None by default)
+                logging.error('Time series broken: {}'.format(msg))
+            else:
+                # Print overlaps if exists
+                if full_overlaps or partial_overlaps:
+                    logging.error('Shortest path found WITH overlaps: {}'.format(msg))
                 else:
-                    # A node is a "backward" node when the difference between the next current time step
-                    # and its start date is positive.
-                    # To ensure continuity path, edges has to only exist with backward nodes.
-                    other_nodes = [x for x in nodes if x is not n]
-                    start_dates = [nodes[x]['start_date'] for x in other_nodes]
-                    # Find index of "backwards" nodes
-                    nxts = [i for i, v in enumerate(nodes[n]['next_date'] - np.array(start_dates)) if v >= 0]
-                    nxts = [other_nodes[i] for i in nxts]
-                    for nxt in nxts:
-                        ctx.graph.add_edge(n, nxt)
-                        if ctx.verbose:
-                            logging.info('{} --> {}'.format(n.center(ctx.display + 2),
-                                                            nxt.center(ctx.display + 2)))
-            # Walk through the graph
-            try:
-                # Find shortest path between oldest and latest dates
-                ctx.path = nx.shortest_path(ctx.graph, source='START', target='END')
-                # Get overlaps
-                ctx.full_overlaps, ctx.partial_overlaps = get_overlaps(ctx.directory, nodes, ctx.path)
-            except nx.NetworkXNoPath:
-                ctx.broken = True
-                ctx.path.append('START')
-                for n in sorted(nodes.keys()):
-                    ctx.path.append(n)
-                    # A node is a "forward" node when the difference between the next current time step
-                    # and its start date is negative.
-                    # A path gap exists from a node when no edges exist with ALL "forwards" nodes.
-                    other_nodes = [x for x in nodes if x is not n]
-                    start_dates = [nodes[x]['start_date'] for x in other_nodes]
-                    # Find index of "forward" nodes
-                    nxts = [i for i, v in enumerate(nodes[n]['next_date'] - np.array(start_dates)) if v <= 0]
-                    nxts = [other_nodes[i] for i in nxts]
-                    # Find available targets from graph
-                    try:
-                        avail_targets = zip(*ctx.graph.edges(n))[1]
-                    except IndexError:
-                        avail_targets = []
-                    # If no "forward" nodes in edges target = BREAK
-                    if not set(nxts).intersection(avail_targets):
-                        ctx.path.append('BREAK')
-                ctx.path.append('END')
+                    logging.info('Shortest path found without overlaps: {}'.format(msg))
             # Resolve overlaps
             if ctx.resolve:
                 # Full overlapping files has to be deleted before partial overlapping files are truncated.

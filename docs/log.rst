@@ -1,8 +1,20 @@
 .. _log:
 
 
-Changelog
-=========
+Change Log
+==========
+
+`v4.1.0 <https://github.com/Prodiguer/nctime/tree/v4.1.0>`__ (2018-05-02)
+-------------------------------------------------------------------------
+
+`Full
+Changelog <https://github.com/Prodiguer/nctime/compare/v2.1...v4.1.0>`__
+
+`v2.1 <https://github.com/Prodiguer/nctime/tree/v2.1>`__ (2015-04-01)
+---------------------------------------------------------------------
+
+Untagged older changes
+----------------------
 
 +------------+---------+----------------------------------------------------------------------+
 | Date       | Version | Modifications                                                        |

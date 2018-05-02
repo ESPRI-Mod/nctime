@@ -6,17 +6,21 @@
 
 """
 
+import hashlib
+import logging
 import os
 import re
 from uuid import uuid4
 
 import nco
-import netCDF4
 import numpy as np
+from fuzzywuzzy import fuzz, process
 
 from custom_exceptions import *
 from nctime.utils.custom_exceptions import *
-from nctime.utils.time import truncated_timestamp, get_start_end_dates_from_filename, dates2str, num2date, date2num
+from nctime.utils.misc import ncopen
+from nctime.utils.time import truncated_timestamp, get_start_end_dates_from_filename, dates2str, num2date, date2num, \
+    control_time_units
 
 
 class File(object):
@@ -28,7 +32,7 @@ class File(object):
 
     """
 
-    def __init__(self, ffp, has_bounds):
+    def __init__(self, ffp):
         self.ffp = ffp
         # Retrieve directory and filename full path
         self.directory, self.filename = os.path.split(ffp)
@@ -44,31 +48,48 @@ class File(object):
         self.end_timestamp = None
         self.next_timestamp = None
         self.last_timestamp = None
-        # Get time axis length
-        try:
-            f = netCDF4.Dataset(self.ffp, 'r')
-        except IOError:
-            raise InvalidNetCDFFile(self.ffp)
-        self.length = f.variables['time'].shape[0]
-        # Get time boundaries
-        if has_bounds:
-            try:
-                self.time_bounds = f.variables['time_bnds'][:, :]
-            except KeyError:
-                self.time_bounds = f.variables['time_bounds'][:, :]
-        else:
-            self.time_bounds = None
-        # Get time axis
-        self.time_axis = f.variables['time'][:]
-        # Get time units from file
-        self.time_units = f.variables['time'].units
-        # Get calendar from file
-        self.calendar = f.variables['time'].calendar
-        f.close()
+        # Set variables for time axis diagnostic
         self.time_axis_rebuilt = None
         self.time_bounds_rebuilt = None
         self.status = list()
         self.new_checksum = None
+        # Get netCDF infos
+        with ncopen(self.ffp) as nc:
+            # Get frequency from file
+            if 'frequency' in nc.ncattrs():
+                self.frequency = nc.getncattr('frequency')
+            else:
+                key, score = process.extractOne('frequency', nc.ncattrs(), scorer=fuzz.partial_ratio)
+                if score >= 80:
+                    self.frequency = nc.getncattr(key)
+                    logging.warning('Consider "{}" attribute instead of "frequency"'.format(key))
+                else:
+                    raise NoNetCDFAttribute('frequency', self.ffp)
+            # Get time length and vector
+            if 'time' not in nc.variables.keys(): raise NoNetCDFVariable('time', self.ffp)
+            self.length = nc.variables['time'].shape[0]
+            self.time_axis = nc.variables['time'][:]
+            # Get time boundaries
+            self.has_bounds = False
+            if 'bounds' in nc.variables['time'].ncattrs():
+                self.has_bounds = True
+                self.tbnds = nc.variables['time'].bounds
+                self.time_bounds = nc.variables[self.tbnds][:, :]
+            # Get time units from file
+            if 'units' not in nc.variables['time'].ncattrs(): raise NoNetCDFAttribute('units', self.ffp, 'time')
+            self.tunits = control_time_units(nc.variables['time'].units)
+            # Set reference time units in frequency units (i.e., months/year/hours since ...)
+            self.funits = None
+            # Get calendar from file
+            if 'calendar' not in nc.variables['time'].ncattrs(): raise NoNetCDFAttribute('calendar', self.ffp, 'time')
+            self.calendar = nc.variables['time'].calendar
+            # Get boolean on instantaneous time axis
+            variable = unicode(self.filename.split('_')[0])
+            if 'cell_methods' not in nc.variables[variable].ncattrs(): raise NoNetCDFAttribute('cell_methods', self.ffp,
+                                                                                               variable)
+            self.is_instant = False
+            if 'point' in nc.variables[variable].cell_methods.lower():
+                self.is_instant = True
 
     def get_start_end_dates(self, pattern, frequency, units, calendar):
         """
@@ -93,26 +114,33 @@ class File(object):
             truncated_timestamp(date, self.timestamp_length) for date in dates]
         return date2num(dates, units=units, calendar=calendar)
 
-    def checksum(self, checksum_type):
+    def checksum(self, checksum_type='sha256', include_filename=False, human_readable=True):
         """
         Does the checksum by the Shell avoiding Python memory limits.
 
         :param str checksum_type: Checksum type
+        :param boolean human_readable: True to return a human readable digested message
+        :param boolean include_filename: True to include filename in hash calculation
         :returns: The checksum
         :rtype: *str*
         :raises Error: If the checksum fails
 
         """
-        checksum_client = {'SHA256': 'sha256sum',
-                           'MD5': 'md5sum'}
-        assert (checksum_type in checksum_client.keys()), 'Invalid checksum type'
         try:
-            shell = os.popen("{} {} | awk -F ' ' '{{ print $1 }}'".format(checksum_client[checksum_type],
-                                                                          self.ffp),
-                             'r')
-            return shell.readline()[:-1]
+            hash_algo = getattr(hashlib, checksum_type)()
+            with open(self.ffp, 'rb') as f:
+                for block in iter(lambda: f.read(os.stat(self.ffp).st_blksize), b''):
+                    hash_algo.update(block)
+            if include_filename:
+                hash_algo.update(os.path.basename(self.ffp))
+            if human_readable:
+                return hash_algo.hexdigest()
+            else:
+                return hash_algo.digest()
+        except AttributeError:
+            raise InvalidChecksumType(checksum_type)
         except:
-            raise ChecksumFail(checksum_type, self.ffp)
+            raise ChecksumFail(self.ffp, checksum_type)
 
     def build_time_axis(self, start, inc, input_units, output_units, calendar, is_instant=False):
         """
@@ -223,29 +251,20 @@ class File(object):
         :param float array data: The data array to overwrite
 
         """
-        try:
-            f = netCDF4.Dataset(self.ffp, 'r+')
-        except IOError:
-            raise InvalidNetCDFFile(self.ffp)
-        f.variables[variable][:] = data
-        f.close()
+        with ncopen(self.ffp, 'r+') as nc:
+            nc.variables[variable][:] = data
 
     def nc_att_overwrite(self, attribute, variable, data):
         """
         Rewrite attribute to NetCDF file without copy.
-
 
         :param str attribute: THe attribute to replace
         :param str variable: The variable that has the attribute
         :param str data: The string to add to overwrite
 
         """
-        try:
-            f = netCDF4.Dataset(self.ffp, 'r+')
-        except IOError:
-            raise InvalidNetCDFFile(self.ffp)
-        setattr(f.variables[variable], attribute, data)
-        f.close()
+        with ncopen(self.ffp, 'r+') as nc:
+            setattr(nc.variables[variable], attribute, data)
 
     def nc_file_rename(self, new_filename):
         """
