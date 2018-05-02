@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.utils.time &mdash; nctime 3.4.0 documentation</title>
+  <title>nctime.utils.time &mdash; nctime 4.1.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 3.4.0 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 4.1.0 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                3.4
+                4.1
               </div>
             
           
@@ -97,7 +97,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../axis.html">Check time axis squareness</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently asked questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../credits.html">Credits</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../log.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../log.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc.html">Code documentation</a></li>
 </ul>
 
@@ -173,7 +173,6 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 
 <span class="kn">import</span> <span class="nn">netCDF4</span>
@@ -182,6 +181,7 @@
 
 <span class="kn">from</span> <span class="nn">constants</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">custom_exceptions</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">misc</span> <span class="k">import</span> <span class="n">ncopen</span>
 
 
 <div class="viewcode-block" id="TimeInit"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.TimeInit">[docs]</a><span class="k">class</span> <span class="nc">TimeInit</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -204,93 +204,70 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">tunits_default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">variable</span> <span class="o">=</span> <span class="n">unicode</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">nc</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InvalidNetCDFFile</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span>
-        <span class="c1"># Check required global attributes exist</span>
-        <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">REQUIRED_ATTRIBUTES</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">attribute</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">():</span>
-                <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">ref</span><span class="p">)</span>
-        <span class="c1"># Check time variable exists</span>
-        <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="n">NoNetCDFVariable</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">ref</span><span class="p">)</span>
-        <span class="c1"># Check required time attributes exist</span>
-        <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">REQUIRED_TIME_ATTRIBUTES</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">attribute</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">():</span>
-                <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
-        <span class="c1"># Get realm</span>
-        <span class="k">if</span> <span class="n">nc</span><span class="o">.</span><span class="n">project_id</span> <span class="o">==</span> <span class="s1">&#39;CORDEX&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">realm</span> <span class="o">=</span> <span class="s1">&#39;atmos&#39;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">realm</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">modeling_realm</span>
-        <span class="c1"># Get frequency</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">frequency</span>
-        <span class="c1"># Get time units (i.e., days since ...)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tunits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">control_time_units</span><span class="p">(</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="n">tunits_default</span><span class="p">)</span>
-        <span class="c1"># Convert time units into frequency units (i.e., months/year/hours since ...)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">funits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_time_units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tunits</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">)</span>
-        <span class="c1"># Get calendar</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">calendar</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">calendar</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">calendar</span> <span class="o">==</span> <span class="s1">&#39;standard&#39;</span> <span class="ow">and</span> <span class="n">nc</span><span class="o">.</span><span class="n">model_id</span> <span class="o">==</span> <span class="s1">&#39;CMCC-CM&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">calendar</span> <span class="o">=</span> <span class="s1">&#39;proleptic_gregorian&#39;</span>
-        <span class="c1"># Get boolean on instantaneous time axis</span>
-        <span class="k">if</span> <span class="s1">&#39;cell_methods&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span class="s1">&#39;cell_methods&#39;</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">variable</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">is_instant</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="s1">&#39;point&#39;</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">cell_methods</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">is_instant</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="c1"># Get boolean on time boundaries</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">has_bounds</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="s1">&#39;time_bnds&#39;</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">has_bounds</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">nc</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">ncopen</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span> <span class="k">as</span> <span class="n">nc</span><span class="p">:</span>
+            <span class="c1"># Check time variable exists</span>
+            <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span> <span class="k">raise</span> <span class="n">NoNetCDFVariable</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">ref</span><span class="p">)</span>
+            <span class="c1"># Get reference time units</span>
+            <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">():</span> <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tunits</span> <span class="o">=</span> <span class="n">control_time_units</span><span class="p">(</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="n">tunits_default</span><span class="p">)</span>
+            <span class="c1"># Get reference calendar</span>
+            <span class="k">if</span> <span class="s1">&#39;calendar&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">():</span> <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span class="s1">&#39;calendar&#39;</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">calendar</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">calendar</span></div>
 
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="TimeInit.control_time_units"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.TimeInit.control_time_units">[docs]</a>    <span class="k">def</span> <span class="nf">control_time_units</span><span class="p">(</span><span class="n">tunits</span><span class="p">,</span> <span class="n">tunits_default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Controls the time units format as at least &quot;days since YYYY-MM-DD&quot;.</span>
-<span class="sd">        The time units can be forced within configuration file using the ``time_units_default`` option.</span>
 
-<span class="sd">        :param str tunits: The NetCDF time units string from file</span>
-<span class="sd">        :param tunits_default: The default time units that should be used</span>
-<span class="sd">        :returns: The appropriate time units string formatted and controlled depending on the project</span>
-<span class="sd">        :rtype: *str*</span>
+<div class="viewcode-block" id="control_time_units"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.control_time_units">[docs]</a><span class="k">def</span> <span class="nf">control_time_units</span><span class="p">(</span><span class="n">tunits</span><span class="p">,</span> <span class="n">tunits_default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Controls the time units format as at least &quot;days since YYYY-MM-DD&quot;.</span>
+<span class="sd">    The time units can be forced within configuration file using the ``time_units_default`` option.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">units</span> <span class="o">=</span> <span class="n">tunits</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-        <span class="n">units</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">unicode</span><span class="p">(</span><span class="s1">&#39;days&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;-</span><span class="si">{}</span><span class="s1">-</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;01&#39;</span><span class="p">,</span> <span class="s1">&#39;01&#39;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;-</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;01&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">tunits_default</span> <span class="ow">and</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">units</span><span class="p">)</span> <span class="o">!=</span> <span class="n">tunits_default</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Invalid time units. Replace &quot;</span><span class="si">{}</span><span class="s1">&quot; by &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">units</span><span class="p">),</span> <span class="n">tunits_default</span><span class="p">))</span>
-            <span class="k">return</span> <span class="n">tunits_default</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">units</span><span class="p">)</span></div>
+<span class="sd">    :param str tunits: The NetCDF time units string from file</span>
+<span class="sd">    :param tunits_default: The default time units that should be used</span>
+<span class="sd">    :returns: The appropriate time units string formatted and controlled depending on the project</span>
+<span class="sd">    :rtype: *str*</span>
 
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="TimeInit.convert_time_units"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.TimeInit.convert_time_units">[docs]</a>    <span class="k">def</span> <span class="nf">convert_time_units</span><span class="p">(</span><span class="n">tunits</span><span class="p">,</span> <span class="n">frequency</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Converts default time units from file into time units using the MIP frequency.</span>
-<span class="sd">        As en example, for a 3-hourly file, the time units &quot;days since YYYY-MM-DD&quot; becomes</span>
-<span class="sd">        &quot;hours since YYYY-MM-DD&quot;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="n">tunits</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">units</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">unicode</span><span class="p">(</span><span class="s1">&#39;days&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;-</span><span class="si">{}</span><span class="s1">-</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;01&#39;</span><span class="p">,</span> <span class="s1">&#39;01&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;-</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;01&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">tunits_default</span> <span class="ow">and</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">units</span><span class="p">)</span> <span class="o">!=</span> <span class="n">tunits_default</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Invalid time units. Replace &quot;</span><span class="si">{}</span><span class="s1">&quot; by &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">units</span><span class="p">),</span> <span class="n">tunits_default</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">tunits_default</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">units</span><span class="p">)</span></div>
 
-<span class="sd">        :param str tunits: The NetCDF time units string from file</span>
-<span class="sd">        :param str frequency: The time frequency</span>
-<span class="sd">        :returns: The converted time units string</span>
-<span class="sd">        :rtype: *str*</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;subhr&#39;</span><span class="p">:</span> <span class="s1">&#39;minutes&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;3hr&#39;</span><span class="p">:</span> <span class="s1">&#39;hours&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;6hr&#39;</span><span class="p">:</span> <span class="s1">&#39;hours&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="s1">&#39;days&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;mon&#39;</span><span class="p">:</span> <span class="s1">&#39;months&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;yr&#39;</span><span class="p">:</span> <span class="s1">&#39;years&#39;</span><span class="p">}</span>
-        <span class="k">return</span> <span class="n">tunits</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;days&#39;</span><span class="p">,</span> <span class="n">units</span><span class="p">[</span><span class="n">frequency</span><span class="p">])</span></div></div>
+<div class="viewcode-block" id="convert_time_units"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.convert_time_units">[docs]</a><span class="k">def</span> <span class="nf">convert_time_units</span><span class="p">(</span><span class="n">tunits</span><span class="p">,</span> <span class="n">frequency</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts default time units from file into time units using the MIP frequency.</span>
+<span class="sd">    As en example, for a 3-hourly file, the time units &quot;days since YYYY-MM-DD&quot; becomes</span>
+<span class="sd">    &quot;hours since YYYY-MM-DD&quot;.</span>
+
+<span class="sd">    :param str tunits: The NetCDF time units string from file</span>
+<span class="sd">    :param str frequency: The time frequency</span>
+<span class="sd">    :returns: The converted time units string</span>
+<span class="sd">    :rtype: *str*</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;subhr&#39;</span><span class="p">:</span> <span class="s1">&#39;minutes&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;subhrPt&#39;</span><span class="p">:</span> <span class="s1">&#39;minutes&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;1hr&#39;</span><span class="p">:</span> <span class="s1">&#39;hours&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;1hrCM&#39;</span><span class="p">:</span> <span class="s1">&#39;hours&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;1hrPt&#39;</span><span class="p">:</span> <span class="s1">&#39;hours&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;3hr&#39;</span><span class="p">:</span> <span class="s1">&#39;hours&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;3hrPt&#39;</span><span class="p">:</span> <span class="s1">&#39;hours&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;6hr&#39;</span><span class="p">:</span> <span class="s1">&#39;hours&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;6hrPt&#39;</span><span class="p">:</span> <span class="s1">&#39;hours&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="s1">&#39;days&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;dec&#39;</span><span class="p">:</span> <span class="s1">&#39;years&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;mon&#39;</span><span class="p">:</span> <span class="s1">&#39;months&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;monC&#39;</span><span class="p">:</span> <span class="s1">&#39;months&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;monPtv&#39;</span><span class="p">:</span> <span class="s1">&#39;months&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;yr&#39;</span><span class="p">:</span> <span class="s1">&#39;years&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;yrPt&#39;</span><span class="p">:</span> <span class="s1">&#39;years&#39;</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">tunits</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;days&#39;</span><span class="p">,</span> <span class="n">units</span><span class="p">[</span><span class="n">frequency</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="untruncated_timestamp"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.untruncated_timestamp">[docs]</a><span class="k">def</span> <span class="nf">untruncated_timestamp</span><span class="p">(</span><span class="n">timestamp</span><span class="p">):</span>
@@ -556,16 +533,12 @@
 <span class="sd">    :rtype: *int*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">nc</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">ffp</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">InvalidNetCDFFile</span><span class="p">(</span><span class="n">ffp</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="k">raise</span> <span class="n">NoNetCDFVariable</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">ffp</span><span class="p">)</span>
-    <span class="n">first</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">last</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">nc</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">first</span><span class="p">,</span> <span class="n">last</span></div>
+    <span class="k">with</span> <span class="n">ncopen</span><span class="p">(</span><span class="n">ffp</span><span class="p">)</span> <span class="k">as</span> <span class="n">nc</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">NoNetCDFVariable</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">ffp</span><span class="p">)</span>
+        <span class="n">first</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">last</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">first</span><span class="p">,</span> <span class="n">last</span></div>
 
 
 <div class="viewcode-block" id="get_next_timestep"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.get_next_timestep">[docs]</a><span class="k">def</span> <span class="nf">get_next_timestep</span><span class="p">(</span><span class="n">ffp</span><span class="p">,</span> <span class="n">current_timestep</span><span class="p">):</span>
@@ -578,22 +551,18 @@
 <span class="sd">    :rtype: *int*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">nc</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">ffp</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">InvalidNetCDFFile</span><span class="p">(</span><span class="n">ffp</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="k">raise</span> <span class="n">NoNetCDFVariable</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">ffp</span><span class="p">)</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][:]</span> <span class="o">==</span> <span class="n">current_timestep</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
-    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">ncopen</span><span class="p">(</span><span class="n">ffp</span><span class="p">)</span> <span class="k">as</span> <span class="n">nc</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">NoNetCDFVariable</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">ffp</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][:]</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">current_timestep</span><span class="p">))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][:]</span> <span class="o">==</span> <span class="n">current_timestep</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">NetCDFTimeStepNotFound</span><span class="p">(</span><span class="n">current_timestep</span><span class="p">,</span> <span class="n">ffp</span><span class="p">)</span>
-    <span class="n">next_timestep</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="n">nc</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">next_timestep</span></div>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][:]</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">current_timestep</span><span class="p">))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">NetCDFTimeStepNotFound</span><span class="p">(</span><span class="n">current_timestep</span><span class="p">,</span> <span class="n">ffp</span><span class="p">)</span>
+        <span class="n">next_timestep</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">next_timestep</span></div>
 
 
 <div class="viewcode-block" id="time_inc"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.time_inc">[docs]</a><span class="k">def</span> <span class="nf">time_inc</span><span class="p">(</span><span class="n">frequency</span><span class="p">):</span>
@@ -606,11 +575,21 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">inc</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;subhr&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="s1">&#39;minutes&#39;</span><span class="p">],</span>
+           <span class="s1">&#39;subhrPt&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="s1">&#39;minutes&#39;</span><span class="p">],</span>
+           <span class="s1">&#39;1hr&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;hours&#39;</span><span class="p">],</span>
+           <span class="s1">&#39;1hrCM&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;hours&#39;</span><span class="p">],</span>
+           <span class="s1">&#39;1hrPt&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;hours&#39;</span><span class="p">],</span>
            <span class="s1">&#39;3hr&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;hours&#39;</span><span class="p">],</span>
+           <span class="s1">&#39;3hrPt&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;hours&#39;</span><span class="p">],</span>
            <span class="s1">&#39;6hr&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;hours&#39;</span><span class="p">],</span>
+           <span class="s1">&#39;6hrPt&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;hours&#39;</span><span class="p">],</span>
            <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;days&#39;</span><span class="p">],</span>
+           <span class="s1">&#39;dec&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;years&#39;</span><span class="p">],</span>
            <span class="s1">&#39;mon&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;months&#39;</span><span class="p">],</span>
-           <span class="s1">&#39;yr&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;years&#39;</span><span class="p">]}</span>
+           <span class="s1">&#39;monC&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;months&#39;</span><span class="p">],</span>
+           <span class="s1">&#39;monPtv&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;months&#39;</span><span class="p">],</span>
+           <span class="s1">&#39;yr&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;years&#39;</span><span class="p">],</span>
+           <span class="s1">&#39;yrPt&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;years&#39;</span><span class="p">]}</span>
     <span class="k">return</span> <span class="n">inc</span><span class="p">[</span><span class="n">frequency</span><span class="p">]</span></div>
 
 
@@ -767,7 +746,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'3.4.0',
+            VERSION:'4.1.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

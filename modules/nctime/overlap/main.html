@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.overlap.main &mdash; nctime 3.4.0 documentation</title>
+  <title>nctime.overlap.main &mdash; nctime 4.1.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 3.4.0 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 4.1.0 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                3.4
+                4.1
               </div>
             
           
@@ -97,7 +97,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../axis.html">Check time axis squareness</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently asked questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../credits.html">Credits</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../log.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../log.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc.html">Code documentation</a></li>
 </ul>
 
@@ -172,6 +172,7 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
@@ -181,20 +182,20 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">context</span> <span class="k">import</span> <span class="n">ProcessingContext</span>
-<span class="kn">from</span> <span class="nn">nctime.utils.time</span> <span class="k">import</span> <span class="n">get_next_timestep</span><span class="p">,</span> <span class="n">get_start_end_dates_from_filename</span><span class="p">,</span> \
-    <span class="n">get_first_last_timesteps</span><span class="p">,</span> <span class="n">dates2int</span>
+<span class="kn">from</span> <span class="nn">handler</span> <span class="k">import</span> <span class="n">Filename</span>
+<span class="kn">from</span> <span class="nn">nctime.utils.time</span> <span class="k">import</span> <span class="n">get_next_timestep</span>
 
 
-<div class="viewcode-block" id="get_overlaps"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.main.get_overlaps">[docs]</a><span class="k">def</span> <span class="nf">get_overlaps</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">nodes</span><span class="p">,</span> <span class="n">shortest</span><span class="p">):</span>
+<div class="viewcode-block" id="get_overlaps"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.main.get_overlaps">[docs]</a><span class="k">def</span> <span class="nf">get_overlaps</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">shortest</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns all overlapping (default) files as a list of tuples. Each tuple gathers\:</span>
+<span class="sd">    Returns all overlapping files (default) as a list of tuples. Each tuple gathers\:</span>
 <span class="sd">     * The higher overlap bound,</span>
 <span class="sd">     * The date to cut the file in order to resolve the overlap,</span>
 <span class="sd">     * The corresponding cutting timestep.</span>
 
 <span class="sd">    :param str directory: The directory scanned</span>
-<span class="sd">    :param dict nodes: The directed graph nodes as a dictionary</span>
-<span class="sd">    :param list shortest: The most consecutive files list (from `nx.DiGraph()`)</span>
+<span class="sd">    :param networkx.DiGraph() g: The directed graph</span>
+<span class="sd">    :param list shortest: The most consecutive files list (from `nx.DiGraph().shortest_path`)</span>
 <span class="sd">    :returns: The filenames</span>
 <span class="sd">    :rtype: *list*</span>
 
@@ -204,24 +205,23 @@
     <span class="n">overlaps</span><span class="p">[</span><span class="s1">&#39;partial&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">shortest</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">):</span>
         <span class="c1"># Get current node dates</span>
-        <span class="n">current_node</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">[</span><span class="n">shortest</span><span class="p">[</span><span class="n">n</span><span class="p">]]</span>
+        <span class="n">current_node</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="n">shortest</span><span class="p">[</span><span class="n">n</span><span class="p">]]</span>
         <span class="c1"># Get next node dates</span>
-        <span class="n">next_node</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">[</span><span class="n">shortest</span><span class="p">[</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span>
+        <span class="n">next_node</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="n">shortest</span><span class="p">[</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span>
         <span class="c1"># Because of the shortest path is selected, difference between bounds should always be positive or zero</span>
-        <span class="k">assert</span> <span class="p">(</span><span class="n">current_node</span><span class="p">[</span><span class="s1">&#39;next_date&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">next_node</span><span class="p">[</span><span class="s1">&#39;start_date&#39;</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="n">current_node</span><span class="p">[</span><span class="s1">&#39;next&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">next_node</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="mi">0</span>
         <span class="c1"># Get partial overlap if exists</span>
         <span class="c1"># Partial overlap from next_node[1] to current_node[2] (bounds included)</span>
         <span class="c1"># Overlap is hold on the next node (arbitrary)</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">current_node</span><span class="p">[</span><span class="s1">&#39;next_date&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">next_node</span><span class="p">[</span><span class="s1">&#39;start_date&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">cutting_timestep</span> <span class="o">=</span> <span class="n">get_next_timestep</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">shortest</span><span class="p">[</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]),</span>
-                                                 <span class="n">current_node</span><span class="p">[</span><span class="s1">&#39;last_timestep&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">current_node</span><span class="p">[</span><span class="s1">&#39;next&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">next_node</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">cutting_timestep</span> <span class="o">=</span> <span class="n">get_next_timestep</span><span class="p">(</span><span class="n">next_node</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">],</span> <span class="n">current_node</span><span class="p">[</span><span class="s1">&#39;last_step&#39;</span><span class="p">])</span>
             <span class="n">overlaps</span><span class="p">[</span><span class="s1">&#39;partial&#39;</span><span class="p">][</span><span class="n">shortest</span><span class="p">[</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">next_node</span>
-            <span class="n">overlaps</span><span class="p">[</span><span class="s1">&#39;partial&#39;</span><span class="p">][</span><span class="n">shortest</span><span class="p">[</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;end_overlap&#39;</span><span class="p">:</span> <span class="n">current_node</span><span class="p">[</span><span class="s1">&#39;end_date&#39;</span><span class="p">],</span>
-                                                         <span class="s1">&#39;cutting_date&#39;</span><span class="p">:</span> <span class="n">current_node</span><span class="p">[</span><span class="s1">&#39;next_date&#39;</span><span class="p">],</span>
+            <span class="n">overlaps</span><span class="p">[</span><span class="s1">&#39;partial&#39;</span><span class="p">][</span><span class="n">shortest</span><span class="p">[</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;end_overlap&#39;</span><span class="p">:</span> <span class="n">current_node</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">],</span>
+                                                         <span class="s1">&#39;cutting_date&#39;</span><span class="p">:</span> <span class="n">current_node</span><span class="p">[</span><span class="s1">&#39;next&#39;</span><span class="p">],</span>
                                                          <span class="s1">&#39;cutting_timestep&#39;</span><span class="p">:</span> <span class="n">cutting_timestep</span><span class="p">})</span>
     <span class="c1"># Find full overlapping nodes</span>
-    <span class="n">overlaps</span><span class="p">[</span><span class="s1">&#39;full&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">symmetric_difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">shortest</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])))</span>
-    <span class="k">return</span> <span class="n">overlaps</span><span class="p">[</span><span class="s1">&#39;full&#39;</span><span class="p">],</span> <span class="n">overlaps</span><span class="p">[</span><span class="s1">&#39;partial&#39;</span><span class="p">]</span></div>
+    <span class="n">overlaps</span><span class="p">[</span><span class="s1">&#39;full&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span><span class="o">.</span><span class="n">symmetric_difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">shortest</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">overlaps</span><span class="p">[</span><span class="s1">&#39;partial&#39;</span><span class="p">],</span> <span class="n">overlaps</span><span class="p">[</span><span class="s1">&#39;full&#39;</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="resolve_overlap"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.main.resolve_overlap">[docs]</a><span class="k">def</span> <span class="nf">resolve_overlap</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">from_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cutting_timestep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -254,6 +254,177 @@
     <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span></div>
 
 
+<div class="viewcode-block" id="create_nodes"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.main.create_nodes">[docs]</a><span class="k">def</span> <span class="nf">create_nodes</span><span class="p">(</span><span class="n">collector_input</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates the node into the corresponding Graph().</span>
+<span class="sd">    One directed graph per dataset. Each file is analysed to be a node in its graph.</span>
+<span class="sd">    A node is a filename with some attributes:</span>
+<span class="sd">     * start = the start date of the file sub-period</span>
+<span class="sd">     * end = the end date of the file sub-period</span>
+<span class="sd">     * next = the date next to the end date depending on the frequency, the calendar, etc.</span>
+<span class="sd">     * first_step = the first time axis step</span>
+<span class="sd">     * last_step = the last time axis step</span>
+<span class="sd">     * path = the file full path</span>
+
+<span class="sd">    :param tuple collector_input: A tuple with the file path and the processing context</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Deserialize inputs from collector</span>
+    <span class="n">ffp</span><span class="p">,</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">collector_input</span>
+    <span class="c1"># Block to avoid program stop if a thread fails</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Instantiate filename handler</span>
+        <span class="n">fh</span> <span class="o">=</span> <span class="n">Filename</span><span class="p">(</span><span class="n">ffp</span><span class="o">=</span><span class="n">ffp</span><span class="p">)</span>
+        <span class="c1"># Extract start and end dates from filename</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">get_start_end_dates</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span>
+                               <span class="n">calendar</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">calendar</span><span class="p">)</span>
+        <span class="c1"># Create corresponding DiGraph if not exist</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ctx</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">has_graph</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">id</span><span class="p">):</span>
+            <span class="n">ctx</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">set_graph</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="c1"># Retrieve corresponding graph</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">get_graph</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="c1"># Update/add current file as node with dates as attributes</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">fh</span><span class="o">.</span><span class="n">start_date</span><span class="p">,</span>
+                   <span class="n">end</span><span class="o">=</span><span class="n">fh</span><span class="o">.</span><span class="n">end_date</span><span class="p">,</span>
+                   <span class="nb">next</span><span class="o">=</span><span class="n">fh</span><span class="o">.</span><span class="n">next_date</span><span class="p">,</span>
+                   <span class="n">first_step</span><span class="o">=</span><span class="n">fh</span><span class="o">.</span><span class="n">first_timestep</span><span class="p">,</span>
+                   <span class="n">last_step</span><span class="o">=</span><span class="n">fh</span><span class="o">.</span><span class="n">last_timestep</span><span class="p">,</span>
+                   <span class="n">path</span><span class="o">=</span><span class="n">fh</span><span class="o">.</span><span class="n">ffp</span><span class="p">)</span>
+        <span class="c1"># Update graph</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">set_graph</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="k">raise</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> skipped</span><span class="se">\n</span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ffp</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">))</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="create_edges"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.main.create_edges">[docs]</a><span class="k">def</span> <span class="nf">create_edges</span><span class="p">(</span><span class="n">graph_inputs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates the edges between nodes into the corresponding Graph().</span>
+<span class="sd">    One directed graph per dataset.</span>
+<span class="sd">     * Builds the &quot;START&quot; node with the appropriate edges to the nodes with the earliest start date</span>
+<span class="sd">     * Builds the &quot;END&quot; node with the appropriate edges from the nodes with the latest end date</span>
+<span class="sd">     * Builds edges between a node and its &quot;backwards&quot; nodes</span>
+
+<span class="sd">    :param tuple graph_input: A tuple with the graph id, the graph object and the processing context</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Deserialize inputs from graph call</span>
+    <span class="nb">id</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">graph_inputs</span>
+    <span class="c1"># Create edges with backward nodes</span>
+    <span class="c1"># A node is a &quot;backward&quot; node when the difference between the next current time step</span>
+    <span class="c1"># and its start date is positive.</span>
+    <span class="c1"># To ensure continuity path, edges has to only exist with backward nodes.</span>
+    <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">next_date</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="s1">&#39;next&#39;</span><span class="p">):</span>
+        <span class="c1"># Considering one node, get the others in the graph</span>
+        <span class="n">other_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">node</span><span class="p">]</span>
+        <span class="c1"># Get the start dates of the other nodes</span>
+        <span class="n">other_start_dates</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">other_nodes</span><span class="p">]</span>
+        <span class="c1"># Find the index with a positive or null different between their start date and</span>
+        <span class="c1"># the next date of the considered node</span>
+        <span class="n">indexes</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">next_date</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">other_start_dates</span><span class="p">))</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># Get all &quot;next&quot; nodes for the current node</span>
+        <span class="n">next_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">other_nodes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indexes</span><span class="p">]</span>
+        <span class="c1"># For each next node, build the corresponding edge in the graph</span>
+        <span class="k">for</span> <span class="n">next_node</span> <span class="ow">in</span> <span class="n">next_nodes</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">next_node</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Graph: </span><span class="si">{}</span><span class="s1"> :: Edge </span><span class="si">{}</span><span class="s1"> --&gt; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">next_node</span><span class="p">))</span>
+    <span class="c1"># Find the node(s) with the earliest date</span>
+    <span class="n">start_dates</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="s1">&#39;start&#39;</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">starts</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span> <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="nb">min</span><span class="p">(</span><span class="n">start_dates</span><span class="p">)]</span>
+    <span class="c1"># Find the node(s) with the latest date</span>
+    <span class="n">end_dates</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="s1">&#39;end&#39;</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">ends</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span> <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="nb">max</span><span class="p">(</span><span class="n">end_dates</span><span class="p">)]</span>
+    <span class="c1"># Build starting node with edges to first node(s)</span>
+    <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="n">starts</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">&#39;START&#39;</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Graph: </span><span class="si">{}</span><span class="s1"> :: Edge START --&gt; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">start</span><span class="p">))</span>
+    <span class="c1"># Build ending node with edges from latest node(s)</span>
+    <span class="k">for</span> <span class="n">end</span> <span class="ow">in</span> <span class="n">ends</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="s1">&#39;END&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Graph: </span><span class="si">{}</span><span class="s1"> :: Edge </span><span class="si">{}</span><span class="s1"> --&gt; END&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">end</span><span class="p">))</span>
+    <span class="c1"># Finally update graph</span>
+    <span class="n">ctx</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">set_graph</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="evaluate_graph"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.main.evaluate_graph">[docs]</a><span class="k">def</span> <span class="nf">evaluate_graph</span><span class="p">(</span><span class="n">graph_inputs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Evaluate the directed graph looking for a shortest path between &quot;START&quot; and &quot;END&quot; nodes.</span>
+<span class="sd">    If a shorted path is found, it looks for the potential overlaps.</span>
+<span class="sd">    Partial and full overlaps are supported.</span>
+<span class="sd">    If no shortest path found, it creates a new node &quot;BREAK&quot; in the path.</span>
+
+<span class="sd">    :param tuple graph_input: A tuple with the graph id, the graph object and the processing context</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Deserialize inputs from graph call</span>
+    <span class="nb">id</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">graph_inputs</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">full_overlaps</span><span class="p">,</span> <span class="n">partial_overlaps</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+    <span class="c1"># Walk through the graph</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Find shortest path between oldest and latest dates</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">shortest_path</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s1">&#39;START&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;END&#39;</span><span class="p">)</span>
+        <span class="c1"># Get overlaps</span>
+        <span class="n">full_overlaps</span><span class="p">,</span> <span class="n">partial_overlaps</span> <span class="o">=</span> <span class="n">get_overlaps</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">full_overlaps</span> <span class="ow">or</span> <span class="n">partial_overlaps</span><span class="p">:</span>
+            <span class="n">ctx</span><span class="o">.</span><span class="n">overlaps</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="n">nx</span><span class="o">.</span><span class="n">NetworkXNoPath</span><span class="p">:</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="n">broken</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">node</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;START&#39;</span><span class="p">,</span> <span class="s1">&#39;END&#39;</span><span class="p">]:</span>
+                <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+                <span class="c1"># A node is a &quot;forward&quot; node when the difference between the next current time step</span>
+                <span class="c1"># and its start date is negative.</span>
+                <span class="c1"># A path gap exists from a node when no edges exist with ALL &quot;forwards&quot; nodes.</span>
+                <span class="c1"># Considering one node, get the others in the graph</span>
+                <span class="n">other_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;START&#39;</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="s1">&#39;END&#39;</span><span class="p">]]</span>
+                <span class="c1"># Get the start dates of the other nodes</span>
+                <span class="n">other_start_dates</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">other_nodes</span><span class="p">]</span>
+                <span class="c1"># Find the index with a negative or null difference between their start date and</span>
+                <span class="c1"># the next date of the considered node</span>
+                <span class="n">indexes</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;next&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">other_start_dates</span><span class="p">))</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">]</span>
+                <span class="c1"># Get all &quot;next&quot; nodes for the current node</span>
+                <span class="n">next_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">other_nodes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indexes</span><span class="p">]</span>
+                <span class="c1"># Find available targets from graph</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">avail_targets</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">g</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">node</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                    <span class="n">avail_targets</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="c1"># If no &quot;forward&quot; nodes in edges target = BREAK</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">next_nodes</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">avail_targets</span><span class="p">):</span>
+                    <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;BREAK&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">path</span><span class="p">,</span> <span class="n">full_overlaps</span><span class="p">,</span> <span class="n">partial_overlaps</span></div>
+
+
+<div class="viewcode-block" id="format_path"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.main.format_path">[docs]</a><span class="k">def</span> <span class="nf">format_path</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">partial_overlaps</span><span class="p">,</span> <span class="n">full_overlaps</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Formats the message to print as a diagnostic.</span>
+<span class="sd">    It walks through the evaluated path of the directed graph and print the filenames with useful info.</span>
+
+<span class="sd">    :param list path: The node path as a result of the directed graph evaluation</span>
+<span class="sd">    :param dict partial_overlaps: Dictionary of partial overlaps</span>
+<span class="sd">    :param list full_overlaps: List of full overlapping files</span>
+<span class="sd">    :returns: The formatted diagnostic to print</span>
+<span class="sd">    :rtype: *str*</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="s1">&#39;  </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">partial_overlaps</span> <span class="ow">and</span> <span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="n">partial_overlaps</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="s1">&#39;[ </span><span class="si">{}</span><span class="s1"> &lt;-- overlap from </span><span class="si">{}</span><span class="s1"> to </span><span class="si">{}</span><span class="s1"> ] &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                           <span class="n">partial_overlaps</span><span class="p">[</span><span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="s1">&#39;start&#39;</span><span class="p">],</span>
+                                                           <span class="n">partial_overlaps</span><span class="p">[</span><span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="s1">&#39;end_overlap&#39;</span><span class="p">])</span>
+        <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">full_overlaps</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">full_overlaps</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="s1">&#39;[ </span><span class="si">{}</span><span class="s1"> &lt;-- to remove ]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">msg</span></div>
+
+
 <div class="viewcode-block" id="run"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.main.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Main process that:</span>
@@ -268,83 +439,28 @@
 <span class="sd">    :param ArgumentParser args: Command-line arguments parser</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">directory</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">directory</span><span class="p">:</span>
-        <span class="c1"># Instantiate processing context</span>
-        <span class="k">with</span> <span class="n">ProcessingContext</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">directory</span><span class="p">)</span> <span class="k">as</span> <span class="n">ctx</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Overlap diagnostic started for </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">))</span>
-            <span class="n">ctx</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-            <span class="n">nodes</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Create edges from source nodes to target nodes&#39;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">ffp</span> <span class="ow">in</span> <span class="n">ctx</span><span class="o">.</span><span class="n">sources</span><span class="p">:</span>
-                <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ffp</span><span class="p">)</span>
-                <span class="c1"># A node is defined by the filename, its start, end and next dates with its first and last timesteps.</span>
-                <span class="n">nodes</span><span class="p">[</span><span class="n">filename</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-                <span class="c1"># Get start, end and next date of each file</span>
-                <span class="n">dates</span> <span class="o">=</span> <span class="n">get_start_end_dates_from_filename</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
-                                                          <span class="n">pattern</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span>
-                                                          <span class="n">frequency</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">frequency</span><span class="p">,</span>
-                                                          <span class="n">calendar</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">calendar</span><span class="p">)</span>
-                <span class="n">nodes</span><span class="p">[</span><span class="n">filename</span><span class="p">][</span><span class="s1">&#39;start_date&#39;</span><span class="p">],</span> <span class="n">nodes</span><span class="p">[</span><span class="n">filename</span><span class="p">][</span><span class="s1">&#39;end_date&#39;</span><span class="p">],</span> <span class="n">nodes</span><span class="p">[</span><span class="n">filename</span><span class="p">][</span><span class="s1">&#39;next_date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dates2int</span><span class="p">(</span>
-                    <span class="n">dates</span><span class="p">)</span>
-                <span class="c1"># Get first and last time steps</span>
-                <span class="n">timesteps</span> <span class="o">=</span> <span class="n">get_first_last_timesteps</span><span class="p">(</span><span class="n">ffp</span><span class="p">)</span>
-                <span class="n">nodes</span><span class="p">[</span><span class="n">filename</span><span class="p">][</span><span class="s1">&#39;first_timestep&#39;</span><span class="p">],</span> <span class="n">nodes</span><span class="p">[</span><span class="n">filename</span><span class="p">][</span><span class="s1">&#39;last_timestep&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">timesteps</span>
-
-            <span class="c1"># Build starting node</span>
-            <span class="n">start_dates</span> <span class="o">=</span> <span class="p">[</span><span class="n">nodes</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s1">&#39;start_date&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">]</span>
-            <span class="n">starts</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span> <span class="k">if</span> <span class="n">nodes</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s1">&#39;start_date&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="nb">min</span><span class="p">(</span><span class="n">start_dates</span><span class="p">)]</span>
-            <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="n">starts</span><span class="p">:</span>
-                <span class="n">ctx</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">&#39;START&#39;</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> --&gt; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; START &#39;</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">display</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">),</span>
-                                                    <span class="n">start</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">display</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)))</span>
-            <span class="c1"># Create graph edges with filenames only</span>
-            <span class="n">end_dates</span> <span class="o">=</span> <span class="p">[</span><span class="n">nodes</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s1">&#39;end_date&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">]</span>
-            <span class="n">other_nodes</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
-                <span class="c1"># Create a fake ending node from all latest files in case of overlaps</span>
-                <span class="k">if</span> <span class="n">nodes</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s1">&#39;end_date&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="nb">max</span><span class="p">(</span><span class="n">end_dates</span><span class="p">):</span>
-                    <span class="n">ctx</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="s1">&#39;END&#39;</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-                        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> --&gt; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">display</span> <span class="o">+</span> <span class="mi">2</span><span class="p">),</span>
-                                                        <span class="s1">&#39; END &#39;</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">display</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">)))</span>
+    <span class="c1"># Instantiate processing context</span>
+    <span class="k">with</span> <span class="n">ProcessingContext</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="k">as</span> <span class="n">ctx</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Analysing data, please wait...</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1"># Process supplied files to create nodes in appropriate directed graph</span>
+        <span class="n">handlers</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ctx</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">create_nodes</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">sources</span><span class="p">)]</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="n">scan_files</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">handlers</span><span class="p">)</span>
+        <span class="c1"># Process each directed graph to create appropriate edges</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">create_edges</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">graph</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">ctx</span><span class="p">))]</span>
+        <span class="c1"># Evaluate each graph if a shortest path exist</span>
+        <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">partial_overlaps</span><span class="p">,</span> <span class="n">full_overlaps</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">evaluate_graph</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">graph</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">ctx</span><span class="p">)):</span>
+            <span class="c1"># Print path</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">format_path</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">partial_overlaps</span><span class="p">,</span> <span class="n">full_overlaps</span><span class="p">)</span>
+            <span class="c1"># Print analyse result</span>
+            <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">broken</span><span class="p">:</span>
+                <span class="c1"># A broken time period cannot be evaluated for overlaps (None by default)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Time series broken: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Print overlaps if exists</span>
+                <span class="k">if</span> <span class="n">full_overlaps</span> <span class="ow">or</span> <span class="n">partial_overlaps</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Shortest path found WITH overlaps: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="c1"># Get index of the closest node</span>
-                    <span class="c1"># The closest node is the node with the smallest positive difference</span>
-                    <span class="c1"># between next current time step and all start dates</span>
-                    <span class="n">other_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">nodes</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">n</span><span class="p">]</span>
-                    <span class="n">start_dates</span> <span class="o">=</span> <span class="p">[</span><span class="n">nodes</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="s1">&#39;start_date&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">other_nodes</span><span class="p">]</span>
-                    <span class="n">nxts</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s1">&#39;next_date&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">start_dates</span><span class="p">))</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">]</span>
-                    <span class="k">if</span> <span class="n">nxts</span><span class="p">:</span>
-                        <span class="k">for</span> <span class="n">nxt</span> <span class="ow">in</span> <span class="n">nxts</span><span class="p">:</span>
-                            <span class="n">ctx</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">other_nodes</span><span class="p">[</span><span class="n">nxt</span><span class="p">])</span>
-                            <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-                                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> --&gt; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">display</span> <span class="o">+</span> <span class="mi">2</span><span class="p">),</span>
-                                                                <span class="n">other_nodes</span><span class="p">[</span><span class="n">nxt</span><span class="p">]</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">display</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)))</span>
-            <span class="c1"># Walk through the graph</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="c1"># Find shortest path between oldest and latest dates</span>
-                <span class="n">ctx</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">shortest_path</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s1">&#39;START&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;END&#39;</span><span class="p">)</span>
-                <span class="c1"># Get overlaps</span>
-                <span class="n">ctx</span><span class="o">.</span><span class="n">full_overlaps</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">partial_overlaps</span> <span class="o">=</span> <span class="n">get_overlaps</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">nodes</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">nx</span><span class="o">.</span><span class="n">NetworkXNoPath</span><span class="p">:</span>
-                <span class="n">ctx</span><span class="o">.</span><span class="n">broken</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="n">next_node</span> <span class="o">=</span> <span class="s1">&#39;START&#39;</span>
-                <span class="k">while</span> <span class="n">next_node</span> <span class="o">!=</span> <span class="s1">&#39;END&#39;</span><span class="p">:</span>
-                    <span class="n">paths</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">shortest_path</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">next_node</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
-                    <span class="n">path_lengths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">]</span>
-                    <span class="n">longest_path</span> <span class="o">=</span> <span class="n">paths</span><span class="p">[</span><span class="n">path_lengths</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">path_lengths</span><span class="p">))]</span>
-                    <span class="n">ctx</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">longest_path</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">longest_path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;END&#39;</span><span class="p">:</span>
-                        <span class="c1"># Get index of the closest next node after break</span>
-                        <span class="c1"># The closest next node is the node with the smallest negative difference</span>
-                        <span class="c1"># between next current time stem and all start dates</span>
-                        <span class="n">diff</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">longest_path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]][</span><span class="s1">&#39;next_date&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">start_dates</span><span class="p">))</span>
-                        <span class="n">next_node</span> <span class="o">=</span> <span class="n">other_nodes</span><span class="p">[</span><span class="n">diff</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">max</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">diff</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]))]</span>
-                        <span class="n">ctx</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;BREAK&#39;</span><span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">next_node</span> <span class="o">=</span> <span class="s1">&#39;END&#39;</span>
-
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Shortest path found without overlaps: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
             <span class="c1"># Resolve overlaps</span>
             <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">resolve</span><span class="p">:</span>
                 <span class="c1"># Full overlapping files has to be deleted before partial overlapping files are truncated.</span>
@@ -398,7 +514,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'3.4.0',
+            VERSION:'4.1.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

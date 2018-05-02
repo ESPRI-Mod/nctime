@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.utils.misc &mdash; nctime 3.4.0 documentation</title>
+  <title>nctime.utils.misc &mdash; nctime 4.1.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 3.4.0 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 4.1.0 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                3.4
+                4.1
               </div>
             
           
@@ -97,7 +97,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../axis.html">Check time axis squareness</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently asked questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../credits.html">Credits</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../log.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../log.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc.html">Code documentation</a></li>
 </ul>
 
@@ -177,7 +177,36 @@
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
 
+<span class="kn">from</span> <span class="nn">netCDF4</span> <span class="k">import</span> <span class="n">Dataset</span>
+
 <span class="kn">from</span> <span class="nn">constants</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">custom_exceptions</span> <span class="k">import</span> <span class="o">*</span>
+
+
+<div class="viewcode-block" id="ncopen"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.misc.ncopen">[docs]</a><span class="k">class</span> <span class="nc">ncopen</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Properly opens a netCDF file</span>
+
+<span class="sd">    :param str path: The netCDF file full path</span>
+<span class="sd">    :returns: The netCDF dataset object</span>
+<span class="sd">    :rtype: *netCDF4.Dataset*</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nc</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nc</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidNetCDFFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc</span>
+
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">exc</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="LogFilter"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.misc.LogFilter">[docs]</a><span class="k">class</span> <span class="nc">LogFilter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -209,7 +238,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logname</span> <span class="o">=</span> <span class="s1">&#39;nctime-</span><span class="si">{}</span><span class="s1">-</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">_to_real_datetime</span><span class="p">()</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">-%H%M%S&quot;</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span>
-    <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(levelname)-10s</span><span class="s1"> </span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">log</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">log</span><span class="p">):</span>
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
@@ -255,22 +284,24 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="match"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.misc.match">[docs]</a><span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">string</span><span class="p">,</span> <span class="n">negative</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="match"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.misc.match">[docs]</a><span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">string</span><span class="p">,</span> <span class="n">inclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Validates a string against a regular expression.</span>
 <span class="sd">    Only match at the beginning of the string.</span>
+<span class="sd">    Default is to match inclusive regex.</span>
 
 <span class="sd">    :param str pattern: The regular expression to match</span>
 <span class="sd">    :param str string: The string to test</span>
-<span class="sd">    :param boolean negative: True if negative matching (i.e., exclude the regex)</span>
+<span class="sd">    :param boolean inclusive: False if negative matching (i.e., exclude the regex)</span>
 <span class="sd">    :returns: True if it matches</span>
 <span class="sd">    :rtype: *boolean*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">negative</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">string</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span>
+    <span class="c1"># Assert inclusive and exclusive flag are mutually exclusive</span>
+    <span class="k">if</span> <span class="n">inclusive</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">string</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">string</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span></div>
+        <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">string</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span></div>
 </pre></div>
 
            </div>
@@ -307,7 +338,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'3.4.0',
+            VERSION:'4.1.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
