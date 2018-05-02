@@ -4,10 +4,10 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4ad3aa14-f2b1-4942-853e-c57f1bc2a250" name="Default" comment="">
+    <list default="true" id="4ad3aa14-f2b1-4942-853e-c57f1bc2a250" name="Default" comment="Add keyboard interrupt exception">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nctime/axis/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/nctime/axis/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/nctime/overlap/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/nctime/overlap/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
     </list>
     <ignored path="cmip5-time-axis.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -26,11 +26,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/nctime/overlap/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="491">
-              <caret line="296" column="21" lean-forward="true" selection-start-line="296" selection-start-column="21" selection-end-line="296" selection-end-column="21" />
+            <state relative-caret-position="281">
+              <caret line="162" column="52" selection-start-line="162" selection-start-column="52" selection-end-line="162" selection-end-column="52" />
               <folding>
                 <element signature="e#157#173#0" expanded="true" />
               </folding>
@@ -38,11 +38,20 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="setup.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/setup.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="225">
+              <caret line="16" column="9" selection-start-line="16" selection-start-column="9" selection-end-line="16" selection-end-column="9" />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/nctime/axis/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="282">
-              <caret line="167" column="33" selection-start-line="167" selection-start-column="33" selection-end-line="167" selection-end-column="33" />
+            <state relative-caret-position="457">
+              <caret line="144" column="13" selection-start-line="144" selection-start-column="13" selection-end-line="144" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -50,8 +59,8 @@
       <file leaf-file-name="context.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/nctime/overlap/context.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="328">
-              <caret line="76" column="23" lean-forward="true" selection-start-line="76" selection-start-column="23" selection-end-line="76" selection-end-column="23" />
+            <state relative-caret-position="548">
+              <caret line="84" column="13" selection-start-line="84" selection-start-column="13" selection-end-line="84" selection-end-column="13" />
               <folding>
                 <element signature="e#131#145#0" expanded="true" />
               </folding>
@@ -72,7 +81,7 @@
         <entry file="file://$PROJECT_DIR$/nctime/nctime.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="402">
-              <caret line="176" column="11" lean-forward="true" selection-start-line="176" selection-start-column="11" selection-end-line="176" selection-end-column="11" />
+              <caret line="176" column="11" selection-start-line="176" selection-start-column="11" selection-end-line="176" selection-end-column="11" />
               <folding>
                 <element signature="e#215#230#0" expanded="true" />
               </folding>
@@ -80,11 +89,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="misc.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="misc.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/nctime/utils/misc.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="332">
-              <caret line="76" column="11" lean-forward="true" selection-start-line="76" selection-start-column="11" selection-end-line="76" selection-end-column="11" />
+            <state relative-caret-position="377">
+              <caret line="79" column="44" selection-start-line="79" selection-start-column="44" selection-end-line="79" selection-end-column="44" />
             </state>
           </provider>
         </entry>
@@ -178,13 +187,13 @@
         <option value="$PROJECT_DIR$/nctime/utils/collector.py" />
         <option value="$PROJECT_DIR$/nctime/overlap/handler.py" />
         <option value="$PROJECT_DIR$/requirements.txt" />
-        <option value="$PROJECT_DIR$/setup.py" />
         <option value="$PROJECT_DIR$/nctime/utils/misc.py" />
         <option value="$PROJECT_DIR$/nctime/utils/constants.py" />
         <option value="$PROJECT_DIR$/nctime/nctime.py" />
         <option value="$PROJECT_DIR$/nctime/axis/context.py" />
-        <option value="$PROJECT_DIR$/nctime/overlap/context.py" />
         <option value="$PROJECT_DIR$/nctime/axis/main.py" />
+        <option value="$PROJECT_DIR$/nctime/overlap/context.py" />
+        <option value="$PROJECT_DIR$/setup.py" />
         <option value="$PROJECT_DIR$/nctime/overlap/main.py" />
       </list>
     </option>
@@ -317,7 +326,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/nctime/nctime.py" />
-      <option name="PARAMETERS" value="axis --project cmip6 -i /home_ciclad/glipsl/ini/ /prodigfs/prodigfs_test/esgf/mirror/CMIP6/CMIP/CNRM-CERFACS/CNRM-CM6-1/1pctCO2/r99i1p1f2/Amon/" />
+      <option name="PARAMETERS" value="axis --project cmip6 -i /home_ciclad/glipsl/ini/ --debug /prodigfs/prodigfs_test/esgf/mirror/CMIP6/CMIP/CNRM-CERFACS/CNRM-CM6-1/1pctCO2/r99i1p1f2/Amon/" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -371,7 +380,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/nctime/nctime.py" />
-      <option name="PARAMETERS" value="overlap --project cmip6 -i /home_ciclad/glipsl/ini/ /prodigfs/prodigfs_test/esgf/mirror/CMIP6/CMIP/CNRM-CERFACS/CNRM-CM6-1/1pctCO2/r99i1p1f2/Amon/" />
+      <option name="PARAMETERS" value="overlap --project cmip6 -i /home_ciclad/glipsl/ini/ /prodigfs/prodigfs_test/esgf/mirror/CMIP6/CMIP/CNRM-CERFACS/CNRM-CM6-1/1pctCO2/r99i1p1f2/Amon/ --debug" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -631,7 +640,21 @@
       <option name="project" value="LOCAL" />
       <updated>1525262738698</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Update">
+      <created>1525262985941</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1525262985941</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Add keyboard interrupt exception">
+      <created>1525263170017</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1525263170017</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -640,11 +663,11 @@
     <layout>
       <window_info anchor="bottom" id="TODO" order="5" />
       <window_info anchor="bottom" id="Event Log" order="6" side_tool="true" weight="0.32778355" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32882413" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32882413" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="9" />
       <window_info anchor="bottom" id="Terminal" order="8" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17199148" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.17199148" />
       <window_info anchor="right" id="R Packages" order="3" />
       <window_info anchor="right" id="R Graphics" order="4" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32941177" />
@@ -679,7 +702,8 @@
     <MESSAGE value="Reformat" />
     <MESSAGE value="Upgrade" />
     <MESSAGE value="Update" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update" />
+    <MESSAGE value="Add keyboard interrupt exception" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add keyboard interrupt exception" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -902,13 +926,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/setup.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="7" column="17" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/nctime/utils/collector.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -940,13 +957,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/nctime/axis/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="282">
-          <caret line="167" column="33" selection-start-line="167" selection-start-column="33" selection-end-line="167" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/nctime/axis/context.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="105">
@@ -954,30 +964,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/nctime/overlap/context.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="328">
-          <caret line="76" column="23" lean-forward="true" selection-start-line="76" selection-start-column="23" selection-end-line="76" selection-end-column="23" />
-          <folding>
-            <element signature="e#131#145#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/nctime/overlap/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="491">
-          <caret line="296" column="21" lean-forward="true" selection-start-line="296" selection-start-column="21" selection-end-line="296" selection-end-column="21" />
-          <folding>
-            <element signature="e#157#173#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/nctime/nctime.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="402">
-          <caret line="176" column="11" lean-forward="true" selection-start-line="176" selection-start-column="11" selection-end-line="176" selection-end-column="11" />
+          <caret line="176" column="11" selection-start-line="176" selection-start-column="11" selection-end-line="176" selection-end-column="11" />
           <folding>
             <element signature="e#215#230#0" expanded="true" />
           </folding>
@@ -986,8 +976,42 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/nctime/utils/misc.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="332">
-          <caret line="76" column="11" lean-forward="true" selection-start-line="76" selection-start-column="11" selection-end-line="76" selection-end-column="11" />
+        <state relative-caret-position="377">
+          <caret line="79" column="44" selection-start-line="79" selection-start-column="44" selection-end-line="79" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nctime/overlap/context.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="548">
+          <caret line="84" column="13" selection-start-line="84" selection-start-column="13" selection-end-line="84" selection-end-column="13" />
+          <folding>
+            <element signature="e#131#145#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nctime/axis/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="457">
+          <caret line="144" column="13" selection-start-line="144" selection-start-column="13" selection-end-line="144" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/setup.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="16" column="9" selection-start-line="16" selection-start-column="9" selection-end-line="16" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nctime/overlap/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="281">
+          <caret line="162" column="52" selection-start-line="162" selection-start-column="52" selection-end-line="162" selection-end-column="52" />
+          <folding>
+            <element signature="e#157#173#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

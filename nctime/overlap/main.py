@@ -11,12 +11,10 @@ import itertools
 import logging
 import os
 import re
-import sys
 
 import nco
 import networkx as nx
 import numpy as np
-from tqdm import tqdm
 
 from context import ProcessingContext
 from handler import Filename
@@ -153,14 +151,14 @@ def create_edges(graph_inputs):
     # A node is a "backward" node when the difference between the next current time step
     # and its start date is positive.
     # To ensure continuity path, edges has to only exist with backward nodes.
-    for node, next in g.nodes(data='next'):
+    for node, next_date in g.nodes(data='next'):
         # Considering one node, get the others in the graph
         other_nodes = [x for x in g.nodes() if x is not node]
         # Get the start dates of the other nodes
         other_start_dates = [g.node[x]['start'] for x in other_nodes]
         # Find the index with a positive or null different between their start date and
         # the next date of the considered node
-        indexes = [i for i, v in enumerate(next - np.array(other_start_dates)) if v >= 0]
+        indexes = [i for i, v in enumerate(next_date - np.array(other_start_dates)) if v >= 0]
         # Get all "next" nodes for the current node
         next_nodes = [other_nodes[i] for i in indexes]
         # For each next node, build the corresponding edge in the graph

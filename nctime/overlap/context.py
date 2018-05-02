@@ -12,7 +12,6 @@ import sys
 from multiprocessing.dummy import Pool as ThreadPool
 
 from ESGConfigParser import SectionParser
-from tqdm import tqdm
 
 from handler import Graph
 from nctime.utils.collector import Collector
