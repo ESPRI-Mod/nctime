@@ -129,6 +129,8 @@ def create_nodes(collector_input):
                    path=fh.ffp)
         # Update graph
         ctx.graph.set_graph(fh.id, g)
+    except KeyboardInterrupt:
+        raise
     except Exception as e:
         logging.error('{} skipped\n{}: {}'.format(ffp, e.__class__.__name__, e.message))
         return None

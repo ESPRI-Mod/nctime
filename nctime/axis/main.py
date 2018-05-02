@@ -141,6 +141,8 @@ def process(collector_input):
             logging.info(msg)
         # Return file status
         return fh
+    except KeyboardInterrupt:
+        raise
     except Exception as e:
         ctx.status.append('999')
         logging.error('{} skipped\n{}: {}'.format(ffp, e.__class__.__name__, e.message))
