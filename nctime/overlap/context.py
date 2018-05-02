@@ -10,8 +10,9 @@ import logging
 import os
 import sys
 from multiprocessing.dummy import Pool as ThreadPool
-from tqdm import tqdm
+
 from ESGConfigParser import SectionParser
+from tqdm import tqdm
 
 from handler import Graph
 from nctime.utils.collector import Collector
