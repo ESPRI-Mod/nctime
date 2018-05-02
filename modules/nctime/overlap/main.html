@@ -259,7 +259,7 @@
 <span class="sd">    Creates the node into the corresponding Graph().</span>
 <span class="sd">    One directed graph per dataset. Each file is analysed to be a node in its graph.</span>
 <span class="sd">    A node is a filename with some attributes:</span>
-<span class="sd">    </span>
+
 <span class="sd">     * start = the start date of the file sub-period</span>
 <span class="sd">     * end = the end date of the file sub-period</span>
 <span class="sd">     * next = the date next to the end date depending on the frequency, the calendar, etc.</span>
@@ -304,6 +304,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates the edges between nodes into the corresponding Graph().</span>
 <span class="sd">    One directed graph per dataset.</span>
+
 <span class="sd">     * Builds the &quot;START&quot; node with the appropriate edges to the nodes with the earliest start date</span>
 <span class="sd">     * Builds the &quot;END&quot; node with the appropriate edges from the nodes with the latest end date</span>
 <span class="sd">     * Builds edges between a node and its &quot;backwards&quot; nodes</span>
