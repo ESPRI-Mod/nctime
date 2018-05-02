@@ -10,7 +10,7 @@ import logging
 import os
 import sys
 from multiprocessing.dummy import Pool as ThreadPool
-
+from tqdm import tqdm
 from ESGConfigParser import SectionParser
 
 from handler import Graph
@@ -42,6 +42,7 @@ class ProcessingContext(object):
         self.overlaps = False
         self.broken = False
         self.scan_files = None
+        self.pbar = None
 
     def __enter__(self):
         # Init configuration parser
@@ -53,7 +54,7 @@ class ProcessingContext(object):
         # Exclude hidden non-NetCDF files
         self.sources.FileFilter.add(regex='^.*\.nc$')
         # Exclude fixed frequency
-        self.sources.FileFilter.add(regex='(_fx_|_fixed_|_fx.|_fixed.)', inclusive=False)
+        self.sources.FileFilter.add(regex='(_fx_|_fixed_|_fx.|_fixed.|_.fx_)', inclusive=False)
         # Get first file for reference
         self.ref = self.sources.first()[0]
         self.display = len(os.path.basename(self.ref))
@@ -63,6 +64,13 @@ class ProcessingContext(object):
         self.graph = Graph()
         # Init threads pool
         self.pool = ThreadPool(int(self.threads))
+        # Init progress bar
+        nfiles = len(self.sources)
+        self.pbar = tqdm(desc='Node(s) generation',
+                         total=nfiles,
+                         bar_format='{desc}: {percentage:3.0f}% | {n_fmt}/{total_fmt} files',
+                         ncols=100,
+                         file=sys.stdout)
         return self
 
     def __exit__(self, *exc):

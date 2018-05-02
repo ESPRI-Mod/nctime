@@ -73,7 +73,7 @@ def init_logging(log, level='INFO'):
 
     """
     logname = 'nctime-{}-{}'.format(datetime(1, 1, 1)._to_real_datetime().now().strftime("%Y%m%d-%H%M%S"), os.getpid())
-    formatter = logging.Formatter(fmt='%(levelname)-10s %(asctime)s %(message)s')
+    formatter = logging.Formatter(fmt='%(message)s')
     if log:
         if not os.path.isdir(log):
             os.makedirs(log)
