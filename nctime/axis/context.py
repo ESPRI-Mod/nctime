@@ -36,6 +36,7 @@ class ProcessingContext(object):
         self.write = args.write
         self.force = args.force
         self.debug = args.debug
+        self.on_fly = args.on_fly
         self.project = args.project
         self.tunits_default = None
         if self.project in DEFAULT_TIME_UNITS.keys():

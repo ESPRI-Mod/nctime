@@ -154,6 +154,11 @@ def get_args():
         default=False,
         help=FORCE_HELP)
     axis.add_argument(
+        '--on-fly',
+        action='store_true',
+        default=False,
+        help=ON_FLY_HELP)
+    axis.add_argument(
         '--db',
         metavar='CWD/timeaxis.db',
         type=str,

@@ -63,7 +63,7 @@ def process(collector_input):
                                                   calendar=ctx.tinit.calendar,
                                                   is_instant=fh.is_instant)
         # Check consistency between last time date and end date from filename
-        if fh.last_timestamp != fh.end_timestamp:
+        if not ctx.on_fly and fh.last_timestamp != fh.end_timestamp:
             # Rebuild a theoretical time axis with low precision
             fh.time_axis_rebuilt = fh.build_time_axis(start=trunc(start, 5),
                                                       inc=time_inc(fh.frequency)[0],

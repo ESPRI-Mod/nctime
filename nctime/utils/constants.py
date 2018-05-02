@@ -151,6 +151,13 @@ AXIS_HELP = \
     
     """
 
+ON_FLY_HELP = \
+    """
+    Ignore the test on end date consistency for on going|n
+    simulation (this also include completed files).
+
+    """
+
 WRITE_HELP = \
     """
     Rewrites time axis depending on checking.|n
