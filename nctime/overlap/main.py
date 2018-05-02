@@ -281,8 +281,7 @@ def run(args):
         handlers = [x for x in ctx.pool.imap(create_nodes, ctx.sources)]
         ctx.scan_files = len(handlers)
         # Process each directed graph to create appropriate edges
-        graphs = [x for x in itertools.imap(create_edges, ctx.graph(data=ctx))]
-        ctx.scan_dsets = len(graphs)
+        _ = [x for x in itertools.imap(create_edges, ctx.graph(data=ctx))]
         # Evaluate each graph if a shortest path exist
         for path, partial_overlaps, full_overlaps in itertools.imap(evaluate_graph, ctx.graph(data=ctx)):
             # Print path

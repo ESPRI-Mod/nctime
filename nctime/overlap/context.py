@@ -43,7 +43,6 @@ class ProcessingContext(object):
         self.overlaps = False
         self.broken = False
         self.scan_files = None
-        self.scan_dsets = None
         self.pbar = None
 
     def __enter__(self):
@@ -76,15 +75,14 @@ class ProcessingContext(object):
         # Default is sys.exit(0)
         # Print analyse result
         if self.broken:
-            logging.error(
-                'Some broken time period should be corrected manually '
-                '({} files among {} datasets scanned)'.format(self.scan_files, self.scan_dsets))
+            logging.error('Some broken time period should be '
+                          'corrected manually ({} files scanned)'.format(self.scan_files))
             sys.exit(1)
         elif self.overlaps:
-            logging.error('Some time period have overlaps to fix '
-                          '({} files among {} datasets scanned)'.format(self.scan_files, self.scan_dsets))
+            logging.error('Some time period have overlaps to'
+                          ' fix ({} files scanned)'.format(self.scan_files))
             sys.exit(2)
         else:
-            print('No overlaps or broken time periods'
-                  ' ({} files among {} datasets scanned)'.format(self.scan_files, self.scan_dsets))
+            print('No overlaps or broken time periods '
+                  '({} files scanned)'.format(self.scan_files))
             sys.exit(0)
