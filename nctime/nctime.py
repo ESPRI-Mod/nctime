@@ -88,11 +88,17 @@ def get_args():
         '-h', '--help',
         action='help',
         help=HELP)
-    parent.add_argument(
+    group = parent.add_mutually_exclusive_group(required=False)
+    group.add_argument(
         '--debug',
         action='store_true',
         default=False,
         help=VERBOSE_HELP)
+    group.add_argument(
+        '--errors-only',
+        action='store_true',
+        default=False,
+        help=ERRORS_ONLY_HELP)
     parent.add_argument(
         '--max-threads',
         metavar='4',
@@ -162,7 +168,12 @@ def run():
     # Get command-line arguments
     args = get_args()
     # Initialize logger
-    level = 'DEBUG' if args.debug else 'INFO'
+    if args.errors_only:
+        level = 'ERROR'
+    elif args.debug:
+        level = 'DEBUG'
+    else:
+        level = 'INFO'
     init_logging(log=args.log, level=level)
     # Run program
     main = import_module('.main', package='nctime.{}'.format(args.cmd))

@@ -43,6 +43,7 @@ class ProcessingContext(object):
         self.overlaps = False
         self.broken = False
         self.scan_files = None
+        self.scan_dsets = None
         self.pbar = None
 
     def __enter__(self):
@@ -65,13 +66,6 @@ class ProcessingContext(object):
         self.graph = Graph()
         # Init threads pool
         self.pool = ThreadPool(int(self.threads))
-        # Init progress bar
-        nfiles = len(self.sources)
-        self.pbar = tqdm(desc='Node(s) generation',
-                         total=nfiles,
-                         bar_format='{desc}: {percentage:3.0f}% | {n_fmt}/{total_fmt} files',
-                         ncols=100,
-                         file=sys.stdout)
         return self
 
     def __exit__(self, *exc):
@@ -83,11 +77,14 @@ class ProcessingContext(object):
         # Print analyse result
         if self.broken:
             logging.error(
-                'Some broken time period should be corrected manually ({} files scanned)'.format(self.scan_files))
+                'Some broken time period should be corrected manually '
+                '({} files among {} datasets scanned)'.format(self.scan_files, self.scan_dsets))
             sys.exit(1)
         elif self.overlaps:
-            logging.error('Some time period have overlaps to fix ({} files scanned)'.format(self.scan_files))
+            logging.error('Some time period have overlaps to fix '
+                          '({} files among {} datasets scanned)'.format(self.scan_files, self.scan_dsets))
             sys.exit(2)
         else:
-            logging.info('Time diagnostic completed ({} files scanned)'.format(self.scan_files))
+            print('No overlaps or broken time periods'
+                  ' ({} files among {} datasets scanned)'.format(self.scan_files, self.scan_dsets))
             sys.exit(0)

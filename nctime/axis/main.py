@@ -122,26 +122,23 @@ def process(collector_input):
         if (ctx.write or ctx.force) and {'001', '002', '003', '004', '006', '007'}.intersection(set(fh.status)):
             fh.new_checksum = fh.checksum(ctx.checksum_type)
         # Print file status
-        msg = """Filename: {}
-                                   Start: {} = {}
-                                   End:   {} = {}
-                                   Last:  {} = {}
-                                   Time steps: {}
-                                   Is instant: {}""".format(fh.filename,
-                                                            fh.start_timestamp, fh.start_date,
-                                                            fh.end_timestamp, fh.end_date,
-                                                            fh.last_timestamp, fh.last_date,
-                                                            fh.length,
-                                                            fh.is_instant)
+        msg = """{}
+        Start: {} = {}
+        End:   {} = {}
+        Last:  {} = {}
+        Time steps: {}
+        Is instant: {}""".format(fh.filename,
+                                 fh.start_timestamp, fh.start_date,
+                                 fh.end_timestamp, fh.end_date,
+                                 fh.last_timestamp, fh.last_date,
+                                 fh.length,
+                                 fh.is_instant)
         for s in fh.status:
-            msg += """\n                                   Status: {}""".format(STATUS[s])
-        if not {'000', '008'}.intersection(set(fh.status)):
+            msg += """\n        Status: {}""".format(STATUS[s])
+        if not {'000'}.intersection(set(fh.status)):
             logging.error(msg)
         else:
-            if {'008'}.intersection(set(fh.status)):
-                logging.warning(msg)
-            else:
-                logging.info(msg)
+            logging.info(msg)
         # Return file status
         return fh
     except Exception as e:
@@ -164,7 +161,7 @@ def run(args):
     """
     # Instantiate processing context
     with ProcessingContext(args) as ctx:
-        logging.info('==> Time diagnostic started')
+        logging.info("Analysing data, please wait...\r")
         # Process supplied files
         handlers = [x for x in ctx.pool.imap(process, ctx.sources)]
         ctx.scan_files = len(handlers)

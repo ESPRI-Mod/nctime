@@ -11,10 +11,12 @@ import itertools
 import logging
 import os
 import re
+import sys
 
 import nco
 import networkx as nx
 import numpy as np
+from tqdm import tqdm
 
 from context import ProcessingContext
 from handler import Filename
@@ -130,8 +132,6 @@ def create_nodes(collector_input):
     except Exception as e:
         logging.error('{} skipped\n{}: {}'.format(ffp, e.__class__.__name__, e.message))
         return None
-    finally:
-        ctx.pbar.update()
 
 
 def create_edges(graph_inputs):
@@ -252,11 +252,11 @@ def format_path(path, partial_overlaps, full_overlaps):
             m = '[ {} <-- overlap from {} to {} ] '.format(path[i],
                                                            partial_overlaps[path[i]]['start'],
                                                            partial_overlaps[path[i]]['end_overlap'])
-        msg += '\n                                   {}'.format(m)
+        msg += '\n{}'.format(m)
     if full_overlaps:
         for n in full_overlaps:
             m = '[ {} <-- to remove ]'.format(n)
-            msg += '\n                                   {}'.format(m)
+            msg += '\n{}'.format(m)
     return msg
 
 
@@ -276,12 +276,13 @@ def run(args):
     """
     # Instantiate processing context
     with ProcessingContext(args) as ctx:
+        logging.info("Analysing data, please wait...\r")
         # Process supplied files to create nodes in appropriate directed graph
         handlers = [x for x in ctx.pool.imap(create_nodes, ctx.sources)]
-        ctx.pbar.close()
         ctx.scan_files = len(handlers)
         # Process each directed graph to create appropriate edges
-        _ = [x for x in itertools.imap(create_edges, ctx.graph(data=ctx))]
+        graphs = [x for x in itertools.imap(create_edges, ctx.graph(data=ctx))]
+        ctx.scan_dsets = len(graphs)
         # Evaluate each graph if a shortest path exist
         for path, partial_overlaps, full_overlaps in itertools.imap(evaluate_graph, ctx.graph(data=ctx)):
             # Print path
@@ -295,7 +296,7 @@ def run(args):
                 if not full_overlaps and not partial_overlaps:
                     logging.info('Shortest path found without overlaps: {}'.format(msg))
                 else:
-                    logging.info('Shortest path found WITH overlaps: {}'.format(msg))
+                    logging.error('Shortest path found WITH overlaps: {}'.format(msg))
             # Resolve overlaps
             if ctx.resolve:
                 # Full overlapping files has to be deleted before partial overlapping files are truncated.

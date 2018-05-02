@@ -57,7 +57,7 @@ class ProcessingContext(object):
         # Exclude hidden and/or non-NetCDF files
         self.sources.FileFilter.add(regex='^.*\.nc$')
         # Exclude fixed frequency
-        self.sources.FileFilter.add(regex='(_fx_|_fixed_|_fx.|_fixed.)', inclusive=False)
+        self.sources.FileFilter.add(regex='(_fx_|_fixed_|_fx.|_fixed.|_.fx_)', inclusive=False)
         # Set driving time properties
         self.tinit = TimeInit(ref=self.sources.first()[0], tunits_default=self.tunits_default)
         # Init threads pool
@@ -74,5 +74,5 @@ class ProcessingContext(object):
             logging.error('Some time axis should be corrected manually ({} files scanned)'.format(self.scan_files))
             sys.exit(1)
         else:
-            logging.info('Time diagnostic completed ({} files scanned)'.format(self.scan_files))
+            print('All time axis seem correct ({} files scanned)'.format(self.scan_files))
             sys.exit(0)

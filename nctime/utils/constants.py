@@ -9,10 +9,10 @@
 from netcdftime import datetime
 
 # Program version
-VERSION = '4.0.3'
+VERSION = '4.1.0'
 
 # Date
-VERSION_DATE = datetime(year=2018, month=4, day=13).strftime("%Y-%d-%m")
+VERSION_DATE = datetime(year=2018, month=5, day=2).strftime("%Y-%d-%m")
 
 # Help
 PROGRAM_DESC = \
@@ -88,6 +88,12 @@ VERBOSE_HELP = \
 
     """
 
+ERRORS_ONLY_HELP = \
+    """
+    Shows error(s) only: overlaps and broken|n
+    time periods.
+
+    """
 DIRECTORY_HELP = \
     """
     One or more variable directories to diagnose.|n
