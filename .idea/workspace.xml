@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="4ad3aa14-f2b1-4942-853e-c57f1bc2a250" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nctime/utils/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/nctime/utils/constants.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/axis.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/axis.rst" afterDir="false" />
     </list>
     <ignored path="cmip5-time-axis.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -64,11 +64,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="constants.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="constants.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/nctime/utils/constants.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="165">
               <caret line="11" column="16" selection-start-line="11" selection-start-column="16" selection-end-line="11" selection-end-column="16" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="axis.rst" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/docs/axis.rst">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="355">
+              <caret line="49" lean-forward="true" selection-start-line="49" selection-end-line="49" />
             </state>
           </provider>
         </entry>
@@ -121,7 +130,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/timeaxis/utils.py" />
         <option value="$PROJECT_DIR$/timeaxis/timeaxis.py" />
         <option value="$PROJECT_DIR$/nctimeaxis/utils/exceptions.py" />
         <option value="$PROJECT_DIR$/nctimeaxis/utils/constants.py" />
@@ -172,6 +180,7 @@
         <option value="$PROJECT_DIR$/nctime/axis/context.py" />
         <option value="$PROJECT_DIR$/nctime/axis/main.py" />
         <option value="$PROJECT_DIR$/nctime/utils/constants.py" />
+        <option value="$PROJECT_DIR$/docs/axis.rst" />
       </list>
     </option>
   </component>
@@ -671,7 +680,14 @@
       <option name="project" value="LOCAL" />
       <updated>1525278485540</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Bump version">
+      <created>1525278513337</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1525278513337</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -724,7 +740,8 @@
     <MESSAGE value="Update change log" />
     <MESSAGE value="Docstring fix" />
     <MESSAGE value="Add on fly mode to disable end date consistency check" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add on fly mode to disable end date consistency check" />
+    <MESSAGE value="Bump version" />
+    <option name="LAST_COMMIT_MESSAGE" value="Bump version" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -942,11 +959,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/docs/axis.rst">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1037" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/docs/CHANGELOG.rst">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="210">
@@ -1044,6 +1056,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
           <caret line="11" column="16" selection-start-line="11" selection-start-column="16" selection-end-line="11" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/axis.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="355">
+          <caret line="49" lean-forward="true" selection-start-line="49" selection-end-line="49" />
         </state>
       </provider>
     </entry>

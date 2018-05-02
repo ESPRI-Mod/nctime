@@ -42,6 +42,16 @@ Anyway, you can force to overwrite time axis (the checksum is automatically comp
 
    $> nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --force
 
+Check an on going simulation
+****************************
+
+The "on-fly" mode allows to check an incomplete time axis which is by construct inconsistent with the end timestamp of the file name.
+To disable the corresponding test and check the on goind time axis squareness use:
+
+.. code-block:: bash
+
+   $> nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --on-fly
+
 Save diagnostic into an SQL database
 ************************************
 
