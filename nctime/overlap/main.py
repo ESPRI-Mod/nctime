@@ -276,7 +276,7 @@ def run(args):
     """
     # Instantiate processing context
     with ProcessingContext(args) as ctx:
-        logging.info("Analysing data, please wait...\r")
+        print("Analysing data, please wait...\r")
         # Process supplied files to create nodes in appropriate directed graph
         handlers = [x for x in ctx.pool.imap(create_nodes, ctx.sources)]
         ctx.scan_files = len(handlers)
@@ -292,10 +292,10 @@ def run(args):
                 logging.error('Time series broken: {}'.format(msg))
             else:
                 # Print overlaps if exists
-                if not full_overlaps and not partial_overlaps:
-                    logging.info('Shortest path found without overlaps: {}'.format(msg))
-                else:
+                if full_overlaps or partial_overlaps:
                     logging.error('Shortest path found WITH overlaps: {}'.format(msg))
+                else:
+                    logging.info('Shortest path found without overlaps: {}'.format(msg))
             # Resolve overlaps
             if ctx.resolve:
                 # Full overlapping files has to be deleted before partial overlapping files are truncated.

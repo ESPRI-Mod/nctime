@@ -161,7 +161,7 @@ def run(args):
     """
     # Instantiate processing context
     with ProcessingContext(args) as ctx:
-        logging.info("Analysing data, please wait...\r")
+        print("Analysing data, please wait...\r")
         # Process supplied files
         handlers = [x for x in ctx.pool.imap(process, ctx.sources)]
         ctx.scan_files = len(handlers)
