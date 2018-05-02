@@ -9,7 +9,7 @@
 from netcdftime import datetime
 
 # Program version
-VERSION = '4.1.0'
+VERSION = '4.1.1'
 
 # Date
 VERSION_DATE = datetime(year=2018, month=5, day=2).strftime("%Y-%d-%m")
@@ -149,6 +149,13 @@ AXIS_HELP = \
     Checks time axis squareness.|n
     See "nctime axis -h" for full help.
     
+    """
+
+ON_FLY_HELP = \
+    """
+    Ignore the test on end date consistency for on going|n
+    simulation (this also include completed files).
+
     """
 
 WRITE_HELP = \
