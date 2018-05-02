@@ -45,3 +45,5 @@ Exit status
     A shorted path have been found among the time series. Overlaps resolved if exists.
  * Status = 1
     Time series is broken.
+ * Status = 2
+    Time series has partial or full overlap(s).

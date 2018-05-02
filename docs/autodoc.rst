@@ -33,4 +33,4 @@ utils
 .. automodule:: nctime.utils.custom_exceptions
 .. automodule:: nctime.utils.time
 
-.. moduleauthor:: Levavasseur Guillaume (CNRS/IPSL) <glipsl@ipsl.jussieu.fr>
+.. moduleauthor:: Levavasseur Guillaume (CNRS/IPSL) <glipsl@ipsl.fr>

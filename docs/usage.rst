@@ -19,14 +19,21 @@ Check the version
 
 .. code-block:: bash
 
-    $> nctime -V
+    $> nctime -v
 
-Add verbosity
-*************
+Debug mode
+**********
 
 .. code-block:: bash
 
-    $> nctime SUBCOMMAND -v
+    $> nctime SUBCOMMAND --debug
+
+Only print errors
+*****************
+
+.. code-block:: bash
+
+    $> nctime SUBCOMMAND --errors-only
 
 Specify the project
 *******************
