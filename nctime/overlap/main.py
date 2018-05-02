@@ -23,7 +23,7 @@ from nctime.utils.time import get_next_timestep
 
 def get_overlaps(g, shortest):
     """
-    Returns all overlapping (default) files as a list of tuples. Each tuple gathers\:
+    Returns all overlapping files (default) as a list of tuples. Each tuple gathers\:
      * The higher overlap bound,
      * The date to cut the file in order to resolve the overlap,
      * The corresponding cutting timestep.
@@ -51,12 +51,12 @@ def get_overlaps(g, shortest):
         if (current_node['next'] - next_node['start']) > 0:
             cutting_timestep = get_next_timestep(next_node['path'], current_node['last_step'])
             overlaps['partial'][shortest[n + 1]] = next_node
-            overlaps['partial'][shortest[n + 1]].update({'end_overlap': current_node['end_date'],
-                                                         'cutting_date': current_node['next_date'],
+            overlaps['partial'][shortest[n + 1]].update({'end_overlap': current_node['end'],
+                                                         'cutting_date': current_node['next'],
                                                          'cutting_timestep': cutting_timestep})
     # Find full overlapping nodes
     overlaps['full'] = list(set(g.nodes()).symmetric_difference(set(shortest)))
-    return overlaps['full'], overlaps['partial']
+    return overlaps['partial'], overlaps['full']
 
 
 def resolve_overlap(directory, pattern, filename, from_date=None, to_date=None, cutting_timestep=None, partial=False):
@@ -91,22 +91,17 @@ def resolve_overlap(directory, pattern, filename, from_date=None, to_date=None, 
 
 def create_nodes(collector_input):
     """
-    time_axis_processing(inputs)
-
-    Time axis process that\:
-     * Deduces start and end dates from filename,
-     * Rebuilds the theoretical time axis (using frequency, calendar, etc.),
-     * Compares the theoretical time axis with the time axis from the file,
-     * Compares the last theoretical date with the end date from the filename,
-     * Checks if the expected time units keep unchanged,
-     * Checks the squareness and the consistency of time boundaries,
-     * Rewrites (with ``--write`` mode) the new time axis,
-     * Computes the new checksum if modified,
-     * Traceback the status.
+    Creates the node into the corresponding Graph().
+    One directed graph per dataset. Each file is analysed to be a node in its graph.
+    A node is a filename with some attributes:
+     * start = the start date of the file sub-period
+     * end = the end date of the file sub-period
+     * next = the date next to the end date depending on the frequency, the calendar, etc.
+     * first_step = the first time axis step
+     * last_step = the last time axis step
+     * path = the file full path
 
     :param tuple collector_input: A tuple with the file path and the processing context
-    :returns: The updated file handler instance
-    :rtype: *nctime.axis.handler.File*
 
     """
     # Deserialize inputs from collector
@@ -138,6 +133,16 @@ def create_nodes(collector_input):
 
 
 def create_edges(graph_inputs):
+    """
+    Creates the edges between nodes into the corresponding Graph().
+    One directed graph per dataset.
+     * Builds the "START" node with the appropriate edges to the nodes with the earliest start date
+     * Builds the "END" node with the appropriate edges from the nodes with the latest end date
+     * Builds edges between a node and its "backwards" nodes
+
+    :param tuple graph_input: A tuple with the graph id, the graph object and the processing context
+
+    """
     # Deserialize inputs from graph call
     id, g, ctx = graph_inputs
     # Create edges with backward nodes
@@ -177,6 +182,15 @@ def create_edges(graph_inputs):
 
 
 def evaluate_graph(graph_inputs):
+    """
+    Evaluate the directed graph looking for a shortest path between "START" and "END" nodes.
+    If a shorted path is found, it looks for the potential overlaps.
+    Partial and full overlaps are supported.
+    If no shortest path found, it creates a new node "BREAK" in the path.
+
+    :param tuple graph_input: A tuple with the graph id, the graph object and the processing context
+
+    """
     # Deserialize inputs from graph call
     id, g, ctx = graph_inputs
     path = list()
@@ -191,7 +205,6 @@ def evaluate_graph(graph_inputs):
             ctx.overlaps = True
     except nx.NetworkXNoPath:
         ctx.broken = True
-        path.append('START')
         for node in sorted(g.nodes()):
             if node not in ['START', 'END']:
                 path.append(node)
@@ -201,10 +214,10 @@ def evaluate_graph(graph_inputs):
                 # Considering one node, get the others in the graph
                 other_nodes = [x for x in g.nodes() if x not in ['START', node, 'END']]
                 # Get the start dates of the other nodes
-                start_dates = [g.node[node]['start'] for x in other_nodes]
+                other_start_dates = [g.node[x]['start'] for x in other_nodes]
                 # Find the index with a negative or null difference between their start date and
                 # the next date of the considered node
-                indexes = [i for i, v in enumerate(g.node[node]['next'] - np.array(start_dates)) if v <= 0]
+                indexes = [i for i, v in enumerate(g.node[node]['next'] - np.array(other_start_dates)) if v <= 0]
                 # Get all "next" nodes for the current node
                 next_nodes = [other_nodes[i] for i in indexes]
                 # Find available targets from graph
@@ -215,27 +228,33 @@ def evaluate_graph(graph_inputs):
                 # If no "forward" nodes in edges target = BREAK
                 if not set(next_nodes).intersection(avail_targets):
                     path.append('BREAK')
-        path.append('END')
     return path, full_overlaps, partial_overlaps
 
 
-def format_path(path, partial_overlaps, full_overlaps, display=10):
-    # Print first node
-    m = ' START '.center(display + 2, '-')
-    msg = '\n                                   {}'.format(m)
-    # Print intermediate nodes
+def format_path(path, partial_overlaps, full_overlaps):
+    """
+    Formats the message to print as a diagnostic.
+    It walks through the evaluated path of the directed graph and print the filenames with useful info.
+
+    :param list path: The node path as a result of the directed graph evaluation
+    :param dict partial_overlaps: Dictionary of partial overlaps
+    :param list full_overlaps: List of full overlapping files
+    :returns: The formatted diagnostic to print
+    :rtype: *str*
+
+    """
+    msg = ''
     for i in range(1, len(path) - 1):
-        m = ' {} '.format(path[i]).center(display + 2, '~')
+        m = '  {}'.format(path[i])
         if partial_overlaps and path[i] in partial_overlaps:
-            m = ' {} < overlap from {} to {} '.format(path[i].center(display + 2),
-                                                      partial_overlaps[path[i]]['start_date'],
-                                                      partial_overlaps[path[i]]['end_overlap'])
-        if full_overlaps and path[i] in full_overlaps:
-            m = ' {} < to remove '.format(path[i].center(display + 2))
+            m = '[ {} <-- overlap from {} to {} ] '.format(path[i],
+                                                           partial_overlaps[path[i]]['start'],
+                                                           partial_overlaps[path[i]]['end_overlap'])
         msg += '\n                                   {}'.format(m)
-    # Print last node
-    m = ' END '.center(display + 2, '-')
-    msg += '\n                                   {}'.format(m)
+    if full_overlaps:
+        for n in full_overlaps:
+            m = '[ {} <-- to remove ]'.format(n)
+            msg += '\n                                   {}'.format(m)
     return msg
 
 
@@ -264,7 +283,7 @@ def run(args):
         # Evaluate each graph if a shortest path exist
         for path, partial_overlaps, full_overlaps in itertools.imap(evaluate_graph, ctx.graph(data=ctx)):
             # Print path
-            msg = format_path(path, partial_overlaps, full_overlaps, display=ctx.display)
+            msg = format_path(path, partial_overlaps, full_overlaps)
             # Print analyse result
             if ctx.broken:
                 # A broken time period cannot be evaluated for overlaps (None by default)
