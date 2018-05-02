@@ -94,6 +94,7 @@ def create_nodes(collector_input):
     Creates the node into the corresponding Graph().
     One directed graph per dataset. Each file is analysed to be a node in its graph.
     A node is a filename with some attributes:
+
      * start = the start date of the file sub-period
      * end = the end date of the file sub-period
      * next = the date next to the end date depending on the frequency, the calendar, etc.
@@ -138,6 +139,7 @@ def create_edges(graph_inputs):
     """
     Creates the edges between nodes into the corresponding Graph().
     One directed graph per dataset.
+
      * Builds the "START" node with the appropriate edges to the nodes with the earliest start date
      * Builds the "END" node with the appropriate edges from the nodes with the latest end date
      * Builds edges between a node and its "backwards" nodes
