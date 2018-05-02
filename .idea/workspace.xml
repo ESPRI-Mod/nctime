@@ -6,9 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="4ad3aa14-f2b1-4942-853e-c57f1bc2a250" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nctime/axis/context.py" beforeDir="false" afterPath="$PROJECT_DIR$/nctime/axis/context.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nctime/axis/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/nctime/axis/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nctime/nctime.py" beforeDir="false" afterPath="$PROJECT_DIR$/nctime/nctime.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/nctime/utils/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/nctime/utils/constants.py" afterDir="false" />
     </list>
     <ignored path="cmip5-time-axis.iws" />
@@ -31,17 +28,17 @@
       <file leaf-file-name="nctime.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/nctime/nctime.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="365">
-              <caret line="155" column="22" lean-forward="true" selection-start-line="155" selection-start-column="22" selection-end-line="155" selection-end-column="22" />
+            <state relative-caret-position="210">
+              <caret line="21" column="33" selection-start-line="21" selection-start-column="33" selection-end-line="21" selection-end-column="33" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/nctime/axis/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="237">
-              <caret line="94" column="42" selection-start-line="94" selection-start-column="42" selection-end-line="94" selection-end-column="42" />
+            <state relative-caret-position="451">
+              <caret line="74" column="39" lean-forward="true" selection-start-line="74" selection-start-column="39" selection-end-line="74" selection-end-column="39" />
             </state>
           </provider>
         </entry>
@@ -67,11 +64,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="constants.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="constants.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/nctime/utils/constants.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="165">
-              <caret line="157" lean-forward="true" selection-start-line="157" selection-end-line="157" />
+              <caret line="11" column="16" selection-start-line="11" selection-start-column="16" selection-end-line="11" selection-end-column="16" />
             </state>
           </provider>
         </entry>
@@ -172,9 +169,9 @@
         <option value="$PROJECT_DIR$/docs/log.rst" />
         <option value="$PROJECT_DIR$/nctime/overlap/main.py" />
         <option value="$PROJECT_DIR$/nctime/nctime.py" />
-        <option value="$PROJECT_DIR$/nctime/utils/constants.py" />
-        <option value="$PROJECT_DIR$/nctime/axis/main.py" />
         <option value="$PROJECT_DIR$/nctime/axis/context.py" />
+        <option value="$PROJECT_DIR$/nctime/axis/main.py" />
+        <option value="$PROJECT_DIR$/nctime/utils/constants.py" />
       </list>
     </option>
   </component>
@@ -667,24 +664,32 @@
       <option name="project" value="LOCAL" />
       <updated>1525268009726</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Add on fly mode to disable end date consistency check">
+      <created>1525278485540</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1525278485540</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="22" width="1920" height="1058" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="5" />
       <window_info anchor="bottom" id="Event Log" order="6" side_tool="true" weight="0.32778355" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32882413" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32882413" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="9" />
       <window_info anchor="bottom" id="Terminal" order="8" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.17199148" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17199148" />
       <window_info anchor="right" id="R Packages" order="3" />
       <window_info anchor="right" id="R Graphics" order="4" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32941177" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.24973656" />
-      <window_info anchor="right" id="Debug" order="5" weight="0.3775293" />
+      <window_info anchor="right" id="Debug" order="5" visible="true" weight="0.3775293" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
@@ -718,10 +723,18 @@
     <MESSAGE value="Doc update" />
     <MESSAGE value="Update change log" />
     <MESSAGE value="Docstring fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="Docstring fix" />
+    <MESSAGE value="Add on fly mode to disable end date consistency check" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add on fly mode to disable end date consistency check" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/nctime/axis/main.py</url>
+          <line>65</line>
+          <option name="timeStamp" value="84" />
+        </line-breakpoint>
+      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">
@@ -729,7 +742,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="84" />
+      <option name="time" value="85" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
@@ -996,20 +1009,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/nctime/utils/constants.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="157" lean-forward="true" selection-start-line="157" selection-end-line="157" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/nctime/nctime.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="365">
-          <caret line="155" column="22" lean-forward="true" selection-start-line="155" selection-start-column="22" selection-end-line="155" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/nctime/axis/handler.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="382">
@@ -1029,8 +1028,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/nctime/axis/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="237">
-          <caret line="94" column="42" selection-start-line="94" selection-start-column="42" selection-end-line="94" selection-end-column="42" />
+        <state relative-caret-position="451">
+          <caret line="74" column="39" lean-forward="true" selection-start-line="74" selection-start-column="39" selection-end-line="74" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nctime/nctime.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="21" column="33" selection-start-line="21" selection-start-column="33" selection-end-line="21" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nctime/utils/constants.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="16" selection-start-line="11" selection-start-column="16" selection-end-line="11" selection-end-column="16" />
         </state>
       </provider>
     </entry>
