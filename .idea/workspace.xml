@@ -4,15 +4,7 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4ad3aa14-f2b1-4942-853e-c57f1bc2a250" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nctime/axis/context.py" beforeDir="false" afterPath="$PROJECT_DIR$/nctime/axis/context.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nctime/nctime.py" beforeDir="false" afterPath="$PROJECT_DIR$/nctime/nctime.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nctime/overlap/context.py" beforeDir="false" afterPath="$PROJECT_DIR$/nctime/overlap/context.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nctime/utils/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/nctime/utils/constants.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nctime/utils/parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/nctime/utils/parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nctime/utils/time.py" beforeDir="false" afterPath="$PROJECT_DIR$/nctime/utils/time.py" afterDir="false" />
-    </list>
+    <list default="true" id="4ad3aa14-f2b1-4942-853e-c57f1bc2a250" name="Default" comment="" />
     <ignored path="cmip5-time-axis.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -69,14 +61,23 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="parser.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="parser.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/nctime/utils/parser.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="463">
-              <caret line="94" column="41" selection-start-line="94" selection-start-column="41" selection-end-line="94" selection-end-column="41" />
+            <state relative-caret-position="448">
+              <caret line="93" column="8" lean-forward="true" selection-start-line="93" selection-start-column="8" selection-end-line="93" selection-end-column="8" />
               <folding>
                 <element signature="e#148#157#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="setup.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/setup.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="90">
+              <caret line="7" column="17" lean-forward="true" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
             </state>
           </provider>
         </entry>
@@ -105,11 +106,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="constants.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="constants.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/nctime/utils/constants.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="445">
-              <caret line="211" column="25" selection-start-line="211" selection-start-column="25" selection-end-line="211" selection-end-column="25" />
+            <state relative-caret-position="330">
+              <caret line="22" column="3" lean-forward="true" selection-start-line="22" selection-start-column="3" selection-end-line="22" selection-end-column="3" />
             </state>
           </provider>
         </entry>
@@ -119,18 +120,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="469">
               <caret line="61" column="47" selection-start-line="61" selection-start-column="47" selection-end-line="61" selection-end-column="47" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="handler.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/nctime/axis/handler.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="381">
-              <caret line="106" column="44" selection-start-line="106" selection-start-column="44" selection-end-line="106" selection-end-column="44" />
-              <folding>
-                <element signature="e#128#142#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -173,6 +162,7 @@
       <find>next</find>
       <find>re.match</find>
       <find>groupdict</find>
+      <find>monPt</find>
     </findStrings>
     <replaceStrings>
       <replace>nc.</replace>
@@ -231,10 +221,10 @@
         <option value="$PROJECT_DIR$/nctime/overlap/main.py" />
         <option value="$PROJECT_DIR$/nctime/utils/time.py" />
         <option value="$PROJECT_DIR$/nctime/nctime.py" />
-        <option value="$PROJECT_DIR$/nctime/utils/constants.py" />
         <option value="$PROJECT_DIR$/nctime/overlap/context.py" />
         <option value="$PROJECT_DIR$/nctime/axis/context.py" />
         <option value="$PROJECT_DIR$/nctime/utils/parser.py" />
+        <option value="$PROJECT_DIR$/nctime/utils/constants.py" />
       </list>
     </option>
   </component>
@@ -748,7 +738,28 @@
       <option name="project" value="LOCAL" />
       <updated>1525278641857</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="Add filtering in discovery + bugfix">
+      <created>1525342181866</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1525342181866</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Bugfix on monPt key">
+      <created>1525342279997</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1525342279997</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Bump version">
+      <created>1525342338783</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1525342338783</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -756,11 +767,11 @@
     <layout>
       <window_info anchor="bottom" id="TODO" order="5" />
       <window_info anchor="bottom" id="Event Log" order="6" side_tool="true" weight="0.32778355" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32882413" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32882413" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="9" />
       <window_info anchor="bottom" id="Terminal" order="8" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.17199148" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17199148" />
       <window_info anchor="right" id="R Packages" order="3" />
       <window_info anchor="right" id="R Graphics" order="4" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32941177" />
@@ -799,9 +810,11 @@
     <MESSAGE value="Update change log" />
     <MESSAGE value="Docstring fix" />
     <MESSAGE value="Add on fly mode to disable end date consistency check" />
-    <MESSAGE value="Bump version" />
     <MESSAGE value="Doc update" />
-    <option name="LAST_COMMIT_MESSAGE" value="Doc update" />
+    <MESSAGE value="Add filtering in discovery + bugfix" />
+    <MESSAGE value="Bugfix on monPt key" />
+    <MESSAGE value="Bump version" />
+    <option name="LAST_COMMIT_MESSAGE" value="Bump version" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1004,13 +1017,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/setup.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="16" column="9" selection-start-line="16" selection-start-column="9" selection-end-line="16" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/docs/installation.rst">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1035">
@@ -1121,13 +1127,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/nctime/utils/constants.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="445">
-          <caret line="211" column="25" selection-start-line="211" selection-start-column="25" selection-end-line="211" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/nctime/axis/context.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="371">
@@ -1154,11 +1153,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/nctime/utils/parser.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="463">
-          <caret line="94" column="41" selection-start-line="94" selection-start-column="41" selection-end-line="94" selection-end-column="41" />
+        <state relative-caret-position="448">
+          <caret line="93" column="8" lean-forward="true" selection-start-line="93" selection-start-column="8" selection-end-line="93" selection-end-column="8" />
           <folding>
             <element signature="e#148#157#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/setup.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="7" column="17" lean-forward="true" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nctime/utils/constants.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="22" column="3" lean-forward="true" selection-start-line="22" selection-start-column="3" selection-end-line="22" selection-end-column="3" />
         </state>
       </provider>
     </entry>
