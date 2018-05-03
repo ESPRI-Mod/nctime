@@ -9,7 +9,7 @@
 from netcdftime import datetime
 
 # Program version
-VERSION = '4.1.2'
+VERSION = '4.1.3'
 
 # Date
 VERSION_DATE = datetime(year=2018, month=5, day=3).strftime("%Y-%d-%m")
