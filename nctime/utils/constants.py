@@ -17,6 +17,11 @@ VERSION_DATE = datetime(year=2018, month=5, day=3).strftime("%Y-%d-%m")
 # Help
 PROGRAM_DESC = \
     """
+    _________________________|n
+    .___ ___| |_ _ _____ ___.|n
+    | | | __| __| | . . | -_||n
+    |_|_|___|_| |_|_|_|_|___||n|n
+                             
     NetCDF files describe all required dimensions to work with. Dimensions such as longitude, latitude and time are
     included in NetCDF files as vectors. Time is a key dimension that could lead to flawed studies or unused data
     if misdeclared. "nctime" allows to easily diagnose the time definition of NetCDF files to ensure a proper
