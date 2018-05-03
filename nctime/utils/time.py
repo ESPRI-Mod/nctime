@@ -422,7 +422,7 @@ def time_inc(frequency):
            'dec': [10, 'years'],
            'mon': [1, 'months'],
            'monC': [1, 'months'],
-           'monPtv': [1, 'months'],
+           'monPt': [1, 'months'],
            'yr': [1, 'years'],
            'yrPt': [1, 'years']}
     return inc[frequency]
