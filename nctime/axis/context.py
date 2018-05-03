@@ -47,6 +47,18 @@ class ProcessingContext(object):
             self.db = os.path.realpath(args.db)
         self.scan_files = None
         self.status = []
+        self.file_filter = []
+        if args.include_file:
+            self.file_filter.extend([(f, True) for f in args.include_file])
+        else:
+            # Default includes netCDF only
+            self.file_filter.append(('^.*\.nc$', True))
+        if args.exclude_file:
+            # Default exclude hidden files
+            self.file_filter.extend([(f, False) for f in args.exclude_file])
+        else:
+            self.file_filter.append(('^\..*$', False))
+        self.dir_filter = args.ignore_dir
 
     def __enter__(self):
         # Init configuration parser
@@ -54,11 +66,13 @@ class ProcessingContext(object):
         self.pattern = self.cfg.translate('filename_format')
         # Init data collector
         self.sources = Collector(sources=self.directory, spinner=False, data=self)
-        # Init collector filter
-        # Exclude hidden and/or non-NetCDF files
-        self.sources.FileFilter.add(regex='^.*\.nc$')
-        # Exclude fixed frequency
+        # Init file filter
+        for regex, inclusive in self.file_filter:
+            self.sources.FileFilter.add(regex=regex, inclusive=inclusive)
+        # Exclude fixed frequency in any case
         self.sources.FileFilter.add(regex='(_fx_|_fixed_|_fx.|_fixed.|_.fx_)', inclusive=False)
+        # Init dir filter
+        self.sources.PathFilter.add(regex=self.dir_filter, inclusive=False)
         # Set driving time properties
         self.tinit = TimeInit(ref=self.sources.first()[0], tunits_default=self.tunits_default)
         # Init threads pool

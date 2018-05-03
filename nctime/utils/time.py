@@ -99,7 +99,7 @@ def convert_time_units(tunits, frequency):
              'dec': 'years',
              'mon': 'months',
              'monC': 'months',
-             'monPtv': 'months',
+             'monPt': 'months',
              'yr': 'years',
              'yrPt': 'years'}
     return tunits.replace('days', units[frequency])
