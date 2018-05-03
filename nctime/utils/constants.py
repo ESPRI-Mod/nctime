@@ -231,6 +231,7 @@ TIME_CORRECTION = {'3hr': {'period_start': {'000000': 0.0,
                                             '030000': -HALF_HOUR * 6,
                                             '060000': -HALF_HOUR * 12},
                            'period_end': {'180000': 0.0,
+                                          '210000': -HALF_HOUR * 6,
                                           '230000': -HALF_HOUR * 10,
                                           '000000': -HALF_HOUR * 12}}}
 

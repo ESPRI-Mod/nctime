@@ -389,14 +389,17 @@ def get_next_timestep(ffp, current_timestep):
     with ncopen(ffp) as nc:
         if 'time' not in nc.variables.keys():
             raise NoNetCDFVariable('time', ffp)
+        else:
+            time = nc.variables['time'][:]
         try:
-            index = int(np.where(nc.variables['time'][:] == current_timestep)[0][0])
+            index = int(np.where(time == current_timestep)[0][0])
         except IndexError:
             try:
-                index = int(np.where(nc.variables['time'][:] == int(current_timestep))[0][0])
+                index = int(np.where(time == int(current_timestep))[0][0])
             except IndexError:
                 raise NetCDFTimeStepNotFound(current_timestep, ffp)
-        next_timestep = nc.variables['time'][index + 1]
+        next_timestep = time[index + 1]
+        del time
         return next_timestep
 
 
