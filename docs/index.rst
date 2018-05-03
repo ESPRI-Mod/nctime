@@ -1,8 +1,14 @@
 .. _index:
 
 
-``nctime`` toolbox
-==================
+.. code-block:: text
+
+    ███╗   ██╗ ██████╗████████╗██╗███╗   ███╗███████╗
+    ████╗  ██║██╔════╝╚══██╔══╝██║████╗ ████║██╔════╝
+    ██╔██╗ ██║██║        ██║   ██║██╔████╔██║█████╗
+    ██║╚██╗██║██║        ██║   ██║██║╚██╔╝██║██╔══╝
+    ██║ ╚████║╚██████╗   ██║   ██║██║ ╚═╝ ██║███████╗
+    ╚═╝  ╚═══╝ ╚═════╝   ╚═╝   ╚═╝╚═╝     ╚═╝╚══════╝
 
 NetCDF files describe all dimensions necessary to work with. In the climate community, this format is widely used
 following the `CF conventions <http://cfconventions.org/>`_. Dimensions such as longitude, latitude and time are
