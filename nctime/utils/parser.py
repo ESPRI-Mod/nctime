@@ -81,6 +81,7 @@ class DirectoryChecker(Action):
             raise ArgumentTypeError(msg)
         return path
 
+
 def regex_validator(string):
     """
     Validates a Python regular expression syntax.

@@ -49,6 +49,7 @@ def get_overlaps(g, shortest):
         # Partial overlap from next_node[1] to current_node[2] (bounds included)
         # Overlap is hold on the next node (arbitrary)
         if (current_node['next'] - next_node['start']) > 0:
+            logging.debug('Partial overlap found between {} and {}'.format(current_node, next_node))
             cutting_timestep = get_next_timestep(next_node['path'], current_node['last_step'])
             overlaps['partial'][shortest[n + 1]] = next_node
             overlaps['partial'][shortest[n + 1]].update({'end_overlap': current_node['end'],
@@ -120,12 +121,18 @@ def create_nodes(collector_input):
         # Retrieve corresponding graph
         g = ctx.graph.get_graph(fh.id)
         # Update/add current file as node with dates as attributes
-        g.add_node(fh.filename, start=fh.start_date,
+        g.add_node(fh.filename,
+                   start=fh.start_date,
                    end=fh.end_date,
                    next=fh.next_date,
                    first_step=fh.first_timestep,
                    last_step=fh.last_timestep,
                    path=fh.ffp)
+        logging.debug('Graph: {} :: Node {} (start={}, end={}, next={})'.format(fh.id,
+                                                                                fh.filename,
+                                                                                fh.start_date,
+                                                                                fh.end_date,
+                                                                                fh.next_date))
         # Update graph
         ctx.graph.set_graph(fh.id, g)
     except KeyboardInterrupt:
@@ -199,6 +206,7 @@ def evaluate_graph(graph_inputs):
     id, g, ctx = graph_inputs
     path = list()
     full_overlaps, partial_overlaps = None, None
+    logging.debug('Process graph: {}'.format(id))
     # Walk through the graph
     try:
         # Find shortest path between oldest and latest dates
