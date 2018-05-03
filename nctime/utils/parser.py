@@ -8,6 +8,7 @@
 """
 
 import os
+import re
 import textwrap
 from argparse import HelpFormatter, ArgumentTypeError, Action
 
@@ -79,3 +80,19 @@ class DirectoryChecker(Action):
             msg = 'No such directory: {}'.format(path)
             raise ArgumentTypeError(msg)
         return path
+
+def regex_validator(string):
+    """
+    Validates a Python regular expression syntax.
+
+    :param str string: The string to check
+    :returns: The Python regex
+    :rtype: *re.compile*
+    :raises Error: If invalid regular expression
+
+    """
+    try:
+        return re.compile(string)
+    except re.error:
+        msg = 'Bad regex syntax: {}'.format(string)
+        raise ArgumentTypeError(msg)

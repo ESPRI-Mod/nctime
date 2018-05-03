@@ -9,10 +9,10 @@
 from netcdftime import datetime
 
 # Program version
-VERSION = '4.1.1'
+VERSION = '4.1.2'
 
 # Date
-VERSION_DATE = datetime(year=2018, month=5, day=2).strftime("%Y-%d-%m")
+VERSION_DATE = datetime(year=2018, month=5, day=3).strftime("%Y-%d-%m")
 
 # Help
 PROGRAM_DESC = \
@@ -186,6 +186,32 @@ MAX_THREADS_HELP = \
     enabled). Set to one seems sequential processing.
     
     """
+IGNORE_DIR_HELP = \
+    """
+    Filter directories NON-matching the regular expression.|n
+    Default ignore paths with folder name(s) starting with|n
+    "." pattern. (Regular expression must match from start|n
+    of path; prefix with ".*" if required.)
+
+    """
+
+INCLUDE_FILE_HELP = \
+    """
+    Filter files matching the regular expression.|n
+    Duplicate the flag to set several filters.|n
+    Default only include NetCDF files.
+
+    """
+
+EXCLUDE_FILE_HELP = \
+    """
+    Filter files NON-matching the regular expression.|n
+    Duplicate the flag to set several filters.|n
+    Default only exclude hidden files (with names not|n
+    starting with "."). It excludes fixed data without|n
+    time axis in any case.
+
+    """
 
 # Half-hour numerical definition
 HALF_HOUR = 0.125 / 6.0
@@ -202,6 +228,7 @@ TIME_CORRECTION = {'3hr': {'period_start': {'000000': 0.0,
                                           '000000': -HALF_HOUR * 6,
                                           '003000': -HALF_HOUR * 7}},
                    '6hr': {'period_start': {'000000': 0.0,
+                                            '030000': -HALF_HOUR * 6,
                                             '060000': -HALF_HOUR * 12},
                            'period_end': {'180000': 0.0,
                                           '230000': -HALF_HOUR * 10,

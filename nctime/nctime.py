@@ -17,7 +17,7 @@ from importlib import import_module
 
 from utils.constants import *
 from utils.misc import init_logging
-from utils.parser import MultilineFormatter, DirectoryChecker
+from utils.parser import MultilineFormatter, DirectoryChecker, regex_validator
 
 __version__ = 'v{} {}'.format(VERSION, VERSION_DATE)
 
@@ -88,6 +88,24 @@ def get_args():
         '-h', '--help',
         action='help',
         help=HELP)
+    parent.add_argument(
+        '--ignore-dir',
+        metavar="PYTHON_REGEX",
+        type=str,
+        default='^.*/\.[\w]*.*$',
+        help=IGNORE_DIR_HELP)
+    parent.add_argument(
+        '--include-file',
+        metavar='PYTHON_REGEX',
+        type=regex_validator,
+        action='append',
+        help=INCLUDE_FILE_HELP)
+    parent.add_argument(
+        '--exclude-file',
+        metavar='PYTHON_REGEX',
+        type=regex_validator,
+        action='append',
+        help=EXCLUDE_FILE_HELP)
     group = parent.add_mutually_exclusive_group(required=False)
     group.add_argument(
         '--debug',

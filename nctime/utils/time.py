@@ -99,7 +99,7 @@ def convert_time_units(tunits, frequency):
              'dec': 'years',
              'mon': 'months',
              'monC': 'months',
-             'monPtv': 'months',
+             'monPt': 'months',
              'yr': 'years',
              'yrPt': 'years'}
     return tunits.replace('days', units[frequency])
@@ -422,7 +422,7 @@ def time_inc(frequency):
            'dec': [10, 'years'],
            'mon': [1, 'months'],
            'monC': [1, 'months'],
-           'monPtv': [1, 'months'],
+           'monPt': [1, 'months'],
            'yr': [1, 'years'],
            'yrPt': [1, 'years']}
     return inc[frequency]
