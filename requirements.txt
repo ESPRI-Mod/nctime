@@ -5,3 +5,4 @@ numpy
 nco
 tqdm
 esgconfigparser
+fuzzywuzzy
