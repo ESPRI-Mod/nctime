@@ -17,6 +17,7 @@ import numpy as np
 from fuzzywuzzy import fuzz, process
 
 from custom_exceptions import *
+from nctime.utils.constants import CLIM_SUFFIX
 from nctime.utils.custom_exceptions import *
 from nctime.utils.misc import ncopen
 from nctime.utils.time import truncated_timestamp, get_start_end_dates_from_filename, dates2str, num2date, date2num, \
@@ -36,6 +37,8 @@ class File(object):
         self.ffp = ffp
         # Retrieve directory and filename full path
         self.directory, self.filename = os.path.split(ffp)
+        # Remove "-clim.nc" suffix from filename if exists
+        self.name = self.filename.replace(CLIM_SUFFIX, '.nc') if self.filename.endswith(CLIM_SUFFIX) else self.filename
         # Start/end period dates from filename + next/last expected dates
         self.start_date = None
         self.end_date = None
@@ -104,8 +107,8 @@ class File(object):
         :rtype: *float*
 
         """
-        self.timestamp_length = len(re.match(pattern, self.filename).groupdict()['period_end'])
-        dates = get_start_end_dates_from_filename(filename=self.filename,
+        self.timestamp_length = len(re.match(pattern, self.name).groupdict()['period_end'])
+        dates = get_start_end_dates_from_filename(filename=self.name,
                                                   pattern=pattern,
                                                   frequency=frequency,
                                                   calendar=calendar)

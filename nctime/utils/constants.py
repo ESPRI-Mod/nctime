@@ -243,3 +243,6 @@ TIME_CORRECTION = {'3hr': {'period_start': {'000000': 0.0,
 # Default time units
 DEFAULT_TIME_UNITS = {'cordex': 'days since 1949-12-01 00:00:00',
                       'cordex-adjust': 'days since 1949-12-01 00:00:00'}
+
+# Climatology file suffix
+CLIM_SUFFIX = '-clim.nc'
