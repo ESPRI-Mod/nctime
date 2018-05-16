@@ -19,8 +19,7 @@ from constants import *
 from context import ProcessingContext
 from handler import File
 from nctime.utils.misc import trunc
-from nctime.utils.time import time_inc, convert_time_units
-
+from nctime.utils.time import truncated_timestamp
 
 def process(collector_input):
     """
@@ -47,34 +46,33 @@ def process(collector_input):
     # Block to avoid program stop if a thread fails
     try:
         # Instantiate file handler
-        fh = File(ffp=ffp)
-        # Convert reference time units into frequency units depending on the file (i.e., months/year/hours since ...)
-        fh.funits = convert_time_units(ctx.tinit.tunits, fh.frequency)
-        # Extract start and end dates from filename
-        start, _, _ = fh.get_start_end_dates(pattern=ctx.pattern,
-                                             frequency=fh.frequency,
-                                             units=fh.funits,
-                                             calendar=ctx.tinit.calendar)
-        # Rebuild a theoretical time axis with high precision
-        fh.time_axis_rebuilt = fh.build_time_axis(start=start,
-                                                  inc=time_inc(fh.frequency)[0],
-                                                  input_units=fh.funits,
-                                                  output_units=ctx.tinit.tunits,
-                                                  calendar=ctx.tinit.calendar,
-                                                  is_instant=fh.is_instant)
-        # Check consistency between last time date and end date from filename
-        if not ctx.on_fly and fh.last_timestamp != fh.end_timestamp:
-            # Rebuild a theoretical time axis with low precision
-            fh.time_axis_rebuilt = fh.build_time_axis(start=trunc(start, 5),
-                                                      inc=time_inc(fh.frequency)[0],
-                                                      input_units=fh.funits,
-                                                      output_units=ctx.tinit.tunits,
-                                                      calendar=ctx.tinit.calendar,
-                                                      is_instant=fh.is_instant)
-            if fh.last_timestamp != fh.end_timestamp:
+        fh = File(ffp=ffp,
+                  pattern=ctx.pattern,
+                  ref_units=ctx.tinit.tunits,
+                  ref_calendar=ctx.tinit.calendar)
+        last_date = fh.get_last_date(fh.start_date)
+        last_timestamp = truncated_timestamp(last_date, fh.timestamp_length)
+        # In the case of inconsistent timestamps, it may be due to float precision issue
+        if not ctx.on_fly and last_timestamp != fh.end_timestamp:
+            fh.start_date = trunc(fh.start_date, 5)
+            last_date = fh.get_last_date(fh.start_date)
+            last_timestamp = truncated_timestamp(last_date, fh.timestamp_length)
+            # Check consistency between last time date and end date from filename
+            if last_timestamp != fh.end_timestamp:
                 fh.status.append('003')
-            elif fh.last_date != fh.end_date:
+            elif last_date != fh.end_date:
                 fh.status.append('008')
+        # Rebuild a theoretical time axis with appropriate precision
+
+        # TODO: Check heavy time axis by chunk
+        # if fh.size > 1e9:
+        #     chunks = fh.get_time_chunks()
+        #     blocksize = os.stat(ffp).st_blksize
+        #     for block in iter(lambda: f.read(blocksize), b''):
+        #         fh.get_time_axis(chunk=chunk)
+
+
+        fh.time_axis_rebuilt = fh.build_time_axis()
         # Check file consistency between instant time and time boundaries
         if fh.is_instant and fh.has_bounds:
             fh.status.append('004')
@@ -88,11 +86,7 @@ def process(collector_input):
             fh.status.append('000')
         # Check time boundaries squareness
         if fh.has_bounds:
-            fh.time_bounds_rebuilt = fh.build_time_bounds(start=trunc(start, 5),
-                                                          inc=time_inc(fh.frequency)[0],
-                                                          input_units=fh.funits,
-                                                          output_units=ctx.tinit.tunits,
-                                                          calendar=ctx.tinit.calendar)
+            fh.time_bounds_rebuilt = fh.build_time_bounds()
             if not np.array_equal(fh.time_bounds_rebuilt, fh.time_bounds):
                 fh.status.append('006')
         # Check time units consistency between file and ref
@@ -104,7 +98,7 @@ def process(collector_input):
         # Rename file depending on checking
         if (ctx.write or ctx.force) and {'003'}.intersection(set(fh.status)):
             # Change filename and file full path dynamically
-            fh.nc_file_rename(new_filename=re.sub(fh.end_timestamp, fh.last_timestamp, fh.filename))
+            fh.nc_file_rename(new_filename=re.sub(fh.end_timestamp, last_timestamp, fh.filename))
         # Remove time boundaries depending on checking
         if (ctx.write or ctx.force) and {'004'}.intersection(set(fh.status)):
             # Delete time bounds and bounds attribute from file if write or force mode
@@ -130,7 +124,7 @@ def process(collector_input):
         Is instant: {}""".format(fh.filename,
                                  fh.start_timestamp, fh.start_date,
                                  fh.end_timestamp, fh.end_date,
-                                 fh.last_timestamp, fh.last_date,
+                                 last_timestamp, last_date,
                                  fh.length,
                                  fh.is_instant)
         for s in fh.status:
