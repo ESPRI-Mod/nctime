@@ -10,9 +10,9 @@
 import logging
 import os
 import sys
-from multiprocessing.dummy import Pool as ThreadPool
 
 from ESGConfigParser import SectionParser
+from multiprocessing import Pool
 
 from constants import *
 from nctime.utils.collector import Collector
@@ -41,10 +41,7 @@ class ProcessingContext(object):
         self.tunits_default = None
         if self.project in DEFAULT_TIME_UNITS.keys():
             self.tunits_default = DEFAULT_TIME_UNITS[self.project]
-        self.threads = args.max_threads
-        self.db = None
-        if args.db:
-            self.db = os.path.realpath(args.db)
+        self.processes = args.max_processes
         self.scan_files = None
         self.status = []
         self.file_filter = []
@@ -65,7 +62,7 @@ class ProcessingContext(object):
         self.cfg = SectionParser(section='project:{}'.format(self.project), directory=self.config_dir)
         self.pattern = self.cfg.translate('filename_format')
         # Init data collector
-        self.sources = Collector(sources=self.directory, spinner=False, data=self)
+        self.sources = Collector(sources=self.directory, spinner=False)
         # Init file filter
         for regex, inclusive in self.file_filter:
             self.sources.FileFilter.add(regex=regex, inclusive=inclusive)
@@ -74,13 +71,13 @@ class ProcessingContext(object):
         # Init dir filter
         self.sources.PathFilter.add(regex=self.dir_filter, inclusive=False)
         # Set driving time properties
-        self.tinit = TimeInit(ref=self.sources.first()[0], tunits_default=self.tunits_default)
-        # Init threads pool
-        self.pool = ThreadPool(int(self.threads))
+        self.tinit = TimeInit(ref=self.sources.first(), tunits_default=self.tunits_default)
+        # Init processes pool
+        self.pool = Pool(self.processes)
         return self
 
     def __exit__(self, *exc):
-        # Close tread pool
+        # Close pool of workers
         self.pool.close()
         self.pool.join()
         # Decline outputs depending on the scan results

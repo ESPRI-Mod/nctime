@@ -64,6 +64,17 @@ class File(object):
                     logging.warning('Consider "{}" attribute instead of "frequency"'.format(key))
                 else:
                     raise NoNetCDFAttribute('frequency', self.ffp)
+            # Get time length and vector
+            if 'time' not in nc.variables.keys():
+                raise NoNetCDFVariable('time', self.ffp)
+            self.length = nc.variables['time'].shape[0]
+            self.time_axis = nc.variables['time'][:]
+            # Get time boundaries
+            self.has_bounds = False
+            if 'bounds' in nc.variables['time'].ncattrs():
+                self.has_bounds = True
+                self.tbnds = nc.variables['time'].bounds
+                self.time_bounds = nc.variables[self.tbnds][:, :]
             # Get time units from file
             if 'units' not in nc.variables['time'].ncattrs():
                 raise NoNetCDFAttribute('units', self.ffp, 'time')
@@ -90,32 +101,11 @@ class File(object):
                                                   pattern=pattern,
                                                   frequency=self.frequency,
                                                   calendar=self.calendar)
-        self.start_date, self.end_date = date2num(dates, units=self.funits, calendar=self.calendar)
+        self.start_date, self.end_date, _ = dates2str(dates)
+        self.start_num, self.end_num, _ = date2num(dates, units=self.funits, calendar=self.calendar)
         # Convert dates into timestamps
-        self.start_timestamp = truncated_timestamp(self.start_date, self.timestamp_length)
-        self.end_timestamp = truncated_timestamp(self.end_date, self.timestamp_length)
-
-    def get_time_axis(self, chunk=None):
-        """
-        Read time axis from netCDF file. May be read by chunks
-
-        :param chunk:
-        :return:
-
-        """
-        with ncopen(self.ffp) as nc:
-            # Get time length and vector
-            if 'time' not in nc.variables.keys():
-                raise NoNetCDFVariable('time', self.ffp)
-            self.length = nc.variables['time'].shape[0]
-            self.time_axis = nc.variables['time'][:]
-            # Get time boundaries
-            self.has_bounds = False
-            if 'bounds' in nc.variables['time'].ncattrs():
-                self.has_bounds = True
-                self.tbnds = nc.variables['time'].bounds
-                self.time_bounds = nc.variables[self.tbnds][:, :]
-
+        self.start_timestamp, self.end_timestamp, _ = [
+            truncated_timestamp(date, self.timestamp_length) for date in dates]
 
     def checksum(self, checksum_type='sha256', include_filename=False, human_readable=True):
         """
@@ -145,17 +135,21 @@ class File(object):
         except:
             raise ChecksumFail(self.ffp, checksum_type)
 
-    def get_last_date(self, start):
+    def load_last_date(self):
         """
         Builds the last theoretical date and timestamp.
 
         """
-        last_num_date = start + self.length * self.step
+        num_axis = np.arange(start=self.start_num,
+                             stop=self.start_num + self.length * self.step,
+                             step=self.step)
         if self.funits.split(' ')[0] in ['years', 'months']:
-            last_date = num2date(last_num_date, units=self.funits, calendar=self.calendar)[0]
+            last_date = num2date(num_axis[-1], units=self.funits, calendar=self.calendar)[0]
         else:
-            last_date = num2date(last_num_date, units=self.funits, calendar=self.calendar)
-        return dates2str(last_date)
+            last_date = num2date(num_axis[-1], units=self.funits, calendar=self.calendar)
+        del num_axis
+        self.last_date = dates2str(last_date)
+        self.last_timestamp = truncated_timestamp(last_date, self.timestamp_length)
 
     def build_time_axis(self):
         """
@@ -165,12 +159,13 @@ class File(object):
         :rtype: *numpy.array*
 
         """
-        num_axis = np.arange(start=self.start_date,
-                             stop=self.start_date + self.length * self.step,
+        num_axis = np.arange(start=self.start_num,
+                             stop=self.start_num + self.length * self.step,
                              step=self.step)
         if not self.is_instant:
             num_axis += 0.5 * self.step
         date_axis = num2date(num_axis, units=self.funits, calendar=self.ref_calendar)
+        del num_axis
         return date2num(date_axis, units=self.ref_units, calendar=self.ref_calendar)
 
     def build_time_bounds(self):
@@ -182,11 +177,11 @@ class File(object):
         :rtype: *numpy.array*
 
         """
-        num_axis_bnds = np.column_stack(((np.arange(start=self.start_date,
-                                                    stop=self.start_date + self.length * self.step,
+        num_axis_bnds = np.column_stack(((np.arange(start=self.start_num,
+                                                    stop=self.start_num + self.length * self.step,
                                                     step=self.step)),
-                                         (np.arange(start=self.start_date,
-                                                    stop=self.start_date + (self.length + 1) * self.step,
+                                         (np.arange(start=self.start_num,
+                                                    stop=self.start_num + (self.length + 1) * self.step,
                                                     step=self.step)[1:])))
         date_axis_bnds = num2date(num_axis_bnds, units=self.funits, calendar=self.ref_calendar)
         return date2num(date_axis_bnds, units=self.ref_units, calendar=self.ref_calendar)

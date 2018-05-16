@@ -118,11 +118,11 @@ def get_args():
         default=False,
         help=ERRORS_ONLY_HELP)
     parent.add_argument(
-        '--max-threads',
+        '--max-processes',
         metavar='4',
         type=int,
         default=4,
-        help=MAX_THREADS_HELP)
+        help=MAX_PROCESSES_HELP)
 
     ##################################
     # Subparser for "nctime overlap" #
@@ -176,14 +176,6 @@ def get_args():
         action='store_true',
         default=False,
         help=ON_FLY_HELP)
-    axis.add_argument(
-        '--db',
-        metavar='CWD/timeaxis.db',
-        type=str,
-        const='{}/{}'.format(os.getcwd(), 'timeaxis.db'),
-        nargs='?',
-        help=DB_HELP)
-
     return main.parse_args()
 
 

@@ -49,10 +49,9 @@ class Collector(object):
 
     """
 
-    def __init__(self, sources, spinner=True, data=None):
+    def __init__(self, sources, spinner=True):
         self.spinner = spinner
         self.sources = sources
-        self.data = data
         self.FileFilter = FilterCollection()
         self.PathFilter = FilterCollection()
         assert isinstance(self.sources, list)
@@ -64,7 +63,7 @@ class Collector(object):
                     for filename in sorted(filenames):
                         ffp = os.path.join(root, filename)
                         if os.path.isfile(ffp) and self.FileFilter(filename):
-                            yield self.attach(ffp)
+                            yield ffp
 
     def __len__(self):
         """
@@ -83,16 +82,26 @@ class Collector(object):
         sys.stdout.flush()
         return s
 
-    def attach(self, item):
+    def attach(self, data):
         """
-        Attach any object to the each collector item.
+        Attach any object to each collector item.
 
         :param str item: The collector item
         :returns: The collector item with the "data" object
         :rtype: *tuple*
 
         """
-        return (item, self.data) if self.data else item
+        assert isinstance(data, dict) or isinstance(data, tuple)
+        if isinstance(data, dict):
+            input = data
+            for item in self.__iter__():
+                input['ffp'] = item
+                yield input
+        elif isinstance(data, tuple):
+            for item in self.__iter__():
+                input = (item,)
+                input += data
+                yield input
 
     def first(self):
         """
