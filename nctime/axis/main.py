@@ -72,7 +72,7 @@ def process(ffp):
         # Rename file depending on checking
         if (write or force) and {'003'}.intersection(set(fh.status)):
             # Change filename and file full path dynamically
-            fh.nc_file_rename(new_filename=re.sub(fh.end_timestamp, last_timestamp, fh.filename))
+            fh.nc_file_rename(new_filename=re.sub(fh.end_timestamp, fh.last_timestamp, fh.filename))
         # Remove time boundaries depending on checking
         if (write or force) and {'004'}.intersection(set(fh.status)):
             # Delete time bounds and bounds attribute from file if write or force mode
@@ -124,13 +124,13 @@ def process_context(_pattern, _ref_units, _ref_calendar, _write, _force, _on_fly
     """
     Initialize process context by setting particular variables as global variables.
 
-    :param str pattern: The filename pattern
+    :param str _pattern: The filename pattern
     :param str _ref_units: The time units to be used as reference for the simulation
     :param str _ref_calendar: The time calendar  to be used as reference for the simulation
     :param boolean _write: Unable write mode if True
     :param boolean _force: Force write mode if True
     :param boolean _on_fly: Disable some check if True for incomplete time axis
-    :param multiprocessing.Lock lock: Lock to ensure only one process print to std_out at a time
+    :param multiprocessing.Lock _lock: Lock to ensure only one process print to std_out at a time
     """
     global pattern, ref_units, ref_calendar, write, force, on_fly, lock
     pattern = _pattern
@@ -158,14 +158,14 @@ def run(args):
     with ProcessingContext(args) as ctx:
         print("Analysing data, please wait...\r")
         # Init processes pool
-        lock = Lock()
+        std_out_lock = Lock()
         pool = Pool(processes=ctx.processes, initializer=process_context, initargs=(ctx.pattern,
                                                                                     ctx.tinit.tunits,
                                                                                     ctx.tinit.calendar,
                                                                                     ctx.write,
                                                                                     ctx.force,
                                                                                     ctx.on_fly,
-                                                                                    lock))
+                                                                                    std_out_lock))
         # Process supplied files
         handlers = [x for x in pool.imap(process, ctx.sources)]
         # Close pool of workers
