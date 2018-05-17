@@ -61,6 +61,22 @@ fetch and read the configuration files.
     In the case of ``fetch-ini`` subcommand, if you're not on an ESGF node and ``/esg/config/esgcet`` doesn't exist,
     the configuration file(s) are fetched into an ``ini`` folder in your working directory.
 
+Overwrites a frequency increment
+********************************
+
+By default, each supported frequency as its own unit and increment (e.g. mon = 1 months). In some case the frequency
+increment can be change, at least for diagnostic purposes.
+
+.. code-block:: bash
+
+    $> nctime SUBCOMMAND --set-inc FREQUENCY=INCREMENT
+
+.. note::
+    Duplicate the flag to overwrite several frequency increment.
+
+.. warning::
+    Default increments are those expected by CMIP specifications. Overwrite them could lead to non CMIP-compliant files.
+
 Use a logfile
 *************
 
@@ -79,9 +95,10 @@ Use multiprocessing
 *******************
 
 ``nctime`` uses a multiprocessing interface. This is useful to process a large amount of data, especially in the case
-of ``axis`` subcommands with file checksum computation. Set the number of maximal threads to simultaneously process
-several files (4 threads is the default and one seems sequential processing).
+of ``axis`` subcommands with file checksum computation. Set the number of maximal processes to simultaneously treat
+several files. One process seems sequential processing. Default is to use all available CPU processes (as returned by
+``multiprocessing.cpu_count()``).
 
 .. code-block:: bash
 
-    $> nctime SUBCOMMAND --max-threads 4
+    $> nctime SUBCOMMAND --max-processes 4

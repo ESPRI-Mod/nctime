@@ -97,3 +97,20 @@ def regex_validator(string):
     except re.error:
         msg = 'Bad regex syntax: {}'.format(string)
         raise ArgumentTypeError(msg)
+
+
+def keyval_converter(pair):
+    """
+    Checks the key value syntax.
+
+    :param str pair: The key/value pair to check
+    :returns: The key/value pair
+    :rtype: *list*
+    :raises Error: If invalid pair syntax
+
+    """
+    pattern = re.compile(r'([^=]+)=([^=]+)(?:,|$)')
+    if not pattern.search(pair):
+        msg = 'Bad argument syntax: {}'.format(pair)
+        raise ArgumentTypeError(msg)
+    return pattern.search(pair).groups()

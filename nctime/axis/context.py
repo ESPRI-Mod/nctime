@@ -8,15 +8,14 @@
 """
 
 import logging
-import os
 import sys
-from multiprocessing.dummy import Pool as ThreadPool
 
 from ESGConfigParser import SectionParser
 
 from constants import *
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
+from nctime.utils.custom_exceptions import InvalidFrequency
 from nctime.utils.time import TimeInit
 
 
@@ -38,13 +37,15 @@ class ProcessingContext(object):
         self.debug = args.debug
         self.on_fly = args.on_fly
         self.project = args.project
+        if args.set_inc:
+            for frequency, increment in dict(args.set_inc).items():
+                if frequency not in FREQ_INC.keys():
+                    raise InvalidFrequency(frequency)
+                FREQ_INC[frequency][0] = int(increment)
         self.tunits_default = None
         if self.project in DEFAULT_TIME_UNITS.keys():
             self.tunits_default = DEFAULT_TIME_UNITS[self.project]
-        self.threads = args.max_threads
-        self.db = None
-        if args.db:
-            self.db = os.path.realpath(args.db)
+        self.processes = args.max_processes
         self.scan_files = None
         self.status = []
         self.file_filter = []
@@ -65,7 +66,7 @@ class ProcessingContext(object):
         self.cfg = SectionParser(section='project:{}'.format(self.project), directory=self.config_dir)
         self.pattern = self.cfg.translate('filename_format')
         # Init data collector
-        self.sources = Collector(sources=self.directory, spinner=False, data=self)
+        self.sources = Collector(sources=self.directory, spinner=False)
         # Init file filter
         for regex, inclusive in self.file_filter:
             self.sources.FileFilter.add(regex=regex, inclusive=inclusive)
@@ -74,15 +75,10 @@ class ProcessingContext(object):
         # Init dir filter
         self.sources.PathFilter.add(regex=self.dir_filter, inclusive=False)
         # Set driving time properties
-        self.tinit = TimeInit(ref=self.sources.first()[0], tunits_default=self.tunits_default)
-        # Init threads pool
-        self.pool = ThreadPool(int(self.threads))
+        self.tinit = TimeInit(ref=self.sources.first(), tunits_default=self.tunits_default)
         return self
 
     def __exit__(self, *exc):
-        # Close tread pool
-        self.pool.close()
-        self.pool.join()
         # Decline outputs depending on the scan results
         # Default is sys.exit(0)
         if any([s in EXIT_ERRORS for s in self.status]):

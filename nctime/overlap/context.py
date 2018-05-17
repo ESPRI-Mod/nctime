@@ -7,15 +7,13 @@
 
 """
 import logging
-import os
 import sys
-from multiprocessing.dummy import Pool as ThreadPool
 
 from ESGConfigParser import SectionParser
 
-from handler import Graph
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
+from nctime.utils.custom_exceptions import InvalidFrequency
 from nctime.utils.time import TimeInit
 
 
@@ -35,8 +33,13 @@ class ProcessingContext(object):
         self.resolve = args.resolve
         self.full_overlap_only = args.full_overlap_only
         self.project = args.project
+        if args.set_inc:
+            for frequency, increment in dict(args.set_inc).items():
+                if frequency not in FREQ_INC.keys():
+                    raise InvalidFrequency(frequency)
+                FREQ_INC[frequency][0] = int(increment)
         self.tunits_default = None
-        self.threads = args.max_threads
+        self.processes = args.max_processes
         if self.project in DEFAULT_TIME_UNITS.keys():
             self.tunits_default = DEFAULT_TIME_UNITS[self.project]
         self.overlaps = False
@@ -57,11 +60,15 @@ class ProcessingContext(object):
         self.dir_filter = args.ignore_dir
 
     def __enter__(self):
+        # Overwrites frequency increment
+        if self.set_inc:
+            for frequency, increment in self.set_inc:
+                FREQ_INC[frequency][0] = increment
         # Init configuration parser
         self.cfg = SectionParser(section='project:{}'.format(self.project), directory=self.config_dir)
         self.pattern = self.cfg.translate('filename_format')
         # Init data collector
-        self.sources = Collector(sources=self.directory, data=self)
+        self.sources = Collector(sources=self.directory)
         # Init file filter
         for regex, inclusive in self.file_filter:
             self.sources.FileFilter.add(regex=regex, inclusive=inclusive)
@@ -69,21 +76,11 @@ class ProcessingContext(object):
         self.sources.FileFilter.add(regex='(_fx_|_fixed_|_fx.|_fixed.|_.fx_)', inclusive=False)
         # Init dir filter
         self.sources.PathFilter.add(regex=self.dir_filter, inclusive=False)
-        # Get first file for reference
-        self.ref = self.sources.first()[0]
-        self.display = len(os.path.basename(self.ref))
         # Set driving time properties
-        self.tinit = TimeInit(ref=self.ref, tunits_default=self.tunits_default)
-        # DiGraph creation
-        self.graph = Graph()
-        # Init threads pool
-        self.pool = ThreadPool(int(self.threads))
+        self.tinit = TimeInit(ref=self.sources.first(), tunits_default=self.tunits_default)
         return self
 
     def __exit__(self, *exc):
-        # Close tread pool
-        self.pool.close()
-        self.pool.join()
         # Decline outputs depending on the scan results
         # Default is sys.exit(0)
         # Print analyse result

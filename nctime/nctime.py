@@ -17,7 +17,7 @@ from importlib import import_module
 
 from utils.constants import *
 from utils.misc import init_logging
-from utils.parser import MultilineFormatter, DirectoryChecker, regex_validator
+from utils.parser import MultilineFormatter, DirectoryChecker, regex_validator, keyval_converter
 
 __version__ = 'v{} {}'.format(VERSION, VERSION_DATE)
 
@@ -118,11 +118,16 @@ def get_args():
         default=False,
         help=ERRORS_ONLY_HELP)
     parent.add_argument(
-        '--max-threads',
-        metavar='4',
+        '--max-processes',
+        metavar='INT',
         type=int,
-        default=4,
-        help=MAX_THREADS_HELP)
+        help=MAX_PROCESSES_HELP)
+    parent.add_argument(
+        '--set-inc',
+        metavar='FREQUENCY=INCREMENT',
+        type=keyval_converter,
+        action='append',
+        help=SET_INC_HELP)
 
     ##################################
     # Subparser for "nctime overlap" #
@@ -176,14 +181,6 @@ def get_args():
         action='store_true',
         default=False,
         help=ON_FLY_HELP)
-    axis.add_argument(
-        '--db',
-        metavar='CWD/timeaxis.db',
-        type=str,
-        const='{}/{}'.format(os.getcwd(), 'timeaxis.db'),
-        nargs='?',
-        help=DB_HELP)
-
     return main.parse_args()
 
 

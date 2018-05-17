@@ -9,10 +9,10 @@
 from netcdftime import datetime
 
 # Program version
-VERSION = '4.1.4'
+VERSION = '4.2.0'
 
 # Date
-VERSION_DATE = datetime(year=2018, month=5, day=9).strftime("%Y-%d-%m")
+VERSION_DATE = datetime(year=2018, month=5, day=17).strftime("%Y-%d-%m")
 
 # Help
 PROGRAM_DESC = \
@@ -177,18 +177,12 @@ FORCE_HELP = \
     
     """
 
-DB_HELP = \
+MAX_PROCESSES_HELP = \
     """
-    Persists diagnostics into SQLite database.|n
-    If not, time diagnostic is not saved.
-
-    """
-
-MAX_THREADS_HELP = \
-    """
-    Number of maximal threads to simultaneously process|n
+    Number of maximal processes to simultaneously treat|n
     several files (useful if checksum calculation is|n
-    enabled). Set to one seems sequential processing.
+    enabled). Set to one seems sequential processing.|n
+    Default is to use the CPU count.
     
     """
 IGNORE_DIR_HELP = \
@@ -218,6 +212,14 @@ EXCLUDE_FILE_HELP = \
 
     """
 
+SET_INC_HELP = \
+    """
+    Overwrites the default time increment of a frequency.|n
+    Duplicate the flag to overwrites several increment.|n
+    (e.g., mon=2 will set monthly frequency equivalent to |n
+    2 months between time steps instead of 1)
+    """
+
 # Half-hour numerical definition
 HALF_HOUR = 0.125 / 6.0
 
@@ -243,3 +245,24 @@ TIME_CORRECTION = {'3hr': {'period_start': {'000000': 0.0,
 # Default time units
 DEFAULT_TIME_UNITS = {'cordex': 'days since 1949-12-01 00:00:00',
                       'cordex-adjust': 'days since 1949-12-01 00:00:00'}
+
+# Climatology file suffix
+CLIM_SUFFIX = '-clim.nc'
+
+# Frequency increment
+FREQ_INC = {'subhr': [30, 'minutes'],
+            'subhrPt': [30, 'minutes'],
+            '1hr': [1, 'hours'],
+            '1hrCM': [1, 'hours'],
+            '1hrPt': [1, 'hours'],
+            '3hr': [3, 'hours'],
+            '3hrPt': [3, 'hours'],
+            '6hr': [6, 'hours'],
+            '6hrPt': [6, 'hours'],
+            'day': [1, 'days'],
+            'dec': [10, 'years'],
+            'mon': [1, 'months'],
+            'monC': [1, 'months'],
+            'monPt': [1, 'months'],
+            'yr': [1, 'years'],
+            'yrPt': [1, 'years']}

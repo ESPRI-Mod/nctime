@@ -17,8 +17,10 @@ import numpy as np
 from fuzzywuzzy import fuzz, process
 
 from custom_exceptions import *
+from nctime.utils.constants import CLIM_SUFFIX
 from nctime.utils.custom_exceptions import *
 from nctime.utils.misc import ncopen
+from nctime.utils.time import time_inc, convert_time_units
 from nctime.utils.time import truncated_timestamp, get_start_end_dates_from_filename, dates2str, num2date, date2num, \
     control_time_units
 
@@ -32,28 +34,25 @@ class File(object):
 
     """
 
-    def __init__(self, ffp):
+    def __init__(self, ffp, pattern, ref_units, ref_calendar):
+        # Retrieve the file full path
         self.ffp = ffp
+        # Retrieve the reference time units to use
+        self.ref_units = ref_units
+        # Retrieve the reference calendar to use
+        self.ref_calendar = ref_calendar
+        # Retrieve the file size
+        self.size = os.stat(self.ffp).st_size
         # Retrieve directory and filename full path
         self.directory, self.filename = os.path.split(ffp)
-        # Start/end period dates from filename + next/last expected dates
-        self.start_date = None
-        self.end_date = None
-        self.next_date = None
-        self.last_date = None
-        # Filename timestamp length
-        self.timestamp_length = None
-        # Start/end period timestamp from filename + next/last expected timestamps
-        self.start_timestamp = None
-        self.end_timestamp = None
-        self.next_timestamp = None
-        self.last_timestamp = None
+        # Remove "-clim.nc" suffix from filename if exists
+        self.name = self.filename.replace(CLIM_SUFFIX, '.nc') if self.filename.endswith(CLIM_SUFFIX) else self.filename
         # Set variables for time axis diagnostic
         self.time_axis_rebuilt = None
         self.time_bounds_rebuilt = None
         self.status = list()
         self.new_checksum = None
-        # Get netCDF infos
+        # Get netCDF time properties
         with ncopen(self.ffp) as nc:
             # Get frequency from file
             if 'frequency' in nc.ncattrs():
@@ -66,7 +65,8 @@ class File(object):
                 else:
                     raise NoNetCDFAttribute('frequency', self.ffp)
             # Get time length and vector
-            if 'time' not in nc.variables.keys(): raise NoNetCDFVariable('time', self.ffp)
+            if 'time' not in nc.variables.keys():
+                raise NoNetCDFVariable('time', self.ffp)
             self.length = nc.variables['time'].shape[0]
             self.time_axis = nc.variables['time'][:]
             # Get time boundaries
@@ -76,43 +76,36 @@ class File(object):
                 self.tbnds = nc.variables['time'].bounds
                 self.time_bounds = nc.variables[self.tbnds][:, :]
             # Get time units from file
-            if 'units' not in nc.variables['time'].ncattrs(): raise NoNetCDFAttribute('units', self.ffp, 'time')
+            if 'units' not in nc.variables['time'].ncattrs():
+                raise NoNetCDFAttribute('units', self.ffp, 'time')
             self.tunits = control_time_units(nc.variables['time'].units)
-            # Set reference time units in frequency units (i.e., months/year/hours since ...)
-            self.funits = None
             # Get calendar from file
-            if 'calendar' not in nc.variables['time'].ncattrs(): raise NoNetCDFAttribute('calendar', self.ffp, 'time')
+            if 'calendar' not in nc.variables['time'].ncattrs():
+                raise NoNetCDFAttribute('calendar', self.ffp, 'time')
             self.calendar = nc.variables['time'].calendar
             # Get boolean on instantaneous time axis
             variable = unicode(self.filename.split('_')[0])
-            if 'cell_methods' not in nc.variables[variable].ncattrs(): raise NoNetCDFAttribute('cell_methods', self.ffp,
-                                                                                               variable)
+            if 'cell_methods' not in nc.variables[variable].ncattrs():
+                raise NoNetCDFAttribute('cell_methods', self.ffp, variable)
             self.is_instant = False
             if 'point' in nc.variables[variable].cell_methods.lower():
                 self.is_instant = True
-
-    def get_start_end_dates(self, pattern, frequency, units, calendar):
-        """
-        Wraps and records :func:`get_start_end_dates_from_filename` results.
-
-        :param re Object pattern: The filename pattern as a regex (from `re library \
-        <https://docs.python.org/2/library/re.html>`_).
-        :param str frequency: The time frequency
-        :param str units: The proper time units
-        :param str calendar: The NetCDF calendar attribute
-        :returns: Start and end dates as number of days since the referenced date
-        :rtype: *float*
-
-        """
-        self.timestamp_length = len(re.match(pattern, self.filename).groupdict()['period_end'])
-        dates = get_start_end_dates_from_filename(filename=self.filename,
+        # Get time step increment from frequency property
+        self.step = time_inc(self.frequency)[0]
+        # Convert reference time units into frequency units depending on the file (i.e., months/year/hours since ...)
+        self.funits = convert_time_units(self.ref_units, self.frequency)
+        # Get timestamps length from filename
+        self.timestamp_length = len(re.match(pattern, self.name).groupdict()['period_end'])
+        # Extract start and end dates from filename
+        dates = get_start_end_dates_from_filename(filename=self.name,
                                                   pattern=pattern,
-                                                  frequency=frequency,
-                                                  calendar=calendar)
-        self.start_date, self.end_date, self.next_date = dates2str(dates)
-        self.start_timestamp, self.end_timestamp, self.next_timestamp = [
+                                                  frequency=self.frequency,
+                                                  calendar=self.calendar)
+        self.start_date, self.end_date, _ = dates2str(dates)
+        self.start_num, self.end_num, _ = date2num(dates, units=self.funits, calendar=self.calendar)
+        # Convert dates into timestamps
+        self.start_timestamp, self.end_timestamp, _ = [
             truncated_timestamp(date, self.timestamp_length) for date in dates]
-        return date2num(dates, units=units, calendar=calendar)
 
     def checksum(self, checksum_type='sha256', include_filename=False, human_readable=True):
         """
@@ -142,57 +135,56 @@ class File(object):
         except:
             raise ChecksumFail(self.ffp, checksum_type)
 
-    def build_time_axis(self, start, inc, input_units, output_units, calendar, is_instant=False):
+    def load_last_date(self):
+        """
+        Builds the last theoretical date and timestamp.
+
+        """
+        num_axis = np.arange(start=self.start_num,
+                             stop=self.start_num + self.length * self.step,
+                             step=self.step)
+        if self.funits.split(' ')[0] in ['years', 'months']:
+            last_date = num2date(num_axis[-1], units=self.funits, calendar=self.calendar)[0]
+        else:
+            last_date = num2date(num_axis[-1], units=self.funits, calendar=self.calendar)
+        del num_axis
+        self.last_date = dates2str(last_date)
+        self.last_timestamp = truncated_timestamp(last_date, self.timestamp_length)
+
+    def build_time_axis(self):
         """
         Rebuilds time axis from date axis, depending on MIP frequency, calendar and instant status.
 
-        :param float start: The numerical date to start (from ``netCDF4.date2num`` or \
-        :func:`nctime.utils.time.date2num`)
-        :param int inc: The time incrementation
-        :param input_units: The time units deduced from the frequency
-        :param output_units: The time units from the file
-        :param calendar: The time calendar fro NetCDF attributes
-        :param boolean is_instant: True if instantaneous time axis
         :returns: The corresponding theoretical time axis
         :rtype: *numpy.array*
 
         """
-        num_axis = np.arange(start=start, stop=start + self.length * inc, step=inc)
-        if input_units.split(' ')[0] in ['years', 'months']:
-            last_date = num2date(num_axis[-1], units=input_units, calendar=calendar)[0]
-        else:
-            last_date = num2date(num_axis[-1], units=input_units, calendar=calendar)
-        self.last_date = dates2str(last_date)
-        self.last_timestamp = truncated_timestamp(last_date, self.timestamp_length)
-        if not is_instant:
-            num_axis += 0.5 * inc
-        date_axis = num2date(num_axis, units=input_units, calendar=calendar)
-        return date2num(date_axis, units=output_units, calendar=calendar)
+        num_axis = np.arange(start=self.start_num,
+                             stop=self.start_num + self.length * self.step,
+                             step=self.step)
+        if not self.is_instant:
+            num_axis += 0.5 * self.step
+        date_axis = num2date(num_axis, units=self.funits, calendar=self.ref_calendar)
+        del num_axis
+        return date2num(date_axis, units=self.ref_units, calendar=self.ref_calendar)
 
-    def build_time_bounds(self, start, inc, input_units, output_units, calendar):
+    def build_time_bounds(self):
         """
         Rebuilds time boundaries from the start date, depending on MIP frequency, calendar and
         instant status.
-
-        :param float start: The numerical date to start (from ``netCDF4.date2num`` or \
-        :func:`nctime.utils.time.date2num`)
-        :param int inc: The time incrementation
-        :param input_units: The time units deduced from the frequency
-        :param output_units: The time units from the file
-        :param calendar: The time calendar fro NetCDF attributes
 
         :returns: The corresponding theoretical time boundaries as a [n, 2] array
         :rtype: *numpy.array*
 
         """
-        num_axis_bnds = np.column_stack(((np.arange(start=start,
-                                                    stop=start + self.length * inc,
-                                                    step=inc)),
-                                         (np.arange(start=start,
-                                                    stop=start + (self.length + 1) * inc,
-                                                    step=inc)[1:])))
-        date_axis_bnds = num2date(num_axis_bnds, units=input_units, calendar=calendar)
-        return date2num(date_axis_bnds, units=output_units, calendar=calendar)
+        num_axis_bnds = np.column_stack(((np.arange(start=self.start_num,
+                                                    stop=self.start_num + self.length * self.step,
+                                                    step=self.step)),
+                                         (np.arange(start=self.start_num,
+                                                    stop=self.start_num + (self.length + 1) * self.step,
+                                                    step=self.step)[1:])))
+        date_axis_bnds = num2date(num_axis_bnds, units=self.funits, calendar=self.ref_calendar)
+        return date2num(date_axis_bnds, units=self.ref_units, calendar=self.ref_calendar)
 
     def nc_var_delete(self, variable):
         """

@@ -86,23 +86,7 @@ def convert_time_units(tunits, frequency):
     :rtype: *str*
 
     """
-    units = {'subhr': 'minutes',
-             'subhrPt': 'minutes',
-             '1hr': 'hours',
-             '1hrCM': 'hours',
-             '1hrPt': 'hours',
-             '3hr': 'hours',
-             '3hrPt': 'hours',
-             '6hr': 'hours',
-             '6hrPt': 'hours',
-             'day': 'days',
-             'dec': 'years',
-             'mon': 'months',
-             'monC': 'months',
-             'monPt': 'months',
-             'yr': 'years',
-             'yrPt': 'years'}
-    return tunits.replace('days', units[frequency])
+    return tunits.replace('days', FREQ_INC[frequency][1])
 
 
 def untruncated_timestamp(timestamp):
@@ -412,23 +396,7 @@ def time_inc(frequency):
     :rtype: *list*
 
     """
-    inc = {'subhr': [30, 'minutes'],
-           'subhrPt': [30, 'minutes'],
-           '1hr': [1, 'hours'],
-           '1hrCM': [1, 'hours'],
-           '1hrPt': [1, 'hours'],
-           '3hr': [3, 'hours'],
-           '3hrPt': [3, 'hours'],
-           '6hr': [6, 'hours'],
-           '6hrPt': [6, 'hours'],
-           'day': [1, 'days'],
-           'dec': [10, 'years'],
-           'mon': [1, 'months'],
-           'monC': [1, 'months'],
-           'monPt': [1, 'months'],
-           'yr': [1, 'years'],
-           'yrPt': [1, 'years']}
-    return inc[frequency]
+    return FREQ_INC[frequency]
 
 
 def dates2int(dates):
