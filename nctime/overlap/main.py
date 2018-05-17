@@ -297,7 +297,6 @@ def run(args):
     with ProcessingContext(args) as ctx:
         print("Analysing data, please wait...\r")
         # Multiprocessing manager to shared Python objects between processes
-        print Graph.__dict__.keys()
         BaseManager.register('graph', Graph, exposed=('get_graph', 'has_graph', 'set_graph', '__call__'))
         manager = BaseManager()
         manager.start()
@@ -319,21 +318,16 @@ def run(args):
         _ = [x for x in itertools.imap(create_edges, graph())]
         # Evaluate each graph if a shortest path exist
         for path, partial_overlaps, full_overlaps in itertools.imap(evaluate_graph, graph()):
-            # Has overlaps?
-            if partial_overlaps or full_overlaps:
-                ctx.has_overlaps = True
-            # If broken time serie exists
-            if 'BREAK' in path:
-                ctx.is_broken = True
-            # Print path
+            # Format message about path
             msg = format_path(path, partial_overlaps, full_overlaps)
-            # Print analyse result
-            if ctx.is_broken:
-                # A broken time period cannot be evaluated for overlaps (None by default)
+            # If broken time serie
+            if 'BREAK' in path:
+                ctx.borken = True
                 logging.error('Time series broken: {}'.format(msg))
             else:
                 # Print overlaps if exists
                 if full_overlaps or partial_overlaps:
+                    ctx.overlaps = True
                     logging.error('Shortest path found WITH overlaps: {}'.format(msg))
                 else:
                     logging.info('Shortest path found without overlaps: {}'.format(msg))

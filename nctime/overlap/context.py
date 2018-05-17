@@ -6,7 +6,9 @@
     :synopsis: Processing context used in this module.
 
 """
+import logging
 import os
+import sys
 
 from ESGConfigParser import SectionParser
 
@@ -35,8 +37,8 @@ class ProcessingContext(object):
         self.processes = args.max_processes
         if self.project in DEFAULT_TIME_UNITS.keys():
             self.tunits_default = DEFAULT_TIME_UNITS[self.project]
-        self.has_overlaps = False
-        self.is_broken = False
+        self.overlaps = False
+        self.broken = False
         self.scan_files = None
         self.pbar = None
         self.file_filter = []
@@ -76,16 +78,15 @@ class ProcessingContext(object):
         # Decline outputs depending on the scan results
         # Default is sys.exit(0)
         # Print analyse result
-        pass
-        # if self.is_broken:
-        #     logging.error('Some broken time period should be '
-        #                   'corrected manually ({} files scanned)'.format(self.scan_files))
-        #     sys.exit(1)
-        # elif self.has_overlaps:
-        #     logging.error('Some time period have overlaps to'
-        #                   ' fix ({} files scanned)'.format(self.scan_files))
-        #     sys.exit(2)
-        # else:
-        #     print('No overlaps or broken time periods '
-        #           '({} files scanned)'.format(self.scan_files))
-        #     sys.exit(0)
+        if self.broken:
+            logging.error('Some broken time period should be '
+                          'corrected manually ({} files scanned)'.format(self.scan_files))
+            sys.exit(1)
+        elif self.overlaps:
+            logging.error('Some time period have overlaps to'
+                          ' fix ({} files scanned)'.format(self.scan_files))
+            sys.exit(2)
+        else:
+            print('No overlaps or broken time periods '
+                  '({} files scanned)'.format(self.scan_files))
+            sys.exit(0)
