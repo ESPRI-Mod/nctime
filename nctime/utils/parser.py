@@ -98,6 +98,7 @@ def regex_validator(string):
         msg = 'Bad regex syntax: {}'.format(string)
         raise ArgumentTypeError(msg)
 
+
 def keyval_converter(pair):
     """
     Checks the key value syntax.

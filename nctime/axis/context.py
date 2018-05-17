@@ -15,8 +15,8 @@ from ESGConfigParser import SectionParser
 from constants import *
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
-from nctime.utils.time import TimeInit
 from nctime.utils.custom_exceptions import InvalidFrequency
+from nctime.utils.time import TimeInit
 
 
 class ProcessingContext(object):
@@ -41,7 +41,7 @@ class ProcessingContext(object):
             for frequency, increment in dict(args.set_inc).items():
                 if frequency not in FREQ_INC.keys():
                     raise InvalidFrequency(frequency)
-                FREQ_INC[frequency][0] = increment
+                FREQ_INC[frequency][0] = int(increment)
         self.tunits_default = None
         if self.project in DEFAULT_TIME_UNITS.keys():
             self.tunits_default = DEFAULT_TIME_UNITS[self.project]
