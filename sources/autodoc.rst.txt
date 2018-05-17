@@ -19,7 +19,6 @@ axis
 ----
 .. automodule:: nctime.axis.main
 .. automodule:: nctime.axis.handler
-.. automodule:: nctime.axis.db
 .. automodule:: nctime.axis.custom_exceptions
 .. automodule:: nctime.axis.constants
 .. automodule:: nctime.axis.context
