@@ -8,11 +8,9 @@
 """
 
 import logging
-import os
 import sys
 
 from ESGConfigParser import SectionParser
-from multiprocessing import Pool
 
 from constants import *
 from nctime.utils.collector import Collector
@@ -72,14 +70,9 @@ class ProcessingContext(object):
         self.sources.PathFilter.add(regex=self.dir_filter, inclusive=False)
         # Set driving time properties
         self.tinit = TimeInit(ref=self.sources.first(), tunits_default=self.tunits_default)
-        # Init processes pool
-        self.pool = Pool(self.processes)
         return self
 
     def __exit__(self, *exc):
-        # Close pool of workers
-        self.pool.close()
-        self.pool.join()
         # Decline outputs depending on the scan results
         # Default is sys.exit(0)
         if any([s in EXIT_ERRORS for s in self.status]):

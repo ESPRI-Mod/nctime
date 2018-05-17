@@ -82,27 +82,6 @@ class Collector(object):
         sys.stdout.flush()
         return s
 
-    def attach(self, data):
-        """
-        Attach any object to each collector item.
-
-        :param str item: The collector item
-        :returns: The collector item with the "data" object
-        :rtype: *tuple*
-
-        """
-        assert isinstance(data, dict) or isinstance(data, tuple)
-        if isinstance(data, dict):
-            input = data
-            for item in self.__iter__():
-                input['ffp'] = item
-                yield input
-        elif isinstance(data, tuple):
-            for item in self.__iter__():
-                input = (item,)
-                input += data
-                yield input
-
     def first(self):
         """
         Returns the first iterator element.

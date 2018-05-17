@@ -177,18 +177,12 @@ FORCE_HELP = \
     
     """
 
-DB_HELP = \
-    """
-    Persists diagnostics into SQLite database.|n
-    If not, time diagnostic is not saved.
-
-    """
-
 MAX_PROCESSES_HELP = \
     """
     Number of maximal processes to simultaneously treat|n
     several files (useful if checksum calculation is|n
-    enabled). Set to one seems sequential processing.
+    enabled). Set to one seems sequential processing.|n
+    Default is to use the CPU count.
     
     """
 IGNORE_DIR_HELP = \

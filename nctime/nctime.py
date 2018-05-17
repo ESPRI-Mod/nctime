@@ -121,7 +121,7 @@ def get_args():
         '--max-processes',
         metavar='4',
         type=int,
-        default=4,
+        default=None,
         help=MAX_PROCESSES_HELP)
 
     ##################################

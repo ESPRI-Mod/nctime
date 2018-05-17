@@ -6,14 +6,10 @@
     :synopsis: Processing context used in this module.
 
 """
-import logging
 import os
-import sys
-from multiprocessing.dummy import Pool as ThreadPool
 
 from ESGConfigParser import SectionParser
 
-from handler import Graph
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
 from nctime.utils.time import TimeInit
@@ -36,11 +32,11 @@ class ProcessingContext(object):
         self.full_overlap_only = args.full_overlap_only
         self.project = args.project
         self.tunits_default = None
-        self.threads = args.max_threads
+        self.processes = args.max_processes
         if self.project in DEFAULT_TIME_UNITS.keys():
             self.tunits_default = DEFAULT_TIME_UNITS[self.project]
-        self.overlaps = False
-        self.broken = False
+        self.has_overlaps = False
+        self.is_broken = False
         self.scan_files = None
         self.pbar = None
         self.file_filter = []
@@ -61,7 +57,7 @@ class ProcessingContext(object):
         self.cfg = SectionParser(section='project:{}'.format(self.project), directory=self.config_dir)
         self.pattern = self.cfg.translate('filename_format')
         # Init data collector
-        self.sources = Collector(sources=self.directory, data=self)
+        self.sources = Collector(sources=self.directory)
         # Init file filter
         for regex, inclusive in self.file_filter:
             self.sources.FileFilter.add(regex=regex, inclusive=inclusive)
@@ -70,32 +66,26 @@ class ProcessingContext(object):
         # Init dir filter
         self.sources.PathFilter.add(regex=self.dir_filter, inclusive=False)
         # Get first file for reference
-        self.ref = self.sources.first()[0]
+        self.ref = self.sources.first()
         self.display = len(os.path.basename(self.ref))
         # Set driving time properties
         self.tinit = TimeInit(ref=self.ref, tunits_default=self.tunits_default)
-        # DiGraph creation
-        self.graph = Graph()
-        # Init threads pool
-        self.pool = ThreadPool(int(self.threads))
         return self
 
     def __exit__(self, *exc):
-        # Close tread pool
-        self.pool.close()
-        self.pool.join()
         # Decline outputs depending on the scan results
         # Default is sys.exit(0)
         # Print analyse result
-        if self.broken:
-            logging.error('Some broken time period should be '
-                          'corrected manually ({} files scanned)'.format(self.scan_files))
-            sys.exit(1)
-        elif self.overlaps:
-            logging.error('Some time period have overlaps to'
-                          ' fix ({} files scanned)'.format(self.scan_files))
-            sys.exit(2)
-        else:
-            print('No overlaps or broken time periods '
-                  '({} files scanned)'.format(self.scan_files))
-            sys.exit(0)
+        pass
+        # if self.is_broken:
+        #     logging.error('Some broken time period should be '
+        #                   'corrected manually ({} files scanned)'.format(self.scan_files))
+        #     sys.exit(1)
+        # elif self.has_overlaps:
+        #     logging.error('Some time period have overlaps to'
+        #                   ' fix ({} files scanned)'.format(self.scan_files))
+        #     sys.exit(2)
+        # else:
+        #     print('No overlaps or broken time periods '
+        #           '({} files scanned)'.format(self.scan_files))
+        #     sys.exit(0)

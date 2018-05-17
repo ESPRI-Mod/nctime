@@ -90,8 +90,5 @@ class Graph(object):
     def get_graph(self, i):
         return copy(getattr(self, i))
 
-    def __call__(self, data=None, *args, **kwargs):
-        for id in self.__dict__:
-            g = self.get_graph(id)
-            if isinstance(g, nx.Graph):
-                yield (id, g, data) if data else (id, g)
+    def __call__(self, *args, **kwargs):
+        return [id for id in self.__dict__]

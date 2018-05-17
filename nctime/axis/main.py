@@ -9,32 +9,23 @@
 
 import logging
 import re
+from multiprocessing import Pool, Lock
 
 import numpy as np
+
 from constants import *
 from context import ProcessingContext
 from handler import File
 from nctime.utils.misc import trunc
 
 
-def process(ffp, pattern, ref_units, ref_calendar, write, force, on_fly):
+def process(ffp):
     """
-    time_axis_processing(inputs)
+    Process time axis checkup and rewriting if needed.
 
-    Time axis process that\:
-     * Deduces start and end dates from filename,
-     * Rebuilds the theoretical time axis (using frequency, calendar, etc.),
-     * Compares the theoretical time axis with the time axis from the file,
-     * Compares the last theoretical date with the end date from the filename,
-     * Checks if the expected time units keep unchanged,
-     * Checks the squareness and the consistency of time boundaries,
-     * Rewrites (with ``--write`` mode) the new time axis,
-     * Computes the new checksum if modified,
-     * Traceback the status.
-
-    :param tuple collector_input: A tuple with the file path and the processing context
-    :returns: The updated file handler instance
-    :rtype: *nctime.axis.handler.File*
+    :param str ffp: The file full path to process
+    :returns: The file status
+    :rtype: *list*
 
     """
     # Block to avoid program stop if a thread fails
@@ -112,10 +103,14 @@ def process(ffp, pattern, ref_units, ref_calendar, write, force, on_fly):
                                  fh.is_instant)
         for s in fh.status:
             msg += """\n        Status: {}""".format(STATUS[s])
+        # Acquire lock to standard output
+        lock.acquire()
         if not {'000'}.intersection(set(fh.status)):
             logging.error(msg)
         else:
             logging.info(msg)
+        # Release lock on standard output
+        lock.release()
         # Return file status
         return fh.status
     except KeyboardInterrupt:
@@ -125,12 +120,26 @@ def process(ffp, pattern, ref_units, ref_calendar, write, force, on_fly):
         return ['999']
 
 
-def multiprocessing_wrapper(args):
+def process_context(_pattern, _ref_units, _ref_calendar, _write, _force, _on_fly, _lock):
     """
-    Wraps process into multiprocessing with several arguments
+    Initialize process context by setting particular variables as global variables.
 
+    :param str pattern: The filename pattern
+    :param str _ref_units: The time units to be used as reference for the simulation
+    :param str _ref_calendar: The time calendar  to be used as reference for the simulation
+    :param boolean _write: Unable write mode if True
+    :param boolean _force: Force write mode if True
+    :param boolean _on_fly: Disable some check if True for incomplete time axis
+    :param multiprocessing.Lock lock: Lock to ensure only one process print to std_out at a time
     """
-    return process(*args)
+    global pattern, ref_units, ref_calendar, write, force, on_fly, lock
+    pattern = _pattern
+    ref_units = _ref_units
+    ref_calendar = _ref_calendar
+    write = _write
+    force = _force
+    on_fly = _on_fly
+    lock = _lock
 
 
 def run(args):
@@ -148,8 +157,18 @@ def run(args):
     # Instantiate processing context
     with ProcessingContext(args) as ctx:
         print("Analysing data, please wait...\r")
-        # Pack args to be pass to each process
-        pargs=(ctx.pattern, ctx.tinit.tunits, ctx.tinit.calendar, ctx.write, ctx.force, ctx.on_fly)
+        # Init processes pool
+        lock = Lock()
+        pool = Pool(processes=ctx.processes, initializer=process_context, initargs=(ctx.pattern,
+                                                                                    ctx.tinit.tunits,
+                                                                                    ctx.tinit.calendar,
+                                                                                    ctx.write,
+                                                                                    ctx.force,
+                                                                                    ctx.on_fly,
+                                                                                    lock))
         # Process supplied files
-        handlers = [x for x in ctx.pool.imap(multiprocessing_wrapper, ctx.sources.attach(pargs))]
+        handlers = [x for x in pool.imap(process, ctx.sources)]
+        # Close pool of workers
+        pool.close()
+        pool.join()
         ctx.scan_files = len(handlers)
