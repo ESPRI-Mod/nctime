@@ -119,9 +119,8 @@ def get_args():
         help=ERRORS_ONLY_HELP)
     parent.add_argument(
         '--max-processes',
-        metavar='4',
+        metavar='INT',
         type=int,
-        default=None,
         help=MAX_PROCESSES_HELP)
 
     ##################################
