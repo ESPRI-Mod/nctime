@@ -4,6 +4,37 @@
 Change Log
 ==========
 
+`Unreleased <https://github.com/Prodiguer/nctime/tree/HEAD>`__
+--------------------------------------------------------------
+
+`Full
+Changelog <https://github.com/Prodiguer/nctime/compare/v4.2.0...HEAD>`__
+
+**Closed issues:**
+
+-  -clim suffix in filename not supported
+   `#3 <https://github.com/Prodiguer/nctime/issues/3>`__
+-  "dec" frequency misunderstand
+   `#1 <https://github.com/Prodiguer/nctime/issues/1>`__
+
+`v4.2.0 <https://github.com/Prodiguer/nctime/tree/v4.2.0>`__ (2018-05-17)
+-------------------------------------------------------------------------
+
+`Full
+Changelog <https://github.com/Prodiguer/nctime/compare/v4.1.4...v4.2.0>`__
+
+`v4.1.4 <https://github.com/Prodiguer/nctime/tree/v4.1.4>`__ (2018-05-09)
+-------------------------------------------------------------------------
+
+`Full
+Changelog <https://github.com/Prodiguer/nctime/compare/v4.1.3...v4.1.4>`__
+
+`v4.1.3 <https://github.com/Prodiguer/nctime/tree/v4.1.3>`__ (2018-05-03)
+-------------------------------------------------------------------------
+
+`Full
+Changelog <https://github.com/Prodiguer/nctime/compare/v4.1.2...v4.1.3>`__
+
 `v4.1.2 <https://github.com/Prodiguer/nctime/tree/v4.1.2>`__ (2018-05-03)
 -------------------------------------------------------------------------
 
