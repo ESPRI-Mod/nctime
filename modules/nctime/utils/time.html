@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.utils.time &mdash; nctime 4.1.4 documentation</title>
+  <title>nctime.utils.time &mdash; nctime 4.2.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 4.1.4 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 4.2.0 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.1
+                4.2
               </div>
             
           
@@ -251,23 +251,7 @@
 <span class="sd">    :rtype: *str*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;subhr&#39;</span><span class="p">:</span> <span class="s1">&#39;minutes&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;subhrPt&#39;</span><span class="p">:</span> <span class="s1">&#39;minutes&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;1hr&#39;</span><span class="p">:</span> <span class="s1">&#39;hours&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;1hrCM&#39;</span><span class="p">:</span> <span class="s1">&#39;hours&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;1hrPt&#39;</span><span class="p">:</span> <span class="s1">&#39;hours&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;3hr&#39;</span><span class="p">:</span> <span class="s1">&#39;hours&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;3hrPt&#39;</span><span class="p">:</span> <span class="s1">&#39;hours&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;6hr&#39;</span><span class="p">:</span> <span class="s1">&#39;hours&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;6hrPt&#39;</span><span class="p">:</span> <span class="s1">&#39;hours&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="s1">&#39;days&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;dec&#39;</span><span class="p">:</span> <span class="s1">&#39;years&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;mon&#39;</span><span class="p">:</span> <span class="s1">&#39;months&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;monC&#39;</span><span class="p">:</span> <span class="s1">&#39;months&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;monPt&#39;</span><span class="p">:</span> <span class="s1">&#39;months&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;yr&#39;</span><span class="p">:</span> <span class="s1">&#39;years&#39;</span><span class="p">,</span>
-             <span class="s1">&#39;yrPt&#39;</span><span class="p">:</span> <span class="s1">&#39;years&#39;</span><span class="p">}</span>
-    <span class="k">return</span> <span class="n">tunits</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;days&#39;</span><span class="p">,</span> <span class="n">units</span><span class="p">[</span><span class="n">frequency</span><span class="p">])</span></div>
+    <span class="k">return</span> <span class="n">tunits</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;days&#39;</span><span class="p">,</span> <span class="n">FREQ_INC</span><span class="p">[</span><span class="n">frequency</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="untruncated_timestamp"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.untruncated_timestamp">[docs]</a><span class="k">def</span> <span class="nf">untruncated_timestamp</span><span class="p">(</span><span class="n">timestamp</span><span class="p">):</span>
@@ -577,23 +561,7 @@
 <span class="sd">    :rtype: *list*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">inc</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;subhr&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="s1">&#39;minutes&#39;</span><span class="p">],</span>
-           <span class="s1">&#39;subhrPt&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="s1">&#39;minutes&#39;</span><span class="p">],</span>
-           <span class="s1">&#39;1hr&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;hours&#39;</span><span class="p">],</span>
-           <span class="s1">&#39;1hrCM&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;hours&#39;</span><span class="p">],</span>
-           <span class="s1">&#39;1hrPt&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;hours&#39;</span><span class="p">],</span>
-           <span class="s1">&#39;3hr&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;hours&#39;</span><span class="p">],</span>
-           <span class="s1">&#39;3hrPt&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;hours&#39;</span><span class="p">],</span>
-           <span class="s1">&#39;6hr&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;hours&#39;</span><span class="p">],</span>
-           <span class="s1">&#39;6hrPt&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;hours&#39;</span><span class="p">],</span>
-           <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;days&#39;</span><span class="p">],</span>
-           <span class="s1">&#39;dec&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;years&#39;</span><span class="p">],</span>
-           <span class="s1">&#39;mon&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;months&#39;</span><span class="p">],</span>
-           <span class="s1">&#39;monC&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;months&#39;</span><span class="p">],</span>
-           <span class="s1">&#39;monPt&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;months&#39;</span><span class="p">],</span>
-           <span class="s1">&#39;yr&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;years&#39;</span><span class="p">],</span>
-           <span class="s1">&#39;yrPt&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;years&#39;</span><span class="p">]}</span>
-    <span class="k">return</span> <span class="n">inc</span><span class="p">[</span><span class="n">frequency</span><span class="p">]</span></div>
+    <span class="k">return</span> <span class="n">FREQ_INC</span><span class="p">[</span><span class="n">frequency</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="dates2int"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.dates2int">[docs]</a><span class="k">def</span> <span class="nf">dates2int</span><span class="p">(</span><span class="n">dates</span><span class="p">):</span>
@@ -749,7 +717,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'4.1.4',
+            VERSION:'4.2.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

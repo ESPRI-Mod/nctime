@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Check time axis squareness &mdash; nctime 4.1.4 documentation</title>
+  <title>Check time axis squareness &mdash; nctime 4.2.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="nctime 4.1.4 documentation" href="index.html"/>
+    <link rel="top" title="nctime 4.2.0 documentation" href="index.html"/>
         <link rel="next" title="Frequently asked questions" href="faq.html"/>
         <link rel="prev" title="Check time series continuity" href="overlap.html"/> 
 
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                4.1
+                4.2
               </div>
             
           
@@ -100,7 +100,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#rewrite-a-wrong-time-axis">Rewrite a wrong time axis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#force-time-axis-rewriting">Force time axis rewriting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#check-an-on-going-simulation">Check an on going simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#save-diagnostic-into-an-sql-database">Save diagnostic into an SQL database</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#time-axis-status">Time axis status</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#exit-status">Exit status</a></li>
 </ul>
@@ -218,43 +217,6 @@ To disable the corresponding test and check the on goind time axis squareness us
 </pre></div>
 </div>
 </div>
-<div class="section" id="save-diagnostic-into-an-sql-database">
-<h2>Save diagnostic into an SQL database<a class="headerlink" href="#save-diagnostic-into-an-sql-database" title="Permalink to this headline">¶</a></h2>
-<p>When checking a large amount of file, it could be useful to serialize and record the checking results.
-<code class="docutils literal"><span class="pre">nctime</span> <span class="pre">axis</span></code> can store the time axis status properties into an SQLite database.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --db
-$&gt; nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --db DB_FILE
-$&gt; sqlite3 ./timeaxis.db
-<span class="nv">$sqlite</span>&gt; .schema
-CREATE TABLE time_axis
-            <span class="o">(</span>id INTEGER PRIMARY KEY,
-            project TEXT,
-            realm TEXT,
-            frequency TEXT,
-            freq_units TEXT,
-            variable TEXT,
-            filename TEXT,
-            start TEXT,
-            end TEXT,
-            last TEXT,
-            length INT,
-            file_units TEXT,
-            status TEXT,
-            file_ref TEXT,
-            ref_units TEXT,
-            calendar TEXT,
-            is_instant INT,
-            has_bounds INT,
-            new_checksum TEXT,
-            full_path TEXT,
-            creation_date TEXT<span class="o">)</span><span class="p">;</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The database path is optional. Default is <code class="docutils literal"><span class="pre">CWD/timeaxis.db</span></code>.</p>
-</div>
-</div>
 <div class="section" id="time-axis-status">
 <h2>Time axis status<a class="headerlink" href="#time-axis-status" title="Permalink to this headline">¶</a></h2>
 <p>Time axis error codes:</p>
@@ -335,7 +297,7 @@ CREATE TABLE time_axis
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'4.1.4',
+            VERSION:'4.2.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

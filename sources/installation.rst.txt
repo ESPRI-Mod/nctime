@@ -53,12 +53,10 @@ includes:
  * `logging <https://docs.python.org/2/library/logging.html>`_
  * `argparse <https://docs.python.org/2/library/argparse.html>`_
  * `importlib <https://docs.python.org/2/library/importlib.html>`_
- * `ESGConfigParser <https://pypi.python.org/pypi/ESGConfigParser>`_
  * `datetime <https://docs.python.org/2/library/datetime.html>`_
  * `textwrap <https://docs.python.org/2/library/textwrap.html>`_
  * `multiprocessing <https://docs.python.org/2/library/multiprocessing.html>`_
  * `uuid <https://docs.python.org/2/library/uuid.html>`_
- * `sqlite3 <https://docs.python.org/2.6/library/sqlite3.html>`_
 
 Some required libraries are not included in most Python distributions. Please install them using the usual PIP command:
 
@@ -67,5 +65,7 @@ Some required libraries are not included in most Python distributions. Please in
  * `nco <https://pypi.python.org/pypi/nco>`_
  * `numpy <http://www.numpy.org/>`_
  * `networkx <https://networkx.github.io/>`_
+ * `ESGConfigParser <https://pypi.python.org/pypi/ESGConfigParser>`_
+ * `fuzzywuzzy <https://pypi.python.org/pypi/fuzzywuzzy>`_
 
 .. warning:: To support some corrections, `NCO operators <http://nco.sourceforge.net/#Binaries>`_ must be installed.

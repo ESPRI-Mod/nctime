@@ -52,43 +52,6 @@ To disable the corresponding test and check the on goind time axis squareness us
 
    $> nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --on-fly
 
-Save diagnostic into an SQL database
-************************************
-
-When checking a large amount of file, it could be useful to serialize and record the checking results.
-``nctime axis`` can store the time axis status properties into an SQLite database.
-
-.. code-block:: bash
-
-   $> nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --db
-   $> nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --db DB_FILE
-   $> sqlite3 ./timeaxis.db
-   $sqlite> .schema
-   CREATE TABLE time_axis
-               (id INTEGER PRIMARY KEY,
-               project TEXT,
-               realm TEXT,
-               frequency TEXT,
-               freq_units TEXT,
-               variable TEXT,
-               filename TEXT,
-               start TEXT,
-               end TEXT,
-               last TEXT,
-               length INT,
-               file_units TEXT,
-               status TEXT,
-               file_ref TEXT,
-               ref_units TEXT,
-               calendar TEXT,
-               is_instant INT,
-               has_bounds INT,
-               new_checksum TEXT,
-               full_path TEXT,
-               creation_date TEXT);
-
-.. note:: The database path is optional. Default is ``CWD/timeaxis.db``.
-
 Time axis status
 ****************
 
