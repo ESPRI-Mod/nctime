@@ -11,11 +11,10 @@ import os
 import sys
 
 from ESGConfigParser import SectionParser
-
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
 from nctime.utils.time import TimeInit
-
+from nctime.utils.custom_exceptions import InvalidFrequency
 
 class ProcessingContext(object):
     """
@@ -33,6 +32,11 @@ class ProcessingContext(object):
         self.resolve = args.resolve
         self.full_overlap_only = args.full_overlap_only
         self.project = args.project
+        if args.set_inc:
+            for frequency, increment in dict(args.set_inc).items():
+                if frequency not in FREQ_INC.keys():
+                    raise InvalidFrequency(frequency)
+                FREQ_INC[frequency][0] = increment
         self.tunits_default = None
         self.processes = args.max_processes
         if self.project in DEFAULT_TIME_UNITS.keys():
@@ -55,6 +59,10 @@ class ProcessingContext(object):
         self.dir_filter = args.ignore_dir
 
     def __enter__(self):
+        # Overwrites frequency increment
+        if self.set_inc:
+            for frequency, increment in self.set_inc:
+                FREQ_INC[frequency][0] = increment
         # Init configuration parser
         self.cfg = SectionParser(section='project:{}'.format(self.project), directory=self.config_dir)
         self.pattern = self.cfg.translate('filename_format')
@@ -67,11 +75,8 @@ class ProcessingContext(object):
         self.sources.FileFilter.add(regex='(_fx_|_fixed_|_fx.|_fixed.|_.fx_)', inclusive=False)
         # Init dir filter
         self.sources.PathFilter.add(regex=self.dir_filter, inclusive=False)
-        # Get first file for reference
-        self.ref = self.sources.first()
-        self.display = len(os.path.basename(self.ref))
         # Set driving time properties
-        self.tinit = TimeInit(ref=self.ref, tunits_default=self.tunits_default)
+        self.tinit = TimeInit(ref=self.sources.first(), tunits_default=self.tunits_default)
         return self
 
     def __exit__(self, *exc):

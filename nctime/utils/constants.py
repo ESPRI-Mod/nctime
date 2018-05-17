@@ -212,6 +212,14 @@ EXCLUDE_FILE_HELP = \
 
     """
 
+SET_INC_HELP = \
+    """
+    Overwrites the default time increment of a frequency.|n
+    Duplicate the flag to overwrites several increment.|n
+    (e.g., mon=2 will set monthly frequency equivalent to |n
+    2 months between time steps instead of 1)
+    """
+
 # Half-hour numerical definition
 HALF_HOUR = 0.125 / 6.0
 
@@ -240,3 +248,21 @@ DEFAULT_TIME_UNITS = {'cordex': 'days since 1949-12-01 00:00:00',
 
 # Climatology file suffix
 CLIM_SUFFIX = '-clim.nc'
+
+# Frequency increment
+FREQ_INC = {'subhr': [30, 'minutes'],
+            'subhrPt': [30, 'minutes'],
+            '1hr': [1, 'hours'],
+            '1hrCM': [1, 'hours'],
+            '1hrPt': [1, 'hours'],
+            '3hr': [3, 'hours'],
+            '3hrPt': [3, 'hours'],
+            '6hr': [6, 'hours'],
+            '6hrPt': [6, 'hours'],
+            'day': [1, 'days'],
+            'dec': [10, 'years'],
+            'mon': [1, 'months'],
+            'monC': [1, 'months'],
+            'monPt': [1, 'months'],
+            'yr': [1, 'years'],
+            'yrPt': [1, 'years']}

@@ -16,6 +16,7 @@ from constants import *
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
 from nctime.utils.time import TimeInit
+from nctime.utils.custom_exceptions import InvalidFrequency
 
 
 class ProcessingContext(object):
@@ -36,6 +37,11 @@ class ProcessingContext(object):
         self.debug = args.debug
         self.on_fly = args.on_fly
         self.project = args.project
+        if args.set_inc:
+            for frequency, increment in dict(args.set_inc).items():
+                if frequency not in FREQ_INC.keys():
+                    raise InvalidFrequency(frequency)
+                FREQ_INC[frequency][0] = increment
         self.tunits_default = None
         if self.project in DEFAULT_TIME_UNITS.keys():
             self.tunits_default = DEFAULT_TIME_UNITS[self.project]

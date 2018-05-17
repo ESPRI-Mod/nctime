@@ -17,7 +17,7 @@ from importlib import import_module
 
 from utils.constants import *
 from utils.misc import init_logging
-from utils.parser import MultilineFormatter, DirectoryChecker, regex_validator
+from utils.parser import MultilineFormatter, DirectoryChecker, regex_validator, keyval_converter
 
 __version__ = 'v{} {}'.format(VERSION, VERSION_DATE)
 
@@ -122,6 +122,12 @@ def get_args():
         metavar='INT',
         type=int,
         help=MAX_PROCESSES_HELP)
+    parent.add_argument(
+        '--set-inc',
+        metavar='FREQUENCY=INCREMENT',
+        type=keyval_converter,
+        action='append',
+        help=SET_INC_HELP)
 
     ##################################
     # Subparser for "nctime overlap" #
