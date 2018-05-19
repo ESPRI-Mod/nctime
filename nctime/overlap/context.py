@@ -60,10 +60,6 @@ class ProcessingContext(object):
         self.dir_filter = args.ignore_dir
 
     def __enter__(self):
-        # Overwrites frequency increment
-        if self.set_inc:
-            for frequency, increment in self.set_inc:
-                FREQ_INC[frequency][0] = increment
         # Init configuration parser
         self.cfg = SectionParser(section='project:{}'.format(self.project), directory=self.config_dir)
         self.pattern = self.cfg.translate('filename_format')
