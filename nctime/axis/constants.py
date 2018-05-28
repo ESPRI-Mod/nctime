@@ -7,12 +7,6 @@
 
 """
 
-# Database connexion timeout (in sec)
-TIMEOUT = 120
-
-# Errors that return exit code = 1
-EXIT_ERRORS = ['005', '999']
-
 # Status messages
 STATUS = {'000': 'Time axis seems OK',
           '001': 'Incorrect time axis over one or several time steps',
