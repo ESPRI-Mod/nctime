@@ -81,7 +81,7 @@ class ProcessingContext(object):
     def __exit__(self, *exc):
         # Decline outputs depending on the scan results
         # Default is sys.exit(0)
-        if any([s in EXIT_ERRORS for s in self.status]):
+        if any([s is not '000' for s in self.status]):
             logging.error('Some time axis should be corrected manually ({} files scanned)'.format(self.scan_files))
             sys.exit(1)
         else:

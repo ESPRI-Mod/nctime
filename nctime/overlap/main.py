@@ -322,7 +322,7 @@ def run(args):
             msg = format_path(path, partial_overlaps, full_overlaps)
             # If broken time serie
             if 'BREAK' in path:
-                ctx.borken = True
+                ctx.broken = True
                 logging.error('Time series broken: {}'.format(msg))
             else:
                 # Print overlaps if exists

@@ -73,4 +73,4 @@ Exit status
  * Status = 0
     All the files have been successfully scanned and the time axis seems correct or have been corrected.
  * Status = 1
-    Some time axis contains remains and should be manually corrected.
+    Some time axis contains errors and should be corrected.
