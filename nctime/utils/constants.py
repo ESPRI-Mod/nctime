@@ -9,10 +9,10 @@
 from netcdftime import datetime
 
 # Program version
-VERSION = '4.2.1'
+VERSION = '4.2.2'
 
 # Date
-VERSION_DATE = datetime(year=2018, month=5, day=28).strftime("%Y-%d-%m")
+VERSION_DATE = datetime(year=2018, month=5, day=29).strftime("%Y-%d-%m")
 
 # Help
 PROGRAM_DESC = \
@@ -168,6 +168,14 @@ ON_FLY_HELP = \
     """
     Ignore the test on end date consistency for on going|n
     simulation (this also include completed files).
+
+    """
+
+LIMIT_HELP = \
+    """
+    Limit of displayed wrong timesteps (if exist)|n
+    Default is set to 5. If submitted without value, all|n
+    timesteps are printed. 
 
     """
 

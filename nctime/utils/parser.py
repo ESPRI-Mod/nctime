@@ -99,6 +99,20 @@ def regex_validator(string):
         raise ArgumentTypeError(msg)
 
 
+def positive_only(value):
+    """
+    Validates a positive number.
+
+    :param str value: The value submitted
+    :return:
+    """
+    value = int(value)
+    if value < 0:
+        msg = 'Invalid number. Should be a positive integer.'
+        raise ArgumentTypeError(msg)
+    return value
+
+
 def processes_validator(value):
     """
     Validates the max processes number.

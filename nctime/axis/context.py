@@ -35,6 +35,7 @@ class ProcessingContext(object):
         self.force = args.force
         self.debug = args.debug
         self.on_fly = args.on_fly
+        self.limit = args.limit
         self.project = args.project
         if args.set_inc:
             for frequency, increment in dict(args.set_inc).items():

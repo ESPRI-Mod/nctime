@@ -107,9 +107,12 @@ def process(ffp):
                                  fh.is_instant)
         for s in fh.status:
             msg += """\n        Status: {}""".format(STATUS[s])
-        for i in wrong_indexes:
-            msg += """\n        Wrong timestep: {} iso {}""".format(fh.time_axis_rebuilt[i],
-                                                                    fh.time_axis[i])
+        if not limit:
+            limit = len(wrong_indexes)
+        for i, v in enumerate(wrong_indexes):
+            while (i + 1) <= limit:
+                msg += """\n        Wrong timestep: {} iso {}""".format(str(fh.time_axis[v]).ljust(10),
+                                                                        str(fh.time_axis_rebuilt[v]).ljust(10))
         # Acquire lock to standard output
         lock.acquire()
         if not {'000'}.intersection(set(fh.status)):
@@ -127,7 +130,7 @@ def process(ffp):
         return ['999']
 
 
-def process_context(_pattern, _ref_units, _ref_calendar, _write, _force, _on_fly, _true_dates, _lock):
+def process_context(_pattern, _ref_units, _ref_calendar, _write, _force, _on_fly, _true_dates, _limit, _lock):
     """
     Initialize process context by setting particular variables as global variables.
 
@@ -138,10 +141,11 @@ def process_context(_pattern, _ref_units, _ref_calendar, _write, _force, _on_fly
     :param boolean _force: Force write mode if True
     :param boolean _on_fly: Disable some check if True for incomplete time axis
     :param boolean _true_dates: Disable filename dates correction
+    :param int _limit: Limit of displayed wrong timestep
     :param multiprocessing.Lock _lock: Lock to ensure only one process print to std_out at a time
 
     """
-    global pattern, ref_units, ref_calendar, write, force, on_fly, true_dates, lock
+    global pattern, ref_units, ref_calendar, write, force, on_fly, true_dates, limit, lock
     pattern = _pattern
     ref_units = _ref_units
     ref_calendar = _ref_calendar
@@ -149,6 +153,7 @@ def process_context(_pattern, _ref_units, _ref_calendar, _write, _force, _on_fly
     force = _force
     on_fly = _on_fly
     true_dates = _true_dates
+    limit = _limit
     lock = _lock
 
 
@@ -176,6 +181,7 @@ def run(args):
                                                                                     ctx.force,
                                                                                     ctx.on_fly,
                                                                                     ctx.true_dates,
+                                                                                    ctx.limit,
                                                                                     std_out_lock))
         # Process supplied files
         handlers = [x for x in pool.imap(process, ctx.sources)]

@@ -41,6 +41,8 @@ class File(object):
         self.ref_units = ref_units
         # Retrieve the reference calendar to use
         self.ref_calendar = ref_calendar
+        # If true dates from filename
+        self.true_dates = true_dates
         # Retrieve the file size
         self.size = os.stat(self.ffp).st_size
         # Retrieve directory and filename full path
@@ -101,7 +103,7 @@ class File(object):
                                                   pattern=pattern,
                                                   frequency=self.frequency,
                                                   calendar=self.calendar,
-                                                  true_dates=true_dates)
+                                                  true_dates=self.true_dates)
         self.start_date, self.end_date, _ = dates2str(dates)
         self.start_num, self.end_num, _ = date2num(dates, units=self.funits, calendar=self.calendar)
         # Convert dates into timestamps
@@ -163,7 +165,7 @@ class File(object):
         num_axis = np.arange(start=self.start_num,
                              stop=self.start_num + self.length * self.step,
                              step=self.step)
-        if not self.is_instant:
+        if not self.is_instant and not self.true_dates:
             num_axis += 0.5 * self.step
         date_axis = num2date(num_axis, units=self.funits, calendar=self.ref_calendar)
         del num_axis

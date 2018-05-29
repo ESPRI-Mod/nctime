@@ -17,7 +17,8 @@ from importlib import import_module
 
 from utils.constants import *
 from utils.misc import init_logging
-from utils.parser import MultilineFormatter, DirectoryChecker, regex_validator, keyval_converter, processes_validator
+from utils.parser import MultilineFormatter, DirectoryChecker, regex_validator, keyval_converter, processes_validator, \
+    positive_only
 
 __version__ = 'v{} {}'.format(VERSION, VERSION_DATE)
 
@@ -187,7 +188,13 @@ def get_args():
         action='store_true',
         default=False,
         help=ON_FLY_HELP)
-
+    axis.add_argument(
+        '--limit',
+        metavar='5',
+        type=positive_only,
+        default=5,
+        nargs='?',
+        help=LIMIT_HELP)
     return main.parse_args()
 
 
