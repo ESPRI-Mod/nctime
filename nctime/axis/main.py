@@ -54,7 +54,7 @@ def process(ffp):
             fh.status.append('005')
         # Check time axis squareness
         wrong_indexes = list()
-        if not {'003','008'}.intersection(set(fh.status)):
+        if not {'003', '008'}.intersection(set(fh.status)):
             # Rebuild a theoretical time axis with appropriate precision
             fh.time_axis_rebuilt = fh.build_time_axis()
             if not np.array_equal(fh.time_axis_rebuilt, fh.time_axis):
@@ -73,11 +73,11 @@ def process(ffp):
         if ref_calendar != fh.calendar:
             fh.status.append('007')
         # Rename file depending on checking
-        if (write or force) and {'003'}.intersection(set(fh.status)):
+        if (write and {'003'}.intersection(set(fh.status))) or force:
             # Change filename and file full path dynamically
             fh.nc_file_rename(new_filename=re.sub(fh.end_timestamp, fh.last_timestamp, fh.filename))
         # Remove time boundaries depending on checking
-        if (write or force) and {'004'}.intersection(set(fh.status)):
+        if (write and {'004'}.intersection(set(fh.status))) or force:
             # Delete time bounds and bounds attribute from file if write or force mode
             fh.nc_var_delete(variable=fh.tbnds)
             fh.nc_att_delete(attribute='bounds', variable='time')
@@ -89,9 +89,6 @@ def process(ffp):
             # Rewrite time boundaries if needed
             if fh.has_bounds:
                 fh.nc_var_overwrite(fh.time_bounds, fh.time_bounds_rebuilt)
-        # Compute checksum at the end of all modifications and after closing file
-        if (write or force) and {'001', '002', '003', '004', '006', '007'}.intersection(set(fh.status)):
-            fh.new_checksum = fh.checksum()
         # Print file status
         msg = """{}
         Start: {} = {}

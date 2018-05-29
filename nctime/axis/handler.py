@@ -6,7 +6,6 @@
 
 """
 
-import hashlib
 import logging
 import os
 import re
@@ -53,7 +52,6 @@ class File(object):
         self.time_axis_rebuilt = None
         self.time_bounds_rebuilt = None
         self.status = list()
-        self.new_checksum = None
         # Get netCDF time properties
         with ncopen(self.ffp) as nc:
             # Get frequency from file
@@ -109,34 +107,6 @@ class File(object):
         # Convert dates into timestamps
         self.start_timestamp, self.end_timestamp, _ = [
             truncated_timestamp(date, self.timestamp_length) for date in dates]
-
-    def checksum(self, checksum_type='sha256', include_filename=False, human_readable=True):
-        """
-        Does the checksum by the Shell avoiding Python memory limits.
-
-        :param str checksum_type: Checksum type
-        :param boolean human_readable: True to return a human readable digested message
-        :param boolean include_filename: True to include filename in hash calculation
-        :returns: The checksum
-        :rtype: *str*
-        :raises Error: If the checksum fails
-
-        """
-        try:
-            hash_algo = getattr(hashlib, checksum_type)()
-            with open(self.ffp, 'rb') as f:
-                for block in iter(lambda: f.read(os.stat(self.ffp).st_blksize), b''):
-                    hash_algo.update(block)
-            if include_filename:
-                hash_algo.update(os.path.basename(self.ffp))
-            if human_readable:
-                return hash_algo.hexdigest()
-            else:
-                return hash_algo.digest()
-        except AttributeError:
-            raise InvalidChecksumType(checksum_type)
-        except:
-            raise ChecksumFail(self.ffp, checksum_type)
 
     def load_last_date(self):
         """

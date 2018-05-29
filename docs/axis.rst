@@ -23,8 +23,8 @@ Rebuilt and check time axis
 Rewrite a wrong time axis
 *************************
 
-It displays the same information as above but also modify the input files if necessary. In such a case, the
-new checksum is computed automatically.
+It displays the same information as above but also modify the input files ONLY IF NECESSARY (i.e., depending on the
+check results):
 
 .. code-block:: bash
 
@@ -36,7 +36,7 @@ new checksum is computed automatically.
 Force time axis rewriting
 *************************
 
-Anyway, you can force to overwrite time axis (the checksum is automatically computed again).
+Anyway, you can force to overwrite time axis:
 
 .. code-block:: bash
 

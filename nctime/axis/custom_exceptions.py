@@ -7,39 +7,6 @@
 
 """
 
-from hashlib import algorithms as checksum_types
-
-
-############################
-# Miscellaneous exceptions #
-############################
-
-class InvalidChecksumType(Exception):
-    """
-    Raised when checksum type in unknown.
-
-    """
-
-    def __init__(self, client):
-        self.msg = "Checksum type not supported or invalid."
-        self.msg += "\n<checksum type: '{}'>".format(client)
-        self.msg += "\n<allowed algorithms: '{}'>".format(checksum_types)
-        super(self.__class__, self).__init__(self.msg)
-
-
-class ChecksumFail(Exception):
-    """
-    Raised when a checksum fails.
-
-    """
-
-    def __init__(self, path, checksum_type=None):
-        self.msg = "Checksum failed"
-        if checksum_type:
-            self.msg += "\n<checksum type: '{}'>".format(checksum_type)
-        self.msg += "\n<file: '{}'>".format(path)
-        super(self.__class__, self).__init__(self.msg)
-
 
 ###############################
 # Exceptions for NetCDF files #

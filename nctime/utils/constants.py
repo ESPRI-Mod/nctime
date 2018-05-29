@@ -196,9 +196,9 @@ FORCE_HELP = \
 MAX_PROCESSES_HELP = \
     """
     Number of maximal processes to simultaneously treat|n
-    several files (useful if checksum calculation is|n
-    enabled). Set to one seems sequential processing.|n
-    Default is to use the CPU count.
+    several files.
+    Set to one seems sequential processing (default).|n
+    Set to -1 uses the max CPU count.
     
     """
 IGNORE_DIR_HELP = \

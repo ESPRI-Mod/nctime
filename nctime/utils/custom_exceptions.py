@@ -88,20 +88,6 @@ class NetCDFTimeStepNotFound(Exception):
 # Miscellaneous exceptions #
 ############################
 
-class ChecksumFail(Exception):
-    """
-    Raised when a checksum fails.
-
-    """
-
-    def __init__(self, path, checksum_type=None):
-        self.msg = "Checksum failed"
-        if checksum_type:
-            self.msg += "\n<checksum type: '{}'>".format(checksum_type)
-        self.msg += "\n<file: '{}'>".format(path)
-        super(self.__class__, self).__init__(self.msg)
-
-
 class InvalidFrequency(Exception):
     """
     Raised when frequency is unknown.
