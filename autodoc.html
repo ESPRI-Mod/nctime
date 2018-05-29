@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Code documentation &mdash; nctime 4.2.0 documentation</title>
+  <title>Code documentation &mdash; nctime 4.2.2 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="nctime 4.2.0 documentation" href="index.html"/>
+    <link rel="top" title="nctime 4.2.2 documentation" href="index.html"/>
         <link rel="prev" title="Change Log" href="log.html"/> 
 
   
@@ -354,7 +354,7 @@ It walks through the evaluated path of the directed graph and print the filename
 
 <dl class="function">
 <dt id="nctime.overlap.main.process_context">
-<code class="descclassname">nctime.overlap.main.</code><code class="descname">process_context</code><span class="sig-paren">(</span><em>_pattern</em>, <em>_ref_calendar</em>, <em>_graph</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/overlap/main.html#process_context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.overlap.main.process_context" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nctime.overlap.main.</code><code class="descname">process_context</code><span class="sig-paren">(</span><em>_pattern</em>, <em>_ref_calendar</em>, <em>_true_dates</em>, <em>_graph</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/overlap/main.html#process_context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.overlap.main.process_context" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize process context by setting particular variables as global variables.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -363,6 +363,8 @@ It walks through the evaluated path of the directed graph and print the filename
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>pattern</strong> (<em>str</em>) – The filename pattern</li>
 <li><strong>_ref_calendar</strong> (<em>str</em>) – The time calendar  to be used as reference for the simulation</li>
+<li><strong>_true_dates</strong> (<em>boolean</em>) – Disable filename dates correction</li>
+<li><strong>_graph</strong> (<em>nctime.overlap.handler.Graph</em><em>(</em><em>)</em>) – Multi graph class proxy</li>
 </ul>
 </td>
 </tr>
@@ -475,7 +477,7 @@ It walks through the evaluated path of the directed graph and print the filename
 
 <dl class="function">
 <dt id="nctime.axis.main.process_context">
-<code class="descclassname">nctime.axis.main.</code><code class="descname">process_context</code><span class="sig-paren">(</span><em>_pattern</em>, <em>_ref_units</em>, <em>_ref_calendar</em>, <em>_write</em>, <em>_force</em>, <em>_on_fly</em>, <em>_lock</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/main.html#process_context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.main.process_context" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nctime.axis.main.</code><code class="descname">process_context</code><span class="sig-paren">(</span><em>_pattern</em>, <em>_ref_units</em>, <em>_ref_calendar</em>, <em>_write</em>, <em>_force</em>, <em>_on_fly</em>, <em>_true_dates</em>, <em>_limit</em>, <em>_lock</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/main.html#process_context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.main.process_context" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize process context by setting particular variables as global variables.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -488,6 +490,8 @@ It walks through the evaluated path of the directed graph and print the filename
 <li><strong>_write</strong> (<em>boolean</em>) – Unable write mode if True</li>
 <li><strong>_force</strong> (<em>boolean</em>) – Force write mode if True</li>
 <li><strong>_on_fly</strong> (<em>boolean</em>) – Disable some check if True for incomplete time axis</li>
+<li><strong>_true_dates</strong> (<em>boolean</em>) – Disable filename dates correction</li>
+<li><strong>_limit</strong> (<em>int</em>) – Limit of displayed wrong time steps</li>
 <li><strong>_lock</strong> (<em>multiprocessing.Lock</em>) – Lock to ensure only one process print to std_out at a time</li>
 </ul>
 </td>
@@ -520,7 +524,7 @@ It walks through the evaluated path of the directed graph and print the filename
 
 <span class="target" id="module-nctime.axis.handler"></span><span class="target" id="module-nctime.axis.handler.py"></span><dl class="class">
 <dt id="nctime.axis.handler.File">
-<em class="property">class </em><code class="descclassname">nctime.axis.handler.</code><code class="descname">File</code><span class="sig-paren">(</span><em>ffp</em>, <em>pattern</em>, <em>ref_units</em>, <em>ref_calendar</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/handler.html#File"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.handler.File" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">nctime.axis.handler.</code><code class="descname">File</code><span class="sig-paren">(</span><em>ffp</em>, <em>pattern</em>, <em>ref_units</em>, <em>ref_calendar</em>, <em>true_dates</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/handler.html#File"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.handler.File" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handler providing methods to deal with file processing.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -532,34 +536,6 @@ It walks through the evaluated path of the directed graph and print the filename
 </tr>
 </tbody>
 </table>
-<dl class="method">
-<dt id="nctime.axis.handler.File.checksum">
-<code class="descname">checksum</code><span class="sig-paren">(</span><em>checksum_type='sha256'</em>, <em>include_filename=False</em>, <em>human_readable=True</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/handler.html#File.checksum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.handler.File.checksum" title="Permalink to this definition">¶</a></dt>
-<dd><p>Does the checksum by the Shell avoiding Python memory limits.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>checksum_type</strong> (<em>str</em>) – Checksum type</li>
-<li><strong>human_readable</strong> (<em>boolean</em>) – True to return a human readable digested message</li>
-<li><strong>include_filename</strong> (<em>boolean</em>) – True to include filename in hash calculation</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The checksum</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><em>str</em></p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>Error</strong> – If the checksum fails</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="method">
 <dt id="nctime.axis.handler.File.load_last_date">
 <code class="descname">load_last_date</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/handler.html#File.load_last_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.handler.File.load_last_date" title="Permalink to this definition">¶</a></dt>
@@ -705,18 +681,6 @@ to avoid Python memory limit.</p>
 </tr>
 </tbody>
 </table>
-<dl class="exception">
-<dt id="nctime.axis.custom_exceptions.InvalidChecksumType">
-<em class="property">exception </em><code class="descclassname">nctime.axis.custom_exceptions.</code><code class="descname">InvalidChecksumType</code><span class="sig-paren">(</span><em>client</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/custom_exceptions.html#InvalidChecksumType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.custom_exceptions.InvalidChecksumType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raised when checksum type in unknown.</p>
-</dd></dl>
-
-<dl class="exception">
-<dt id="nctime.axis.custom_exceptions.ChecksumFail">
-<em class="property">exception </em><code class="descclassname">nctime.axis.custom_exceptions.</code><code class="descname">ChecksumFail</code><span class="sig-paren">(</span><em>path</em>, <em>checksum_type=None</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/custom_exceptions.html#ChecksumFail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.custom_exceptions.ChecksumFail" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raised when a checksum fails.</p>
-</dd></dl>
-
 <dl class="exception">
 <dt id="nctime.axis.custom_exceptions.NetCDFVariableRemoveFail">
 <em class="property">exception </em><code class="descclassname">nctime.axis.custom_exceptions.</code><code class="descname">NetCDFVariableRemoveFail</code><span class="sig-paren">(</span><em>variable</em>, <em>path</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/custom_exceptions.html#NetCDFVariableRemoveFail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.custom_exceptions.NetCDFVariableRemoveFail" title="Permalink to this definition">¶</a></dt>
@@ -1040,6 +1004,38 @@ Default is to match inclusive regex.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="nctime.utils.parser.positive_only">
+<code class="descclassname">nctime.utils.parser.</code><code class="descname">positive_only</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/parser.html#positive_only"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.parser.positive_only" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates a positive number.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (<em>str</em>) – The value submitted</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.utils.parser.processes_validator">
+<code class="descclassname">nctime.utils.parser.</code><code class="descname">processes_validator</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/parser.html#processes_validator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.parser.processes_validator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates the max processes number.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (<em>str</em>) – The max processes number submitted</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="nctime.utils.parser.keyval_converter">
 <code class="descclassname">nctime.utils.parser.</code><code class="descname">keyval_converter</code><span class="sig-paren">(</span><em>pair</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/parser.html#keyval_converter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.parser.keyval_converter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks the key value syntax.</p>
@@ -1097,12 +1093,6 @@ Default is to match inclusive regex.</p>
 <dt id="nctime.utils.custom_exceptions.NetCDFTimeStepNotFound">
 <em class="property">exception </em><code class="descclassname">nctime.utils.custom_exceptions.</code><code class="descname">NetCDFTimeStepNotFound</code><span class="sig-paren">(</span><em>value</em>, <em>path</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/custom_exceptions.html#NetCDFTimeStepNotFound"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.custom_exceptions.NetCDFTimeStepNotFound" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raised when a NetCDF time index is not found.</p>
-</dd></dl>
-
-<dl class="exception">
-<dt id="nctime.utils.custom_exceptions.ChecksumFail">
-<em class="property">exception </em><code class="descclassname">nctime.utils.custom_exceptions.</code><code class="descname">ChecksumFail</code><span class="sig-paren">(</span><em>path</em>, <em>checksum_type=None</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/custom_exceptions.html#ChecksumFail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.custom_exceptions.ChecksumFail" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raised when a checksum fails.</p>
 </dd></dl>
 
 <dl class="exception">
@@ -1352,7 +1342,7 @@ If time units are not “years since” or “months since” calls usual <code 
 
 <dl class="function">
 <dt id="nctime.utils.time.get_start_end_dates_from_filename">
-<code class="descclassname">nctime.utils.time.</code><code class="descname">get_start_end_dates_from_filename</code><span class="sig-paren">(</span><em>filename</em>, <em>pattern</em>, <em>frequency</em>, <em>calendar</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#get_start_end_dates_from_filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.get_start_end_dates_from_filename" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nctime.utils.time.</code><code class="descname">get_start_end_dates_from_filename</code><span class="sig-paren">(</span><em>filename</em>, <em>pattern</em>, <em>frequency</em>, <em>calendar</em>, <em>true_dates=False</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#get_start_end_dates_from_filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.get_start_end_dates_from_filename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns datetime objects for start and end dates from the filename.
 To rebuild a proper time axis, the dates from filename are expected to set the first
 time boundary and not the middle of the time interval.</p>
@@ -1365,6 +1355,7 @@ time boundary and not the middle of the time interval.</p>
 <li><strong>Object pattern</strong> (<em>re</em>) – The filename pattern as a regex (from <a class="reference external" href="https://docs.python.org/2/library/re.html">re library</a>).</li>
 <li><strong>frequency</strong> (<em>str</em>) – The time frequency</li>
 <li><strong>calendar</strong> (<em>str</em>) – The NetCDF calendar attribute</li>
+<li><strong>true_dates</strong> (<em>boolean</em>) – Strictly consider filename dates without corrections</li>
 </ul>
 </td>
 </tr>
@@ -1616,7 +1607,7 @@ time boundary and not the middle of the time interval.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'4.2.0',
+            VERSION:'4.2.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

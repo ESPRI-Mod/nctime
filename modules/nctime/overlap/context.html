@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.overlap.context &mdash; nctime 4.2.0 documentation</title>
+  <title>nctime.overlap.context &mdash; nctime 4.2.2 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 4.2.0 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 4.2.2 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -204,12 +204,15 @@
                     <span class="k">raise</span> <span class="n">InvalidFrequency</span><span class="p">(</span><span class="n">frequency</span><span class="p">)</span>
                 <span class="n">FREQ_INC</span><span class="p">[</span><span class="n">frequency</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">increment</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tunits_default</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">true_dates</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">true_dates</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">processes</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">max_processes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_pool</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">processes</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span> <span class="ow">in</span> <span class="n">DEFAULT_TIME_UNITS</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tunits_default</span> <span class="o">=</span> <span class="n">DEFAULT_TIME_UNITS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">overlaps</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">broken</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scan_files</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scan_dsets</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pbar</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_filter</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">include_file</span><span class="p">:</span>
@@ -225,10 +228,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dir_filter</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">ignore_dir</span>
 
     <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Overwrites frequency increment</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_inc</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">increment</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_inc</span><span class="p">:</span>
-                <span class="n">FREQ_INC</span><span class="p">[</span><span class="n">frequency</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">increment</span>
         <span class="c1"># Init configuration parser</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span> <span class="o">=</span> <span class="n">SectionParser</span><span class="p">(</span><span class="n">section</span><span class="o">=</span><span class="s1">&#39;project:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">),</span> <span class="n">directory</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config_dir</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="s1">&#39;filename_format&#39;</span><span class="p">)</span>
@@ -251,15 +250,18 @@
         <span class="c1"># Print analyse result</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">broken</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Some broken time period should be &#39;</span>
-                          <span class="s1">&#39;corrected manually (</span><span class="si">{}</span><span class="s1"> files scanned)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scan_files</span><span class="p">))</span>
+                          <span class="s1">&#39;corrected manually (</span><span class="si">{}</span><span class="s1"> files among&#39;</span>
+                          <span class="s1">&#39; </span><span class="si">{}</span><span class="s1"> datasets scanned)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scan_files</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scan_dsets</span><span class="p">))</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">overlaps</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Some time period have overlaps to&#39;</span>
-                          <span class="s1">&#39; fix (</span><span class="si">{}</span><span class="s1"> files scanned)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scan_files</span><span class="p">))</span>
+                          <span class="s1">&#39; fix (</span><span class="si">{}</span><span class="s1"> files among </span><span class="si">{}</span><span class="s1">&#39;</span>
+                          <span class="s1">&#39; datasets scanned)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scan_files</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scan_dsets</span><span class="p">))</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;No overlaps or broken time periods &#39;</span>
-                  <span class="s1">&#39;(</span><span class="si">{}</span><span class="s1"> files scanned)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scan_files</span><span class="p">))</span>
+                  <span class="s1">&#39;(</span><span class="si">{}</span><span class="s1"> files among </span><span class="si">{}</span><span class="s1"> &#39;</span>
+                  <span class="s1">&#39;datasets scanned)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scan_files</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scan_dsets</span><span class="p">))</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
 </pre></div>
 
@@ -297,7 +299,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'4.2.0',
+            VERSION:'4.2.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

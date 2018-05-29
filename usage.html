@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Generic usage &mdash; nctime 4.2.0 documentation</title>
+  <title>Generic usage &mdash; nctime 4.2.2 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="nctime 4.2.0 documentation" href="index.html"/>
+    <link rel="top" title="nctime 4.2.2 documentation" href="index.html"/>
         <link rel="next" title="Check time series continuity" href="overlap.html"/>
         <link rel="prev" title="Configuration" href="configuration.html"/> 
 
@@ -101,6 +101,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#specify-the-project">Specify the project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#submit-a-configuration-directory">Submit a configuration directory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#overwrites-a-frequency-increment">Overwrites a frequency increment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#use-real-filename-dates">Use real filename dates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#use-a-logfile">Use a logfile</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#use-multiprocessing">Use multiprocessing</a></li>
 </ul>
@@ -244,6 +245,16 @@ increment can be change, at least for diagnostic purposes.</p>
 <p class="last">Default increments are those expected by CMIP specifications. Overwrite them could lead to non CMIP-compliant files.</p>
 </div>
 </div>
+<div class="section" id="use-real-filename-dates">
+<h2>Use real filename dates<a class="headerlink" href="#use-real-filename-dates" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">nctime</span></code> use the dates from the filename to start its processes. Due to different use cases, filename dates related
+to 3-hourly and 6-hourly data are corrected by default to respectively start at 000000 end at 2100000 (180000) whether
+the time axis is instantaneous or not. To disable this correction and stricly consider dates from filename to check the
+time axis:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND --true-dates
+</pre></div>
+</div>
+</div>
 <div class="section" id="use-a-logfile">
 <h2>Use a logfile<a class="headerlink" href="#use-a-logfile" title="Permalink to this headline">¶</a></h2>
 <p>All errors and exceptions are logged into a file named <code class="docutils literal"><span class="pre">nctime-YYYYMMDD-HHMMSS-PID.err</span></code>.
@@ -259,9 +270,9 @@ $&gt; nctime SUBCOMMAND --log /PATH/TO/LOGDIR/
 <div class="section" id="use-multiprocessing">
 <h2>Use multiprocessing<a class="headerlink" href="#use-multiprocessing" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal"><span class="pre">nctime</span></code> uses a multiprocessing interface. This is useful to process a large amount of data, especially in the case
-of <code class="docutils literal"><span class="pre">axis</span></code> subcommands with file checksum computation. Set the number of maximal processes to simultaneously treat
-several files. One process seems sequential processing. Default is to use all available CPU processes (as returned by
-<code class="docutils literal"><span class="pre">multiprocessing.cpu_count()</span></code>).</p>
+of <code class="docutils literal"><span class="pre">axis</span></code> subcommands with the time axis calculation. Set the number of maximal processes to simultaneously treat
+several files. One process seems sequential processing (the default). Set it -1 to use all available CPU processes
+(as returned by <code class="docutils literal"><span class="pre">multiprocessing.cpu_count()</span></code>).</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND --max-processes <span class="m">4</span>
 </pre></div>
 </div>
@@ -312,7 +323,7 @@ several files. One process seems sequential processing. Default is to use all av
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'4.2.0',
+            VERSION:'4.2.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

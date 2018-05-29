@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.utils.parser &mdash; nctime 4.2.0 documentation</title>
+  <title>nctime.utils.parser &mdash; nctime 4.2.2 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 4.2.0 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 4.2.2 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -264,6 +264,38 @@
         <span class="k">raise</span> <span class="n">ArgumentTypeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="positive_only"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.parser.positive_only">[docs]</a><span class="k">def</span> <span class="nf">positive_only</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validates a positive number.</span>
+
+<span class="sd">    :param str value: The value submitted</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Invalid number. Should be a positive integer.&#39;</span>
+        <span class="k">raise</span> <span class="n">ArgumentTypeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="processes_validator"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.parser.processes_validator">[docs]</a><span class="k">def</span> <span class="nf">processes_validator</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validates the max processes number.</span>
+
+<span class="sd">    :param str value: The max processes number submitted</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pnum</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pnum</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">pnum</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Invalid processes number. Should be a positive integer or &quot;-1&quot;.&#39;</span>
+        <span class="k">raise</span> <span class="n">ArgumentTypeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pnum</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="c1"># Max processes = None corresponds to cpu.count() in Pool creation</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pnum</span></div>
+
+
 <div class="viewcode-block" id="keyval_converter"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.parser.keyval_converter">[docs]</a><span class="k">def</span> <span class="nf">keyval_converter</span><span class="p">(</span><span class="n">pair</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Checks the key value syntax.</span>
@@ -315,7 +347,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'4.2.0',
+            VERSION:'4.2.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

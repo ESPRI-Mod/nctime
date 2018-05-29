@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Check time axis squareness &mdash; nctime 4.2.0 documentation</title>
+  <title>Check time axis squareness &mdash; nctime 4.2.2 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="nctime 4.2.0 documentation" href="index.html"/>
+    <link rel="top" title="nctime 4.2.2 documentation" href="index.html"/>
         <link rel="next" title="Frequently asked questions" href="faq.html"/>
         <link rel="prev" title="Check time series continuity" href="overlap.html"/> 
 
@@ -100,6 +100,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#rewrite-a-wrong-time-axis">Rewrite a wrong time axis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#force-time-axis-rewriting">Force time axis rewriting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#check-an-on-going-simulation">Check an on going simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#show-wrong-time-steps">Show wrong time steps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#time-axis-status">Time axis status</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#exit-status">Exit status</a></li>
 </ul>
@@ -191,8 +192,8 @@ date time correction.</p>
 </div>
 <div class="section" id="rewrite-a-wrong-time-axis">
 <h2>Rewrite a wrong time axis<a class="headerlink" href="#rewrite-a-wrong-time-axis" title="Permalink to this headline">¶</a></h2>
-<p>It displays the same information as above but also modify the input files if necessary. In such a case, the
-new checksum is computed automatically.</p>
+<p>It displays the same information as above but also modify the input files ONLY IF NECESSARY (i.e., depending on the
+check results):</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --write
 </pre></div>
 </div>
@@ -204,7 +205,7 @@ your input files. Be careful to activate <code class="docutils literal"><span cl
 </div>
 <div class="section" id="force-time-axis-rewriting">
 <h2>Force time axis rewriting<a class="headerlink" href="#force-time-axis-rewriting" title="Permalink to this headline">¶</a></h2>
-<p>Anyway, you can force to overwrite time axis (the checksum is automatically computed again).</p>
+<p>Anyway, you can force to overwrite time axis:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --force
 </pre></div>
 </div>
@@ -214,6 +215,17 @@ your input files. Be careful to activate <code class="docutils literal"><span cl
 <p>The “on-fly” mode allows to check an incomplete time axis which is by construct inconsistent with the end timestamp of the file name.
 To disable the corresponding test and check the on goind time axis squareness use:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --on-fly
+</pre></div>
+</div>
+</div>
+<div class="section" id="show-wrong-time-steps">
+<h2>Show wrong time steps<a class="headerlink" href="#show-wrong-time-steps" title="Permalink to this headline">¶</a></h2>
+<p>By default <code class="docutils literal"><span class="pre">nctime</span> <span class="pre">axis</span></code> print the first five wrong time steps if exist. This limit can be changed with:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --limit INTEGER
+</pre></div>
+</div>
+<p>To print all wrong time steps:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --limit
 </pre></div>
 </div>
 </div>
@@ -245,7 +257,7 @@ To disable the corresponding test and check the on goind time axis squareness us
 </li>
 <li><dl class="first docutils">
 <dt>Status = 1</dt>
-<dd>Some time axis contains remains and should be manually corrected.</dd>
+<dd>Some time axis contains errors and should be corrected.</dd>
 </dl>
 </li>
 </ul>
@@ -297,7 +309,7 @@ To disable the corresponding test and check the on goind time axis squareness us
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'4.2.0',
+            VERSION:'4.2.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

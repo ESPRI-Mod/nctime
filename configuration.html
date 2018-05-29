@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Configuration &mdash; nctime 4.2.0 documentation</title>
+  <title>Configuration &mdash; nctime 4.2.2 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="nctime 4.2.0 documentation" href="index.html"/>
+    <link rel="top" title="nctime 4.2.2 documentation" href="index.html"/>
         <link rel="next" title="Generic usage" href="usage.html"/>
         <link rel="prev" title="Installation" href="installation.html"/> 
 
@@ -94,7 +94,6 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#location">Location</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#esg-ini"><code class="docutils literal"><span class="pre">esg.ini</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#esg-project-id-ini"><code class="docutils literal"><span class="pre">esg.&lt;project_id&gt;.ini</span></code></a></li>
 </ul>
 </li>
@@ -178,26 +177,11 @@
 for <code class="docutils literal"><span class="pre">nctime</span></code>. In the case you are running <code class="docutils literal"><span class="pre">nctime</span></code> outside of an ESGF node, the directory gathering all <code class="docutils literal"><span class="pre">.ini</span></code>
 files has to be submitted using the <code class="docutils literal"><span class="pre">-i</span></code> option (see <a class="reference internal" href="usage.html#usage"><span class="std std-ref">Generic usage</span></a>).</p>
 </div>
-<div class="section" id="esg-ini">
-<h2><code class="docutils literal"><span class="pre">esg.ini</span></code><a class="headerlink" href="#esg-ini" title="Permalink to this headline">¶</a></h2>
-<p>This INI file gathers all required information to configure the datanode regarding to data publication (e.g.,
-PostgreSQL access, THREDDS configuration, etc.).</p>
-<p>The only configuration in this section is to define the checksum client and checksum
-type under the <code class="docutils literal"><span class="pre">[default]</span></code> section. Edit the file to set the Shell command line to use (default is <code class="docutils literal"><span class="pre">sha256sum</span></code>).</p>
-<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="k">[default]</span>
-<span class="na">checksum</span> <span class="o">=</span> <span class="s">sha256sum | SHA256</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If <code class="docutils literal"><span class="pre">esg.ini</span></code> is unfound, the default is SHA256.</p>
-</div>
-</div>
 <div class="section" id="esg-project-id-ini">
 <h2><code class="docutils literal"><span class="pre">esg.&lt;project_id&gt;.ini</span></code><a class="headerlink" href="#esg-project-id-ini" title="Permalink to this headline">¶</a></h2>
 <p>Those INI files declare all facets and allowed values according to the Data Reference Syntax (DRS) and the controlled
-vocabularies of the corresponding project. Preset <code class="docutils literal"><span class="pre">esg.&lt;project_id&gt;.ini</span></code> files have been properly built by
-ESGF community for the following projects:</p>
+vocabularies of the corresponding project. <code class="docutils literal"><span class="pre">nctime</span></code> espacially use the filename format to deduce facet values.
+Preset <code class="docutils literal"><span class="pre">esg.&lt;project_id&gt;.ini</span></code> files have been properly built by ESGF community for the following projects:</p>
 <blockquote>
 <div><ul class="simple">
 <li>CMIP6</li>
@@ -263,7 +247,7 @@ ESGF community for the following projects:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'4.2.0',
+            VERSION:'4.2.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
