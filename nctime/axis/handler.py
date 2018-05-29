@@ -165,7 +165,10 @@ class File(object):
         num_axis = np.arange(start=self.start_num,
                              stop=self.start_num + self.length * self.step,
                              step=self.step)
-        if not self.is_instant and not self.true_dates:
+        # Switch time axis in the case of:
+        # - non-instant axis
+        # - AND NOT (frequency is 3hr or 6hr WITH true dates flag)
+        if not self.is_instant and not (self.frequency in ['3hr', '6hr'] and self.true_dates):
             num_axis += 0.5 * self.step
         date_axis = num2date(num_axis, units=self.funits, calendar=self.ref_calendar)
         del num_axis

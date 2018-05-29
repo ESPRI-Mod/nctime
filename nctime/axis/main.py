@@ -60,8 +60,6 @@ def process(ffp):
             time_axis_diff = (fh.time_axis_rebuilt == fh.time_axis)
             fh.status.append('001')
             wrong_indexes = list(np.where(time_axis_diff == False)[0])
-        else:
-            fh.status.append('000')
         # Check time boundaries squareness
         if fh.has_bounds:
             fh.time_bounds_rebuilt = fh.build_time_bounds()
@@ -105,17 +103,20 @@ def process(ffp):
                                  fh.last_timestamp, fh.last_date,
                                  fh.length,
                                  fh.is_instant)
-        for s in fh.status:
-            msg += """\n        Status: {}""".format(STATUS[s])
+        if fh.status:
+            for s in fh.status:
+                msg += """\n        Status: {}""".format(STATUS[s])
+        else:
+            msg += """\n        Status: {}""".format(STATUS['000'])
         # Display wrong time steps
         timestep_limit = limit if limit else len(wrong_indexes)
         for i, v in enumerate(wrong_indexes):
-            while (i + 1) <= timestep_limit:
+            if (i + 1) <= timestep_limit:
                 msg += """\n        Wrong timestep: {} iso {}""".format(str(fh.time_axis[v]).ljust(10),
                                                                         str(fh.time_axis_rebuilt[v]).ljust(10))
         # Acquire lock to standard output
         lock.acquire()
-        if not {'000'}.intersection(set(fh.status)):
+        if fh.status:
             logging.error(msg)
         else:
             logging.info(msg)
