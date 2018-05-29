@@ -34,7 +34,7 @@ class File(object):
 
     """
 
-    def __init__(self, ffp, pattern, ref_units, ref_calendar):
+    def __init__(self, ffp, pattern, ref_units, ref_calendar, true_dates):
         # Retrieve the file full path
         self.ffp = ffp
         # Retrieve the reference time units to use
@@ -100,7 +100,8 @@ class File(object):
         dates = get_start_end_dates_from_filename(filename=self.name,
                                                   pattern=pattern,
                                                   frequency=self.frequency,
-                                                  calendar=self.calendar)
+                                                  calendar=self.calendar,
+                                                  true_dates=true_dates)
         self.start_date, self.end_date, _ = dates2str(dates)
         self.start_num, self.end_num, _ = date2num(dates, units=self.funits, calendar=self.calendar)
         # Convert dates into timestamps

@@ -156,6 +156,14 @@ AXIS_HELP = \
     
     """
 
+TRUE_DATES_HELP = \
+    """
+    Disable correction on filename dates for sub-daily|n
+    frequencies. Start and end timestamps will stricly|n
+    correspond to the filename dates.
+
+    """
+
 ON_FLY_HELP = \
     """
     Ignore the test on end date consistency for on going|n

@@ -39,12 +39,15 @@ class ProcessingContext(object):
                     raise InvalidFrequency(frequency)
                 FREQ_INC[frequency][0] = int(increment)
         self.tunits_default = None
+        self.true_dates = args.true_dates
         self.processes = args.max_processes
+        self.use_pool = (self.processes != 1)
         if self.project in DEFAULT_TIME_UNITS.keys():
             self.tunits_default = DEFAULT_TIME_UNITS[self.project]
         self.overlaps = False
         self.broken = False
         self.scan_files = None
+        self.scan_dsets = None
         self.pbar = None
         self.file_filter = []
         if args.include_file:
@@ -82,13 +85,16 @@ class ProcessingContext(object):
         # Print analyse result
         if self.broken:
             logging.error('Some broken time period should be '
-                          'corrected manually ({} files scanned)'.format(self.scan_files))
+                          'corrected manually ({} files among'
+                          ' {} datasets scanned)'.format(self.scan_files, self.scan_dsets))
             sys.exit(1)
         elif self.overlaps:
             logging.error('Some time period have overlaps to'
-                          ' fix ({} files scanned)'.format(self.scan_files))
+                          ' fix ({} files among {}'
+                          ' datasets scanned)'.format(self.scan_files, self.scan_dsets))
             sys.exit(2)
         else:
             print('No overlaps or broken time periods '
-                  '({} files scanned)'.format(self.scan_files))
+                  '({} files among {} '
+                  'datasets scanned)'.format(self.scan_files, self.scan_dsets))
             sys.exit(0)

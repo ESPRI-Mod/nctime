@@ -99,6 +99,24 @@ def regex_validator(string):
         raise ArgumentTypeError(msg)
 
 
+def processes_validator(value):
+    """
+    Validates the max processes number.
+
+    :param str value: The max processes number submitted
+    :return:
+    """
+    pnum = int(value)
+    if pnum < 1 and pnum != -1:
+        msg = 'Invalid processes number. Should be a positive integer or "-1".'
+        raise ArgumentTypeError(msg)
+    if pnum == -1:
+        # Max processes = None corresponds to cpu.count() in Pool creation
+        return None
+    else:
+        return pnum
+
+
 def keyval_converter(pair):
     """
     Checks the key value syntax.

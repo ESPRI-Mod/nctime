@@ -299,7 +299,7 @@ def add_year(date, years_to_add):
     return date_next
 
 
-def get_start_end_dates_from_filename(filename, pattern, frequency, calendar):
+def get_start_end_dates_from_filename(filename, pattern, frequency, calendar, true_dates=False):
     """
     Returns datetime objects for start and end dates from the filename.
     To rebuild a proper time axis, the dates from filename are expected to set the first
@@ -310,6 +310,7 @@ def get_start_end_dates_from_filename(filename, pattern, frequency, calendar):
     <https://docs.python.org/2/library/re.html>`_).
     :param str frequency: The time frequency
     :param str calendar: The NetCDF calendar attribute
+    :param boolean true_dates: Strictly consider filename dates without corrections
     :returns: Start and end dates from the filename
     :rtype: *netcdftime.datetime*
 
@@ -323,7 +324,7 @@ def get_start_end_dates_from_filename(filename, pattern, frequency, calendar):
         date_as_since = ''.join([''.join(triple) for triple in
                                  zip(digits[::2], digits[1::2], ['', '-', '-', ' ', ':', ':', ':'])])[:-1]
         # Use num2date to create netCDF4 datetime objects
-        if frequency in ['3hr', '6hr']:
+        if not true_dates and frequency in ['3hr', '6hr']:
             # Fix on filename digits for 3hr and 6hr frequencies. 3hr (6hr) files always start
             # at 000000 end at 2100000 (180000) whether the time axis is instantaneous or not.
             dates.append(num2date(TIME_CORRECTION[frequency][key][digits[-6:]],

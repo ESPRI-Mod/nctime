@@ -10,8 +10,8 @@ import logging
 import os
 from copy import deepcopy as copy
 
-import networkx as nx
 from fuzzywuzzy import fuzz, process
+from networkx import DiGraph
 
 from nctime.utils.constants import CLIM_SUFFIX
 from nctime.utils.custom_exceptions import *
@@ -41,7 +41,7 @@ class Filename(object):
         self.end_date = None
         self.next_date = None
 
-    def get_start_end_dates(self, pattern, calendar):
+    def get_start_end_dates(self, pattern, calendar, true_dates):
         """
         Wraps and records :func:`get_start_end_dates_from_filename` results.
 
@@ -68,7 +68,8 @@ class Filename(object):
         dates = get_start_end_dates_from_filename(filename=self.name,
                                                   pattern=pattern,
                                                   frequency=frequency,
-                                                  calendar=calendar)
+                                                  calendar=calendar,
+                                                  true_dates=true_dates)
         self.start_date, self.end_date, self.next_date = dates2int(dates)
 
 
@@ -84,11 +85,25 @@ class Graph(object):
     def has_graph(self, i):
         return True if hasattr(self, i) else False
 
-    def set_graph(self, i, g=nx.DiGraph()):
+    def set_graph(self, i, g=DiGraph()):
         setattr(self, i, copy(g))
 
     def get_graph(self, i):
         return copy(getattr(self, i))
+
+    def add_node(self, i, filename, start, end, next, first, last, path):
+        g = getattr(self, i)
+        g.add_node(filename,
+                   start=start,
+                   end=end,
+                   next=next,
+                   first_step=first,
+                   last_step=last,
+                   path=path)
+
+    def add_edge(self, i, node_src, node_dst):
+        g = getattr(self, i)
+        g.add_edge(node_src, node_dst)
 
     def __call__(self, *args, **kwargs):
         return [id for id in self.__dict__]

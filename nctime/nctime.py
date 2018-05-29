@@ -17,7 +17,7 @@ from importlib import import_module
 
 from utils.constants import *
 from utils.misc import init_logging
-from utils.parser import MultilineFormatter, DirectoryChecker, regex_validator, keyval_converter
+from utils.parser import MultilineFormatter, DirectoryChecker, regex_validator, keyval_converter, processes_validator
 
 __version__ = 'v{} {}'.format(VERSION, VERSION_DATE)
 
@@ -119,8 +119,9 @@ def get_args():
         help=ERRORS_ONLY_HELP)
     parent.add_argument(
         '--max-processes',
-        metavar='INT',
-        type=int,
+        metavar='1',
+        type=processes_validator,
+        default=1,
         help=MAX_PROCESSES_HELP)
     parent.add_argument(
         '--set-inc',
@@ -128,6 +129,11 @@ def get_args():
         type=keyval_converter,
         action='append',
         help=SET_INC_HELP)
+    parent.add_argument(
+        '--true-dates',
+        action='store_true',
+        default=False,
+        help=TRUE_DATES_HELP)
 
     ##################################
     # Subparser for "nctime overlap" #
@@ -181,6 +187,7 @@ def get_args():
         action='store_true',
         default=False,
         help=ON_FLY_HELP)
+
     return main.parse_args()
 
 

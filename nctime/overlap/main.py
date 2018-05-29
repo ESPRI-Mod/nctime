@@ -51,7 +51,7 @@ def get_overlaps(g, shortest):
         # Partial overlap from next_node[1] to current_node[2] (bounds included)
         # Overlap is hold on the next node (arbitrary)
         if (current_node['next'] - next_node['start']) > 0:
-            logging.debug('Partial overlap found between {} and {}'.format(current_node, next_node))
+            logging.debug('Partial overlap found between {} and {}'.format(shortest[n], shortest[n + 1]))
             cutting_timestep = get_next_timestep(next_node['path'], current_node['last_step'])
             overlaps['partial'][shortest[n + 1]] = next_node
             overlaps['partial'][shortest[n + 1]].update({'end_overlap': current_node['end'],
@@ -114,27 +114,25 @@ def create_nodes(ffp):
         fh = Filename(ffp=ffp)
         # Extract start and end dates from filename
         fh.get_start_end_dates(pattern=pattern,
-                               calendar=ref_calendar)
+                               calendar=ref_calendar,
+                               true_dates=true_dates)
         # Create corresponding DiGraph if not exist
         if not graph.has_graph(fh.id):
             graph.set_graph(fh.id)
-        # Retrieve corresponding graph
-        g = graph.get_graph(fh.id)
         # Update/add current file as node with dates as attributes
-        g.add_node(fh.filename,
-                   start=fh.start_date,
-                   end=fh.end_date,
-                   next=fh.next_date,
-                   first_step=fh.first_timestep,
-                   last_step=fh.last_timestep,
-                   path=fh.ffp)
+        graph.add_node(fh.id,
+                       fh.filename,
+                       fh.start_date,
+                       fh.end_date,
+                       fh.next_date,
+                       fh.first_timestep,
+                       fh.last_timestep,
+                       fh.ffp)
         logging.debug('Graph: {} :: Node {} (start={}, end={}, next={})'.format(fh.id,
                                                                                 fh.filename,
                                                                                 fh.start_date,
                                                                                 fh.end_date,
                                                                                 fh.next_date))
-        # Update graph
-        graph.set_graph(fh.id, g)
     except KeyboardInterrupt:
         raise
     except Exception as e:
@@ -171,7 +169,7 @@ def create_edges(id):
         next_nodes = [other_nodes[i] for i in indexes]
         # For each next node, build the corresponding edge in the graph
         for next_node in next_nodes:
-            g.add_edge(node, next_node)
+            graph.add_edge(id, node, next_node)
             logging.debug('Graph: {} :: Edge {} --> {}'.format(id, node, next_node))
     # Find the node(s) with the earliest date
     start_dates = zip(*g.nodes(data='start'))[1]
@@ -181,14 +179,12 @@ def create_edges(id):
     ends = [n for n in g.nodes() if g.nodes[n]['end'] == max(end_dates)]
     # Build starting node with edges to first node(s)
     for start in starts:
-        g.add_edge('START', start)
+        graph.add_edge(id, 'START', start)
         logging.debug('Graph: {} :: Edge START --> {}'.format(id, start))
     # Build ending node with edges from latest node(s)
     for end in ends:
-        g.add_edge(end, 'END')
+        graph.add_edge(id, end, 'END')
         logging.debug('Graph: {} :: Edge {} --> END'.format(id, end))
-    # Finally update graph
-    graph.set_graph(id, g)
 
 
 def evaluate_graph(id):
@@ -210,7 +206,7 @@ def evaluate_graph(id):
         # Find shortest path between oldest and latest dates
         path = nx.shortest_path(g, source='START', target='END')
         # Get overlaps
-        full_overlaps, partial_overlaps = get_overlaps(g, path)
+        partial_overlaps, full_overlaps = get_overlaps(g, path)
     except nx.NetworkXNoPath:
         for node in sorted(g.nodes()):
             if node not in ['START', 'END']:
@@ -235,7 +231,7 @@ def evaluate_graph(id):
                 # If no "forward" nodes in edges target = BREAK
                 if not set(next_nodes).intersection(avail_targets):
                     path.append('BREAK')
-    return path, full_overlaps, partial_overlaps
+    return path, partial_overlaps, full_overlaps
 
 
 def format_path(path, partial_overlaps, full_overlaps):
@@ -265,17 +261,20 @@ def format_path(path, partial_overlaps, full_overlaps):
     return msg
 
 
-def process_context(_pattern, _ref_calendar, _graph):
+def process_context(_pattern, _ref_calendar, _true_dates, _graph):
     """
     Initialize process context by setting particular variables as global variables.
 
     :param str pattern: The filename pattern
     :param str _ref_calendar: The time calendar  to be used as reference for the simulation
+    :param boolean _true_dates: Disable filename dates correction
+    :param *nctime.overlap.handler.Graph()* _graph: Multi graph class proxy
 
     """
-    global pattern, ref_calendar, graph
+    global pattern, ref_calendar, true_dates, graph
     pattern = _pattern
     ref_calendar = _ref_calendar
+    true_dates = _true_dates
     graph = _graph
 
 
@@ -297,7 +296,12 @@ def run(args):
     with ProcessingContext(args) as ctx:
         print("Analysing data, please wait...\r")
         # Multiprocessing manager to shared Python objects between processes
-        BaseManager.register('graph', Graph, exposed=('get_graph', 'has_graph', 'set_graph', '__call__'))
+        BaseManager.register('graph', Graph, exposed=('get_graph',
+                                                      'has_graph',
+                                                      'set_graph',
+                                                      'add_node',
+                                                      'add_edge',
+                                                      '__call__'))
         manager = BaseManager()
         manager.start()
         # DiGraph creation
@@ -306,6 +310,7 @@ def run(args):
         # Init processes pool
         pool = Pool(processes=ctx.processes, initializer=process_context, initargs=(ctx.pattern,
                                                                                     ctx.tinit.calendar,
+                                                                                    ctx.true_dates,
                                                                                     graph))
         # Process supplied files to create nodes in appropriate directed graph
         handlers = [x for x in pool.imap(create_nodes, ctx.sources)]
@@ -315,7 +320,8 @@ def run(args):
         ctx.scan_files = len(handlers)
         # Retrieve graph instance from multiprocessing manager
         # Process each directed graph to create appropriate edges
-        _ = [x for x in itertools.imap(create_edges, graph())]
+        ng = [x for x in itertools.imap(create_edges, graph())]
+        ctx.scan_dsets = len(ng)
         # Evaluate each graph if a shortest path exist
         for path, partial_overlaps, full_overlaps in itertools.imap(evaluate_graph, graph()):
             # Format message about path

@@ -34,7 +34,8 @@ def process(ffp):
         fh = File(ffp=ffp,
                   pattern=pattern,
                   ref_units=ref_units,
-                  ref_calendar=ref_calendar)
+                  ref_calendar=ref_calendar,
+                  true_dates=true_dates)
         fh.load_last_date()
         # In the case of inconsistent timestamps, it may be due to float precision issue
         if not on_fly and fh.last_timestamp != fh.end_timestamp:
@@ -54,8 +55,11 @@ def process(ffp):
         if not fh.is_instant and not fh.has_bounds:
             fh.status.append('005')
         # Check time axis squareness
+        wrong_indexes = list()
         if not np.array_equal(fh.time_axis_rebuilt, fh.time_axis):
+            time_axis_diff = (fh.time_axis_rebuilt == fh.time_axis)
             fh.status.append('001')
+            wrong_indexes = list(np.where(time_axis_diff == False)[0])
         else:
             fh.status.append('000')
         # Check time boundaries squareness
@@ -103,6 +107,9 @@ def process(ffp):
                                  fh.is_instant)
         for s in fh.status:
             msg += """\n        Status: {}""".format(STATUS[s])
+        for i in wrong_indexes:
+            msg += """\n        Wrong timestep: {} iso {}""".format(fh.time_axis_rebuilt[i],
+                                                                    fh.time_axis[i])
         # Acquire lock to standard output
         lock.acquire()
         if not {'000'}.intersection(set(fh.status)):
@@ -120,7 +127,7 @@ def process(ffp):
         return ['999']
 
 
-def process_context(_pattern, _ref_units, _ref_calendar, _write, _force, _on_fly, _lock):
+def process_context(_pattern, _ref_units, _ref_calendar, _write, _force, _on_fly, _true_dates, _lock):
     """
     Initialize process context by setting particular variables as global variables.
 
@@ -130,15 +137,18 @@ def process_context(_pattern, _ref_units, _ref_calendar, _write, _force, _on_fly
     :param boolean _write: Unable write mode if True
     :param boolean _force: Force write mode if True
     :param boolean _on_fly: Disable some check if True for incomplete time axis
+    :param boolean _true_dates: Disable filename dates correction
     :param multiprocessing.Lock _lock: Lock to ensure only one process print to std_out at a time
+
     """
-    global pattern, ref_units, ref_calendar, write, force, on_fly, lock
+    global pattern, ref_units, ref_calendar, write, force, on_fly, true_dates, lock
     pattern = _pattern
     ref_units = _ref_units
     ref_calendar = _ref_calendar
     write = _write
     force = _force
     on_fly = _on_fly
+    true_dates = _true_dates
     lock = _lock
 
 
@@ -165,6 +175,7 @@ def run(args):
                                                                                     ctx.write,
                                                                                     ctx.force,
                                                                                     ctx.on_fly,
+                                                                                    ctx.true_dates,
                                                                                     std_out_lock))
         # Process supplied files
         handlers = [x for x in pool.imap(process, ctx.sources)]

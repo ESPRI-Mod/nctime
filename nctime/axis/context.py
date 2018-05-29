@@ -12,7 +12,6 @@ import sys
 
 from ESGConfigParser import SectionParser
 
-from constants import *
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
 from nctime.utils.custom_exceptions import InvalidFrequency
@@ -46,7 +45,9 @@ class ProcessingContext(object):
         if self.project in DEFAULT_TIME_UNITS.keys():
             self.tunits_default = DEFAULT_TIME_UNITS[self.project]
         self.processes = args.max_processes
+        self.use_pool = (self.processes != 1)
         self.scan_files = None
+        self.true_dates = args.true_dates
         self.status = []
         self.file_filter = []
         if args.include_file:
