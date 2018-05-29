@@ -77,6 +77,19 @@ increment can be change, at least for diagnostic purposes.
 .. warning::
     Default increments are those expected by CMIP specifications. Overwrite them could lead to non CMIP-compliant files.
 
+Use real filename dates
+***********************
+
+``nctime`` use the dates from the filename to start its processes. Due to different use cases, filename dates related
+to 3-hourly and 6-hourly data are corrected by default to respectively start at 000000 end at 2100000 (180000) whether
+the time axis is instantaneous or not. To disable this correction and stricly consider dates from filename to check the
+time axis:
+
+.. code-block:: bash
+
+    $> nctime SUBCOMMAND --true-dates
+
+
 Use a logfile
 *************
 
@@ -95,9 +108,9 @@ Use multiprocessing
 *******************
 
 ``nctime`` uses a multiprocessing interface. This is useful to process a large amount of data, especially in the case
-of ``axis`` subcommands with file checksum computation. Set the number of maximal processes to simultaneously treat
-several files. One process seems sequential processing. Default is to use all available CPU processes (as returned by
-``multiprocessing.cpu_count()``).
+of ``axis`` subcommands with the time axis calculation. Set the number of maximal processes to simultaneously treat
+several files. One process seems sequential processing (the default). Set it -1 to use all available CPU processes
+(as returned by ``multiprocessing.cpu_count()``).
 
 .. code-block:: bash
 

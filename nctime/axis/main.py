@@ -107,10 +107,10 @@ def process(ffp):
                                  fh.is_instant)
         for s in fh.status:
             msg += """\n        Status: {}""".format(STATUS[s])
-        if not limit:
-            limit = len(wrong_indexes)
+        # Display wrong time steps
+        timestep_limit = limit if limit else len(wrong_indexes)
         for i, v in enumerate(wrong_indexes):
-            while (i + 1) <= limit:
+            while (i + 1) <= timestep_limit:
                 msg += """\n        Wrong timestep: {} iso {}""".format(str(fh.time_axis[v]).ljust(10),
                                                                         str(fh.time_axis_rebuilt[v]).ljust(10))
         # Acquire lock to standard output
@@ -141,7 +141,7 @@ def process_context(_pattern, _ref_units, _ref_calendar, _write, _force, _on_fly
     :param boolean _force: Force write mode if True
     :param boolean _on_fly: Disable some check if True for incomplete time axis
     :param boolean _true_dates: Disable filename dates correction
-    :param int _limit: Limit of displayed wrong timestep
+    :param int _limit: Limit of displayed wrong time steps
     :param multiprocessing.Lock _lock: Lock to ensure only one process print to std_out at a time
 
     """

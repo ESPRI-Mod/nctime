@@ -52,6 +52,21 @@ To disable the corresponding test and check the on goind time axis squareness us
 
    $> nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --on-fly
 
+Show wrong time steps
+*********************
+
+By default ``nctime axis`` print the first five wrong time steps if exist. This limit can be changed with:
+
+.. code-block:: bash
+
+   $> nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --limit INTEGER
+
+To print all wrong time steps:
+
+.. code-block:: bash
+
+   $> nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --limit
+
 Time axis status
 ****************
 
