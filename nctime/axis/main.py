@@ -91,16 +91,24 @@ def process(ffp):
                 fh.nc_var_overwrite(fh.time_bounds, fh.time_bounds_rebuilt)
         # Print file status
         msg = """{}
-        Start: {} = {}
-        End:   {} = {}
-        Last:  {} = {}
-        Time steps: {}
-        Is instant: {}""".format(fh.filename,
-                                 fh.start_timestamp, fh.start_date,
-                                 fh.end_timestamp, fh.end_date,
-                                 fh.last_timestamp, fh.last_date,
+        Units: {} [ref = {}]
+        Calendar: {} [ref = {}]
+        Start: {} = {} = {}
+        End:   {} = {} = {}
+        Last:  {} = {} = {}
+        Length: {}
+        Frequency: {} = {}{}
+        Is instant: {}
+        Has bounds: {}""".format(fh.filename,
+                                 fh.tunits, ref_units,
+                                 fh.calendar, ref_calendar,
+                                 fh.start_timestamp, fh.start_date, fh.start_num,
+                                 fh.end_timestamp, fh.end_date, fh.end_num,
+                                 fh.last_timestamp, fh.last_date, fh.last_num,
                                  fh.length,
-                                 fh.is_instant)
+                                 fh.frequency, fh.step, fh.step_units,
+                                 fh.is_instant,
+                                 fh.has_bounds)
         if fh.status:
             for s in fh.status:
                 msg += """\n        Status: {}""".format(STATUS[s])

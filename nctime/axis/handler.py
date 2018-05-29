@@ -91,7 +91,7 @@ class File(object):
             if 'point' in nc.variables[variable].cell_methods.lower():
                 self.is_instant = True
         # Get time step increment from frequency property
-        self.step = time_inc(self.frequency)[0]
+        self.step, self.step_units = time_inc(self.frequency)
         # Convert reference time units into frequency units depending on the file (i.e., months/year/hours since ...)
         self.funits = convert_time_units(self.ref_units, self.frequency)
         # Get timestamps length from filename
@@ -122,6 +122,7 @@ class File(object):
             last_date = num2date(num_axis[-1], units=self.funits, calendar=self.calendar)
         del num_axis
         self.last_date = dates2str(last_date)
+        self.last_num = date2num(last_date, units=self.funits, calendar=self.calendar)
         self.last_timestamp = truncated_timestamp(last_date, self.timestamp_length)
 
     def build_time_axis(self):
