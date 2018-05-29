@@ -46,8 +46,6 @@ def process(ffp):
                 fh.status.append('003')
             elif fh.last_date != fh.end_date:
                 fh.status.append('008')
-        # Rebuild a theoretical time axis with appropriate precision
-        fh.time_axis_rebuilt = fh.build_time_axis()
         # Check file consistency between instant time and time boundaries
         if fh.is_instant and fh.has_bounds:
             fh.status.append('004')
@@ -56,12 +54,15 @@ def process(ffp):
             fh.status.append('005')
         # Check time axis squareness
         wrong_indexes = list()
-        if not np.array_equal(fh.time_axis_rebuilt, fh.time_axis):
-            time_axis_diff = (fh.time_axis_rebuilt == fh.time_axis)
-            fh.status.append('001')
-            wrong_indexes = list(np.where(time_axis_diff == False)[0])
+        if not {'003','008'}.intersection(set(fh.status)):
+            # Rebuild a theoretical time axis with appropriate precision
+            fh.time_axis_rebuilt = fh.build_time_axis()
+            if not np.array_equal(fh.time_axis_rebuilt, fh.time_axis):
+                time_axis_diff = (fh.time_axis_rebuilt == fh.time_axis)
+                fh.status.append('001')
+                wrong_indexes = list(np.where(time_axis_diff == False)[0])
         # Check time boundaries squareness
-        if fh.has_bounds:
+        if fh.has_bounds and '004' not in fh.status:
             fh.time_bounds_rebuilt = fh.build_time_bounds()
             if not np.array_equal(fh.time_bounds_rebuilt, fh.time_bounds):
                 fh.status.append('006')
