@@ -4,11 +4,17 @@
 Change Log
 ==========
 
-`Unreleased <https://github.com/Prodiguer/nctime/tree/HEAD>`__
---------------------------------------------------------------
+`v4.2.2 <https://github.com/Prodiguer/nctime/tree/v4.2.2>`__ (2018-05-29)
+-------------------------------------------------------------------------
 
 `Full
-Changelog <https://github.com/Prodiguer/nctime/compare/v4.2.0...HEAD>`__
+Changelog <https://github.com/Prodiguer/nctime/compare/v4.2.1...v4.2.2>`__
+
+`v4.2.1 <https://github.com/Prodiguer/nctime/tree/v4.2.1>`__ (2018-05-28)
+-------------------------------------------------------------------------
+
+`Full
+Changelog <https://github.com/Prodiguer/nctime/compare/v4.2.0...v4.2.1>`__
 
 **Closed issues:**
 
