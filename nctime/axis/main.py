@@ -97,7 +97,7 @@ def process(ffp):
         End:   {} = {} = {}
         Last:  {} = {} = {}
         Length: {}
-        Frequency: {} = {}{}
+        Frequency: {} = {} {}
         Is instant: {}
         Has bounds: {}""".format(fh.filename,
                                  fh.tunits, ref_units,

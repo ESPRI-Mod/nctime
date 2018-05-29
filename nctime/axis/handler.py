@@ -116,13 +116,13 @@ class File(object):
         num_axis = np.arange(start=self.start_num,
                              stop=self.start_num + self.length * self.step,
                              step=self.step)
-        if self.funits.split(' ')[0] in ['years', 'months']:
-            last_date = num2date(num_axis[-1], units=self.funits, calendar=self.calendar)[0]
-        else:
-            last_date = num2date(num_axis[-1], units=self.funits, calendar=self.calendar)
+        self.last_num = num_axis[-1]
         del num_axis
+        if self.funits.split(' ')[0] in ['years', 'months']:
+            last_date = num2date(self.last_num, units=self.funits, calendar=self.calendar)[0]
+        else:
+            last_date = num2date(self.last_num, units=self.funits, calendar=self.calendar)
         self.last_date = dates2str(last_date)
-        self.last_num = date2num(last_date, units=self.funits, calendar=self.calendar)
         self.last_timestamp = truncated_timestamp(last_date, self.timestamp_length)
 
     def build_time_axis(self):
