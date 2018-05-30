@@ -123,11 +123,13 @@ def match(pattern, string, inclusive=True):
     else:
         return True if not re.search(pattern, string) else False
 
+
 class BColors:
     """
     Background colors for print statements
 
     """
+
     def __init__(self):
         self.HEADER = '\033[95m'
         self.OKBLUE = '\033[94m'

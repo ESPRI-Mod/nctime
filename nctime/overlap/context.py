@@ -45,8 +45,8 @@ class ProcessingContext(object):
             self.tunits_default = DEFAULT_TIME_UNITS[self.project]
         self.overlaps = 0
         self.broken = 0
-        self.scan_files = None
-        self.scan_dsets = None
+        self.scan_files = 0
+        self.scan_dsets = 0
         self.pbar = None
         self.file_filter = []
         if args.include_file:

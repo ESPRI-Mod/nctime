@@ -20,8 +20,8 @@ import numpy as np
 
 from context import ProcessingContext
 from handler import Filename, Graph
-from nctime.utils.time import get_next_timestep
 from nctime.utils.misc import BCOLORS
+from nctime.utils.time import get_next_timestep
 
 
 def get_overlaps(g, shortest):

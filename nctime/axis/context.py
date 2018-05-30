@@ -46,7 +46,7 @@ class ProcessingContext(object):
             self.tunits_default = DEFAULT_TIME_UNITS[self.project]
         self.processes = args.max_processes
         self.use_pool = (self.processes != 1)
-        self.scan_files = None
+        self.scan_files = 0
         self.scan_errors = 0
         self.true_dates = args.true_dates
         self.status = []
@@ -82,9 +82,10 @@ class ProcessingContext(object):
 
     def __exit__(self, *exc):
         # Decline outputs depending on the scan results
-        print('Number of files scanned: {}'.format(self.scan_files))
-        print('Number of file with error(s): {}'.format(self.scan_errors))
-        if self.scan_errors:
-            sys.exit(1)
-        else:
-            sys.exit(0)
+        pass
+        # print('Number of files scanned: {}'.format(self.scan_files))
+        # print('Number of file with error(s): {}'.format(self.scan_errors))
+        # if self.scan_errors:
+        #     sys.exit(1)
+        # else:
+        #     sys.exit(0)

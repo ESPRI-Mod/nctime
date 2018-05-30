@@ -12,7 +12,7 @@ import re
 from multiprocessing import Pool, Lock
 
 import numpy as np
-from itertools import compress
+
 from constants import *
 from context import ProcessingContext
 from handler import File
@@ -41,11 +41,11 @@ def process(ffp):
         if not on_fly and fh.last_timestamp != fh.end_timestamp:
             fh.start_num = trunc(fh.start_num, 5)
             fh.load_last_date()
-            # Check consistency between last time date and end date from filename
             if fh.last_timestamp != fh.end_timestamp:
                 fh.status.append('003')
-            elif fh.last_date != fh.end_date:
-                fh.status.append('008')
+        # Check consistency between last time date and end date from filename
+        if fh.last_date != fh.end_date:
+            fh.status.append('008')
         # Check file consistency between instant time and time boundaries
         if fh.is_instant and fh.has_bounds:
             fh.status.append('004')
@@ -92,7 +92,7 @@ def process(ffp):
             # Rewrite time boundaries if needed
             if fh.has_bounds:
                 fh.nc_var_overwrite(fh.time_bounds, fh.time_bounds_rebuilt)
-        # Print file status
+        # Diagnostic display
         msg = """{}
         Units: {} [ref = {}]
         Calendar: {} [ref = {}]
@@ -145,7 +145,7 @@ def process(ffp):
         raise
     except Exception as e:
         logging.error('{} skipped\n{}: {}'.format(ffp, e.__class__.__name__, e.message))
-
+        return 0
 
 def process_context(_pattern, _ref_units, _ref_calendar, _write, _force, _on_fly, _true_dates, _limit, _lock):
     """

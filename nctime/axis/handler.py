@@ -102,11 +102,28 @@ class File(object):
                                                   frequency=self.frequency,
                                                   calendar=self.calendar,
                                                   true_dates=self.true_dates)
-        self.start_date, self.end_date, _ = dates2str(dates)
         self.start_num, self.end_num, _ = date2num(dates, units=self.funits, calendar=self.calendar)
         # Convert dates into timestamps
         self.start_timestamp, self.end_timestamp, _ = [
             truncated_timestamp(date, self.timestamp_length) for date in dates]
+        # Convert dates to be consistent with summary
+        num_dates = date2num(dates, units=ref_units, calendar=ref_calendar)
+        dates = num2date(num_dates + self.get_offset(), units=ref_units, calendar=ref_calendar)
+        self.start_date, self.end_date, _ = dates2str(list(dates))
+
+
+    def get_offset(self):
+        """
+        Get time offset depending on time axis type (instant or average)
+
+        """
+        if not self.is_instant:
+            offset = num2date(float(self.step) / 2,
+                              units=re.sub('days', self.step_units, self.ref_units),
+                              calendar=self.ref_calendar)
+            return date2num(offset, units=self.ref_units, calendar=self.ref_calendar)[0]
+        else:
+            return 0.0
 
     def load_last_date(self):
         """
@@ -118,12 +135,14 @@ class File(object):
                              step=self.step)
         self.last_num = num_axis[-1]
         del num_axis
-        if self.funits.split(' ')[0] in ['years', 'months']:
+        try:
             last_date = num2date(self.last_num, units=self.funits, calendar=self.calendar)[0]
-        else:
+        except TypeError:
             last_date = num2date(self.last_num, units=self.funits, calendar=self.calendar)
-        self.last_date = dates2str(last_date)
         self.last_timestamp = truncated_timestamp(last_date, self.timestamp_length)
+        last_date = num2date(self.last_num + self.get_offset(), units=self.tunits, calendar=self.calendar)
+        self.last_date = dates2str(last_date)
+
 
     def build_time_axis(self):
         """
