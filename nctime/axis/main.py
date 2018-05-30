@@ -44,7 +44,7 @@ def process(ffp):
             if fh.last_timestamp != fh.end_timestamp:
                 fh.status.append('003')
         # Check consistency between last time date and end date from filename
-        if fh.last_date != fh.end_date:
+        if not on_fly and fh.last_date != fh.end_date:
             fh.status.append('008')
         # Check file consistency between instant time and time boundaries
         if fh.is_instant and fh.has_bounds:
