@@ -9,12 +9,13 @@
 import logging
 import os
 import re
+from copy import deepcopy as copy
 from uuid import uuid4
 
 import nco
 import numpy as np
 from fuzzywuzzy import fuzz, process
-from copy import deepcopy as copy
+
 from custom_exceptions import *
 from nctime.utils.constants import CLIM_SUFFIX
 from nctime.utils.custom_exceptions import *
@@ -115,7 +116,6 @@ class File(object):
         # Convert dates into timestamps
         self.start_timestamp, self.end_timestamp, _ = [
             truncated_timestamp(date, self.timestamp_length) for date in dates]
-
 
     def load_last_date(self):
         """

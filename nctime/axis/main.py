@@ -147,6 +147,7 @@ def process(ffp):
         logging.error('{} skipped\n{}: {}'.format(ffp, e.__class__.__name__, e.message))
         return 0
 
+
 def process_context(_pattern, _ref_units, _ref_calendar, _write, _force, _on_fly, _true_dates, _limit, _lock):
     """
     Initialize process context by setting particular variables as global variables.
