@@ -96,45 +96,34 @@ class File(object):
         self.funits = convert_time_units(self.ref_units, self.frequency)
         # Get timestamps length from filename
         self.timestamp_length = len(re.match(pattern, self.name).groupdict()['period_end'])
-        # Get time offset if average axis
-        self.offset = self.get_offset()
         # Extract start and end dates from filename
         dates = get_start_end_dates_from_filename(filename=self.name,
                                                   pattern=pattern,
                                                   frequency=self.frequency,
                                                   calendar=self.calendar,
                                                   true_dates=self.true_dates)
-        self.start_num, self.end_num, _ = date2num(dates, units=self.funits, calendar=self.calendar)
-        self.start_print, self.end_print, _ = date2num(dates, units=self.tunits, calendar=self.calendar) + self.offset
+        dates_num = date2num(dates, units=self.funits, calendar=self.calendar)
+        # Apply time offset only if:
+        # - NON-INSTANT axis
+        # - AND NOT (frequency is 3hr or 6hr WITH true dates flag)
+        if not self.is_instant and not (self.frequency in ['3hr', '6hr'] and self.true_dates):
+            dates_num += 0.5
+        self.start_axis = dates_num[0]
+        dates = num2date(dates_num, units=self.funits, calendar=self.calendar)
+        self.start_num, self.end_num, _ = date2num(dates, units=self.tunits, calendar=self.calendar)
+        self.start_date, self.end_date, _ = dates2str(list(dates))
         # Convert dates into timestamps
         self.start_timestamp, self.end_timestamp, _ = [
             truncated_timestamp(date, self.timestamp_length) for date in dates]
-        # Convert dates to be consistent with summary
-        num_dates = date2num(dates, units=ref_units, calendar=ref_calendar)
-        dates = num2date(num_dates + self.offset, units=ref_units, calendar=ref_calendar)
-        self.start_date, self.end_date, _ = dates2str(list(dates))
 
-
-    def get_offset(self):
-        """
-        Get time offset depending on time axis type (instant or average)
-
-        """
-        if not self.is_instant:
-            offset = num2date(float(self.step) / 2,
-                              units=re.sub('days', self.step_units, self.ref_units),
-                              calendar=self.ref_calendar)
-            return date2num(offset, units=self.ref_units, calendar=self.ref_calendar)[0]
-        else:
-            return 0.0
 
     def load_last_date(self):
         """
         Builds the last theoretical date and timestamp.
 
         """
-        num_axis = np.arange(start=self.start_num,
-                             stop=self.start_num + self.length * self.step,
+        num_axis = np.arange(start=self.start_axis,
+                             stop=self.start_axis + self.length * self.step,
                              step=self.step)
         self.last_num = num_axis[-1]
         del num_axis
@@ -142,11 +131,10 @@ class File(object):
             last_date = num2date(self.last_num, units=self.funits, calendar=self.calendar)[0]
         except TypeError:
             last_date = num2date(self.last_num, units=self.funits, calendar=self.calendar)
-        self.last_timestamp = truncated_timestamp(last_date, self.timestamp_length)
-        last_date = num2date(self.last_num + self.offset, units=self.tunits, calendar=self.calendar)
         self.last_date = dates2str(last_date)
-        self.last_print = self.last_num + self.offset
-
+        # Convert dates into timestamps
+        self.last_timestamp = truncated_timestamp(last_date, self.timestamp_length)
+        self.last_num = date2num(last_date, units=self.tunits, calendar=self.calendar)
 
     def build_time_axis(self):
         """
@@ -156,14 +144,9 @@ class File(object):
         :rtype: *numpy.array*
 
         """
-        num_axis = np.arange(start=self.start_num,
-                             stop=self.start_num + self.length * self.step,
+        num_axis = np.arange(start=self.start_axis,
+                             stop=self.start_axis + self.length * self.step,
                              step=self.step)
-        # Switch time axis in the case of:
-        # - non-instant axis
-        # - AND NOT (frequency is 3hr or 6hr WITH true dates flag)
-        if not self.is_instant and not (self.frequency in ['3hr', '6hr'] and self.true_dates):
-            num_axis += 0.5 * self.step
         date_axis = num2date(num_axis, units=self.funits, calendar=self.ref_calendar)
         del num_axis
         return date2num(date_axis, units=self.ref_units, calendar=self.ref_calendar)
@@ -177,14 +160,9 @@ class File(object):
         :rtype: *numpy.array*
 
         """
-        num_axis = np.arange(start=self.start_num,
-                             stop=self.start_num + self.length * self.step,
+        num_axis = np.arange(start=self.start_axis,
+                             stop=self.start_axis + self.length * self.step,
                              step=self.step)
-        # Switch time axis in the case of:
-        # - non-instant axis
-        # - AND NOT (frequency is 3hr or 6hr WITH true dates flag)
-        if not self.is_instant and not (self.frequency in ['3hr', '6hr'] and self.true_dates):
-            num_axis += 0.5 * self.step
         num_axis_bnds_inf, num_axis_bnds_sup = num_axis, copy(num_axis)
         num_axis_bnds_inf -= 0.5 * self.step
         num_axis_bnds_sup += 0.5 * self.step
