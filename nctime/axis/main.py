@@ -53,19 +53,22 @@ def process(ffp):
         if not fh.is_instant and not fh.has_bounds:
             fh.status.append('005')
         # Check time axis squareness
-        wrong_indexes = list()
+        wrong_timesteps = list()
         if not {'003', '008'}.intersection(set(fh.status)):
             # Rebuild a theoretical time axis with appropriate precision
             fh.time_axis_rebuilt = fh.build_time_axis()
             if not np.array_equal(fh.time_axis_rebuilt, fh.time_axis):
                 time_axis_diff = (fh.time_axis_rebuilt == fh.time_axis)
                 fh.status.append('001')
-                wrong_indexes = list(np.where(time_axis_diff == False)[0])
+                wrong_timesteps = list(np.where(time_axis_diff == False)[0])
         # Check time boundaries squareness
+        wrong_bounds = list()
         if fh.has_bounds and '004' not in fh.status:
             fh.time_bounds_rebuilt = fh.build_time_bounds()
             if not np.array_equal(fh.time_bounds_rebuilt, fh.time_bounds):
+                time_bounds_diff = (fh.time_bounds_rebuilt == fh.time_bounds)
                 fh.status.append('006')
+                wrong_bounds = list(np.where(time_bounds_diff == False)[0])
         # Check time units consistency between file and ref
         if ref_units != fh.tunits:
             fh.status.append('002')
@@ -114,12 +117,17 @@ def process(ffp):
                 msg += """\n        Status: {}""".format(STATUS[s])
         else:
             msg += """\n        Status: {}""".format(STATUS['000'])
-        # Display wrong time steps
-        timestep_limit = limit if limit else len(wrong_indexes)
-        for i, v in enumerate(wrong_indexes):
+        # Display wrong time steps and/or bounds
+        timestep_limit = limit if limit else len(wrong_timesteps)
+        for i, v in enumerate(wrong_timesteps):
             if (i + 1) <= timestep_limit:
                 msg += """\n        Wrong timestep: {} iso {}""".format(str(fh.time_axis[v]).ljust(10),
                                                                         str(fh.time_axis_rebuilt[v]).ljust(10))
+        bounds_limit = limit if limit else len(wrong_bounds)
+        for i, v in enumerate(wrong_bounds):
+            if (i + 1) <= bounds_limit:
+                msg += """\n        Wrong bound: {} iso {}""".format(str(fh.time_bounds[v]).ljust(10),
+                                                                     str(fh.time_bounds_rebuilt[v]).ljust(10))
         # Acquire lock to standard output
         lock.acquire()
         if fh.status:

@@ -10,6 +10,12 @@
 
 """
 
+# TODO: revise again... overlap multiprocessing...
+# Checker le retour du noeud ?
+# Si pas process-safe ->
+# une solution est d'identifier d'aboord les fichiers par listes.
+# Opérer chaque list séparément pour diagnostiquer l'arbre associé.
+
 import argparse
 import os
 import sys
