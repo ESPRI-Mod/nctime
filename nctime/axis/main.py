@@ -12,7 +12,7 @@ import re
 from multiprocessing import Pool, Lock
 
 import numpy as np
-
+from itertools import compress
 from constants import *
 from context import ProcessingContext
 from handler import File
@@ -58,17 +58,17 @@ def process(ffp):
             # Rebuild a theoretical time axis with appropriate precision
             fh.time_axis_rebuilt = fh.build_time_axis()
             if not np.array_equal(fh.time_axis_rebuilt, fh.time_axis):
-                time_axis_diff = (fh.time_axis_rebuilt == fh.time_axis)
                 fh.status.append('001')
+                time_axis_diff = (fh.time_axis_rebuilt == fh.time_axis)
                 wrong_timesteps = list(np.where(time_axis_diff == False)[0])
         # Check time boundaries squareness
         wrong_bounds = list()
         if fh.has_bounds and '004' not in fh.status:
             fh.time_bounds_rebuilt = fh.build_time_bounds()
             if not np.array_equal(fh.time_bounds_rebuilt, fh.time_bounds):
-                time_bounds_diff = (fh.time_bounds_rebuilt == fh.time_bounds)
                 fh.status.append('006')
-                wrong_bounds = list(np.where(time_bounds_diff == False)[0])
+                time_bounds_diff = (fh.time_bounds_rebuilt == fh.time_bounds)
+                wrong_bounds = list(np.where(np.all(time_bounds_diff, axis=1) == False)[0])
         # Check time units consistency between file and ref
         if ref_units != fh.tunits:
             fh.status.append('002')

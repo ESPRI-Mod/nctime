@@ -14,7 +14,7 @@ from uuid import uuid4
 import nco
 import numpy as np
 from fuzzywuzzy import fuzz, process
-
+from copy import deepcopy as copy
 from custom_exceptions import *
 from nctime.utils.constants import CLIM_SUFFIX
 from nctime.utils.custom_exceptions import *
@@ -88,7 +88,7 @@ class File(object):
             if 'cell_methods' not in nc.variables[variable].ncattrs():
                 raise NoNetCDFAttribute('cell_methods', self.ffp, variable)
             self.is_instant = False
-            if 'point' in nc.variables[variable].cell_methods.lower():
+            if 'time: point' in nc.variables[variable].cell_methods.lower():
                 self.is_instant = True
         # Get time step increment from frequency property
         self.step, self.step_units = time_inc(self.frequency)
@@ -154,13 +154,21 @@ class File(object):
         :rtype: *numpy.array*
 
         """
-        num_axis_bnds = np.column_stack(((np.arange(start=self.start_num,
-                                                    stop=self.start_num + self.length * self.step,
-                                                    step=self.step)),
-                                         (np.arange(start=self.start_num,
-                                                    stop=self.start_num + (self.length + 1) * self.step,
-                                                    step=self.step)[1:])))
+        num_axis = np.arange(start=self.start_num,
+                             stop=self.start_num + self.length * self.step,
+                             step=self.step)
+        # Switch time axis in the case of:
+        # - non-instant axis
+        # - AND NOT (frequency is 3hr or 6hr WITH true dates flag)
+        if not self.is_instant and not (self.frequency in ['3hr', '6hr'] and self.true_dates):
+            num_axis += 0.5 * self.step
+        num_axis_bnds_inf, num_axis_bnds_sup = num_axis, copy(num_axis)
+        num_axis_bnds_inf -= 0.5 * self.step
+        num_axis_bnds_sup += 0.5 * self.step
+        num_axis_bnds = np.column_stack((num_axis_bnds_inf, num_axis_bnds_sup))
+        del num_axis, num_axis_bnds_inf, num_axis_bnds_sup
         date_axis_bnds = num2date(num_axis_bnds, units=self.funits, calendar=self.ref_calendar)
+        del num_axis_bnds
         return date2num(date_axis_bnds, units=self.ref_units, calendar=self.ref_calendar)
 
     def nc_var_delete(self, variable):
