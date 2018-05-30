@@ -100,6 +100,7 @@ class Graph(object):
                    first_step=first,
                    last_step=last,
                    path=path)
+        return g.node[filename]
 
     def add_edge(self, i, node_src, node_dst):
         g = getattr(self, i)

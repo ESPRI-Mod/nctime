@@ -21,6 +21,7 @@ import numpy as np
 from context import ProcessingContext
 from handler import Filename, Graph
 from nctime.utils.time import get_next_timestep
+from nctime.utils.misc import BCOLORS
 
 
 def get_overlaps(g, shortest):
@@ -120,19 +121,19 @@ def create_nodes(ffp):
         if not graph.has_graph(fh.id):
             graph.set_graph(fh.id)
         # Update/add current file as node with dates as attributes
-        graph.add_node(fh.id,
-                       fh.filename,
-                       fh.start_date,
-                       fh.end_date,
-                       fh.next_date,
-                       fh.first_timestep,
-                       fh.last_timestep,
-                       fh.ffp)
+        node = graph.add_node(fh.id,
+                              fh.filename,
+                              fh.start_date,
+                              fh.end_date,
+                              fh.next_date,
+                              fh.first_timestep,
+                              fh.last_timestep,
+                              fh.ffp)
         logging.debug('Graph: {} :: Node {} (start={}, end={}, next={})'.format(fh.id,
                                                                                 fh.filename,
-                                                                                fh.start_date,
-                                                                                fh.end_date,
-                                                                                fh.next_date))
+                                                                                node['start'],
+                                                                                node['end'],
+                                                                                node['next']))
     except KeyboardInterrupt:
         raise
     except Exception as e:
@@ -328,15 +329,17 @@ def run(args):
             msg = format_path(path, partial_overlaps, full_overlaps)
             # If broken time serie
             if 'BREAK' in path:
-                ctx.broken = True
+                ctx.broken += 1
                 logging.error('Time series broken: {}'.format(msg))
             else:
                 # Print overlaps if exists
                 if full_overlaps or partial_overlaps:
-                    ctx.overlaps = True
-                    logging.error('Shortest path found WITH overlaps: {}'.format(msg))
+                    ctx.overlaps += 1
+                    logging.error(BCOLORS.FAIL + 'Shortest path found WITH overlaps:' + BCOLORS.ENDC +
+                                  '{}'.format(msg))
                 else:
-                    logging.info('Shortest path found without overlaps: {}'.format(msg))
+                    logging.info(BCOLORS.OKGREEN + 'Shortest path found without overlaps:' + BCOLORS.ENDC +
+                                 '{}'.format(msg))
             # Resolve overlaps
             if ctx.resolve:
                 # Full overlapping files has to be deleted before partial overlapping files are truncated.

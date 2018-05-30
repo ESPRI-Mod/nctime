@@ -104,20 +104,6 @@ def trunc(f, n):
     return float(str(f)[:slen])
 
 
-def cmd_exists(cmd):
-    """
-    Checks if a Shell command exists.
-
-    :returns: True if exists.
-    :rtype: *boolean*
-
-    """
-    return any(
-        os.access(os.path.join(path, cmd), os.X_OK)
-        for path in os.environ["PATH"].split(os.pathsep)
-    )
-
-
 def match(pattern, string, inclusive=True):
     """
     Validates a string against a regular expression.
@@ -136,3 +122,21 @@ def match(pattern, string, inclusive=True):
         return True if re.search(pattern, string) else False
     else:
         return True if not re.search(pattern, string) else False
+
+class BColors:
+    """
+    Background colors for print statements
+
+    """
+    def __init__(self):
+        self.HEADER = '\033[95m'
+        self.OKBLUE = '\033[94m'
+        self.OKGREEN = '\033[1;32m'
+        self.WARNING = '\033[1;34m'
+        self.FAIL = '\033[1;31m'
+        self.ENDC = '\033[0m'
+        self.BOLD = '\033[1m'
+        self.UNDERLINE = '\033[4m'
+
+
+BCOLORS = BColors()

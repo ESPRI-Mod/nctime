@@ -16,7 +16,7 @@ import numpy as np
 from constants import *
 from context import ProcessingContext
 from handler import File
-from nctime.utils.misc import trunc
+from nctime.utils.misc import trunc, BCOLORS
 
 
 def process(ffp):
@@ -102,7 +102,7 @@ def process(ffp):
         Length: {}
         Frequency: {} = {} {}
         Is instant: {}
-        Has bounds: {}""".format(fh.filename,
+        Has bounds: {}""".format(BCOLORS.HEADER + fh.filename + BCOLORS.ENDC,
                                  fh.tunits, ref_units,
                                  fh.calendar, ref_calendar,
                                  fh.start_timestamp, fh.start_date, fh.start_num,
@@ -114,9 +114,9 @@ def process(ffp):
                                  fh.has_bounds)
         if fh.status:
             for s in fh.status:
-                msg += """\n        Status: {}""".format(STATUS[s])
+                msg += """\n        Status: {}""".format(BCOLORS.FAIL + STATUS[s] + BCOLORS.ENDC)
         else:
-            msg += """\n        Status: {}""".format(STATUS['000'])
+            msg += """\n        Status: {}""".format(BCOLORS.OKGREEN + STATUS['000'] + BCOLORS.ENDC)
         # Display wrong time steps and/or bounds
         timestep_limit = limit if limit else len(wrong_timesteps)
         for i, v in enumerate(wrong_timesteps):
@@ -136,13 +136,15 @@ def process(ffp):
             logging.info(msg)
         # Release lock on standard output
         lock.release()
-        # Return file status
-        return fh.status
+        # Return error if it is the case
+        if fh.status:
+            return 1
+        else:
+            return 0
     except KeyboardInterrupt:
         raise
     except Exception as e:
         logging.error('{} skipped\n{}: {}'.format(ffp, e.__class__.__name__, e.message))
-        return ['999']
 
 
 def process_context(_pattern, _ref_units, _ref_calendar, _write, _force, _on_fly, _true_dates, _limit, _lock):
@@ -203,4 +205,5 @@ def run(args):
         # Close pool of workers
         pool.close()
         pool.join()
+        ctx.scan_errors = sum(handlers)
         ctx.scan_files = len(handlers)

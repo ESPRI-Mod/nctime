@@ -24,7 +24,7 @@ from importlib import import_module
 from utils.constants import *
 from utils.misc import init_logging
 from utils.parser import MultilineFormatter, DirectoryChecker, regex_validator, keyval_converter, processes_validator, \
-    positive_only
+    positive_only, InputChecker
 
 __version__ = 'v{} {}'.format(VERSION, VERSION_DATE)
 
@@ -67,11 +67,6 @@ def get_args():
     # Parent parser with common arguments #
     #######################################
     parent = argparse.ArgumentParser(add_help=False)
-    parent.add_argument(
-        'directory',
-        action=DirectoryChecker,
-        nargs='+',
-        help=DIRECTORY_HELP)
     parent.add_argument(
         '--project',
         metavar='<project_id>',
@@ -156,6 +151,11 @@ def get_args():
     overlap._optionals.title = OPTIONAL
     overlap._positionals.title = POSITIONAL
     overlap.add_argument(
+        'directory',
+        action=DirectoryChecker,
+        nargs='+',
+        help=DIRECTORY_HELP)
+    overlap.add_argument(
         '--resolve',
         action='store_true',
         default=False,
@@ -179,6 +179,11 @@ def get_args():
         parents=[parent])
     axis._optionals.title = OPTIONAL
     axis._positionals.title = POSITIONAL
+    axis.add_argument(
+        'input',
+        action=InputChecker,
+        nargs='+',
+        help=DIRECTORY_HELP)
     axis.add_argument(
         '--write',
         action='store_true',

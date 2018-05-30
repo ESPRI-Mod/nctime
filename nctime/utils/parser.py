@@ -82,6 +82,25 @@ class DirectoryChecker(Action):
         return path
 
 
+class InputChecker(Action):
+    """
+    Checks if the supplied input exists.
+
+    """
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        checked_values = [self.input_checker(x) for x in values]
+        setattr(namespace, self.dest, checked_values)
+
+    @staticmethod
+    def input_checker(path):
+        path = os.path.abspath(os.path.normpath(path))
+        if not os.path.exists(path):
+            msg = 'No such input: {}'.format(path)
+            raise ArgumentTypeError(msg)
+        return path
+
+
 def regex_validator(string):
     """
     Validates a Python regular expression syntax.

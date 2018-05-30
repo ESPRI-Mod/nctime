@@ -7,7 +7,6 @@
 
 """
 
-import logging
 import sys
 
 from ESGConfigParser import SectionParser
@@ -29,7 +28,7 @@ class ProcessingContext(object):
     """
 
     def __init__(self, args):
-        self.directory = args.directory
+        self.input = args.input
         self.config_dir = args.i
         self.write = args.write
         self.force = args.force
@@ -48,6 +47,7 @@ class ProcessingContext(object):
         self.processes = args.max_processes
         self.use_pool = (self.processes != 1)
         self.scan_files = None
+        self.scan_errors = 0
         self.true_dates = args.true_dates
         self.status = []
         self.file_filter = []
@@ -68,7 +68,7 @@ class ProcessingContext(object):
         self.cfg = SectionParser(section='project:{}'.format(self.project), directory=self.config_dir)
         self.pattern = self.cfg.translate('filename_format')
         # Init data collector
-        self.sources = Collector(sources=self.directory, spinner=False)
+        self.sources = Collector(sources=self.input, spinner=False)
         # Init file filter
         for regex, inclusive in self.file_filter:
             self.sources.FileFilter.add(regex=regex, inclusive=inclusive)
@@ -82,11 +82,9 @@ class ProcessingContext(object):
 
     def __exit__(self, *exc):
         # Decline outputs depending on the scan results
-        # Default is sys.exit(0)
-
-        if any([s is not '000' for s in self.status]):
-            logging.error('Some time axis should be corrected ({} files scanned)'.format(self.scan_files))
+        print('Number of files scanned: {}'.format(self.scan_files))
+        print('Number of file with error(s): {}'.format(self.scan_errors))
+        if self.scan_errors:
             sys.exit(1)
         else:
-            print('All time axis seem correct ({} files scanned)'.format(self.scan_files))
             sys.exit(0)

@@ -58,12 +58,19 @@ class Collector(object):
 
     def __iter__(self):
         for source in self.sources:
-            for root, _, filenames in os.walk(source, followlinks=True):
-                if self.PathFilter(root):
-                    for filename in sorted(filenames):
-                        ffp = os.path.join(root, filename)
-                        if os.path.isfile(ffp) and self.FileFilter(filename):
-                            yield ffp
+            if os.path.isdir(source):
+                # If input is a directory: walk through it and yields netCDF files
+                for root, _, filenames in os.walk(source, followlinks=True):
+                    if self.PathFilter(root):
+                        for filename in sorted(filenames):
+                            ffp = os.path.join(root, filename)
+                            if os.path.isfile(ffp) and self.FileFilter(filename):
+                                yield ffp
+            else:
+                # It input is a file: yields the netCDF file itself
+                root, filename = os.path.split(source)
+                if self.PathFilter(root) and self.FileFilter(filename):
+                    yield source
 
     def __len__(self):
         """

@@ -6,7 +6,6 @@
     :synopsis: Processing context used in this module.
 
 """
-import logging
 import sys
 
 from ESGConfigParser import SectionParser
@@ -44,8 +43,8 @@ class ProcessingContext(object):
         self.use_pool = (self.processes != 1)
         if self.project in DEFAULT_TIME_UNITS.keys():
             self.tunits_default = DEFAULT_TIME_UNITS[self.project]
-        self.overlaps = False
-        self.broken = False
+        self.overlaps = 0
+        self.broken = 0
         self.scan_files = None
         self.scan_dsets = None
         self.pbar = None
@@ -81,20 +80,12 @@ class ProcessingContext(object):
 
     def __exit__(self, *exc):
         # Decline outputs depending on the scan results
-        # Default is sys.exit(0)
-        # Print analyse result
+        print('Number of files scanned: {}'.format(self.scan_files))
+        print('Number of datasets: {}'.format(self.scan_dsets))
+        print('Number of datasets with error(s): {}'.format(self.broken + self.overlaps))
         if self.broken:
-            logging.error('Some broken time period should be '
-                          'corrected manually ({} files among'
-                          ' {} datasets scanned)'.format(self.scan_files, self.scan_dsets))
             sys.exit(1)
         elif self.overlaps:
-            logging.error('Some time period have overlaps to'
-                          ' fix ({} files among {}'
-                          ' datasets scanned)'.format(self.scan_files, self.scan_dsets))
             sys.exit(2)
         else:
-            print('No overlaps or broken time periods '
-                  '({} files among {} '
-                  'datasets scanned)'.format(self.scan_files, self.scan_dsets))
             sys.exit(0)
