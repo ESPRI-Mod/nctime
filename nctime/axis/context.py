@@ -82,10 +82,9 @@ class ProcessingContext(object):
 
     def __exit__(self, *exc):
         # Decline outputs depending on the scan results
-        pass
-        # print('Number of files scanned: {}'.format(self.scan_files))
-        # print('Number of file with error(s): {}'.format(self.scan_errors))
-        # if self.scan_errors:
-        #     sys.exit(1)
-        # else:
-        #     sys.exit(0)
+        print('Number of files scanned: {}'.format(self.scan_files))
+        print('Number of file with error(s): {}'.format(self.scan_errors))
+        if self.scan_errors:
+            sys.exit(1)
+        else:
+            sys.exit(0)
