@@ -96,6 +96,8 @@ class File(object):
         self.funits = convert_time_units(self.ref_units, self.frequency)
         # Get timestamps length from filename
         self.timestamp_length = len(re.match(pattern, self.name).groupdict()['period_end'])
+        # Get time offset if average axis
+        self.offset = self.get_offset()
         # Extract start and end dates from filename
         dates = get_start_end_dates_from_filename(filename=self.name,
                                                   pattern=pattern,
@@ -103,12 +105,13 @@ class File(object):
                                                   calendar=self.calendar,
                                                   true_dates=self.true_dates)
         self.start_num, self.end_num, _ = date2num(dates, units=self.funits, calendar=self.calendar)
+        self.start_print, self.end_print, _ = date2num(dates, units=self.tunits, calendar=self.calendar) + self.offset
         # Convert dates into timestamps
         self.start_timestamp, self.end_timestamp, _ = [
             truncated_timestamp(date, self.timestamp_length) for date in dates]
         # Convert dates to be consistent with summary
         num_dates = date2num(dates, units=ref_units, calendar=ref_calendar)
-        dates = num2date(num_dates + self.get_offset(), units=ref_units, calendar=ref_calendar)
+        dates = num2date(num_dates + self.offset, units=ref_units, calendar=ref_calendar)
         self.start_date, self.end_date, _ = dates2str(list(dates))
 
 
@@ -140,8 +143,9 @@ class File(object):
         except TypeError:
             last_date = num2date(self.last_num, units=self.funits, calendar=self.calendar)
         self.last_timestamp = truncated_timestamp(last_date, self.timestamp_length)
-        last_date = num2date(self.last_num + self.get_offset(), units=self.tunits, calendar=self.calendar)
+        last_date = num2date(self.last_num + self.offset, units=self.tunits, calendar=self.calendar)
         self.last_date = dates2str(last_date)
+        self.last_print = self.last_num + self.offset
 
 
     def build_time_axis(self):
