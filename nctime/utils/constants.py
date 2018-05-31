@@ -179,6 +179,12 @@ LIMIT_HELP = \
 
     """
 
+IGNORE_ERROR_HELP = \
+    """
+    One or several error codes to ignore.|n
+
+    """
+
 WRITE_HELP = \
     """
     Rewrites time axis depending on checking.|n

@@ -10,12 +10,6 @@
 
 """
 
-# TODO: revise again... overlap multiprocessing...
-# Checker le retour du noeud ?
-# Si pas process-safe ->
-# une solution est d'identifier d'aboord les fichiers par listes.
-# Opérer chaque list séparément pour diagnostiquer l'arbre associé.
-
 import argparse
 import os
 import sys
@@ -24,7 +18,7 @@ from importlib import import_module
 from utils.constants import *
 from utils.misc import init_logging
 from utils.parser import MultilineFormatter, DirectoryChecker, regex_validator, keyval_converter, processes_validator, \
-    positive_only, InputChecker
+    positive_only, InputChecker, CodeChecker
 
 __version__ = 'v{} {}'.format(VERSION, VERSION_DATE)
 
@@ -206,6 +200,12 @@ def get_args():
         default=5,
         nargs='?',
         help=LIMIT_HELP)
+    axis.add_argument(
+        '--ignore-errors',
+        action=CodeChecker,
+        metavar='ERROR_CODES',
+        nargs='+',
+        help=IGNORE_ERROR_HELP)
     return main.parse_args()
 
 

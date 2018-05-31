@@ -6,7 +6,6 @@
     :synopsis: Processing context used in this module.
 
 """
-import sys
 from multiprocessing.managers import BaseManager
 
 from ESGConfigParser import SectionParser
@@ -15,6 +14,7 @@ from handler import Graph
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
 from nctime.utils.custom_exceptions import InvalidFrequency
+from nctime.utils.misc import COLORS
 from nctime.utils.time import TimeInit
 
 BaseManager.register('graph', Graph, exposed=('get_graph',
@@ -92,14 +92,13 @@ class ProcessingContext(object):
         self.ref_calendar = self.tinit.calendar
         return self
 
-    def __exit__(self, *exc):
+    def __exit__(self, exc_type, exc_val, traceback):
         # Decline outputs depending on the scan results
-        print('Number of files scanned: {}'.format(self.scan_files))
-        print('Number of datasets: {}'.format(self.scan_dsets))
-        print('Number of datasets with error(s): {}'.format(self.broken + self.overlaps))
-        if self.broken:
-            sys.exit(1)
-        elif self.overlaps:
-            sys.exit(2)
+        msg = COLORS.HEADER + 'Number of files scanned: {}\n'.format(self.scan_files) + COLORS.ENDC
+        msg += COLORS.HEADER + 'Number of datasets: {}\n'.format(self.scan_dsets) + COLORS.ENDC
+        if self.broken or self.overlaps:
+            msg += COLORS.FAIL
         else:
-            sys.exit(0)
+            msg += COLORS.OKGREEN
+        msg += 'Number of datasets with error(s): {}'.format(self.broken + self.overlaps) + COLORS.ENDC
+        print msg

@@ -11,13 +11,13 @@ import itertools
 import logging
 import os
 import re
+import sys
 from multiprocessing import Pool
 
 import nco
 import networkx as nx
 import numpy as np
 
-from constants import *
 from context import ProcessingContext, ProcessManager
 from handler import Filename
 from nctime.utils.misc import COLORS
@@ -348,3 +348,6 @@ def run(args):
                                         to_date=ctx.overlaps['partial'][node]['end_date'],
                                         cutting_timestep=ctx.overlaps['partial'][node]['cutting_timestep'],
                                         partial=True)
+    # Exist status if scan errors
+    if ctx.overlaps or ctx.broken:
+        sys.exit(1)

@@ -9,6 +9,7 @@
 
 import logging
 import re
+import sys
 from multiprocessing import Pool, Lock
 
 import numpy as np
@@ -114,7 +115,8 @@ def process(ffp):
                                  fh.has_bounds)
         if fh.status:
             for s in fh.status:
-                msg += """\n        Status: {}""".format(COLORS.FAIL + STATUS[s] + COLORS.ENDC)
+                if s in ignore_codes:
+                    msg += """\n        Status: {}""".format(COLORS.FAIL + STATUS[s] + COLORS.ENDC)
         else:
             msg += """\n        Status: {}""".format(COLORS.OKGREEN + STATUS['000'] + COLORS.ENDC)
         # Display wrong time steps and/or bounds
@@ -189,3 +191,6 @@ def run(args):
         pool.join()
         ctx.scan_errors = sum(handlers)
         ctx.scan_files = len(handlers)
+    # Exist status if scan errors
+    if ctx.scan_errors:
+        sys.exit(1)

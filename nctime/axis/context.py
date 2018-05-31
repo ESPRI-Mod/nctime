@@ -7,13 +7,12 @@
 
 """
 
-import sys
-
 from ESGConfigParser import SectionParser
 
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
 from nctime.utils.custom_exceptions import InvalidFrequency
+from nctime.utils.misc import COLORS
 from nctime.utils.time import TimeInit
 
 
@@ -35,6 +34,7 @@ class ProcessingContext(object):
         self.debug = args.debug
         self.on_fly = args.on_fly
         self.limit = args.limit
+        self.ignore_codes = args.ignore_errors
         self.project = args.project
         if args.set_inc:
             for frequency, increment in dict(args.set_inc).items():
@@ -82,11 +82,12 @@ class ProcessingContext(object):
         self.ref_units = self.tinit.tunits
         return self
 
-    def __exit__(self, *exc):
+    def __exit__(self, exc_type, exc_val, traceback):
         # Decline outputs depending on the scan results
-        print('Number of files scanned: {}'.format(self.scan_files))
-        print('Number of file with error(s): {}'.format(self.scan_errors))
+        msg = COLORS.HEADER + 'Number of files scanned: {}\n'.format(self.scan_files) + COLORS.ENDC
         if self.scan_errors:
-            sys.exit(1)
+            msg += COLORS.FAIL
         else:
-            sys.exit(0)
+            msg += COLORS.OKGREEN
+        msg += 'Number of file with error(s): {}'.format(self.scan_errors) + COLORS.ENDC
+        print msg
