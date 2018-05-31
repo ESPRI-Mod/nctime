@@ -28,12 +28,14 @@ Debug mode
 
     $> nctime SUBCOMMAND --debug
 
-Only print errors
+Print all results
 *****************
+
+Default is to only print errors, to change this and print all results:
 
 .. code-block:: bash
 
-    $> nctime SUBCOMMAND --errors-only
+    $> nctime SUBCOMMAND --all
 
 Specify the project
 *******************
@@ -58,24 +60,7 @@ fetch and read the configuration files.
     $> nctime SUBCOMMAND -i /PATH/TO/CONFIG/
 
 .. note::
-    In the case of ``fetch-ini`` subcommand, if you're not on an ESGF node and ``/esg/config/esgcet`` doesn't exist,
-    the configuration file(s) are fetched into an ``ini`` folder in your working directory.
-
-Overwrites a frequency increment
-********************************
-
-By default, each supported frequency as its own unit and increment (e.g. mon = 1 months). In some case the frequency
-increment can be change, at least for diagnostic purposes.
-
-.. code-block:: bash
-
-    $> nctime SUBCOMMAND --set-inc FREQUENCY=INCREMENT
-
-.. note::
-    Duplicate the flag to overwrite several frequency increment.
-
-.. warning::
-    Default increments are those expected by CMIP specifications. Overwrite them could lead to non CMIP-compliant files.
+    If not submitted it takes the $ESGINI environment variable. If not exists the usual datanode path is used (i.e., ``/esg/config/esgcet``)
 
 Use real filename dates
 ***********************
@@ -88,7 +73,6 @@ time axis:
 .. code-block:: bash
 
     $> nctime SUBCOMMAND --true-dates
-
 
 Use a logfile
 *************
@@ -110,8 +94,10 @@ Use multiprocessing
 ``nctime`` uses a multiprocessing interface. This is useful to process a large amount of data, especially in the case
 of ``axis`` subcommands with the time axis calculation. Set the number of maximal processes to simultaneously treat
 several files. One process seems sequential processing (the default). Set it -1 to use all available CPU processes
-(as returned by ``multiprocessing.cpu_count()``).
+(as returned by ``multiprocessing.cpu_count()``). Default is set to 4 processes.
 
 .. code-block:: bash
 
     $> nctime SUBCOMMAND --max-processes 4
+
+.. warning:: The number of maximal processes is limited to the maximum CPU count in any case.

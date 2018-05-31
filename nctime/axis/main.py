@@ -66,7 +66,7 @@ def process(ffp):
             wrong_timesteps = list(np.where(time_axis_diff == False)[0])
         # Check time boundaries squareness
         wrong_bounds = list()
-        if fh.has_bounds:  # and not {'003', '008', '004'}.intersection(set(fh.status)):
+        if fh.has_bounds and not {'004'}.intersection(set(fh.status)):
             fh.time_bounds_rebuilt = fh.build_time_bounds()
             if not np.array_equal(fh.time_bounds_rebuilt, fh.time_bounds):
                 fh.status.append('006')

@@ -36,7 +36,7 @@ Remove full overlapping files only
 
 .. code-block:: bash
 
-   $> nctime overlap --project PROJECT_ID /PATH/TO/SCAN/ --resolve --full-overlap-only
+   $> nctime overlap --project PROJECT_ID /PATH/TO/SCAN/ --resolve --full-only
 
 Exit status
 ***********
