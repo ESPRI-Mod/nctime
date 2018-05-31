@@ -67,6 +67,19 @@ To print all wrong time steps:
 
    $> nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --limit
 
+Ignore errors
+*************
+
+If some errors are known and expected in the diagnostic they can be ignore for a more lightweight output:
+
+.. code-block:: bash
+
+   $> nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --ignore-errors ERROR_CODES
+
+
+.. note::  The allowed error codes corresponds to the following axis status codes (e.g., 001, 002, etc.). One or
+    several error codes can be submitted.
+
 Time axis status
 ****************
 
