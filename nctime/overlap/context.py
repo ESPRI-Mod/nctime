@@ -6,6 +6,7 @@
     :synopsis: Processing context used in this module.
 
 """
+from multiprocessing import cpu_count
 from multiprocessing.managers import BaseManager
 from time import sleep
 
@@ -52,7 +53,7 @@ class ProcessingContext(object):
                     raise InvalidFrequency(frequency)
                 FREQ_INC[frequency][0] = int(increment)
         self.tunits_default = None
-        self.processes = args.max_processes
+        self.processes = args.max_processes if args.max_processes <= cpu_count() else cpu_count()
         self.use_pool = (self.processes != 1)
         if self.project in DEFAULT_TIME_UNITS.keys():
             self.tunits_default = DEFAULT_TIME_UNITS[self.project]

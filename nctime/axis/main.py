@@ -57,16 +57,16 @@ def process(ffp):
             fh.status.append('005')
         # Check time axis squareness
         wrong_timesteps = list()
-        if not {'003', '008'}.intersection(set(fh.status)):
-            # Rebuild a theoretical time axis with appropriate precision
-            fh.time_axis_rebuilt = fh.build_time_axis()
-            if not np.array_equal(fh.time_axis_rebuilt, fh.time_axis):
-                fh.status.append('001')
-                time_axis_diff = (fh.time_axis_rebuilt == fh.time_axis)
-                wrong_timesteps = list(np.where(time_axis_diff == False)[0])
+        #        if not {'003', '008'}.intersection(set(fh.status)):
+        # Rebuild a theoretical time axis with appropriate precision
+        fh.time_axis_rebuilt = fh.build_time_axis()
+        if not np.array_equal(fh.time_axis_rebuilt, fh.time_axis):
+            fh.status.append('001')
+            time_axis_diff = (fh.time_axis_rebuilt == fh.time_axis)
+            wrong_timesteps = list(np.where(time_axis_diff == False)[0])
         # Check time boundaries squareness
         wrong_bounds = list()
-        if fh.has_bounds and '004' not in fh.status:
+        if fh.has_bounds:  # and not {'003', '008', '004'}.intersection(set(fh.status)):
             fh.time_bounds_rebuilt = fh.build_time_bounds()
             if not np.array_equal(fh.time_bounds_rebuilt, fh.time_bounds):
                 fh.status.append('006')
@@ -115,13 +115,16 @@ def process(ffp):
                                  fh.frequency, fh.step, fh.step_units,
                                  fh.is_instant,
                                  fh.has_bounds)
+        # Exclude codes to ignore from status codes
+        fh.status = [code for code in fh.status if code not in ignore_codes]
+        # Add status message
         if fh.status:
             for s in fh.status:
-                if s in ignore_codes:
-                    msg += """\n        Status: {}""".format(COLORS.FAIL + STATUS[s] + COLORS.ENDC)
+                msg += """\n        Status: {}""".format(COLORS.FAIL + STATUS[s] + COLORS.ENDC)
         else:
             msg += """\n        Status: {}""".format(COLORS.OKGREEN + STATUS['000'] + COLORS.ENDC)
         # Display wrong time steps and/or bounds
+
         timestep_limit = limit if limit else len(wrong_timesteps)
         for i, v in enumerate(wrong_timesteps):
             if (i + 1) <= timestep_limit:
@@ -132,13 +135,13 @@ def process(ffp):
             if (i + 1) <= bounds_limit:
                 msg += """\n        Wrong bound: {} iso {}""".format(str(fh.time_bounds[v]).ljust(10),
                                                                      str(fh.time_bounds_rebuilt[v]).ljust(10))
-        # Acquire lock to standard output
+        # Acquire lock to print result
         lock.acquire()
         if fh.status:
             logging.error(msg)
         else:
             logging.info(msg)
-        # Release lock on standard output
+        # Release lock
         lock.release()
         # Return error if it is the case
         if fh.status:

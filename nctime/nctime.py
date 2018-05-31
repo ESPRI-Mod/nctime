@@ -109,15 +109,15 @@ def get_args():
         default=False,
         help=VERBOSE_HELP)
     group.add_argument(
-        '--errors-only',
-        action='store_true',
-        default=False,
-        help=ERRORS_ONLY_HELP)
+        '--all',
+        action='store_false',
+        default=True,
+        help=ALL_HELP)
     parent.add_argument(
         '--max-processes',
         metavar='1',
         type=processes_validator,
-        default=1,
+        default=4,
         help=MAX_PROCESSES_HELP)
     parent.add_argument(
         '--set-inc',
@@ -145,7 +145,7 @@ def get_args():
         nargs='+',
         help=DIRECTORY_HELP)
     overlap.add_argument(
-        '--resolve',
+        '-r', '--resolve',
         action='store_true',
         default=False,
         help=RESOLVE_HELP)
@@ -174,12 +174,12 @@ def get_args():
         nargs='+',
         help=DIRECTORY_HELP)
     axis.add_argument(
-        '--write',
+        '-w', '--write',
         action='store_true',
         default=False,
         help=WRITE_HELP)
     axis.add_argument(
-        '--force',
+        '-f', '--force',
         action='store_true',
         default=False,
         help=FORCE_HELP)
@@ -200,6 +200,7 @@ def get_args():
         action=CodeChecker,
         metavar='CODE',
         nargs='+',
+        default=list(),
         help=IGNORE_ERROR_HELP)
     axis.add_argument(
         '--correct-timestamp',
@@ -213,12 +214,12 @@ def run():
     # Get command-line arguments
     args = get_args()
     # Initialize logger
-    if args.errors_only:
-        level = 'ERROR'
+    if args.all:
+        level = 'INFO'
     elif args.debug:
         level = 'DEBUG'
     else:
-        level = 'INFO'
+        level = 'ERROR'
     init_logging(log=args.log, level=level)
     # Run program
     main = import_module('.main', package='nctime.{}'.format(args.cmd))

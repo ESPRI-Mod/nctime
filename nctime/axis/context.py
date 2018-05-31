@@ -7,6 +7,7 @@
 
 """
 
+from multiprocessing import cpu_count
 from time import sleep
 
 from ESGConfigParser import SectionParser
@@ -46,7 +47,7 @@ class ProcessingContext(object):
         self.tunits_default = None
         if self.project in DEFAULT_TIME_UNITS.keys():
             self.tunits_default = DEFAULT_TIME_UNITS[self.project]
-        self.processes = args.max_processes
+        self.processes = args.max_processes if args.max_processes <= cpu_count() else cpu_count()
         self.use_pool = (self.processes != 1)
         self.scan_files = 0
         self.scan_errors = 0

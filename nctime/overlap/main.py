@@ -289,7 +289,7 @@ def run(args):
 
     """
     # Declare variables from initializer to avoid IDE warnings
-    global pattern, ref_calendar, true_dates, graph
+    global pattern, ref_calendar, graph
     # Instantiate processing context
     with ProcessingContext(args) as ctx:
         print("Analysing data, please wait...\r")
@@ -323,7 +323,7 @@ def run(args):
             # If broken time serie
             if 'BREAK' in path:
                 ctx.broken += 1
-                logging.error('Time series broken: {}'.format(msg))
+                logging.error(COLORS.FAIL + 'Time series broken: {}'.format(msg) + COLORS.ENDC)
             else:
                 # Print overlaps if exists
                 if full_overlaps or partial_overlaps:

@@ -103,6 +103,8 @@ INI_HELP = \
 LOG_HELP = \
     """
     Logfile directory.|n
+    If submitted without value, the default directory|n
+    is: $PWD/logs.
     If not, standard output is used.
 
     """
@@ -113,10 +115,10 @@ VERBOSE_HELP = \
 
     """
 
-ERRORS_ONLY_HELP = \
+ALL_HELP = \
     """
-    Shows error(s) only: overlaps and broken|n
-    time periods.
+    Display all results.
+    Default only shows error(s).
 
     """
 DIRECTORY_HELP = \
@@ -234,9 +236,10 @@ FORCE_HELP = \
 MAX_PROCESSES_HELP = \
     """
     Number of maximal processes to simultaneously treat|n
-    several files.|n
-    Set to one seems sequential processing (default).|n
-    Set to -1 uses the max CPU count.
+    several files. Max is the CPU count.|n
+    Set to 1 seems sequential processing.|n
+    Set to -1 uses the max CPU count.|n
+    Default is set to 4 processes.
     
     """
 IGNORE_DIR_HELP = \

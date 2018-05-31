@@ -108,8 +108,8 @@ class File(object):
         dates_num = date2num(dates, units=self.funits, calendar=self.calendar)
         # Apply time offset only if:
         # - NON-INSTANT axis
-        # - AND NOT (frequency is 3hr or 6hr WITH true dates flag)
-        if not self.is_instant and not (self.frequency in ['3hr', '6hr'] and self.true_dates):
+        # - AND NOT (frequency is 3hr or 6hr WITH corrected timestamps)
+        if not self.is_instant and not (self.frequency in ['3hr', '6hr'] and not correction):
             dates_num += 0.5
         self.start_axis = dates_num[0]
         dates = num2date(dates_num, units=self.funits, calendar=self.calendar)

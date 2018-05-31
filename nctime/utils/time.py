@@ -310,7 +310,6 @@ def get_start_end_dates_from_filename(filename, pattern, frequency, calendar, co
     <https://docs.python.org/2/library/re.html>`_).
     :param str frequency: The time frequency
     :param str calendar: The NetCDF calendar attribute
-    :param boolean true_dates: Strictly consider filename dates without corrections
     :returns: Start and end dates from the filename
     :rtype: *netcdftime.datetime*
 
