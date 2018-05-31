@@ -110,21 +110,15 @@ def get_args():
         help=VERBOSE_HELP)
     group.add_argument(
         '--all',
-        action='store_false',
-        default=True,
+        action='store_true',
+        default=False,
         help=ALL_HELP)
     parent.add_argument(
         '--max-processes',
-        metavar='1',
+        metavar='INT',
         type=processes_validator,
         default=4,
         help=MAX_PROCESSES_HELP)
-    parent.add_argument(
-        '--set-inc',
-        metavar='FREQUENCY=INCREMENT',
-        type=keyval_converter,
-        action='append',
-        help=SET_INC_HELP)
 
     ##################################
     # Subparser for "nctime overlap" #
@@ -173,6 +167,12 @@ def get_args():
         action=InputChecker,
         nargs='+',
         help=DIRECTORY_HELP)
+    axis.add_argument(
+        '--set-inc',
+        metavar='FREQUENCY=INCREMENT',
+        type=keyval_converter,
+        action='append',
+        help=SET_INC_HELP)
     axis.add_argument(
         '-w', '--write',
         action='store_true',
