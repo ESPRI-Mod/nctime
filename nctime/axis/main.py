@@ -29,6 +29,8 @@ def process(ffp):
     :rtype: *list*
 
     """
+    # Declare variables from initializer to avoid IDE warnings
+    global pattern, ref_units, ref_calendar, true_dates, write, force, limit, ignore_codes, lock, on_fly
     # Block to avoid program stop if a thread fails
     try:
         # Instantiate file handler
@@ -147,7 +149,7 @@ def process(ffp):
         raise
     except Exception as e:
         logging.error('{} skipped\n{}: {}'.format(ffp, e.__class__.__name__, e.message))
-        return 0
+        return 1
 
 
 def initializer(keys, values):

@@ -69,6 +69,8 @@ class File(object):
             if 'time' not in nc.variables.keys():
                 raise NoNetCDFVariable('time', self.ffp)
             self.length = nc.variables['time'].shape[0]
+            if self.length == 0:
+                raise EmptyTimeAxis(self.ffp)
             self.time_axis = nc.variables['time'][:]
             # Get time boundaries
             self.has_bounds = False

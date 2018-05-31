@@ -7,6 +7,7 @@
 
 """
 from multiprocessing.managers import BaseManager
+from time import sleep
 
 from ESGConfigParser import SectionParser
 
@@ -60,6 +61,7 @@ class ProcessingContext(object):
         self.broken = 0
         self.scan_files = 0
         self.scan_dsets = 0
+        self.scan_errors = 0
         self.pbar = None
         self.file_filter = []
         if args.include_file:
@@ -93,9 +95,16 @@ class ProcessingContext(object):
         return self
 
     def __exit__(self, exc_type, exc_val, traceback):
+        # Sleep time before final print
+        sleep(0.1)
         # Decline outputs depending on the scan results
-        msg = COLORS.HEADER + 'Number of files scanned: {}\n'.format(self.scan_files) + COLORS.ENDC
-        msg += COLORS.HEADER + 'Number of datasets: {}\n'.format(self.scan_dsets) + COLORS.ENDC
+        msg = COLORS.HEADER + '\nNumber of files scanned: {}\n'.format(self.scan_files) + COLORS.ENDC
+        if self.scan_errors:
+            msg += COLORS.FAIL
+        else:
+            msg += COLORS.OKGREEN
+        msg += 'Number of files skipped: {}\n'.format(self.scan_errors) + COLORS.ENDC
+        msg += COLORS.HEADER + '\nNumber of datasets: {}\n'.format(self.scan_dsets) + COLORS.ENDC
         if self.broken or self.overlaps:
             msg += COLORS.FAIL
         else:

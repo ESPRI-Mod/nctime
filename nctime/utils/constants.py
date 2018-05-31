@@ -8,7 +8,6 @@
 """
 from netcdftime import datetime
 
-
 # Program version
 VERSION = '4.3.2'
 

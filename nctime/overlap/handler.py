@@ -17,7 +17,7 @@ from nctime.utils.constants import CLIM_SUFFIX
 from nctime.utils.custom_exceptions import *
 from nctime.utils.misc import ncopen
 from nctime.utils.time import get_start_end_dates_from_filename, \
-    get_first_last_timesteps, dates2int
+    dates2int
 
 
 class Filename(object):
@@ -35,7 +35,6 @@ class Filename(object):
         # Build id as the filename without the dates and extension
         self.id = '_'.join(self.filename.split('_')[:-1])
         # Get first and last time steps
-        self.first_timestep, self.last_timestep = get_first_last_timesteps(ffp)
         # Start/end period dates from filename + next expected date
         self.start_date = None
         self.end_date = None
@@ -91,14 +90,12 @@ class Graph(object):
     def get_graph(self, i):
         return copy(getattr(self, i))
 
-    def add_node(self, i, filename, start, end, next, first, last, path):
+    def add_node(self, i, filename, start, end, next, path):
         g = getattr(self, i)
         g.add_node(filename,
                    start=start,
                    end=end,
                    next=next,
-                   first_step=first,
-                   last_step=last,
                    path=path)
         return g.node[filename]
 

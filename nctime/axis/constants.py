@@ -17,7 +17,7 @@ STATUS = {'000': 'Time axis seems OK',
           '006': 'Incorrect time bounds over one or several time steps',
           '007': 'Calendar must be unchanged for the same dataset',
           '008': 'Last date differs from end date of filename',
-          '999' : 'Other error'}
+          '999': 'Other error'}
 
 # List of variable required by each process
 PROCESS_VARS = ['pattern',

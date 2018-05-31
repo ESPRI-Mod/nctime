@@ -18,6 +18,7 @@ import nco
 import networkx as nx
 import numpy as np
 
+from constants import *
 from context import ProcessingContext, ProcessManager
 from handler import Filename
 from nctime.utils.misc import COLORS
@@ -125,19 +126,18 @@ def create_nodes(ffp):
                               fh.start_date,
                               fh.end_date,
                               fh.next_date,
-                              fh.first_timestep,
-                              fh.last_timestep,
                               fh.ffp)
         logging.debug('Graph: {} :: Node {} (start={}, end={}, next={})'.format(fh.id,
                                                                                 fh.filename,
                                                                                 node['start'],
                                                                                 node['end'],
                                                                                 node['next']))
+        return 1
     except KeyboardInterrupt:
         raise
     except Exception as e:
         logging.error('{} skipped\n{}: {}'.format(ffp, e.__class__.__name__, e.message))
-        return None
+        return 0
 
 
 def create_edges(gid):
@@ -289,6 +289,8 @@ def run(args):
     :param ArgumentParser args: Command-line arguments parser
 
     """
+    # Declare variables from initializer to avoid IDE warnings
+    global pattern, ref_calendar, true_dates, graph
     # Instantiate processing context
     with ProcessingContext(args) as ctx:
         print("Analysing data, please wait...\r")
@@ -310,6 +312,7 @@ def run(args):
         pool.close()
         pool.join()
         ctx.scan_files = len(handlers)
+        ctx.scan_errors = sum(handlers)
         # Retrieve graph instance from multiprocessing manager
         # Process each directed graph to create appropriate edges
         ng = [x for x in itertools.imap(create_edges, graph())]
@@ -349,5 +352,5 @@ def run(args):
                                         cutting_timestep=ctx.overlaps['partial'][node]['cutting_timestep'],
                                         partial=True)
     # Exist status if scan errors
-    if ctx.overlaps or ctx.broken:
+    if ctx.overlaps or ctx.broken or ctx.scan_errors:
         sys.exit(1)

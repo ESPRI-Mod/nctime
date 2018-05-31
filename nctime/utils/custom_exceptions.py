@@ -84,6 +84,18 @@ class NetCDFTimeStepNotFound(Exception):
         super(self.__class__, self).__init__(self.msg)
 
 
+class EmptyTimeAxis(Exception):
+    """
+    Raised when a NetCDF time axis is empty.
+
+    """
+
+    def __init__(self, path):
+        self.msg = "Empty time axis"
+        self.msg += "\n<file: '{}'>".format(path)
+        super(self.__class__, self).__init__(self.msg)
+
+
 ############################
 # Miscellaneous exceptions #
 ############################

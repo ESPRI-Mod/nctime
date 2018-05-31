@@ -7,6 +7,8 @@
 
 """
 
+from time import sleep
+
 from ESGConfigParser import SectionParser
 
 from nctime.utils.collector import Collector
@@ -83,8 +85,10 @@ class ProcessingContext(object):
         return self
 
     def __exit__(self, exc_type, exc_val, traceback):
+        # Sleep time before final print
+        sleep(0.1)
         # Decline outputs depending on the scan results
-        msg = COLORS.HEADER + 'Number of files scanned: {}\n'.format(self.scan_files) + COLORS.ENDC
+        msg = COLORS.HEADER + '\nNumber of files scanned: {}\n'.format(self.scan_files) + COLORS.ENDC
         if self.scan_errors:
             msg += COLORS.FAIL
         else:

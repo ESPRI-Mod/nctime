@@ -113,7 +113,7 @@ class CodeChecker(Action):
 
     @staticmethod
     def code_checker(code):
-        ALLOWED_CODES = [str(x).rjust(3, '0') for x in range(0,9)]
+        ALLOWED_CODES = [str(x).rjust(3, '0') for x in range(0, 9)]
         if code not in ALLOWED_CODES:
             msg = 'Invalid code: {} -- Available codes are {}'.format(code, ', '.join(ALLOWED_CODES))
             raise ArgumentTypeError(msg)
