@@ -50,7 +50,7 @@ class ProcessingContext(object):
         self.use_pool = (self.processes != 1)
         self.scan_files = 0
         self.scan_errors = 0
-        self.true_dates = args.true_dates
+        self.correction = args.correct_timestamp
         self.status = []
         self.file_filter = []
         if args.include_file:

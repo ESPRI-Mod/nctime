@@ -40,7 +40,7 @@ class Filename(object):
         self.end_date = None
         self.next_date = None
 
-    def get_start_end_dates(self, pattern, calendar, true_dates):
+    def get_start_end_dates(self, pattern, calendar):
         """
         Wraps and records :func:`get_start_end_dates_from_filename` results.
 
@@ -67,8 +67,7 @@ class Filename(object):
         dates = get_start_end_dates_from_filename(filename=self.name,
                                                   pattern=pattern,
                                                   frequency=frequency,
-                                                  calendar=calendar,
-                                                  true_dates=true_dates)
+                                                  calendar=calendar)
         self.start_date, self.end_date, self.next_date = dates2int(dates)
 
 

@@ -26,6 +26,6 @@ PROCESS_VARS = ['pattern',
                 'write',
                 'force',
                 'on_fly',
-                'true_dates',
+                'correction',
                 'limit',
                 'ignore_codes']

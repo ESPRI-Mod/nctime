@@ -299,7 +299,7 @@ def add_year(date, years_to_add):
     return date_next
 
 
-def get_start_end_dates_from_filename(filename, pattern, frequency, calendar, true_dates=False):
+def get_start_end_dates_from_filename(filename, pattern, frequency, calendar, correction=False):
     """
     Returns datetime objects for start and end dates from the filename.
     To rebuild a proper time axis, the dates from filename are expected to set the first
@@ -324,7 +324,7 @@ def get_start_end_dates_from_filename(filename, pattern, frequency, calendar, tr
         date_as_since = ''.join([''.join(triple) for triple in
                                  zip(digits[::2], digits[1::2], ['', '-', '-', ' ', ':', ':', ':'])])[:-1]
         # Use num2date to create netCDF4 datetime objects
-        if not true_dates and frequency in ['3hr', '6hr']:
+        if correction and frequency in ['3hr', '6hr']:
             # Fix on filename digits for 3hr and 6hr frequencies. 3hr (6hr) files always start
             # at 000000 end at 2100000 (180000) whether the time axis is instantaneous or not.
             dates.append(num2date(TIME_CORRECTION[frequency][key][digits[-6:]],
@@ -342,23 +342,6 @@ def get_start_end_dates_from_filename(filename, pattern, frequency, calendar, tr
                               units=time_inc(frequency)[1] + ' since ' + date_as_since,
                               calendar=calendar))
     return dates
-
-
-def get_first_last_timesteps(ffp):
-    """
-    Returns first and last time steps from time axis of a NetCDF file.
-
-    :param str ffp: The file full path
-    :returns: The first and last timestep
-    :rtype: *int*
-
-    """
-    with ncopen(ffp) as nc:
-        if 'time' not in nc.variables.keys():
-            raise NoNetCDFVariable('time', ffp)
-        first = nc.variables['time'][0]
-        last = nc.variables['time'][-1]
-        return first, last
 
 
 def get_next_timestep(ffp, current_timestep):

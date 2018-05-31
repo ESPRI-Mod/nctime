@@ -115,8 +115,7 @@ def create_nodes(ffp):
         fh = Filename(ffp=ffp)
         # Extract start and end dates from filename
         fh.get_start_end_dates(pattern=pattern,
-                               calendar=ref_calendar,
-                               true_dates=true_dates)
+                               calendar=ref_calendar)
         # Create corresponding DiGraph if not exist
         if not graph.has_graph(fh.id):
             graph.set_graph(fh.id)
@@ -342,7 +341,7 @@ def run(args):
                                     pattern=ctx.pattern,
                                     filename=node,
                                     partial=False)
-                if not ctx.full_overlap_only:
+                if not ctx.full_only:
                     for node in ctx.partial_overlaps:
                         resolve_overlap(directory=ctx.directory,
                                         pattern=ctx.pattern,

@@ -14,19 +14,31 @@ VERSION = '4.3.2'
 # Date
 VERSION_DATE = datetime(year=2018, month=5, day=31).strftime("%Y-%d-%m")
 
+# Help
 TITLE = \
     """
     _________________________|n
     .___ ___| |_ _ _____ ___.|n
     | | | __| __| | . . | -_||n
-    |_|_|___|_| |_|_|_|_|___||n|n
+    |_|_|___|_| |_|_|_|_|___||n
     
     """
+URL = \
+    """
+    See full documentation and references at:|n
+    http://prodiguer.github.io/nctime/.
 
-# Help
+    """
+
+DEFAULT = \
+    """
+    The default values are displayed next to the corresponding flags.
+
+    """
+
 PROGRAM_DESC = \
     """
-    {}
+    {}|n|n
                          
     NetCDF files describe all required dimensions to work with. Dimensions such as longitude, latitude and time are
     included in NetCDF files as vectors. Time is a key dimension that could lead to flawed studies or unused data
@@ -37,9 +49,11 @@ PROGRAM_DESC = \
 
     ii. Check time axis squareness (i.e., rebuilt a convention-compliant time axis).|n|n
     
-    See full documentation and references on http://prodiguer.github.io/nctime/.
-
-    """.format(TITLE)
+    {}|n|n
+    
+    {}
+   
+    """.format(TITLE, URL, DEFAULT)
 
 EPILOG = \
     """
@@ -80,9 +94,9 @@ PROJECT_HELP = \
 INI_HELP = \
     """
     Initialization/configuration directory containing|n
-    "esg.ini" and "esg.<project>.ini" files.|n
-    If not specified, the usual datanode directory|n
-    is used.
+    "esg.<project>.ini" files. If not specified, the|n
+    environment variable ESGINI is used. If not exist|n
+    usual datanode directory is used.
 
     """
 
@@ -114,14 +128,18 @@ DIRECTORY_HELP = \
 
 OVERLAP_DESC = \
     """
+    {}|n|n
+    
     The scheme of chunked files in archive designs is not fixed and depends on several parameters (the
     institute, the model, the frequency, etc.). These different schemes lead to unnecessary overlapping files
     with a more complex folder reading, wasting disk space or broken time series. "nctime overlap" allows to
     easily analyse and correct the time series continuity (i.e., broken time series, overlapping files).|n|n
     
-    The default values are displayed next to the corresponding flags.
+    {}|n|n
     
-    """
+    {}
+    
+    """.format(TITLE, URL, DEFAULT)
 
 OVERLAP_HELP = \
     """
@@ -137,7 +155,7 @@ RESOLVE_HELP = \
 
     """
 
-FULL_OVERLAP_ONLY_HELP = \
+FULL_ONLY_HELP = \
     """
     Removes only full overlapping files.|n
     THIS ACTION DEFINITELY MODIFY INPUT DIRECTORY!
@@ -146,14 +164,18 @@ FULL_OVERLAP_ONLY_HELP = \
 
 AXIS_DESC = \
     """
+    {}|n|n
+    
     The time axis is a key dimension. Unfortunately, this time axis often is mistaken in files from coupled climate
     models and leads to flawed studies or unused data. Consequently, these files cannot be used or, even worse,
     produced erroneous results, due to problems in the time axis description. "nctime axis" allows to easily
     check and rebuild a convention-compliant time axis for NetCDF files.|n|n
 
-    The default values are displayed next to the corresponding flags.
+    {}|n|n
     
-    """
+    {}
+    
+    """.format(TITLE, URL, DEFAULT)
 
 AXIS_HELP = \
     """
@@ -162,11 +184,15 @@ AXIS_HELP = \
     
     """
 
-TRUE_DATES_HELP = \
+CORRECT_TIMESTAMP_HELP = \
     """
-    Disable correction on filename dates for sub-daily|n
-    frequencies. Start and end timestamps will stricly|n
-    correspond to the filename dates.
+    Filename digits for sub-daily frequencies should start|n
+    at 000000 and end at 2100000 (180000) respectively|n
+    whether the time axis is instantaneous or not. This|n
+    applies the appropriate correction on filename timestamp|n
+    for sub-daily frequencies.|n
+    By default start and end timestamps will stricly|n
+    correspond to the filename.
 
     """
 
@@ -187,7 +213,7 @@ LIMIT_HELP = \
 
 IGNORE_ERROR_HELP = \
     """
-    One or several error codes to ignore.|n
+    One or several error codes to ignore.
 
     """
 
@@ -208,7 +234,7 @@ FORCE_HELP = \
 MAX_PROCESSES_HELP = \
     """
     Number of maximal processes to simultaneously treat|n
-    several files.
+    several files.|n
     Set to one seems sequential processing (default).|n
     Set to -1 uses the max CPU count.
     
@@ -243,9 +269,9 @@ EXCLUDE_FILE_HELP = \
 SET_INC_HELP = \
     """
     Overwrites the default time increment of a frequency.|n
-    Duplicate the flag to overwrites several increment.|n
+    Duplicate the flag to overwrites several increment|n
     (e.g., mon=2 will set monthly frequency equivalent to |n
-    2 months between time steps instead of 1)
+    2 months between time steps instead of 1).
     """
 
 # Half-hour numerical definition

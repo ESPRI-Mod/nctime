@@ -30,7 +30,7 @@ def process(ffp):
 
     """
     # Declare variables from initializer to avoid IDE warnings
-    global pattern, ref_units, ref_calendar, true_dates, write, force, limit, ignore_codes, lock, on_fly
+    global pattern, ref_units, ref_calendar, correction, write, force, limit, ignore_codes, lock, on_fly
     # Block to avoid program stop if a thread fails
     try:
         # Instantiate file handler
@@ -38,7 +38,7 @@ def process(ffp):
                   pattern=pattern,
                   ref_units=ref_units,
                   ref_calendar=ref_calendar,
-                  true_dates=true_dates)
+                  correction=correction)
         fh.load_last_date()
         # In the case of inconsistent timestamps, it may be due to float precision issue
         if not on_fly and fh.last_timestamp != fh.end_timestamp:

@@ -44,7 +44,7 @@ class ProcessingContext(object):
         self.directory = args.directory
         self.config_dir = args.i
         self.resolve = args.resolve
-        self.full_overlap_only = args.full_overlap_only
+        self.full_only = args.full_only
         self.project = args.project
         if args.set_inc:
             for frequency, increment in dict(args.set_inc).items():
@@ -52,7 +52,6 @@ class ProcessingContext(object):
                     raise InvalidFrequency(frequency)
                 FREQ_INC[frequency][0] = int(increment)
         self.tunits_default = None
-        self.true_dates = args.true_dates
         self.processes = args.max_processes
         self.use_pool = (self.processes != 1)
         if self.project in DEFAULT_TIME_UNITS.keys():

@@ -62,19 +62,19 @@ def get_args():
     #######################################
     parent = argparse.ArgumentParser(add_help=False)
     parent.add_argument(
-        '--project',
-        metavar='<project_id>',
+        '-p', '--project',
+        metavar='PROJECT',
         type=str,
         required=True,
         help=PROJECT_HELP)
     parent.add_argument(
         '-i',
-        metavar='/esg/config/esgcet',
+        metavar='$ESGINI',
         type=str,
-        default='/esg/config/esgcet',
+        default=os.environ['ESGINI'] if 'ESGINI' in os.environ.keys() else '/esg/config/esgcet',
         help=INI_HELP)
     parent.add_argument(
-        '--log',
+        '-l', '--log',
         metavar='CWD',
         type=str,
         const='{}/logs'.format(os.getcwd()),
@@ -125,11 +125,6 @@ def get_args():
         type=keyval_converter,
         action='append',
         help=SET_INC_HELP)
-    parent.add_argument(
-        '--true-dates',
-        action='store_true',
-        default=False,
-        help=TRUE_DATES_HELP)
 
     ##################################
     # Subparser for "nctime overlap" #
@@ -155,10 +150,10 @@ def get_args():
         default=False,
         help=RESOLVE_HELP)
     overlap.add_argument(
-        '--full-overlap-only',
+        '--full-only',
         action='store_true',
         default=False,
-        help=FULL_OVERLAP_ONLY_HELP)
+        help=FULL_ONLY_HELP)
 
     ###############################
     # Subparser for "nctime axis" #
@@ -203,9 +198,14 @@ def get_args():
     axis.add_argument(
         '--ignore-errors',
         action=CodeChecker,
-        metavar='ERROR_CODES',
+        metavar='CODE',
         nargs='+',
         help=IGNORE_ERROR_HELP)
+    axis.add_argument(
+        '--correct-timestamp',
+        action='store_true',
+        default=False,
+        help=CORRECT_TIMESTAMP_HELP)
     return main.parse_args()
 
 

@@ -34,7 +34,7 @@ class File(object):
 
     """
 
-    def __init__(self, ffp, pattern, ref_units, ref_calendar, true_dates):
+    def __init__(self, ffp, pattern, ref_units, ref_calendar, correction):
         # Retrieve the file full path
         self.ffp = ffp
         # Retrieve the reference time units to use
@@ -42,7 +42,7 @@ class File(object):
         # Retrieve the reference calendar to use
         self.ref_calendar = ref_calendar
         # If true dates from filename
-        self.true_dates = true_dates
+        self.correction = correction
         # Retrieve the file size
         self.size = os.stat(self.ffp).st_size
         # Retrieve directory and filename full path
@@ -104,7 +104,7 @@ class File(object):
                                                   pattern=pattern,
                                                   frequency=self.frequency,
                                                   calendar=self.calendar,
-                                                  true_dates=self.true_dates)
+                                                  correction=self.correction)
         dates_num = date2num(dates, units=self.funits, calendar=self.calendar)
         # Apply time offset only if:
         # - NON-INSTANT axis

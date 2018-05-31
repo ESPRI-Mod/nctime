@@ -9,5 +9,4 @@
 
 # List of variable required by each process
 PROCESS_VARS = ['pattern',
-                'ref_calendar',
-                'true_dates']
+                'ref_calendar']
