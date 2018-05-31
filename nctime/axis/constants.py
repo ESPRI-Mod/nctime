@@ -18,3 +18,13 @@ STATUS = {'000': 'Time axis seems OK',
           '007': 'Calendar must be unchanged for the same dataset',
           '008': 'Last date differs from end date of filename',
           '999': 'Other error'}
+
+# List of variable required by each process
+PROCESS_VARS = ['pattern',
+                'ref_units',
+                'ref_calendar',
+                'write',
+                'force',
+                'on_fly',
+                'true_dates',
+                'limit']

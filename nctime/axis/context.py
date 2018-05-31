@@ -78,6 +78,8 @@ class ProcessingContext(object):
         self.sources.PathFilter.add(regex=self.dir_filter, inclusive=False)
         # Set driving time properties
         self.tinit = TimeInit(ref=self.sources.first(), tunits_default=self.tunits_default)
+        self.ref_calendar = self.tinit.calendar
+        self.ref_units = self.tinit.tunits
         return self
 
     def __exit__(self, *exc):

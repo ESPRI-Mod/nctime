@@ -16,7 +16,7 @@ import numpy as np
 from constants import *
 from context import ProcessingContext
 from handler import File
-from nctime.utils.misc import trunc, BCOLORS
+from nctime.utils.misc import trunc, COLORS
 
 
 def process(ffp):
@@ -102,7 +102,7 @@ def process(ffp):
         Length: {}
         Frequency: {} = {} {}
         Is instant: {}
-        Has bounds: {}""".format(BCOLORS.HEADER + fh.filename + BCOLORS.ENDC,
+        Has bounds: {}""".format(COLORS.HEADER + fh.filename + COLORS.ENDC,
                                  fh.tunits, ref_units,
                                  fh.calendar, ref_calendar,
                                  fh.start_timestamp, fh.start_date, fh.start_num,
@@ -114,9 +114,9 @@ def process(ffp):
                                  fh.has_bounds)
         if fh.status:
             for s in fh.status:
-                msg += """\n        Status: {}""".format(BCOLORS.FAIL + STATUS[s] + BCOLORS.ENDC)
+                msg += """\n        Status: {}""".format(COLORS.FAIL + STATUS[s] + COLORS.ENDC)
         else:
-            msg += """\n        Status: {}""".format(BCOLORS.OKGREEN + STATUS['000'] + BCOLORS.ENDC)
+            msg += """\n        Status: {}""".format(COLORS.OKGREEN + STATUS['000'] + COLORS.ENDC)
         # Display wrong time steps and/or bounds
         timestep_limit = limit if limit else len(wrong_timesteps)
         for i, v in enumerate(wrong_timesteps):
@@ -148,31 +148,17 @@ def process(ffp):
         return 0
 
 
-def process_context(_pattern, _ref_units, _ref_calendar, _write, _force, _on_fly, _true_dates, _limit, _lock):
+def initializer(keys, values):
     """
     Initialize process context by setting particular variables as global variables.
 
-    :param str _pattern: The filename pattern
-    :param str _ref_units: The time units to be used as reference for the simulation
-    :param str _ref_calendar: The time calendar  to be used as reference for the simulation
-    :param boolean _write: Unable write mode if True
-    :param boolean _force: Force write mode if True
-    :param boolean _on_fly: Disable some check if True for incomplete time axis
-    :param boolean _true_dates: Disable filename dates correction
-    :param int _limit: Limit of displayed wrong time steps
-    :param multiprocessing.Lock _lock: Lock to ensure only one process print to std_out at a time
+    :param list keys: Argument name list
+    :param list values: Argument value list
 
     """
-    global pattern, ref_units, ref_calendar, write, force, on_fly, true_dates, limit, lock
-    pattern = _pattern
-    ref_units = _ref_units
-    ref_calendar = _ref_calendar
-    write = _write
-    force = _force
-    on_fly = _on_fly
-    true_dates = _true_dates
-    limit = _limit
-    lock = _lock
+    assert len(keys) == len(values)
+    for i, key in enumerate(keys):
+        globals()[key] = values[i]
 
 
 def run(args):
@@ -190,17 +176,12 @@ def run(args):
     # Instantiate processing context
     with ProcessingContext(args) as ctx:
         print("Analysing data, please wait...\r")
+        # Init process context
+        ProcessContext = {name: getattr(ctx, name) for name in PROCESS_VARS}
+        ProcessContext['lock'] = Lock()
         # Init processes pool
-        std_out_lock = Lock()
-        pool = Pool(processes=ctx.processes, initializer=process_context, initargs=(ctx.pattern,
-                                                                                    ctx.tinit.tunits,
-                                                                                    ctx.tinit.calendar,
-                                                                                    ctx.write,
-                                                                                    ctx.force,
-                                                                                    ctx.on_fly,
-                                                                                    ctx.true_dates,
-                                                                                    ctx.limit,
-                                                                                    std_out_lock))
+        pool = Pool(processes=ctx.processes, initializer=initializer, initargs=(ProcessContext.keys(),
+                                                                                ProcessContext.values()))
         # Process supplied files
         handlers = [x for x in pool.imap(process, ctx.sources)]
         # Close pool of workers
