@@ -8,20 +8,27 @@
 """
 from netcdftime import datetime
 
+
 # Program version
 VERSION = '4.3.2'
 
 # Date
 VERSION_DATE = datetime(year=2018, month=5, day=31).strftime("%Y-%d-%m")
 
-# Help
-PROGRAM_DESC = \
+TITLE = \
     """
     _________________________|n
     .___ ___| |_ _ _____ ___.|n
     | | | __| __| | . . | -_||n
     |_|_|___|_| |_|_|_|_|___||n|n
-                             
+    
+    """
+
+# Help
+PROGRAM_DESC = \
+    """
+    {}
+                         
     NetCDF files describe all required dimensions to work with. Dimensions such as longitude, latitude and time are
     included in NetCDF files as vectors. Time is a key dimension that could lead to flawed studies or unused data
     if misdeclared. "nctime" allows to easily diagnose the time definition of NetCDF files to ensure a proper
@@ -33,7 +40,7 @@ PROGRAM_DESC = \
     
     See full documentation and references on http://prodiguer.github.io/nctime/.
 
-    """
+    """.format(TITLE)
 
 EPILOG = \
     """
