@@ -13,7 +13,6 @@ import re
 
 from netCDF4 import Dataset
 
-from constants import *
 from custom_exceptions import *
 
 
@@ -124,7 +123,7 @@ def match(pattern, string, inclusive=True):
         return True if not re.search(pattern, string) else False
 
 
-class BColors:
+class Colors:
     """
     Background colors for print statements
 
@@ -141,4 +140,4 @@ class BColors:
         self.UNDERLINE = '\033[4m'
 
 
-BCOLORS = BColors()
+COLORS = Colors()

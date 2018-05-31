@@ -12,15 +12,15 @@ import logging
 import os
 import re
 from multiprocessing import Pool
-from multiprocessing.managers import BaseManager
 
 import nco
 import networkx as nx
 import numpy as np
 
-from context import ProcessingContext
-from handler import Filename, Graph
-from nctime.utils.misc import BCOLORS
+from constants import *
+from context import ProcessingContext, ProcessManager
+from handler import Filename
+from nctime.utils.misc import COLORS
 from nctime.utils.time import get_next_timestep
 
 
@@ -31,7 +31,6 @@ def get_overlaps(g, shortest):
      * The date to cut the file in order to resolve the overlap,
      * The corresponding cutting timestep.
 
-    :param str directory: The directory scanned
     :param networkx.DiGraph() g: The directed graph
     :param list shortest: The most consecutive files list (from `nx.DiGraph().shortest_path`)
     :returns: The filenames
@@ -141,7 +140,7 @@ def create_nodes(ffp):
         return None
 
 
-def create_edges(id):
+def create_edges(gid):
     """
     Creates the edges between nodes into the corresponding Graph().
     One directed graph per dataset.
@@ -150,11 +149,12 @@ def create_edges(id):
      * Builds the "END" node with the appropriate edges from the nodes with the latest end date
      * Builds edges between a node and its "backwards" nodes
 
-    :param tuple graph_input: A tuple with the graph id, the graph object and the processing context
+    :param str gid: The graph id
 
     """
-    g = graph.get_graph(id)
+    g = graph.get_graph(gid)
     # Create edges with backward nodes
+
     # A node is a "backward" node when the difference between the next current time step
     # and its start date is positive.
     # To ensure continuity path, edges has to only exist with backward nodes.
@@ -170,8 +170,8 @@ def create_edges(id):
         next_nodes = [other_nodes[i] for i in indexes]
         # For each next node, build the corresponding edge in the graph
         for next_node in next_nodes:
-            graph.add_edge(id, node, next_node)
-            logging.debug('Graph: {} :: Edge {} --> {}'.format(id, node, next_node))
+            graph.add_edge(gid, node, next_node)
+            logging.debug('Graph: {} :: Edge {} --> {}'.format(gid, node, next_node))
     # Find the node(s) with the earliest date
     start_dates = zip(*g.nodes(data='start'))[1]
     starts = [n for n in g.nodes() if g.nodes[n]['start'] == min(start_dates)]
@@ -180,25 +180,25 @@ def create_edges(id):
     ends = [n for n in g.nodes() if g.nodes[n]['end'] == max(end_dates)]
     # Build starting node with edges to first node(s)
     for start in starts:
-        graph.add_edge(id, 'START', start)
-        logging.debug('Graph: {} :: Edge START --> {}'.format(id, start))
+        graph.add_edge(gid, 'START', start)
+        logging.debug('Graph: {} :: Edge START --> {}'.format(gid, start))
     # Build ending node with edges from latest node(s)
     for end in ends:
-        graph.add_edge(id, end, 'END')
-        logging.debug('Graph: {} :: Edge {} --> END'.format(id, end))
+        graph.add_edge(gid, end, 'END')
+        logging.debug('Graph: {} :: Edge {} --> END'.format(gid, end))
 
 
-def evaluate_graph(id):
+def evaluate_graph(gid):
     """
     Evaluate the directed graph looking for a shortest path between "START" and "END" nodes.
     If a shorted path is found, it looks for the potential overlaps.
     Partial and full overlaps are supported.
     If no shortest path found, it creates a new node "BREAK" in the path.
 
-    :param tuple graph_input: A tuple with the graph id, the graph object and the processing context
+    :param str gid: The graph id
 
     """
-    g = graph.get_graph(id)
+    g = graph.get_graph(gid)
     path = list()
     full_overlaps, partial_overlaps = None, None
     logging.debug('Process graph: {}'.format(id))
@@ -262,21 +262,17 @@ def format_path(path, partial_overlaps, full_overlaps):
     return msg
 
 
-def process_context(_pattern, _ref_calendar, _true_dates, _graph):
+def initializer(keys, values):
     """
     Initialize process context by setting particular variables as global variables.
 
-    :param str pattern: The filename pattern
-    :param str _ref_calendar: The time calendar  to be used as reference for the simulation
-    :param boolean _true_dates: Disable filename dates correction
-    :param *nctime.overlap.handler.Graph()* _graph: Multi graph class proxy
+    :param list keys: Argument name list
+    :param list values: Argument value list
 
     """
-    global pattern, ref_calendar, true_dates, graph
-    pattern = _pattern
-    ref_calendar = _ref_calendar
-    true_dates = _true_dates
-    graph = _graph
+    assert len(keys) == len(values)
+    for i, key in enumerate(keys):
+        globals()[key] = values[i]
 
 
 def run(args):
@@ -296,23 +292,18 @@ def run(args):
     # Instantiate processing context
     with ProcessingContext(args) as ctx:
         print("Analysing data, please wait...\r")
-        # Multiprocessing manager to shared Python objects between processes
-        BaseManager.register('graph', Graph, exposed=('get_graph',
-                                                      'has_graph',
-                                                      'set_graph',
-                                                      'add_node',
-                                                      'add_edge',
-                                                      '__call__'))
-        manager = BaseManager()
+        # Init process manager
+        manager = ProcessManager()
         manager.start()
-        # DiGraph creation
+        # Init process context
+        ProcessContext = {name: getattr(ctx, name) for name in PROCESS_VARS}
+        # Declare graph as global for main process
         global graph
         graph = manager.graph()
+        ProcessContext['graph'] = graph
         # Init processes pool
-        pool = Pool(processes=ctx.processes, initializer=process_context, initargs=(ctx.pattern,
-                                                                                    ctx.tinit.calendar,
-                                                                                    ctx.true_dates,
-                                                                                    graph))
+        pool = Pool(processes=ctx.processes, initializer=initializer, initargs=(ProcessContext.keys(),
+                                                                                ProcessContext.values()))
         # Process supplied files to create nodes in appropriate directed graph
         handlers = [x for x in pool.imap(create_nodes, ctx.sources)]
         # Close pool of workers
@@ -335,10 +326,10 @@ def run(args):
                 # Print overlaps if exists
                 if full_overlaps or partial_overlaps:
                     ctx.overlaps += 1
-                    logging.error(BCOLORS.FAIL + 'Shortest path found WITH overlaps:' + BCOLORS.ENDC +
+                    logging.error(COLORS.FAIL + 'Shortest path found WITH overlaps:' + COLORS.ENDC +
                                   '{}'.format(msg))
                 else:
-                    logging.info(BCOLORS.OKGREEN + 'Shortest path found without overlaps:' + BCOLORS.ENDC +
+                    logging.info(COLORS.OKGREEN + 'Shortest path found without overlaps:' + COLORS.ENDC +
                                  '{}'.format(msg))
             # Resolve overlaps
             if ctx.resolve:

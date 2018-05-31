@@ -7,13 +7,26 @@
 
 """
 import sys
+from multiprocessing.managers import BaseManager
 
 from ESGConfigParser import SectionParser
 
+from handler import Graph
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
 from nctime.utils.custom_exceptions import InvalidFrequency
 from nctime.utils.time import TimeInit
+
+BaseManager.register('graph', Graph, exposed=('get_graph',
+                                              'has_graph',
+                                              'set_graph',
+                                              'add_node',
+                                              'add_edge',
+                                              '__call__'))
+
+
+class ProcessManager(BaseManager):
+    pass
 
 
 class ProcessingContext(object):
@@ -76,6 +89,7 @@ class ProcessingContext(object):
         self.sources.PathFilter.add(regex=self.dir_filter, inclusive=False)
         # Set driving time properties
         self.tinit = TimeInit(ref=self.sources.first(), tunits_default=self.tunits_default)
+        self.ref_calendar = self.tinit.calendar
         return self
 
     def __exit__(self, *exc):
