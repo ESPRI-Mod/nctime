@@ -242,6 +242,7 @@ MAX_PROCESSES_HELP = \
     Default is set to 4 processes.
     
     """
+
 IGNORE_DIR_HELP = \
     """
     Filter directories NON-matching the regular expression.|n
