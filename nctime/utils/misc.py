@@ -124,6 +124,22 @@ def match(pattern, string, inclusive=True):
         return True if not re.search(pattern, string) else False
 
 
+class ProcessContext(object):
+    """
+    Encapsulates the processing context/information for child process.
+
+    :param dict args: Dictionary of argument to pass to child process
+    :returns: The processing context
+    :rtype: *ProcessContext*
+
+    """
+
+    def __init__(self, args):
+        assert isinstance(args, dict)
+        for key, value in args.items():
+            setattr(self, key, value)
+
+
 class Colors:
     """
     Background colors for print statements

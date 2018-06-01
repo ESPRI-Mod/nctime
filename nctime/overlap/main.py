@@ -21,7 +21,7 @@ import numpy as np
 from constants import *
 from context import ProcessingContext, ProcessManager
 from handler import Filename
-from nctime.utils.misc import COLORS
+from nctime.utils.misc import COLORS, ProcessContext
 from nctime.utils.time import get_next_timestep
 
 
@@ -109,23 +109,25 @@ def create_nodes(ffp):
     :param str ffp: The file full path to process
 
     """
+    # Declare context from initializer to avoid IDE warnings
+    global cctx
     # Block to avoid program stop if a thread fails
     try:
         # Instantiate filename handler
         fh = Filename(ffp=ffp)
         # Extract start and end dates from filename
-        fh.get_start_end_dates(pattern=pattern,
-                               calendar=ref_calendar)
+        fh.get_start_end_dates(pattern=cctx.pattern,
+                               calendar=cctx.ref_calendar)
         # Create corresponding DiGraph if not exist
-        if not graph.has_graph(fh.id):
-            graph.set_graph(fh.id)
+        if not cctx.graph.has_graph(fh.id):
+            cctx.graph.set_graph(fh.id)
         # Update/add current file as node with dates as attributes
-        node = graph.add_node(fh.id,
-                              fh.filename,
-                              fh.start_date,
-                              fh.end_date,
-                              fh.next_date,
-                              fh.ffp)
+        node = cctx.graph.add_node(fh.id,
+                                   fh.filename,
+                                   fh.start_date,
+                                   fh.end_date,
+                                   fh.next_date,
+                                   fh.ffp)
         logging.debug('Graph: {} :: Node {} (start={}, end={}, next={})'.format(fh.id,
                                                                                 fh.filename,
                                                                                 node['start'],
@@ -270,8 +272,8 @@ def initializer(keys, values):
 
     """
     assert len(keys) == len(values)
-    for i, key in enumerate(keys):
-        globals()[key] = values[i]
+    global cctx
+    cctx = ProcessContext({key: values[i] for i, key in enumerate(keys)})
 
 
 def run(args):
@@ -297,14 +299,14 @@ def run(args):
         manager = ProcessManager()
         manager.start()
         # Init process context
-        ProcessContext = {name: getattr(ctx, name) for name in PROCESS_VARS}
+        cctx = {name: getattr(ctx, name) for name in PROCESS_VARS}
         # Declare graph as global for main process
         global graph
         graph = manager.graph()
-        ProcessContext['graph'] = graph
+        cctx['graph'] = graph
         # Init processes pool
-        pool = Pool(processes=ctx.processes, initializer=initializer, initargs=(ProcessContext.keys(),
-                                                                                ProcessContext.values()))
+        pool = Pool(processes=ctx.processes, initializer=initializer, initargs=(cctx.keys(),
+                                                                                cctx.values()))
         # Process supplied files to create nodes in appropriate directed graph
         handlers = [x for x in pool.imap(create_nodes, ctx.sources)]
         # Close pool of workers

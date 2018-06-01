@@ -15,7 +15,6 @@ from ESGConfigParser import SectionParser
 from handler import Graph
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
-from nctime.utils.custom_exceptions import InvalidFrequency
 from nctime.utils.misc import COLORS
 from nctime.utils.time import TimeInit
 
@@ -47,11 +46,6 @@ class ProcessingContext(object):
         self.resolve = args.resolve
         self.full_only = args.full_only
         self.project = args.project
-        if args.set_inc:
-            for frequency, increment in dict(args.set_inc).items():
-                if frequency not in FREQ_INC.keys():
-                    raise InvalidFrequency(frequency)
-                FREQ_INC[frequency][0] = int(increment)
         self.tunits_default = None
         self.processes = args.max_processes if args.max_processes <= cpu_count() else cpu_count()
         self.use_pool = (self.processes != 1)

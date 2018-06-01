@@ -17,7 +17,7 @@ import numpy as np
 from constants import *
 from context import ProcessingContext
 from handler import File
-from nctime.utils.misc import trunc, COLORS
+from nctime.utils.misc import trunc, COLORS, ProcessContext
 
 
 def process(ffp):
@@ -29,25 +29,25 @@ def process(ffp):
     :rtype: *list*
 
     """
-    # Declare variables from initializer to avoid IDE warnings
-    global pattern, ref_units, ref_calendar, correction, write, force, limit, ignore_codes, lock, on_fly
+    # Declare context from initializer to avoid IDE warnings
+    global cctx
     # Block to avoid program stop if a thread fails
     try:
         # Instantiate file handler
         fh = File(ffp=ffp,
-                  pattern=pattern,
-                  ref_units=ref_units,
-                  ref_calendar=ref_calendar,
-                  correction=correction)
+                  pattern=cctx.pattern,
+                  ref_units=cctx.ref_units,
+                  ref_calendar=cctx.ref_calendar,
+                  correction=cctx.correction)
         fh.load_last_date()
         # In the case of inconsistent timestamps, it may be due to float precision issue
-        if not on_fly and fh.last_timestamp != fh.end_timestamp:
+        if not cctx.on_fly and fh.last_timestamp != fh.end_timestamp:
             fh.start_num = trunc(fh.start_num, 5)
             fh.load_last_date()
             if fh.last_timestamp != fh.end_timestamp:
                 fh.status.append('003')
         # Check consistency between last time date and end date from filename
-        if not on_fly and fh.last_date != fh.end_date:
+        if not cctx.on_fly and fh.last_date != fh.end_date:
             fh.status.append('008')
         # Check file consistency between instant time and time boundaries
         if fh.is_instant and fh.has_bounds:
@@ -57,41 +57,41 @@ def process(ffp):
             fh.status.append('005')
         # Check time axis squareness
         wrong_timesteps = list()
-        #        if not {'003', '008'}.intersection(set(fh.status)):
-        # Rebuild a theoretical time axis with appropriate precision
-        fh.time_axis_rebuilt = fh.build_time_axis()
-        if not np.array_equal(fh.time_axis_rebuilt, fh.time_axis):
-            fh.status.append('001')
-            time_axis_diff = (fh.time_axis_rebuilt == fh.time_axis)
-            wrong_timesteps = list(np.where(time_axis_diff == False)[0])
+        if not {'003', '008'}.intersection(set(fh.status)):
+            # Rebuild a theoretical time axis with appropriate precision
+            fh.time_axis_rebuilt = fh.build_time_axis()
+            if not np.array_equal(fh.time_axis_rebuilt, fh.time_axis):
+                fh.status.append('001')
+                time_axis_diff = (fh.time_axis_rebuilt == fh.time_axis)
+                wrong_timesteps = list(np.where(time_axis_diff == False)[0])
         # Check time boundaries squareness
         wrong_bounds = list()
-        if fh.has_bounds and not {'004'}.intersection(set(fh.status)):
+        if fh.has_bounds and not {'003', '008', '004'}.intersection(set(fh.status)):
             fh.time_bounds_rebuilt = fh.build_time_bounds()
             if not np.array_equal(fh.time_bounds_rebuilt, fh.time_bounds):
                 fh.status.append('006')
                 time_bounds_diff = (fh.time_bounds_rebuilt == fh.time_bounds)
                 wrong_bounds = list(np.where(np.all(time_bounds_diff, axis=1) == False)[0])
         # Check time units consistency between file and ref
-        if ref_units != fh.tunits:
+        if cctx.ref_units != fh.tunits:
             fh.status.append('002')
         # Check calendar consistency between file and ref
-        if ref_calendar != fh.calendar:
+        if cctx.ref_calendar != fh.calendar:
             fh.status.append('007')
         # Rename file depending on checking
-        if (write and {'003'}.intersection(set(fh.status))) or force:
+        if (cctx.write and {'003'}.intersection(set(fh.status))) or cctx.force:
             # Change filename and file full path dynamically
             fh.nc_file_rename(new_filename=re.sub(fh.end_timestamp, fh.last_timestamp, fh.filename))
         # Remove time boundaries depending on checking
-        if (write and {'004'}.intersection(set(fh.status))) or force:
+        if (cctx.write and {'004'}.intersection(set(fh.status))) or cctx.force:
             # Delete time bounds and bounds attribute from file if write or force mode
             fh.nc_var_delete(variable=fh.tbnds)
             fh.nc_att_delete(attribute='bounds', variable='time')
         # Rewrite time axis depending on checking
-        if (write and {'001', '002', '006', '007'}.intersection(set(fh.status))) or force:
+        if (cctx.write and {'001', '002', '006', '007'}.intersection(set(fh.status))) or cctx.force:
             fh.nc_var_overwrite('time', fh.time_axis_rebuilt)
-            fh.nc_att_overwrite('units', 'time', ref_units)
-            fh.nc_att_overwrite('calendar', 'time', ref_calendar)
+            fh.nc_att_overwrite('units', 'time', cctx.ref_units)
+            fh.nc_att_overwrite('calendar', 'time', cctx.ref_calendar)
             # Rewrite time boundaries if needed
             if fh.has_bounds:
                 fh.nc_var_overwrite(fh.time_bounds, fh.time_bounds_rebuilt)
@@ -106,8 +106,8 @@ def process(ffp):
         Frequency: {} = {} {}
         Is instant: {}
         Has bounds: {}""".format(COLORS.HEADER + fh.filename + COLORS.ENDC,
-                                 fh.tunits, ref_units,
-                                 fh.calendar, ref_calendar,
+                                 fh.tunits, cctx.ref_units,
+                                 fh.calendar, cctx.ref_calendar,
                                  fh.start_timestamp, fh.start_date, fh.start_num,
                                  fh.end_timestamp, fh.end_date, fh.end_num,
                                  fh.last_timestamp, fh.last_date, fh.last_num,
@@ -116,7 +116,7 @@ def process(ffp):
                                  fh.is_instant,
                                  fh.has_bounds)
         # Exclude codes to ignore from status codes
-        fh.status = [code for code in fh.status if code not in ignore_codes]
+        fh.status = [code for code in fh.status if code not in cctx.ignore_codes]
         # Add status message
         if fh.status:
             for s in fh.status:
@@ -124,25 +124,24 @@ def process(ffp):
         else:
             msg += """\n        Status: {}""".format(COLORS.OKGREEN + STATUS['000'] + COLORS.ENDC)
         # Display wrong time steps and/or bounds
-
-        timestep_limit = limit if limit else len(wrong_timesteps)
+        timestep_limit = cctx.limit if cctx.limit else len(wrong_timesteps)
         for i, v in enumerate(wrong_timesteps):
             if (i + 1) <= timestep_limit:
                 msg += """\n        Wrong timestep: {} iso {}""".format(str(fh.time_axis[v]).ljust(10),
                                                                         str(fh.time_axis_rebuilt[v]).ljust(10))
-        bounds_limit = limit if limit else len(wrong_bounds)
+        bounds_limit = cctx.limit if cctx.limit else len(wrong_bounds)
         for i, v in enumerate(wrong_bounds):
             if (i + 1) <= bounds_limit:
                 msg += """\n        Wrong bound: {} iso {}""".format(str(fh.time_bounds[v]).ljust(10),
                                                                      str(fh.time_bounds_rebuilt[v]).ljust(10))
         # Acquire lock to print result
-        lock.acquire()
+        cctx.lock.acquire()
         if fh.status:
             logging.error(msg)
         else:
             logging.info(msg)
         # Release lock
-        lock.release()
+        cctx.lock.release()
         # Return error if it is the case
         if fh.status:
             return 1
@@ -164,8 +163,8 @@ def initializer(keys, values):
 
     """
     assert len(keys) == len(values)
-    for i, key in enumerate(keys):
-        globals()[key] = values[i]
+    global cctx
+    cctx = ProcessContext({key: values[i] for i, key in enumerate(keys)})
 
 
 def run(args):
@@ -184,11 +183,11 @@ def run(args):
     with ProcessingContext(args) as ctx:
         print("Analysing data, please wait...\r")
         # Init process context
-        ProcessContext = {name: getattr(ctx, name) for name in PROCESS_VARS}
-        ProcessContext['lock'] = Lock()
+        cctx = {name: getattr(ctx, name) for name in PROCESS_VARS}
+        cctx['lock'] = Lock()
         # Init processes pool
-        pool = Pool(processes=ctx.processes, initializer=initializer, initargs=(ProcessContext.keys(),
-                                                                                ProcessContext.values()))
+        pool = Pool(processes=ctx.processes, initializer=initializer, initargs=(cctx.keys(),
+                                                                                cctx.values()))
         # Process supplied files
         handlers = [x for x in pool.imap(process, ctx.sources)]
         # Close pool of workers
