@@ -48,7 +48,6 @@ class ProcessingContext(object):
         self.project = args.project
         self.tunits_default = None
         self.processes = args.max_processes if args.max_processes <= cpu_count() else cpu_count()
-        self.use_pool = (self.processes != 1)
         if self.project in DEFAULT_TIME_UNITS.keys():
             self.tunits_default = DEFAULT_TIME_UNITS[self.project]
         self.overlaps = 0
