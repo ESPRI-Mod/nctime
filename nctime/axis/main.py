@@ -120,7 +120,7 @@ def process(ffp):
         # Add status message
         if fh.status:
             for s in fh.status:
-                msg += """\n        Status: {}""".format(COLORS.FAIL + STATUS[s] + COLORS.ENDC)
+                msg += """\n        Status: {} """.format(COLORS.FAIL + 'Error ' + s + ' -- ' + STATUS[s] + COLORS.ENDC)
         else:
             msg += """\n        Status: {}""".format(COLORS.OKGREEN + STATUS['000'] + COLORS.ENDC)
         # Display wrong time steps and/or bounds

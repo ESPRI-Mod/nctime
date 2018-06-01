@@ -43,7 +43,7 @@ class ncopen(object):
         self.nc.close()
 
 
-class LogFilter(object):
+class LogFilter(logging.Filter):
     """
     Log filter with upper log level to use with the Python
     `logging <https://docs.python.org/2/library/logging.html>`_ module.
@@ -59,6 +59,28 @@ class LogFilter(object):
 
         """
         return log_record.levelno <= self.level
+
+
+class NoColorFilter(logging.Filter):
+    """
+    Log filter with upper log level to use with the Python
+    `logging <https://docs.python.org/2/library/logging.html>`_ module.
+
+    """
+
+    def filter(self, record):
+        """
+        Use filter to post-process log record and remove color patterns.
+        Returns true in any case.
+
+        """
+        msg = record.msg
+        color_pattern = re.compile('\[[0-9;]*m')
+        found_patterns = re.findall(color_pattern, msg)
+        if found_patterns:
+            msg = re.sub(color_pattern, '', msg)
+        record.msg = msg
+        return True
 
 
 def init_logging(log, level='INFO'):
@@ -82,6 +104,7 @@ def init_logging(log, level='INFO'):
     logging.getLogger().setLevel(logging.DEBUG)
     if log:
         handler = logging.FileHandler(filename='{}.log'.format(logfile), delay=True)
+        handler.addFilter(NoColorFilter())
     else:
         handler = logging.StreamHandler()
     handler.setLevel(logging.__dict__[level])

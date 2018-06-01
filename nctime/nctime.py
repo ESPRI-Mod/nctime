@@ -9,11 +9,6 @@
 .. moduleauthor:: Guillaume Levavasseur <glipsl@ipsl.jussieu.fr>
 
 """
-# TODO: remove color string from log
-# TODO: Revoir notebook -> log dans GENCMIP6ALL/
-# TODO: Editer procédure complète avec XIOFileChecker + overlap + nctime.
-# TODO: QUand simu complète + PrePARE
-# TODO: message hierarchiy
 
 import argparse
 import os
