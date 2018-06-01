@@ -108,16 +108,21 @@ class CodeChecker(Action):
     """
 
     def __call__(self, parser, namespace, values, option_string=None):
-        checked_values = [self.code_checker(x) for x in values]
+        checked_values = self.code_checker(values)
         setattr(namespace, self.dest, checked_values)
 
     @staticmethod
-    def code_checker(code):
+    def code_checker(codes):
         ALLOWED_CODES = [str(x).rjust(3, '0') for x in range(0, 9)]
-        if code not in ALLOWED_CODES:
-            msg = 'Invalid code: {} -- Available codes are {}'.format(code, ', '.join(ALLOWED_CODES))
+        if not isinstance(codes, str):
+            msg = 'Type not supported: {} -- Should be a comma-separated string without spaces.'.format(codes)
             raise ArgumentTypeError(msg)
-        return code
+        codes = codes.split(',')
+        for code in codes:
+            if code not in ALLOWED_CODES:
+                msg = 'Invalid code: {} -- Available codes are {}'.format(code, ', '.join(ALLOWED_CODES))
+                raise ArgumentTypeError(msg)
+        return codes
 
 
 def regex_validator(string):

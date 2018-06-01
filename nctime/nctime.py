@@ -199,8 +199,7 @@ def get_args():
         '--ignore-errors',
         action=CodeChecker,
         metavar='CODE',
-        nargs='+',
-        default=list(),
+        default='',
         help=IGNORE_ERROR_HELP)
     axis.add_argument(
         '--correct-timestamp',
