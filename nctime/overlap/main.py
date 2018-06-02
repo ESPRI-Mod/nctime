@@ -133,12 +133,12 @@ def create_nodes(ffp):
                                                                                 node['start'],
                                                                                 node['end'],
                                                                                 node['next']))
-        return 1
+        return 0
     except KeyboardInterrupt:
         raise
     except Exception as e:
         logging.error('{} skipped\n{}: {}'.format(ffp, e.__class__.__name__, e.message))
-        return 0
+        return 1
 
 
 def create_edges(gid):
