@@ -10,6 +10,7 @@
 import logging
 import re
 import sys
+import itertools
 from multiprocessing import Pool, Lock
 
 import numpy as np
@@ -185,14 +186,19 @@ def run(args):
         # Init process context
         cctx = {name: getattr(ctx, name) for name in PROCESS_VARS}
         cctx['lock'] = Lock()
-        # Init processes pool
-        pool = Pool(processes=ctx.processes, initializer=initializer, initargs=(cctx.keys(),
-                                                                                cctx.values()))
-        # Process supplied files
-        handlers = [x for x in pool.imap(process, ctx.sources)]
-        # Close pool of workers
-        pool.close()
-        pool.join()
+        if ctx.use_pool:
+            # Init processes pool
+            pool = Pool(processes=ctx.processes, initializer=initializer, initargs=(cctx.keys(),
+                                                                                    cctx.values()))
+
+            # Process supplied files
+            handlers = [x for x in pool.imap(process, ctx.sources)]
+            # Close pool of workers
+            pool.close()
+            pool.join()
+        else:
+            initializer(cctx.keys(), cctx.values())
+            handlers = [x for x in itertools.imap(process, ctx.sources)]
         ctx.scan_errors = sum(handlers)
         ctx.scan_files = len(handlers)
     # Exist status if scan errors

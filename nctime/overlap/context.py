@@ -48,8 +48,7 @@ class ProcessingContext(object):
         self.project = args.project
         self.tunits_default = None
         self.processes = args.max_processes if args.max_processes <= cpu_count() else cpu_count()
-        if self.project in DEFAULT_TIME_UNITS.keys():
-            self.tunits_default = DEFAULT_TIME_UNITS[self.project]
+        self.use_pool = (self.processes != 1)
         self.overlaps = 0
         self.broken = 0
         self.scan_files = 0
@@ -85,10 +84,12 @@ class ProcessingContext(object):
         # Get project id
         if not self.project:
             self.project = get_project(self.sources.first())
+        # Get default time units if exists (i.e., CORDEX case)
+        if self.project in DEFAULT_TIME_UNITS.keys():
+            self.tunits_default = DEFAULT_TIME_UNITS[self.project]
         # Init configuration parser
         self.cfg = SectionParser(section='project:{}'.format(self.project), directory=self.config_dir)
         self.pattern = self.cfg.translate('filename_format')
-
         return self
 
     def __exit__(self, exc_type, exc_val, traceback):

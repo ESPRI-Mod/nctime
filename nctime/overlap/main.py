@@ -297,21 +297,26 @@ def run(args):
         print("Analysing data, please wait...\r")
         # Init process manager
         manager = ProcessManager()
-        manager.start()
+        if ctx.use_pool:
+            manager.start()
         # Init process context
         cctx = {name: getattr(ctx, name) for name in PROCESS_VARS}
         # Declare graph as global for main process
         global graph
         graph = manager.graph()
         cctx['graph'] = graph
-        # Init processes pool
-        pool = Pool(processes=ctx.processes, initializer=initializer, initargs=(cctx.keys(),
-                                                                                cctx.values()))
-        # Process supplied files to create nodes in appropriate directed graph
-        handlers = [x for x in pool.imap(create_nodes, ctx.sources)]
-        # Close pool of workers
-        pool.close()
-        pool.join()
+        if ctx.use_pool:
+            # Init processes pool
+            pool = Pool(processes=ctx.processes, initializer=initializer, initargs=(cctx.keys(),
+                                                                                    cctx.values()))
+            # Process supplied files to create nodes in appropriate directed graph
+            handlers = [x for x in pool.imap(create_nodes, ctx.sources)]
+            # Close pool of workers
+            pool.close()
+            pool.join()
+        else:
+            initializer(cctx.keys(), cctx.values())
+            handlers = [x for x in itertools.imap(create_nodes, ctx.sources)]
         ctx.scan_files = len(handlers)
         ctx.scan_errors = sum(handlers)
         # Retrieve graph instance from multiprocessing manager
