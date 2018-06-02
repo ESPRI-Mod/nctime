@@ -11,9 +11,9 @@ import logging
 import os
 import re
 
+from fuzzywuzzy import fuzz, process
 from netCDF4 import Dataset
 from netcdftime import datetime
-from fuzzywuzzy import fuzz, process
 
 from custom_exceptions import *
 
@@ -109,7 +109,7 @@ def init_logging(log, level='INFO'):
     else:
         handler = logging.StreamHandler()
     handler.setLevel(logging.__dict__[level])
-    handler.addFilter(LogFilter(logging.CRITICAL))
+    # handler.addFilter(LogFilter(logging.CRITICAL))
     handler.setFormatter(formatter)
     logging.getLogger().addHandler(handler)
 
@@ -147,6 +147,7 @@ def match(pattern, string, inclusive=True):
     else:
         return True if not re.search(pattern, string) else False
 
+
 def get_project(ffp):
     """
     Get project identifier from netCDF file.
@@ -164,11 +165,12 @@ def get_project(ffp):
         else:
             key, score = process.extractOne('project', nc.ncattrs(), scorer=fuzz.partial_ratio)
             if score >= 80:
-                frequency = nc.getncattr(key)
+                project = nc.getncattr(key)
                 logging.warning('Consider "{}" attribute instead of "project"'.format(key))
             else:
                 raise NoNetCDFAttribute('project', ffp)
     return project.lower()
+
 
 class ProcessContext(object):
     """
