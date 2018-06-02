@@ -356,6 +356,14 @@ def run(args):
                                         to_date=ctx.overlaps['partial'][node]['end_date'],
                                         cutting_timestep=ctx.overlaps['partial'][node]['cutting_timestep'],
                                         partial=True)
-    # Exist status if scan errors
+    # Evaluate errors and exit with appropriate return code
     if ctx.overlaps or ctx.broken or ctx.scan_errors:
-        sys.exit(1)
+        if (ctx.broken + ctx.overlaps) == ctx.scan_dsets:
+            # All datasets has error(s). Error code = -1
+            sys.exit(-1)
+        else:
+            # Some datasets (at least one) has error(s). Error code = nb datasets with error(s)
+            sys.exit(ctx.broken + ctx.overlaps)
+    else:
+        # No errors. Error code = 0
+        sys.exit(0)

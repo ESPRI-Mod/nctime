@@ -202,3 +202,14 @@ def run(args):
     # Exist status if scan errors
     if ctx.scan_errors:
         sys.exit(1)
+    # Evaluate errors and exit with appropriate return code
+    if ctx.scan_errors:
+        if ctx.scan_errors == ctx.scan_files:
+            # All files has error(s). Error code = -1
+            sys.exit(-1)
+        else:
+            # Some files (at least one) has error(s). Error code = nb files with error(s)
+            sys.exit(ctx.scan_files)
+    else:
+        # No errors. Error code = 0
+        sys.exit(0)
