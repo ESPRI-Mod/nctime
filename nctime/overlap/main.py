@@ -307,8 +307,7 @@ def run(args):
         cctx['graph'] = graph
         if ctx.use_pool:
             # Init processes pool
-            pool = Pool(processes=ctx.processes, initializer=initializer, initargs=(cctx.keys(),
-                                                                                    cctx.values()))
+            pool = Pool(processes=ctx.processes, initializer=initializer, initargs=(cctx.keys(), cctx.values()))
             # Process supplied files to create nodes in appropriate directed graph
             handlers = [x for x in pool.imap(create_nodes, ctx.sources)]
             # Close pool of workers

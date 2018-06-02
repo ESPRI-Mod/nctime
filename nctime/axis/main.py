@@ -188,9 +188,7 @@ def run(args):
         cctx['lock'] = Lock()
         if ctx.use_pool:
             # Init processes pool
-            pool = Pool(processes=ctx.processes, initializer=initializer, initargs=(cctx.keys(),
-                                                                                    cctx.values()))
-
+            pool = Pool(processes=ctx.processes, initializer=initializer, initargs=(cctx.keys(), cctx.values()))
             # Process supplied files
             handlers = [x for x in pool.imap(process, ctx.sources)]
             # Close pool of workers
