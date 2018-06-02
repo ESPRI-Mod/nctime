@@ -13,6 +13,7 @@ import re
 
 from netCDF4 import Dataset
 from netcdftime import datetime
+from fuzzywuzzy import fuzz, process
 
 from custom_exceptions import *
 
@@ -146,6 +147,28 @@ def match(pattern, string, inclusive=True):
     else:
         return True if not re.search(pattern, string) else False
 
+def get_project(ffp):
+    """
+    Get project identifier from netCDF file.
+
+    :param str ffp: The file full path
+    :returns: The lower-case project id
+    :rtype: *str*
+
+    """
+    with ncopen(ffp) as nc:
+        if 'mip_era' in nc.ncattrs():
+            project = nc.getncattr('mip_era')
+        elif 'project' in nc.ncattrs():
+            project = nc.getncattr('project')
+        else:
+            key, score = process.extractOne('project', nc.ncattrs(), scorer=fuzz.partial_ratio)
+            if score >= 80:
+                frequency = nc.getncattr(key)
+                logging.warning('Consider "{}" attribute instead of "project"'.format(key))
+            else:
+                raise NoNetCDFAttribute('project', ffp)
+    return project.lower()
 
 class ProcessContext(object):
     """

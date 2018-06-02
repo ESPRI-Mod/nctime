@@ -15,7 +15,7 @@ from ESGConfigParser import SectionParser
 from handler import Graph
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
-from nctime.utils.misc import COLORS
+from nctime.utils.misc import COLORS, get_project
 from nctime.utils.time import TimeInit
 
 BaseManager.register('graph', Graph, exposed=('get_graph',
@@ -70,9 +70,6 @@ class ProcessingContext(object):
         self.dir_filter = args.ignore_dir
 
     def __enter__(self):
-        # Init configuration parser
-        self.cfg = SectionParser(section='project:{}'.format(self.project), directory=self.config_dir)
-        self.pattern = self.cfg.translate('filename_format')
         # Init data collector
         self.sources = Collector(sources=self.directory)
         # Init file filter
@@ -85,6 +82,13 @@ class ProcessingContext(object):
         # Set driving time properties
         self.tinit = TimeInit(ref=self.sources.first(), tunits_default=self.tunits_default)
         self.ref_calendar = self.tinit.calendar
+        # Get project id
+        if not self.project:
+            self.project = get_project(self.sources.first())
+        # Init configuration parser
+        self.cfg = SectionParser(section='project:{}'.format(self.project), directory=self.config_dir)
+        self.pattern = self.cfg.translate('filename_format')
+
         return self
 
     def __exit__(self, exc_type, exc_val, traceback):

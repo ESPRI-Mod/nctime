@@ -86,8 +86,9 @@ SUBCOMMANDS = \
 
 PROJECT_HELP = \
     """
-    Required project name corresponding to a section of the|n
-    configuration file.
+    Project name corresponding to a section of the|n
+    configuration file. If not submitted project id|n
+    is deduced from first netCDF file scanned.
     
     """
 

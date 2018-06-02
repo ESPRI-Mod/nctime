@@ -65,7 +65,6 @@ def get_args():
         '-p', '--project',
         metavar='PROJECT',
         type=str,
-        required=True,
         help=PROJECT_HELP)
     parent.add_argument(
         '-i',
