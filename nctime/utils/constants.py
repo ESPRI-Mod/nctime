@@ -216,7 +216,7 @@ LIMIT_HELP = \
 
 IGNORE_ERROR_HELP = \
     """
-    One or several error codes to ignore.
+    One or several error codes to ignore comma-separated.
 
     """
 
