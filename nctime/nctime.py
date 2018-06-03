@@ -218,7 +218,7 @@ def run():
         level = 'DEBUG'
     else:
         level = 'ERROR'
-    init_logging(log=args.log, level=level)
+    init_logging(log=args.log, level=level, cmd=args.cmd)
     # Run program
     main = import_module('.main', package='nctime.{}'.format(args.cmd))
     main.run(args)

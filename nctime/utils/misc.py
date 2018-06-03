@@ -84,17 +84,18 @@ class NoColorFilter(logging.Filter):
         return True
 
 
-def init_logging(log, level='INFO'):
+def init_logging(log, cmd, level='INFO'):
     """
     Initiates the logging configuration (output, date/message formatting).
     If a directory is submitted the logfile name is unique and formatted as follows:
     ``name-YYYYMMDD-HHMMSS-JOBID.log``If ``None`` the standard output is used.
 
     :param str log: The logfile directory.
+    :param str cmd: The command name
     :param str level: The log level.
 
     """
-    logname = 'nctime-{}-{}'.format(datetime(1, 1, 1)._to_real_datetime().now().strftime("%Y%m%d-%H%M%S"), os.getpid())
+    logname = 'nctime-{}-{}'.format(cmd, datetime(1, 1, 1)._to_real_datetime().now().strftime("%Y%m%d-%H%M%S"))
     formatter = logging.Formatter(fmt='%(message)s')
     if log:
         if not os.path.isdir(log):
