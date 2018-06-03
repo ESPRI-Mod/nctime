@@ -54,7 +54,6 @@ class ProcessingContext(object):
         self.scan_files = 0
         self.scan_dsets = 0
         self.scan_errors = 0
-        self.pbar = None
         self.file_filter = []
         if args.include_file:
             self.file_filter.extend([(f, True) for f in args.include_file])
@@ -108,4 +107,5 @@ class ProcessingContext(object):
         else:
             msg += COLORS.OKGREEN
         msg += 'Number of datasets with error(s): {}'.format(self.broken + self.overlaps) + COLORS.ENDC
+        if self.
         print msg
