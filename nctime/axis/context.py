@@ -7,6 +7,7 @@
 
 """
 
+import logging
 from multiprocessing import cpu_count
 from time import sleep
 
@@ -102,3 +103,6 @@ class ProcessingContext(object):
             msg += COLORS.OKGREEN
         msg += 'Number of file with error(s): {}'.format(self.scan_errors) + COLORS.ENDC
         print msg
+        log_handler = logging.getLogger().handlers[0]
+        if hasattr(log_handler, 'baseFilename'):
+            print(COLORS.HEADER + '\nSee log: {}'.format(log_handler.baseFilename) + COLORS.ENDC)

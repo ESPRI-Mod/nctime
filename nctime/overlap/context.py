@@ -6,6 +6,7 @@
     :synopsis: Processing context used in this module.
 
 """
+import logging
 from multiprocessing import cpu_count
 from multiprocessing.managers import BaseManager
 from time import sleep
@@ -107,5 +108,7 @@ class ProcessingContext(object):
         else:
             msg += COLORS.OKGREEN
         msg += 'Number of datasets with error(s): {}'.format(self.broken + self.overlaps) + COLORS.ENDC
-        if self.
         print msg
+        log_handler = logging.getLogger().handlers[0]
+        if hasattr(log_handler, 'baseFilename'):
+            print(COLORS.HEADER + '\nSee log: {}'.format(log_handler.baseFilename) + COLORS.ENDC)

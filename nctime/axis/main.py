@@ -7,10 +7,10 @@
 
 """
 
+import itertools
 import logging
 import re
 import sys
-import itertools
 from multiprocessing import Pool, Lock
 
 import numpy as np
