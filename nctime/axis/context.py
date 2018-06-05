@@ -103,7 +103,9 @@ class ProcessingContext(object):
         else:
             msg += COLORS.OKGREEN
         msg += 'Number of file with error(s): {}'.format(self.scan_errors) + COLORS.ENDC
-        print msg
+        # Critical level used to print in any case
+        logging.critical(msg)
+        # Print log path if exists
         log_handler = logging.getLogger().handlers[0]
         if hasattr(log_handler, 'baseFilename') and os.path.exists(log_handler.baseFilename):
             print(COLORS.HEADER + '\nSee log: {}'.format(log_handler.baseFilename) + COLORS.ENDC)

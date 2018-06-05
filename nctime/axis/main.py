@@ -11,6 +11,7 @@ import itertools
 import logging
 import re
 import sys
+from time import sleep
 from multiprocessing import Pool, Lock
 
 import numpy as np
@@ -182,6 +183,9 @@ def run(args):
     """
     # Instantiate processing context
     with ProcessingContext(args) as ctx:
+        # Critical level used to print in any case
+        logging.critical('Command: ' + ' '.join(sys.argv))
+        sleep(0.1)
         print("Analysing data, please wait...\r")
         # Init process context
         cctx = {name: getattr(ctx, name) for name in PROCESS_VARS}

@@ -12,6 +12,7 @@ import logging
 import os
 import re
 import sys
+from time import sleep
 from multiprocessing import Pool
 
 import nco
@@ -294,6 +295,9 @@ def run(args):
     global pattern, ref_calendar, graph
     # Instantiate processing context
     with ProcessingContext(args) as ctx:
+        # Critical level used to print in any case
+        logging.critical('Command: ' + ' '.join(sys.argv))
+        sleep(0.1)
         print("Analysing data, please wait...\r")
         # Init process manager
         manager = ProcessManager()
