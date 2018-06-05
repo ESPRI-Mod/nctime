@@ -19,14 +19,14 @@ Detects overlaps or time gaps
 
 .. code-block:: bash
 
-    $> nctime overlap --project PROJECT_ID /PATH/TO/SCAN/
+    $> nctime overlap /PATH/TO/SCAN/
 
 Remove overlapping files
 ************************
 
 .. code-block:: bash
 
-   $> nctime overlap --project PROJECT_ID /PATH/TO/SCAN/ --resolve
+   $> nctime overlap /PATH/TO/SCAN/ {-r,--resolve}
 
 .. warning:: We highly recommend to activate ``--resolve`` after a first dry-checking. This will potentially
     remove and/or rename files. Be careful to activate ``--resolve`` when you are sure about errors.
@@ -36,14 +36,4 @@ Remove full overlapping files only
 
 .. code-block:: bash
 
-   $> nctime overlap --project PROJECT_ID /PATH/TO/SCAN/ --resolve --full-overlap-only
-
-Exit status
-***********
-
- * Status = 0
-    A shorted path have been found among the time series. Overlaps resolved if exists.
- * Status = 1
-    Time series is broken.
- * Status = 2
-    Time series has partial or full overlap(s).
+   $> nctime overlap /PATH/TO/SCAN/ --resolve --full-only

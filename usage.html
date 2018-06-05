@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Generic usage &mdash; nctime 4.2.2 documentation</title>
+  <title>Generic usage &mdash; nctime 4.3.2 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="nctime 4.2.2 documentation" href="index.html"/>
+    <link rel="top" title="nctime 4.3.2 documentation" href="index.html"/>
         <link rel="next" title="Check time series continuity" href="overlap.html"/>
         <link rel="prev" title="Configuration" href="configuration.html"/> 
 
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                4.2
+                4.3
               </div>
             
           
@@ -97,13 +97,13 @@
 <li class="toctree-l2"><a class="reference internal" href="#check-the-help">Check the help</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#check-the-version">Check the version</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#debug-mode">Debug mode</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#only-print-errors">Only print errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#print-all-results">Print all results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#specify-the-project">Specify the project</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#submit-a-configuration-directory">Submit a configuration directory</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#overwrites-a-frequency-increment">Overwrites a frequency increment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#use-real-filename-dates">Use real filename dates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#use-filters">Use filters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#use-a-logfile">Use a logfile</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#use-multiprocessing">Use multiprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#exit-status">Exit status</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="overlap.html">Check time series continuity</a></li>
@@ -183,14 +183,14 @@
 </div>
 <div class="section" id="check-the-help">
 <h2>Check the help<a class="headerlink" href="#check-the-help" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime -h
-$&gt; nctime SUBCOMMAND -h
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime <span class="o">{</span>-h,--help<span class="o">}</span>
+$&gt; nctime SUBCOMMAND <span class="o">{</span>-h,--help<span class="o">}</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="check-the-version">
 <h2>Check the version<a class="headerlink" href="#check-the-version" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime -v
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime <span class="o">{</span>-v,--version<span class="o">}</span>
 </pre></div>
 </div>
 </div>
@@ -200,19 +200,24 @@ $&gt; nctime SUBCOMMAND -h
 </pre></div>
 </div>
 </div>
-<div class="section" id="only-print-errors">
-<h2>Only print errors<a class="headerlink" href="#only-print-errors" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND --errors-only
+<div class="section" id="print-all-results">
+<h2>Print all results<a class="headerlink" href="#print-all-results" title="Permalink to this headline">¶</a></h2>
+<p>Default is to only print errors, to change this and print all results:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND --all
 </pre></div>
 </div>
 </div>
 <div class="section" id="specify-the-project">
 <h2>Specify the project<a class="headerlink" href="#specify-the-project" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal"><span class="pre">--project</span></code> argument is used to parse the corresponding configuration INI file. It is <strong>always required</strong>
+<p>The <code class="docutils literal"><span class="pre">-p/--project</span></code> argument is used to parse the corresponding configuration INI file. It is <strong>always required</strong>
 (except for <code class="docutils literal"><span class="pre">fetch-ini</span></code> subcommand). This argument is case-sensitive and has to correspond to a section name of
 the configuration file(s).</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND --project PROJECT_ID
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND <span class="o">{</span>-p,--project<span class="o">}</span> PROJECT_ID
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If not submitted it takes the PROJECT_ID from the netCDF global attribute of the first file scanned.</p>
 </div>
 </div>
 <div class="section" id="submit-a-configuration-directory">
@@ -225,35 +230,25 @@ fetch and read the configuration files.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">In the case of <code class="docutils literal"><span class="pre">fetch-ini</span></code> subcommand, if you’re not on an ESGF node and <code class="docutils literal"><span class="pre">/esg/config/esgcet</span></code> doesn’t exist,
-the configuration file(s) are fetched into an <code class="docutils literal"><span class="pre">ini</span></code> folder in your working directory.</p>
+<p class="last">If not submitted it takes the $ESGINI environment variable. If not exists the usual datanode path is used (i.e., <code class="docutils literal"><span class="pre">/esg/config/esgcet</span></code>)</p>
 </div>
 </div>
-<div class="section" id="overwrites-a-frequency-increment">
-<h2>Overwrites a frequency increment<a class="headerlink" href="#overwrites-a-frequency-increment" title="Permalink to this headline">¶</a></h2>
-<p>By default, each supported frequency as its own unit and increment (e.g. mon = 1 months). In some case the frequency
-increment can be change, at least for diagnostic purposes.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND --set-inc <span class="nv">FREQUENCY</span><span class="o">=</span>INCREMENT
+<div class="section" id="use-filters">
+<h2>Use filters<a class="headerlink" href="#use-filters" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">nctime</span></code> subcommands will scan your local archive to achieve data quality check. In such a scan, you can filter the file discovery by using a Python regular expression
+(see <a class="reference external" href="https://docs.python.org/2/library/re.html">re</a> Python library).</p>
+<p>The default is to walk through your local filesystem ignoring the hidden folders.
+It can be change with:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND --ignore-dir PYTHON_REGEX
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Duplicate the flag to overwrite several frequency increment.</p>
-</div>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">Default increments are those expected by CMIP specifications. Overwrite them could lead to non CMIP-compliant files.</p>
-</div>
-</div>
-<div class="section" id="use-real-filename-dates">
-<h2>Use real filename dates<a class="headerlink" href="#use-real-filename-dates" title="Permalink to this headline">¶</a></h2>
-<p><code class="docutils literal"><span class="pre">nctime</span></code> use the dates from the filename to start its processes. Due to different use cases, filename dates related
-to 3-hourly and 6-hourly data are corrected by default to respectively start at 000000 end at 2100000 (180000) whether
-the time axis is instantaneous or not. To disable this correction and stricly consider dates from filename to check the
-time axis:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND --true-dates
+<p><code class="docutils literal"><span class="pre">nctime</span></code> only considers unhidden NetCDF files by default excuding the regular expression <code class="docutils literal"><span class="pre">^\..*$</span></code> and
+including the following one <code class="docutils literal"><span class="pre">.*\.nc$</span></code>. It can be independently change with:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND --include-file PYTHON_REGEX --exclude-file PYTHON_REGEX
 </pre></div>
 </div>
+<p>Keep in mind that <code class="docutils literal"><span class="pre">--ignore-dir</span></code> and <code class="docutils literal"><span class="pre">--exclude-file</span></code> specifie a directory pattern <strong>NOT</strong> to be matched, while
+<code class="docutils literal"><span class="pre">--include-file</span></code> specifies a filename pattern <strong>TO BE</strong> matched.</p>
 </div>
 <div class="section" id="use-a-logfile">
 <h2>Use a logfile<a class="headerlink" href="#use-a-logfile" title="Permalink to this headline">¶</a></h2>
@@ -262,8 +257,8 @@ Other information are logged into a file named <code class="docutils literal"><s
 If not, the standard output is used following the verbose mode.
 By default, the logfiles are stored in a <code class="docutils literal"><span class="pre">logs</span></code> folder created in your current working directory (if not exists).
 It can be changed by adding a optional logfile directory to the flag.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND --log
-$&gt; nctime SUBCOMMAND --log /PATH/TO/LOGDIR/
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND <span class="o">{</span>-l,--log<span class="o">}</span>
+$&gt; nctime SUBCOMMAND -l /PATH/TO/LOGDIR/
 </pre></div>
 </div>
 </div>
@@ -272,10 +267,36 @@ $&gt; nctime SUBCOMMAND --log /PATH/TO/LOGDIR/
 <p><code class="docutils literal"><span class="pre">nctime</span></code> uses a multiprocessing interface. This is useful to process a large amount of data, especially in the case
 of <code class="docutils literal"><span class="pre">axis</span></code> subcommands with the time axis calculation. Set the number of maximal processes to simultaneously treat
 several files. One process seems sequential processing (the default). Set it -1 to use all available CPU processes
-(as returned by <code class="docutils literal"><span class="pre">multiprocessing.cpu_count()</span></code>).</p>
+(as returned by <code class="docutils literal"><span class="pre">multiprocessing.cpu_count()</span></code>). Default is set to 4 processes.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND --max-processes <span class="m">4</span>
 </pre></div>
 </div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The number of maximal processes is limited to the maximum CPU count in any case.</p>
+</div>
+</div>
+<div class="section" id="exit-status">
+<h2>Exit status<a class="headerlink" href="#exit-status" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="first docutils">
+<dt>Status = 0</dt>
+<dd>All the files have been successfully processed without errors.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Status = 1</dt>
+<dd>Errors occur during file scanning and quality checkup.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Status = -1</dt>
+<dd>Argument parsing error.</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
 </div>
 </div>
 
@@ -323,7 +344,7 @@ several files. One process seems sequential processing (the default). Set it -1 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'4.2.2',
+            VERSION:'4.3.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

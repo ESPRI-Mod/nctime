@@ -13,12 +13,7 @@ Rebuilt and check time axis
 
 .. code-block:: bash
 
-    $> nctime axis --project PROJECT_ID /PATH/TO/SCAN/
-
-.. note:: To rebuild a proper time axis, the dates from filename are expected to set the first time boundary and
-    not the middle of the time interval. This is always the case for the instantaneous axis or frequencies
-    greater than the daily frequency. Consequently, the 3-6 hourly files with an averaged time axis requires a
-    date time correction.
+    $> nctime axis /PATH/TO/SCAN/
 
 Rewrite a wrong time axis
 *************************
@@ -28,7 +23,7 @@ check results):
 
 .. code-block:: bash
 
-   $> nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --write
+   $> nctime axis /PATH/TO/SCAN/ {-w,--write}
 
 .. warning:: We highly recommend to activate ``--write`` after a first dry-checking. This will definitely modify
     your input files. Be careful to activate ``--write`` when you are sure about time errors.
@@ -36,11 +31,11 @@ check results):
 Force time axis rewriting
 *************************
 
-Anyway, you can force to overwrite time axis:
+Anyway, you can force to overwrite time axis in any case:
 
 .. code-block:: bash
 
-   $> nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --force
+   $> nctime axis /PATH/TO/SCAN/ {-f,--force}
 
 Check an on going simulation
 ****************************
@@ -50,7 +45,7 @@ To disable the corresponding test and check the on goind time axis squareness us
 
 .. code-block:: bash
 
-   $> nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --on-fly
+   $> nctime axis /PATH/TO/SCAN/ --on-fly
 
 Show wrong time steps
 *********************
@@ -59,13 +54,56 @@ By default ``nctime axis`` print the first five wrong time steps if exist. This 
 
 .. code-block:: bash
 
-   $> nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --limit INTEGER
+   $> nctime axis /PATH/TO/SCAN/ --limit INTEGER
 
 To print all wrong time steps:
 
 .. code-block:: bash
 
-   $> nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --limit
+   $> nctime axis /PATH/TO/SCAN/ --limit
+
+.. note:: This limit is also used to print wring time boundaries.
+
+Overwrites a frequency increment
+********************************
+
+By default, each supported frequency as its own unit and increment (e.g. mon = 1 months). In some case the frequency
+increment can be change, at least for diagnostic purposes.
+
+.. code-block:: bash
+
+    $> nctime axis --set-inc FREQUENCY=INCREMENT
+
+.. note::
+    Duplicate the flag to overwrite several frequency increment.
+
+.. warning::
+    Default increments are those expected by CMIP specifications. Overwrite them could lead to non CMIP-compliant files.
+
+Apply time correction on sud-daily frequencies
+**********************************************
+
+By default ``nctime`` use the dates from the filename to start its processes. Due to different use cases, filename dates related
+to sub-daily data could not follow MIPs specifications. You can apply a time correction to respectively start sub-daily axis
+at 000000 timestamp and end at 18000, 2100000, 230000, 233000 (depending on the frequency 6hr, 3hr, 1hr, subhr) whether
+the time axis is instantaneous or not.
+
+.. code-block:: bash
+
+    $> nctime axis --correct-timestamp
+
+Ignore errors
+*************
+
+If some errors are known and expected in the diagnostic they can be ignore for a more lightweight output:
+
+.. code-block:: bash
+
+   $> nctime axis /PATH/TO/SCAN/ --ignore-errors CODE,CODE
+
+
+.. note::  The allowed error codes corresponds to the following axis status codes (e.g., 001, 002, etc.). One or
+    several error coma-separated codes can be submitted.
 
 Time axis status
 ****************
@@ -81,11 +119,3 @@ Time axis error codes:
  * 006: Incorrect time bounds over one or several time steps
  * 007: Calendar must be unchanged for the same dataset
  * 008: Last date differs from end date of filename
-
-Exit status
-***********
-
- * Status = 0
-    All the files have been successfully scanned and the time axis seems correct or have been corrected.
- * Status = 1
-    Some time axis contains errors and should be corrected.

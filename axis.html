@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Check time axis squareness &mdash; nctime 4.2.2 documentation</title>
+  <title>Check time axis squareness &mdash; nctime 4.3.2 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="nctime 4.2.2 documentation" href="index.html"/>
+    <link rel="top" title="nctime 4.3.2 documentation" href="index.html"/>
         <link rel="next" title="Frequently asked questions" href="faq.html"/>
         <link rel="prev" title="Check time series continuity" href="overlap.html"/> 
 
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                4.2
+                4.3
               </div>
             
           
@@ -101,8 +101,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#force-time-axis-rewriting">Force time axis rewriting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#check-an-on-going-simulation">Check an on going simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#show-wrong-time-steps">Show wrong time steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#overwrites-a-frequency-increment">Overwrites a frequency increment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#apply-time-correction-on-sud-daily-frequencies">Apply time correction on sud-daily frequencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ignore-errors">Ignore errors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#time-axis-status">Time axis status</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#exit-status">Exit status</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
@@ -179,22 +181,15 @@ unused data. Consequently, these files cannot be used or, even worse, produced e
 time axis description.</p>
 <div class="section" id="rebuilt-and-check-time-axis">
 <h2>Rebuilt and check time axis<a class="headerlink" href="#rebuilt-and-check-time-axis" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis --project PROJECT_ID /PATH/TO/SCAN/
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/
 </pre></div>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">To rebuild a proper time axis, the dates from filename are expected to set the first time boundary and
-not the middle of the time interval. This is always the case for the instantaneous axis or frequencies
-greater than the daily frequency. Consequently, the 3-6 hourly files with an averaged time axis requires a
-date time correction.</p>
 </div>
 </div>
 <div class="section" id="rewrite-a-wrong-time-axis">
 <h2>Rewrite a wrong time axis<a class="headerlink" href="#rewrite-a-wrong-time-axis" title="Permalink to this headline">¶</a></h2>
 <p>It displays the same information as above but also modify the input files ONLY IF NECESSARY (i.e., depending on the
 check results):</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --write
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ <span class="o">{</span>-w,--write<span class="o">}</span>
 </pre></div>
 </div>
 <div class="admonition warning">
@@ -205,8 +200,8 @@ your input files. Be careful to activate <code class="docutils literal"><span cl
 </div>
 <div class="section" id="force-time-axis-rewriting">
 <h2>Force time axis rewriting<a class="headerlink" href="#force-time-axis-rewriting" title="Permalink to this headline">¶</a></h2>
-<p>Anyway, you can force to overwrite time axis:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --force
+<p>Anyway, you can force to overwrite time axis in any case:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ <span class="o">{</span>-f,--force<span class="o">}</span>
 </pre></div>
 </div>
 </div>
@@ -214,19 +209,61 @@ your input files. Be careful to activate <code class="docutils literal"><span cl
 <h2>Check an on going simulation<a class="headerlink" href="#check-an-on-going-simulation" title="Permalink to this headline">¶</a></h2>
 <p>The “on-fly” mode allows to check an incomplete time axis which is by construct inconsistent with the end timestamp of the file name.
 To disable the corresponding test and check the on goind time axis squareness use:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --on-fly
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ --on-fly
 </pre></div>
 </div>
 </div>
 <div class="section" id="show-wrong-time-steps">
 <h2>Show wrong time steps<a class="headerlink" href="#show-wrong-time-steps" title="Permalink to this headline">¶</a></h2>
 <p>By default <code class="docutils literal"><span class="pre">nctime</span> <span class="pre">axis</span></code> print the first five wrong time steps if exist. This limit can be changed with:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --limit INTEGER
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ --limit INTEGER
 </pre></div>
 </div>
 <p>To print all wrong time steps:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis --project PROJECT_ID /PATH/TO/SCAN/ --limit
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ --limit
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This limit is also used to print wring time boundaries.</p>
+</div>
+</div>
+<div class="section" id="overwrites-a-frequency-increment">
+<h2>Overwrites a frequency increment<a class="headerlink" href="#overwrites-a-frequency-increment" title="Permalink to this headline">¶</a></h2>
+<p>By default, each supported frequency as its own unit and increment (e.g. mon = 1 months). In some case the frequency
+increment can be change, at least for diagnostic purposes.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis --set-inc <span class="nv">FREQUENCY</span><span class="o">=</span>INCREMENT
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Duplicate the flag to overwrite several frequency increment.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Default increments are those expected by CMIP specifications. Overwrite them could lead to non CMIP-compliant files.</p>
+</div>
+</div>
+<div class="section" id="apply-time-correction-on-sud-daily-frequencies">
+<h2>Apply time correction on sud-daily frequencies<a class="headerlink" href="#apply-time-correction-on-sud-daily-frequencies" title="Permalink to this headline">¶</a></h2>
+<p>By default <code class="docutils literal"><span class="pre">nctime</span></code> use the dates from the filename to start its processes. Due to different use cases, filename dates related
+to sub-daily data could not follow MIPs specifications. You can apply a time correction to respectively start sub-daily axis
+at 000000 timestamp and end at 18000, 2100000, 230000, 233000 (depending on the frequency 6hr, 3hr, 1hr, subhr) whether
+the time axis is instantaneous or not.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis --correct-timestamp
+</pre></div>
+</div>
+</div>
+<div class="section" id="ignore-errors">
+<h2>Ignore errors<a class="headerlink" href="#ignore-errors" title="Permalink to this headline">¶</a></h2>
+<p>If some errors are known and expected in the diagnostic they can be ignore for a more lightweight output:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ --ignore-errors CODE,CODE
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The allowed error codes corresponds to the following axis status codes (e.g., 001, 002, etc.). One or
+several error coma-separated codes can be submitted.</p>
 </div>
 </div>
 <div class="section" id="time-axis-status">
@@ -243,23 +280,6 @@ To disable the corresponding test and check the on goind time axis squareness us
 <li>006: Incorrect time bounds over one or several time steps</li>
 <li>007: Calendar must be unchanged for the same dataset</li>
 <li>008: Last date differs from end date of filename</li>
-</ul>
-</div></blockquote>
-</div>
-<div class="section" id="exit-status">
-<h2>Exit status<a class="headerlink" href="#exit-status" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div><ul class="simple">
-<li><dl class="first docutils">
-<dt>Status = 0</dt>
-<dd>All the files have been successfully scanned and the time axis seems correct or have been corrected.</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>Status = 1</dt>
-<dd>Some time axis contains errors and should be corrected.</dd>
-</dl>
-</li>
 </ul>
 </div></blockquote>
 </div>
@@ -309,7 +329,7 @@ To disable the corresponding test and check the on goind time axis squareness us
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'4.2.2',
+            VERSION:'4.3.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

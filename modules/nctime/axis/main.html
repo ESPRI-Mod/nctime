@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.axis.main &mdash; nctime 4.2.2 documentation</title>
+  <title>nctime.axis.main &mdash; nctime 4.3.2 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 4.2.2 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 4.3.2 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.2
+                4.3
               </div>
             
           
@@ -172,8 +172,11 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">sleep</span>
 <span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Pool</span><span class="p">,</span> <span class="n">Lock</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -181,7 +184,7 @@
 <span class="kn">from</span> <span class="nn">constants</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">context</span> <span class="k">import</span> <span class="n">ProcessingContext</span>
 <span class="kn">from</span> <span class="nn">handler</span> <span class="k">import</span> <span class="n">File</span>
-<span class="kn">from</span> <span class="nn">nctime.utils.misc</span> <span class="k">import</span> <span class="n">trunc</span>
+<span class="kn">from</span> <span class="nn">nctime.utils.misc</span> <span class="k">import</span> <span class="n">trunc</span><span class="p">,</span> <span class="n">COLORS</span><span class="p">,</span> <span class="n">ProcessContext</span>
 
 
 <div class="viewcode-block" id="process"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.main.process">[docs]</a><span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="n">ffp</span><span class="p">):</span>
@@ -193,24 +196,26 @@
 <span class="sd">    :rtype: *list*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Declare context from initializer to avoid IDE warnings</span>
+    <span class="k">global</span> <span class="n">cctx</span>
     <span class="c1"># Block to avoid program stop if a thread fails</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># Instantiate file handler</span>
         <span class="n">fh</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">ffp</span><span class="o">=</span><span class="n">ffp</span><span class="p">,</span>
-                  <span class="n">pattern</span><span class="o">=</span><span class="n">pattern</span><span class="p">,</span>
-                  <span class="n">ref_units</span><span class="o">=</span><span class="n">ref_units</span><span class="p">,</span>
-                  <span class="n">ref_calendar</span><span class="o">=</span><span class="n">ref_calendar</span><span class="p">,</span>
-                  <span class="n">true_dates</span><span class="o">=</span><span class="n">true_dates</span><span class="p">)</span>
+                  <span class="n">pattern</span><span class="o">=</span><span class="n">cctx</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span>
+                  <span class="n">ref_units</span><span class="o">=</span><span class="n">cctx</span><span class="o">.</span><span class="n">ref_units</span><span class="p">,</span>
+                  <span class="n">ref_calendar</span><span class="o">=</span><span class="n">cctx</span><span class="o">.</span><span class="n">ref_calendar</span><span class="p">,</span>
+                  <span class="n">correction</span><span class="o">=</span><span class="n">cctx</span><span class="o">.</span><span class="n">correction</span><span class="p">)</span>
         <span class="n">fh</span><span class="o">.</span><span class="n">load_last_date</span><span class="p">()</span>
         <span class="c1"># In the case of inconsistent timestamps, it may be due to float precision issue</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">on_fly</span> <span class="ow">and</span> <span class="n">fh</span><span class="o">.</span><span class="n">last_timestamp</span> <span class="o">!=</span> <span class="n">fh</span><span class="o">.</span><span class="n">end_timestamp</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cctx</span><span class="o">.</span><span class="n">on_fly</span> <span class="ow">and</span> <span class="n">fh</span><span class="o">.</span><span class="n">last_timestamp</span> <span class="o">!=</span> <span class="n">fh</span><span class="o">.</span><span class="n">end_timestamp</span><span class="p">:</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">start_num</span> <span class="o">=</span> <span class="n">trunc</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">start_num</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">load_last_date</span><span class="p">()</span>
-            <span class="c1"># Check consistency between last time date and end date from filename</span>
             <span class="k">if</span> <span class="n">fh</span><span class="o">.</span><span class="n">last_timestamp</span> <span class="o">!=</span> <span class="n">fh</span><span class="o">.</span><span class="n">end_timestamp</span><span class="p">:</span>
                 <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;003&#39;</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">fh</span><span class="o">.</span><span class="n">last_date</span> <span class="o">!=</span> <span class="n">fh</span><span class="o">.</span><span class="n">end_date</span><span class="p">:</span>
-                <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;008&#39;</span><span class="p">)</span>
+        <span class="c1"># Check consistency between last time date and end date from filename</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cctx</span><span class="o">.</span><span class="n">on_fly</span> <span class="ow">and</span> <span class="n">fh</span><span class="o">.</span><span class="n">last_date</span> <span class="o">!=</span> <span class="n">fh</span><span class="o">.</span><span class="n">end_date</span><span class="p">:</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;008&#39;</span><span class="p">)</span>
         <span class="c1"># Check file consistency between instant time and time boundaries</span>
         <span class="k">if</span> <span class="n">fh</span><span class="o">.</span><span class="n">is_instant</span> <span class="ow">and</span> <span class="n">fh</span><span class="o">.</span><span class="n">has_bounds</span><span class="p">:</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;004&#39;</span><span class="p">)</span>
@@ -218,43 +223,46 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">fh</span><span class="o">.</span><span class="n">is_instant</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">fh</span><span class="o">.</span><span class="n">has_bounds</span><span class="p">:</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;005&#39;</span><span class="p">)</span>
         <span class="c1"># Check time axis squareness</span>
-        <span class="n">wrong_indexes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">wrong_timesteps</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">{</span><span class="s1">&#39;003&#39;</span><span class="p">,</span> <span class="s1">&#39;008&#39;</span><span class="p">}</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="p">)):</span>
             <span class="c1"># Rebuild a theoretical time axis with appropriate precision</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">time_axis_rebuilt</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">build_time_axis</span><span class="p">()</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">time_axis_rebuilt</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">time_axis</span><span class="p">):</span>
-                <span class="n">time_axis_diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">time_axis_rebuilt</span> <span class="o">==</span> <span class="n">fh</span><span class="o">.</span><span class="n">time_axis</span><span class="p">)</span>
                 <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;001&#39;</span><span class="p">)</span>
-                <span class="n">wrong_indexes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">time_axis_diff</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">time_axis_diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">time_axis_rebuilt</span> <span class="o">==</span> <span class="n">fh</span><span class="o">.</span><span class="n">time_axis</span><span class="p">)</span>
+                <span class="n">wrong_timesteps</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">time_axis_diff</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
         <span class="c1"># Check time boundaries squareness</span>
-        <span class="k">if</span> <span class="n">fh</span><span class="o">.</span><span class="n">has_bounds</span> <span class="ow">and</span> <span class="s1">&#39;004&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="p">:</span>
+        <span class="n">wrong_bounds</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">fh</span><span class="o">.</span><span class="n">has_bounds</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">{</span><span class="s1">&#39;003&#39;</span><span class="p">,</span> <span class="s1">&#39;008&#39;</span><span class="p">,</span> <span class="s1">&#39;004&#39;</span><span class="p">}</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="p">)):</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">time_bounds_rebuilt</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">build_time_bounds</span><span class="p">()</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">time_bounds_rebuilt</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">time_bounds</span><span class="p">):</span>
                 <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;006&#39;</span><span class="p">)</span>
+                <span class="n">time_bounds_diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">time_bounds_rebuilt</span> <span class="o">==</span> <span class="n">fh</span><span class="o">.</span><span class="n">time_bounds</span><span class="p">)</span>
+                <span class="n">wrong_bounds</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">time_bounds_diff</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
         <span class="c1"># Check time units consistency between file and ref</span>
-        <span class="k">if</span> <span class="n">ref_units</span> <span class="o">!=</span> <span class="n">fh</span><span class="o">.</span><span class="n">tunits</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">cctx</span><span class="o">.</span><span class="n">ref_units</span> <span class="o">!=</span> <span class="n">fh</span><span class="o">.</span><span class="n">tunits</span><span class="p">:</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;002&#39;</span><span class="p">)</span>
         <span class="c1"># Check calendar consistency between file and ref</span>
-        <span class="k">if</span> <span class="n">ref_calendar</span> <span class="o">!=</span> <span class="n">fh</span><span class="o">.</span><span class="n">calendar</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">cctx</span><span class="o">.</span><span class="n">ref_calendar</span> <span class="o">!=</span> <span class="n">fh</span><span class="o">.</span><span class="n">calendar</span><span class="p">:</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;007&#39;</span><span class="p">)</span>
         <span class="c1"># Rename file depending on checking</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">write</span> <span class="ow">and</span> <span class="p">{</span><span class="s1">&#39;003&#39;</span><span class="p">}</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="p">)))</span> <span class="ow">or</span> <span class="n">force</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">cctx</span><span class="o">.</span><span class="n">write</span> <span class="ow">and</span> <span class="p">{</span><span class="s1">&#39;003&#39;</span><span class="p">}</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="p">)))</span> <span class="ow">or</span> <span class="n">cctx</span><span class="o">.</span><span class="n">force</span><span class="p">:</span>
             <span class="c1"># Change filename and file full path dynamically</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">nc_file_rename</span><span class="p">(</span><span class="n">new_filename</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">end_timestamp</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">last_timestamp</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
         <span class="c1"># Remove time boundaries depending on checking</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">write</span> <span class="ow">and</span> <span class="p">{</span><span class="s1">&#39;004&#39;</span><span class="p">}</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="p">)))</span> <span class="ow">or</span> <span class="n">force</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">cctx</span><span class="o">.</span><span class="n">write</span> <span class="ow">and</span> <span class="p">{</span><span class="s1">&#39;004&#39;</span><span class="p">}</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="p">)))</span> <span class="ow">or</span> <span class="n">cctx</span><span class="o">.</span><span class="n">force</span><span class="p">:</span>
             <span class="c1"># Delete time bounds and bounds attribute from file if write or force mode</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">nc_var_delete</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">fh</span><span class="o">.</span><span class="n">tbnds</span><span class="p">)</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">nc_att_delete</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s1">&#39;bounds&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
         <span class="c1"># Rewrite time axis depending on checking</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">write</span> <span class="ow">and</span> <span class="p">{</span><span class="s1">&#39;001&#39;</span><span class="p">,</span> <span class="s1">&#39;002&#39;</span><span class="p">,</span> <span class="s1">&#39;006&#39;</span><span class="p">,</span> <span class="s1">&#39;007&#39;</span><span class="p">}</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="p">)))</span> <span class="ow">or</span> <span class="n">force</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">cctx</span><span class="o">.</span><span class="n">write</span> <span class="ow">and</span> <span class="p">{</span><span class="s1">&#39;001&#39;</span><span class="p">,</span> <span class="s1">&#39;002&#39;</span><span class="p">,</span> <span class="s1">&#39;006&#39;</span><span class="p">,</span> <span class="s1">&#39;007&#39;</span><span class="p">}</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="p">)))</span> <span class="ow">or</span> <span class="n">cctx</span><span class="o">.</span><span class="n">force</span><span class="p">:</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">nc_var_overwrite</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">time_axis_rebuilt</span><span class="p">)</span>
-            <span class="n">fh</span><span class="o">.</span><span class="n">nc_att_overwrite</span><span class="p">(</span><span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">ref_units</span><span class="p">)</span>
-            <span class="n">fh</span><span class="o">.</span><span class="n">nc_att_overwrite</span><span class="p">(</span><span class="s1">&#39;calendar&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">ref_calendar</span><span class="p">)</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">nc_att_overwrite</span><span class="p">(</span><span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">cctx</span><span class="o">.</span><span class="n">ref_units</span><span class="p">)</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">nc_att_overwrite</span><span class="p">(</span><span class="s1">&#39;calendar&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">cctx</span><span class="o">.</span><span class="n">ref_calendar</span><span class="p">)</span>
             <span class="c1"># Rewrite time boundaries if needed</span>
             <span class="k">if</span> <span class="n">fh</span><span class="o">.</span><span class="n">has_bounds</span><span class="p">:</span>
                 <span class="n">fh</span><span class="o">.</span><span class="n">nc_var_overwrite</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">time_bounds</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">time_bounds_rebuilt</span><span class="p">)</span>
-        <span class="c1"># Print file status</span>
+        <span class="c1"># Diagnostic display</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="si">{}</span><span class="s2"></span>
 <span class="s2">        Units: </span><span class="si">{}</span><span class="s2"> [ref = </span><span class="si">{}</span><span class="s2">]</span>
 <span class="s2">        Calendar: </span><span class="si">{}</span><span class="s2"> [ref = </span><span class="si">{}</span><span class="s2">]</span>
@@ -264,9 +272,9 @@
 <span class="s2">        Length: </span><span class="si">{}</span><span class="s2"></span>
 <span class="s2">        Frequency: </span><span class="si">{}</span><span class="s2"> = </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"></span>
 <span class="s2">        Is instant: </span><span class="si">{}</span><span class="s2"></span>
-<span class="s2">        Has bounds: </span><span class="si">{}</span><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
-                                 <span class="n">fh</span><span class="o">.</span><span class="n">tunits</span><span class="p">,</span> <span class="n">ref_units</span><span class="p">,</span>
-                                 <span class="n">fh</span><span class="o">.</span><span class="n">calendar</span><span class="p">,</span> <span class="n">ref_calendar</span><span class="p">,</span>
+<span class="s2">        Has bounds: </span><span class="si">{}</span><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">COLORS</span><span class="o">.</span><span class="n">HEADER</span> <span class="o">+</span> <span class="n">fh</span><span class="o">.</span><span class="n">filename</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span><span class="p">,</span>
+                                 <span class="n">fh</span><span class="o">.</span><span class="n">tunits</span><span class="p">,</span> <span class="n">cctx</span><span class="o">.</span><span class="n">ref_units</span><span class="p">,</span>
+                                 <span class="n">fh</span><span class="o">.</span><span class="n">calendar</span><span class="p">,</span> <span class="n">cctx</span><span class="o">.</span><span class="n">ref_calendar</span><span class="p">,</span>
                                  <span class="n">fh</span><span class="o">.</span><span class="n">start_timestamp</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">start_date</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">start_num</span><span class="p">,</span>
                                  <span class="n">fh</span><span class="o">.</span><span class="n">end_timestamp</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">end_date</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">end_num</span><span class="p">,</span>
                                  <span class="n">fh</span><span class="o">.</span><span class="n">last_timestamp</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">last_date</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">last_num</span><span class="p">,</span>
@@ -274,59 +282,56 @@
                                  <span class="n">fh</span><span class="o">.</span><span class="n">frequency</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">step_units</span><span class="p">,</span>
                                  <span class="n">fh</span><span class="o">.</span><span class="n">is_instant</span><span class="p">,</span>
                                  <span class="n">fh</span><span class="o">.</span><span class="n">has_bounds</span><span class="p">)</span>
+        <span class="c1"># Exclude codes to ignore from status codes</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="p">[</span><span class="n">code</span> <span class="k">for</span> <span class="n">code</span> <span class="ow">in</span> <span class="n">fh</span><span class="o">.</span><span class="n">status</span> <span class="k">if</span> <span class="n">code</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cctx</span><span class="o">.</span><span class="n">ignore_codes</span><span class="p">]</span>
+        <span class="c1"># Add status message</span>
         <span class="k">if</span> <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="p">:</span>
-                <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\n</span><span class="s2">        Status: </span><span class="si">{}</span><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">STATUS</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\n</span><span class="s2">        Status: </span><span class="si">{}</span><span class="s2"> &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">COLORS</span><span class="o">.</span><span class="n">FAIL</span> <span class="o">+</span> <span class="s1">&#39;Error &#39;</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="s1">&#39; -- &#39;</span> <span class="o">+</span> <span class="n">STATUS</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\n</span><span class="s2">        Status: </span><span class="si">{}</span><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">STATUS</span><span class="p">[</span><span class="s1">&#39;000&#39;</span><span class="p">])</span>
-        <span class="c1"># Display wrong time steps</span>
-        <span class="n">timestep_limit</span> <span class="o">=</span> <span class="n">limit</span> <span class="k">if</span> <span class="n">limit</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">wrong_indexes</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">wrong_indexes</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\n</span><span class="s2">        Status: </span><span class="si">{}</span><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">COLORS</span><span class="o">.</span><span class="n">OKGREEN</span> <span class="o">+</span> <span class="n">STATUS</span><span class="p">[</span><span class="s1">&#39;000&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span><span class="p">)</span>
+        <span class="c1"># Display wrong time steps and/or bounds</span>
+        <span class="n">timestep_limit</span> <span class="o">=</span> <span class="n">cctx</span><span class="o">.</span><span class="n">limit</span> <span class="k">if</span> <span class="n">cctx</span><span class="o">.</span><span class="n">limit</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">wrong_timesteps</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">wrong_timesteps</span><span class="p">):</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">timestep_limit</span><span class="p">:</span>
                 <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\n</span><span class="s2">        Wrong timestep: </span><span class="si">{}</span><span class="s2"> iso </span><span class="si">{}</span><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">time_axis</span><span class="p">[</span><span class="n">v</span><span class="p">])</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
                                                                         <span class="nb">str</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">time_axis_rebuilt</span><span class="p">[</span><span class="n">v</span><span class="p">])</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
-        <span class="c1"># Acquire lock to standard output</span>
-        <span class="n">lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="n">bounds_limit</span> <span class="o">=</span> <span class="n">cctx</span><span class="o">.</span><span class="n">limit</span> <span class="k">if</span> <span class="n">cctx</span><span class="o">.</span><span class="n">limit</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">wrong_bounds</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">wrong_bounds</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">bounds_limit</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\n</span><span class="s2">        Wrong bound: </span><span class="si">{}</span><span class="s2"> iso </span><span class="si">{}</span><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">time_bounds</span><span class="p">[</span><span class="n">v</span><span class="p">])</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+                                                                     <span class="nb">str</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">time_bounds_rebuilt</span><span class="p">[</span><span class="n">v</span><span class="p">])</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+        <span class="c1"># Acquire lock to print result</span>
+        <span class="n">cctx</span><span class="o">.</span><span class="n">lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-        <span class="c1"># Release lock on standard output</span>
-        <span class="n">lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
-        <span class="c1"># Return file status</span>
-        <span class="k">return</span> <span class="n">fh</span><span class="o">.</span><span class="n">status</span>
+        <span class="c1"># Release lock</span>
+        <span class="n">cctx</span><span class="o">.</span><span class="n">lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+        <span class="c1"># Return error if it is the case</span>
+        <span class="k">if</span> <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
     <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
         <span class="k">raise</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> skipped</span><span class="se">\n</span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ffp</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">))</span>
-        <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;999&#39;</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="mi">1</span></div>
 
 
-<div class="viewcode-block" id="process_context"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.main.process_context">[docs]</a><span class="k">def</span> <span class="nf">process_context</span><span class="p">(</span><span class="n">_pattern</span><span class="p">,</span> <span class="n">_ref_units</span><span class="p">,</span> <span class="n">_ref_calendar</span><span class="p">,</span> <span class="n">_write</span><span class="p">,</span> <span class="n">_force</span><span class="p">,</span> <span class="n">_on_fly</span><span class="p">,</span> <span class="n">_true_dates</span><span class="p">,</span> <span class="n">_limit</span><span class="p">,</span> <span class="n">_lock</span><span class="p">):</span>
+<div class="viewcode-block" id="initializer"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.main.initializer">[docs]</a><span class="k">def</span> <span class="nf">initializer</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Initialize process context by setting particular variables as global variables.</span>
 
-<span class="sd">    :param str _pattern: The filename pattern</span>
-<span class="sd">    :param str _ref_units: The time units to be used as reference for the simulation</span>
-<span class="sd">    :param str _ref_calendar: The time calendar  to be used as reference for the simulation</span>
-<span class="sd">    :param boolean _write: Unable write mode if True</span>
-<span class="sd">    :param boolean _force: Force write mode if True</span>
-<span class="sd">    :param boolean _on_fly: Disable some check if True for incomplete time axis</span>
-<span class="sd">    :param boolean _true_dates: Disable filename dates correction</span>
-<span class="sd">    :param int _limit: Limit of displayed wrong time steps</span>
-<span class="sd">    :param multiprocessing.Lock _lock: Lock to ensure only one process print to std_out at a time</span>
+<span class="sd">    :param list keys: Argument name list</span>
+<span class="sd">    :param list values: Argument value list</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">global</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">ref_units</span><span class="p">,</span> <span class="n">ref_calendar</span><span class="p">,</span> <span class="n">write</span><span class="p">,</span> <span class="n">force</span><span class="p">,</span> <span class="n">on_fly</span><span class="p">,</span> <span class="n">true_dates</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">lock</span>
-    <span class="n">pattern</span> <span class="o">=</span> <span class="n">_pattern</span>
-    <span class="n">ref_units</span> <span class="o">=</span> <span class="n">_ref_units</span>
-    <span class="n">ref_calendar</span> <span class="o">=</span> <span class="n">_ref_calendar</span>
-    <span class="n">write</span> <span class="o">=</span> <span class="n">_write</span>
-    <span class="n">force</span> <span class="o">=</span> <span class="n">_force</span>
-    <span class="n">on_fly</span> <span class="o">=</span> <span class="n">_on_fly</span>
-    <span class="n">true_dates</span> <span class="o">=</span> <span class="n">_true_dates</span>
-    <span class="n">limit</span> <span class="o">=</span> <span class="n">_limit</span>
-    <span class="n">lock</span> <span class="o">=</span> <span class="n">_lock</span></div>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="k">global</span> <span class="n">cctx</span>
+    <span class="n">cctx</span> <span class="o">=</span> <span class="n">ProcessContext</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keys</span><span class="p">)})</span></div>
 
 
 <div class="viewcode-block" id="run"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.main.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
@@ -343,24 +348,40 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Instantiate processing context</span>
     <span class="k">with</span> <span class="n">ProcessingContext</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="k">as</span> <span class="n">ctx</span><span class="p">:</span>
+        <span class="c1"># Critical level used to print in any case</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Command: &#39;</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">))</span>
+        <span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Analysing data, please wait...</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="c1"># Init processes pool</span>
-        <span class="n">std_out_lock</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
-        <span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">processes</span><span class="p">,</span> <span class="n">initializer</span><span class="o">=</span><span class="n">process_context</span><span class="p">,</span> <span class="n">initargs</span><span class="o">=</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span>
-                                                                                    <span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">tunits</span><span class="p">,</span>
-                                                                                    <span class="n">ctx</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">calendar</span><span class="p">,</span>
-                                                                                    <span class="n">ctx</span><span class="o">.</span><span class="n">write</span><span class="p">,</span>
-                                                                                    <span class="n">ctx</span><span class="o">.</span><span class="n">force</span><span class="p">,</span>
-                                                                                    <span class="n">ctx</span><span class="o">.</span><span class="n">on_fly</span><span class="p">,</span>
-                                                                                    <span class="n">ctx</span><span class="o">.</span><span class="n">true_dates</span><span class="p">,</span>
-                                                                                    <span class="n">ctx</span><span class="o">.</span><span class="n">limit</span><span class="p">,</span>
-                                                                                    <span class="n">std_out_lock</span><span class="p">))</span>
-        <span class="c1"># Process supplied files</span>
-        <span class="n">handlers</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pool</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">sources</span><span class="p">)]</span>
-        <span class="c1"># Close pool of workers</span>
-        <span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
-        <span class="n">ctx</span><span class="o">.</span><span class="n">scan_files</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">handlers</span><span class="p">)</span></div>
+        <span class="c1"># Init process context</span>
+        <span class="n">cctx</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">PROCESS_VARS</span><span class="p">}</span>
+        <span class="n">cctx</span><span class="p">[</span><span class="s1">&#39;lock&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">use_pool</span><span class="p">:</span>
+            <span class="c1"># Init processes pool</span>
+            <span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">processes</span><span class="p">,</span> <span class="n">initializer</span><span class="o">=</span><span class="n">initializer</span><span class="p">,</span> <span class="n">initargs</span><span class="o">=</span><span class="p">(</span><span class="n">cctx</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">cctx</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+            <span class="c1"># Process supplied files</span>
+            <span class="n">handlers</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pool</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">sources</span><span class="p">)]</span>
+            <span class="c1"># Close pool of workers</span>
+            <span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">initializer</span><span class="p">(</span><span class="n">cctx</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">cctx</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="n">handlers</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">sources</span><span class="p">)]</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="n">scan_errors</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">handlers</span><span class="p">)</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="n">scan_files</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">handlers</span><span class="p">)</span>
+    <span class="c1"># Exist status if scan errors</span>
+    <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">scan_errors</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># Evaluate errors and exit with appropriate return code</span>
+    <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">scan_errors</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">scan_errors</span> <span class="o">==</span> <span class="n">ctx</span><span class="o">.</span><span class="n">scan_files</span><span class="p">:</span>
+            <span class="c1"># All files has error(s). Error code = -1</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Some files (at least one) has error(s). Error code = nb files with error(s)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">scan_files</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># No errors. Error code = 0</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
@@ -397,7 +418,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'4.2.2',
+            VERSION:'4.3.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

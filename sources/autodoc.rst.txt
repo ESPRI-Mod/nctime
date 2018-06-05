@@ -11,6 +11,7 @@ nctime
 overlap
 -------
 .. automodule:: nctime.overlap.main
+.. automodule:: nctime.overlap.handler
 .. automodule:: nctime.overlap.context
 .. automodule:: nctime.overlap.constants
 .. automodule:: nctime.overlap.custom_exceptions
