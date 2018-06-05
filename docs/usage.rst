@@ -11,15 +11,15 @@ Check the help
 
 .. code-block:: bash
 
-    $> nctime -h
-    $> nctime SUBCOMMAND -h
+    $> nctime {-h,--help}
+    $> nctime SUBCOMMAND {-h,--help}
 
 Check the version
 *****************
 
 .. code-block:: bash
 
-    $> nctime -v
+    $> nctime {-v,--version}
 
 Debug mode
 **********
@@ -40,13 +40,16 @@ Default is to only print errors, to change this and print all results:
 Specify the project
 *******************
 
-The ``--project`` argument is used to parse the corresponding configuration INI file. It is **always required**
+The ``-p/--project`` argument is used to parse the corresponding configuration INI file. It is **always required**
 (except for ``fetch-ini`` subcommand). This argument is case-sensitive and has to correspond to a section name of
 the configuration file(s).
 
 .. code-block:: bash
 
-    $> nctime SUBCOMMAND --project PROJECT_ID
+    $> nctime SUBCOMMAND {-p,--project} PROJECT_ID
+
+.. note::
+    If not submitted it takes the PROJECT_ID from the netCDF global attribute of the first file scanned.
 
 Submit a configuration directory
 ********************************
@@ -62,17 +65,28 @@ fetch and read the configuration files.
 .. note::
     If not submitted it takes the $ESGINI environment variable. If not exists the usual datanode path is used (i.e., ``/esg/config/esgcet``)
 
-Use real filename dates
-***********************
+Use filters
+***********
 
-``nctime`` use the dates from the filename to start its processes. Due to different use cases, filename dates related
-to 3-hourly and 6-hourly data are corrected by default to respectively start at 000000 end at 2100000 (180000) whether
-the time axis is instantaneous or not. To disable this correction and stricly consider dates from filename to check the
-time axis:
+``nctime`` subcommands will scan your local archive to achieve data quality check. In such a scan, you can filter the file discovery by using a Python regular expression
+(see `re <https://docs.python.org/2/library/re.html>`_ Python library).
+
+The default is to walk through your local filesystem ignoring the hidden folders.
+It can be change with:
 
 .. code-block:: bash
 
-    $> nctime SUBCOMMAND --true-dates
+    $> nctime SUBCOMMAND --ignore-dir PYTHON_REGEX
+
+``nctime`` only considers unhidden NetCDF files by default excuding the regular expression ``^\..*$`` and
+including the following one ``.*\.nc$``. It can be independently change with:
+
+.. code-block:: bash
+
+    $> nctime SUBCOMMAND --include-file PYTHON_REGEX --exclude-file PYTHON_REGEX
+
+Keep in mind that ``--ignore-dir`` and ``--exclude-file`` specifie a directory pattern **NOT** to be matched, while
+``--include-file`` specifies a filename pattern **TO BE** matched.
 
 Use a logfile
 *************
@@ -85,8 +99,8 @@ It can be changed by adding a optional logfile directory to the flag.
 
 .. code-block:: bash
 
-    $> nctime SUBCOMMAND --log
-    $> nctime SUBCOMMAND --log /PATH/TO/LOGDIR/
+    $> nctime SUBCOMMAND {-l,--log}
+    $> nctime SUBCOMMAND -l /PATH/TO/LOGDIR/
 
 Use multiprocessing
 *******************
@@ -101,3 +115,13 @@ several files. One process seems sequential processing (the default). Set it -1 
     $> nctime SUBCOMMAND --max-processes 4
 
 .. warning:: The number of maximal processes is limited to the maximum CPU count in any case.
+
+Exit status
+***********
+
+ * Status = 0
+    All the files have been successfully processed without errors.
+ * Status = 1
+    Errors occur during file scanning and quality checkup.
+ * Status = -1
+    Argument parsing error.
