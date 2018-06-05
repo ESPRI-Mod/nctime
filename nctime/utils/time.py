@@ -323,12 +323,17 @@ def get_start_end_dates_from_filename(filename, pattern, frequency, calendar, co
         date_as_since = ''.join([''.join(triple) for triple in
                                  zip(digits[::2], digits[1::2], ['', '-', '-', ' ', ':', ':', ':'])])[:-1]
         # Use num2date to create netCDF4 datetime objects
-        if correction and frequency in ['3hr', '6hr']:
-            # Fix on filename digits for 3hr and 6hr frequencies. 3hr (6hr) files always start
-            # at 000000 end at 2100000 (180000) whether the time axis is instantaneous or not.
-            dates.append(num2date(TIME_CORRECTION[frequency][key][digits[-6:]],
-                                  units='days since ' + date_as_since,
-                                  calendar=calendar))
+        if correction and frequency in END_TIME_CORRECTION.keys():
+            # Fix on filename digits for sub-daily frequencies.
+            # File always starts and end a the lower interval boundary whether the time axis is instantaneous or not.
+            if key == 'period_start':
+                dates.append(num2date(START_TIME_CORRECTION[digits[-6:]],
+                                      units='days since ' + date_as_since,
+                                      calendar=calendar))
+            if key == 'period_end':
+                dates.append(num2date(END_TIME_CORRECTION[frequency][digits[-6:]],
+                                      units='days since ' + date_as_since,
+                                      calendar=calendar))
         else:
             dates.append(num2date(0.0, units='days since ' + date_as_since, calendar=calendar))
     # Append date next to the end date for overlap diagnostic

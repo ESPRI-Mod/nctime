@@ -17,7 +17,7 @@ import numpy as np
 from fuzzywuzzy import fuzz, process
 
 from custom_exceptions import *
-from nctime.utils.constants import CLIM_SUFFIX
+from nctime.utils.constants import CLIM_SUFFIX, END_TIME_CORRECTION
 from nctime.utils.custom_exceptions import *
 from nctime.utils.misc import ncopen
 from nctime.utils.time import time_inc, convert_time_units
@@ -109,7 +109,7 @@ class File(object):
         # Apply time offset only if:
         # - NON-INSTANT axis
         # - AND NOT (frequency is 3hr or 6hr WITH corrected timestamps)
-        if not self.is_instant and not (self.frequency in ['3hr', '6hr'] and not correction):
+        if not self.is_instant and not (self.frequency in END_TIME_CORRECTION.keys() and not correction):
             dates_num += 0.5
         self.start_axis = dates_num[0]
         dates = num2date(dates_num, units=self.funits, calendar=self.calendar)

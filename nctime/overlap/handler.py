@@ -33,7 +33,10 @@ class Filename(object):
         # Remove "-clim.nc" suffix from filename if exists
         self.name = self.filename.replace(CLIM_SUFFIX, '.nc') if self.filename.endswith(CLIM_SUFFIX) else self.filename
         # Build id as the filename without the dates and extension
-        self.id = '_'.join(self.filename.split('_')[:-1])
+        if self.filename.endswith(CLIM_SUFFIX):
+            self.id = '_'.join(self.filename.split('_')[:-1]) + '-clim'
+        else:
+            self.id = '_'.join(self.filename.split('_')[:-1])
         # Get first and last time steps
         # Start/end period dates from filename + next expected date
         self.start_date = None
