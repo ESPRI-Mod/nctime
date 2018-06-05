@@ -106,7 +106,7 @@ def init_logging(log, cmd, level='INFO'):
     logging.getLogger().setLevel(logging.DEBUG)
     if log:
         handler = logging.FileHandler(filename='{}.log'.format(logfile), delay=True)
-        handler.addFilter(NoColorFilter())
+    #    handler.addFilter(NoColorFilter())
     else:
         handler = logging.StreamHandler()
     handler.setLevel(logging.__dict__[level])
