@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 """
-.. module:: nctime.axis.handler.py
    :platform: Unix
    :synopsis: File handler for time axis.
 
