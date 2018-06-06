@@ -70,6 +70,13 @@ class ProcessingContext(object):
         self.dir_filter = args.ignore_dir
 
     def __enter__(self):
+        # Init process manager
+        if self.use_pool:
+            manager = BaseManager()
+            manager.start()
+            self.graph = manager.graph()
+        else:
+            self.graph = Graph()
         # Init data collector
         self.sources = Collector(sources=self.directory)
         # Init file filter

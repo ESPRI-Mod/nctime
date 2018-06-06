@@ -299,16 +299,11 @@ def run(args):
         logging.critical('Command: ' + ' '.join(sys.argv))
         sleep(0.1)
         print("Analysing data, please wait...\r")
-        # Init process manager
-        if ctx.use_pool:
-            manager = ProcessManager()
-            manager.start()
-            graph = manager.graph()
-        else:
-            graph = Graph()
         # Init process context
         cctx = {name: getattr(ctx, name) for name in PROCESS_VARS}
-        cctx['graph'] = graph
+        # Declare graph as global for main process
+        global graph
+        graph = cctx['graph']
         if ctx.use_pool:
             # Init processes pool
             pool = Pool(processes=ctx.processes, initializer=initializer, initargs=(cctx.keys(), cctx.values()))
