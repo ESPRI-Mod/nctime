@@ -20,7 +20,7 @@ import networkx as nx
 import numpy as np
 
 from constants import *
-from context import ProcessingContext, ProcessManager
+from context import ProcessingContext, ProcessManager, Graph
 from handler import Filename
 from nctime.utils.misc import COLORS, ProcessContext
 from nctime.utils.time import get_next_timestep
@@ -300,14 +300,14 @@ def run(args):
         sleep(0.1)
         print("Analysing data, please wait...\r")
         # Init process manager
-        manager = ProcessManager()
         if ctx.use_pool:
+            manager = ProcessManager()
             manager.start()
+            graph = manager.graph()
+        else:
+            graph = Graph()
         # Init process context
         cctx = {name: getattr(ctx, name) for name in PROCESS_VARS}
-        # Declare graph as global for main process
-        global graph
-        graph = manager.graph()
         cctx['graph'] = graph
         if ctx.use_pool:
             # Init processes pool

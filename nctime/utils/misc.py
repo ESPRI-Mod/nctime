@@ -158,6 +158,7 @@ def get_project(ffp):
     :rtype: *str*
 
     """
+    project = None
     with ncopen(ffp) as nc:
         if 'mip_era' in nc.ncattrs():
             project = nc.getncattr('mip_era')
