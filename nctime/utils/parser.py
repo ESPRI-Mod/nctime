@@ -113,14 +113,14 @@ class CodeChecker(Action):
 
     @staticmethod
     def code_checker(codes):
-        ALLOWED_CODES = [str(x).rjust(3, '0') for x in range(0, 9)]
+        allowed_codes = [str(x).rjust(3, '0') for x in range(0, 9)]
         if not isinstance(codes, str):
             msg = 'Type not supported: {} -- Should be a comma-separated string without spaces.'.format(codes)
             raise ArgumentTypeError(msg)
         codes = codes.split(',')
         for code in codes:
-            if code not in ALLOWED_CODES:
-                msg = 'Invalid code: {} -- Available codes are {}'.format(code, ', '.join(ALLOWED_CODES))
+            if code not in allowed_codes:
+                msg = 'Invalid code: {} -- Available codes are {}'.format(code, ', '.join(allowed_codes))
                 raise ArgumentTypeError(msg)
         return codes
 

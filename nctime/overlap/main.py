@@ -8,11 +8,9 @@
 """
 
 import itertools
-import logging
 import os
 import re
 import sys
-from time import sleep
 from multiprocessing import Pool
 
 import nco
@@ -20,8 +18,8 @@ import networkx as nx
 import numpy as np
 
 from constants import *
-from context import ProcessingContext, ProcessManager, Graph
-from handler import Filename
+from context import ProcessingContext
+from handler import Filename, Graph
 from nctime.utils.misc import COLORS, ProcessContext
 from nctime.utils.time import get_next_timestep
 
@@ -53,7 +51,7 @@ def get_overlaps(g, shortest):
         # Partial overlap from next_node[1] to current_node[2] (bounds included)
         # Overlap is hold on the next node (arbitrary)
         if (current_node['next'] - next_node['start']) > 0:
-            logging.debug('Partial overlap found between {} and {}'.format(shortest[n], shortest[n + 1]))
+            echo.debug('Partial overlap found between {} and {}\n'.format(shortest[n], shortest[n + 1]))
             cutting_timestep = get_next_timestep(next_node['path'], current_node['last_step'])
             overlaps['partial'][shortest[n + 1]] = next_node
             overlaps['partial'][shortest[n + 1]].update({'end_overlap': current_node['end'],
@@ -94,7 +92,52 @@ def resolve_overlap(directory, pattern, filename, from_date=None, to_date=None, 
     os.remove(os.path.join(directory, filename))
 
 
-def create_nodes(ffp):
+def extract_dates(ffp):
+    """
+    Extract dates attributes from netCDF file..
+
+     * start = the start date of the file sub-period
+     * end = the end date of the file sub-period
+     * next = the date next to the end date depending on the frequency, the calendar, etc.
+     * first_step = the first time axis step
+     * last_step = the last time axis step
+     * path = the file full path
+
+    :param str ffp: The file full path to process
+
+    """
+    # Get process content from process global env
+    assert 'pctx' in globals().keys()
+    pctx = globals()['pctx']
+    # Block to avoid program stop if a thread fails
+    try:
+        # Instantiate filename handler
+        fh = Filename(ffp=ffp)
+        # Extract start and end dates from filename
+        fh.get_start_end_dates(pattern=pctx.pattern,
+                               calendar=pctx.ref_calendar)
+        with pctx.lock:
+            echo.debug('File: {} :: Start={}, End={}, Next={}\n'.format(fh.filename,
+                                                                        fh.start_date,
+                                                                        fh.end_date,
+                                                                        fh.next_date))
+        return fh
+    except KeyboardInterrupt:
+        raise
+    except Exception as e:
+        echo.error('{} skipped\n{}: {}\n'.format(ffp, e.__class__.__name__, e.message))
+        return None
+    finally:
+        # Print progress
+        with pctx.lock:
+            pctx.progress.value += 1
+            percentage = int(pctx.progress.value * 100 / pctx.nbfiles)
+            msg = COLORS.OKGREEN + '\rProcess netCDF file(s): ' + COLORS.ENDC
+            msg += '{}% | {}/{} files'.format(percentage, pctx.progress.value, pctx.nbfiles)
+            echo.progress(msg)
+
+
+def create_nodes(fh):
     """
     Creates the node into the corresponding Graph().
     One directed graph per dataset. Each file is analysed to be a node in its graph.
@@ -107,39 +150,24 @@ def create_nodes(ffp):
      * last_step = the last time axis step
      * path = the file full path
 
-    :param str ffp: The file full path to process
+    :param handler.Filename fh: The filename handler
 
     """
-    # Declare context from initializer to avoid IDE warnings
-    global cctx
-    # Block to avoid program stop if a thread fails
-    try:
-        # Instantiate filename handler
-        fh = Filename(ffp=ffp)
-        # Extract start and end dates from filename
-        fh.get_start_end_dates(pattern=cctx.pattern,
-                               calendar=cctx.ref_calendar)
-        # Create corresponding DiGraph if not exist
-        if not cctx.graph.has_graph(fh.id):
-            cctx.graph.set_graph(fh.id)
-        # Update/add current file as node with dates as attributes
-        node = cctx.graph.add_node(fh.id,
-                                   fh.filename,
-                                   fh.start_date,
-                                   fh.end_date,
-                                   fh.next_date,
-                                   fh.ffp)
-        logging.debug('Graph: {} :: Node {} (start={}, end={}, next={})'.format(fh.id,
-                                                                                fh.filename,
-                                                                                node['start'],
-                                                                                node['end'],
-                                                                                node['next']))
-        return 0
-    except KeyboardInterrupt:
-        raise
-    except Exception as e:
-        logging.error('{} skipped\n{}: {}'.format(ffp, e.__class__.__name__, e.message))
-        return 1
+    # Create corresponding DiGraph if not exist
+    if not graph.has_graph(fh.id):
+        graph.set_graph(fh.id)
+    # Update/add current file as node with dates as attributes
+    node = graph.add_node(fh.id,
+                          fh.filename,
+                          fh.start_date,
+                          fh.end_date,
+                          fh.next_date,
+                          fh.ffp)
+    echo.debug('Graph: {} :: Node {} (start={}, end={}, next={})\n'.format(fh.id,
+                                                                           fh.filename,
+                                                                           node['start'],
+                                                                           node['end'],
+                                                                           node['next']))
 
 
 def create_edges(gid):
@@ -173,7 +201,7 @@ def create_edges(gid):
         # For each next node, build the corresponding edge in the graph
         for next_node in next_nodes:
             graph.add_edge(gid, node, next_node)
-            logging.debug('Graph: {} :: Edge {} --> {}'.format(gid, node, next_node))
+            echo.debug('Graph: {} :: Edge {} --> {}\n'.format(gid, node, next_node))
     # Find the node(s) with the earliest date
     start_dates = zip(*g.nodes(data='start'))[1]
     starts = [n for n in g.nodes() if g.nodes[n]['start'] == min(start_dates)]
@@ -183,11 +211,11 @@ def create_edges(gid):
     # Build starting node with edges to first node(s)
     for start in starts:
         graph.add_edge(gid, 'START', start)
-        logging.debug('Graph: {} :: Edge START --> {}'.format(gid, start))
+        echo.debug('Graph: {} :: Edge START --> {}\n'.format(gid, start))
     # Build ending node with edges from latest node(s)
     for end in ends:
         graph.add_edge(gid, end, 'END')
-        logging.debug('Graph: {} :: Edge {} --> END'.format(gid, end))
+        echo.debug('Graph: {} :: Edge {} --> END\n'.format(gid, end))
 
 
 def evaluate_graph(gid):
@@ -203,7 +231,7 @@ def evaluate_graph(gid):
     g = graph.get_graph(gid)
     path = list()
     full_overlaps, partial_overlaps = None, None
-    logging.debug('Process graph: {}'.format(id))
+    echo.debug('Process graph: {}\n'.format(gid))
     # Walk through the graph
     try:
         # Find shortest path between oldest and latest dates
@@ -273,11 +301,11 @@ def initializer(keys, values):
 
     """
     assert len(keys) == len(values)
-    global cctx
-    cctx = ProcessContext({key: values[i] for i, key in enumerate(keys)})
+    global pctx
+    pctx = ProcessContext({key: values[i] for i, key in enumerate(keys)})
 
 
-def run(args):
+def run(args=None):
     """
     Main process that:
 
@@ -291,36 +319,37 @@ def run(args):
     :param ArgumentParser args: Command-line arguments parser
 
     """
-    # Declare variables from initializer to avoid IDE warnings
-    global pattern, ref_calendar, graph
+    # Declare global variables
+    global graph, echo
     # Instantiate processing context
     with ProcessingContext(args) as ctx:
-        # Critical level used to print in any case
-        logging.critical('Command: ' + ' '.join(sys.argv))
-        sleep(0.1)
-        print("Analysing data, please wait...\r")
+        # Initialize print management
+        echo = ctx.echo
+        # Print command-line
+        echo.command(COLORS.OKBLUE + 'Command: ' + COLORS.ENDC + ' '.join(sys.argv) + '\n')
+        # Collecting data
+        echo.progress('\rCollecting data, please wait...')
+        ctx.nbfiles = len(ctx.sources)
         # Init process context
         cctx = {name: getattr(ctx, name) for name in PROCESS_VARS}
-        # Declare graph as global for main process
-        global graph
-        graph = cctx['graph']
         if ctx.use_pool:
             # Init processes pool
             pool = Pool(processes=ctx.processes, initializer=initializer, initargs=(cctx.keys(), cctx.values()))
             # Process supplied files to create nodes in appropriate directed graph
-            handlers = [x for x in pool.imap(create_nodes, ctx.sources)]
+            handlers = [x for x in pool.imap(extract_dates, ctx.sources) if x is not None]
             # Close pool of workers
             pool.close()
             pool.join()
         else:
             initializer(cctx.keys(), cctx.values())
-            handlers = [x for x in itertools.imap(create_nodes, ctx.sources)]
-        ctx.scan_files = len(handlers)
-        ctx.scan_errors = sum(handlers)
-        # Retrieve graph instance from multiprocessing manager
+            handlers = [x for x in itertools.imap(extract_dates, ctx.sources) if x is not None]
+        ctx.skip = ctx.nbfiles - len(handlers)
+        # Initialize Graph()
+        graph = Graph()
+        # Process filename handler to create nodes
+        ctx.nbnodes = len([x for x in itertools.imap(create_nodes, handlers)])
         # Process each directed graph to create appropriate edges
-        ng = [x for x in itertools.imap(create_edges, graph())]
-        ctx.scan_dsets = len(ng)
+        ctx.nbdsets = len([x for x in itertools.imap(create_edges, graph())])
         # Evaluate each graph if a shortest path exist
         for path, partial_overlaps, full_overlaps in itertools.imap(evaluate_graph, graph()):
             # Format message about path
@@ -328,15 +357,15 @@ def run(args):
             # If broken time serie
             if 'BREAK' in path:
                 ctx.broken += 1
-                logging.error(COLORS.FAIL + 'Time series broken: {}'.format(msg) + COLORS.ENDC)
+                echo.error(COLORS.FAIL + 'Time series broken:' + COLORS.ENDC + '{}'.format(msg))
             else:
                 # Print overlaps if exists
                 if full_overlaps or partial_overlaps:
                     ctx.overlaps += 1
-                    logging.error(COLORS.FAIL + 'Shortest path found WITH overlaps:' + COLORS.ENDC +
-                                  '{}'.format(msg))
+                    echo.error(COLORS.FAIL + 'Shortest path found WITH overlaps:' + COLORS.ENDC +
+                               '{}'.format(msg))
                 else:
-                    logging.info(COLORS.OKGREEN + 'Shortest path found without overlaps:' + COLORS.ENDC +
+                    echo.success(COLORS.OKGREEN + 'Shortest path found without overlaps:' + COLORS.ENDC +
                                  '{}'.format(msg))
             # Resolve overlaps
             if ctx.resolve:
@@ -356,13 +385,17 @@ def run(args):
                                         cutting_timestep=ctx.overlaps['partial'][node]['cutting_timestep'],
                                         partial=True)
     # Evaluate errors and exit with appropriate return code
-    if ctx.overlaps or ctx.broken or ctx.scan_errors:
-        if (ctx.broken + ctx.overlaps) == ctx.scan_dsets:
+    if ctx.overlaps or ctx.broken or ctx.nberrors:
+        if (ctx.broken + ctx.overlaps + ctx.nberrors) == ctx.nbdsets:
             # All datasets has error(s). Error code = -1
             sys.exit(-1)
         else:
             # Some datasets (at least one) has error(s). Error code = nb datasets with error(s)
-            sys.exit(ctx.broken + ctx.overlaps)
+            sys.exit(ctx.broken + ctx.overlaps + ctx.nberrors)
     else:
         # No errors. Error code = 0
         sys.exit(0)
+
+
+if __name__ == "__main__":
+    run()

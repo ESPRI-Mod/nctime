@@ -14,6 +14,7 @@
 
 import os
 import sys
+import sphinx_rtd_theme
 
 from mock import Mock as MagicMock
 
@@ -105,7 +106,6 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-import sphinx_rtd_theme
 html_theme = 'sphinx_rtd_theme'
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 

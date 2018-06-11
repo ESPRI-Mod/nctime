@@ -15,13 +15,14 @@ import nco
 import numpy as np
 from fuzzywuzzy import fuzz, process
 
+from constants import *
 from custom_exceptions import *
 from nctime.utils.constants import CLIM_SUFFIX, END_TIME_CORRECTION
 from nctime.utils.custom_exceptions import *
 from nctime.utils.misc import ncopen
 from nctime.utils.time import time_inc, convert_time_units
 from nctime.utils.time import truncated_timestamp, get_start_end_dates_from_filename, dates2str, num2date, date2num, \
-    control_time_units
+    control_time_units, trunc
 
 
 class File(object):
@@ -70,13 +71,13 @@ class File(object):
             self.length = nc.variables['time'].shape[0]
             if self.length == 0:
                 raise EmptyTimeAxis(self.ffp)
-            self.time_axis = nc.variables['time'][:]
+            self.time_axis = trunc(nc.variables['time'][:], NDECIMALS)
             # Get time boundaries
             self.has_bounds = False
             if 'bounds' in nc.variables['time'].ncattrs():
                 self.has_bounds = True
                 self.tbnds = nc.variables['time'].bounds
-                self.time_bounds = nc.variables[self.tbnds][:, :]
+                self.time_bounds = trunc(nc.variables[self.tbnds][:, :], NDECIMALS)
             # Get time units from file
             if 'units' not in nc.variables['time'].ncattrs():
                 raise NoNetCDFAttribute('units', self.ffp, 'time')
@@ -117,6 +118,10 @@ class File(object):
         # Convert dates into timestamps
         self.start_timestamp, self.end_timestamp, _ = [
             truncated_timestamp(date, self.timestamp_length) for date in dates]
+        # Declare last time attribute
+        self.last_date = None
+        self.last_timestamp = None
+        self.last_num = None
 
     def load_last_date(self):
         """
@@ -147,7 +152,7 @@ class File(object):
         """
         num_axis = np.arange(start=self.start_axis,
                              stop=self.start_axis + self.length * self.step,
-                             step=self.step)
+                             step=self.step, dtype=np.longdouble)
         date_axis = num2date(num_axis, units=self.funits, calendar=self.ref_calendar)
         del num_axis
         return date2num(date_axis, units=self.ref_units, calendar=self.ref_calendar)
@@ -176,7 +181,7 @@ class File(object):
     def nc_var_delete(self, variable):
         """
         Delete a NetCDF variable using NCO operators.
-        A unique filename is generated to avoid multithreading errors.
+        A unique filename is generated to avoid multiprocessing errors.
         To overwrite the input file, the source file is dump using the ``cat`` Shell command-line
         to avoid Python memory limit.
 
@@ -200,7 +205,7 @@ class File(object):
     def nc_att_delete(self, variable, attribute):
         """
         Delete a NetCDF dimension attribute using NCO operators.
-        A unique filename is generated to avoid multithreading errors.
+        A unique filename is generated to avoid multiprocessing errors.
         To overwrite the input file, the source file is dump using the ``cat`` Shell command-line
         to avoid Python memory limit.
 

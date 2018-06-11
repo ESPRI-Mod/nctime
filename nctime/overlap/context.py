@@ -6,30 +6,15 @@
     :synopsis: Processing context used in this module.
 
 """
-import logging
-import os
-from multiprocessing import cpu_count
-from multiprocessing.managers import BaseManager
-from time import sleep
+from multiprocessing import cpu_count, Value, Lock
+from multiprocessing.managers import SyncManager
 
 from ESGConfigParser import SectionParser
 
-from handler import Graph
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
-from nctime.utils.misc import COLORS, get_project
+from nctime.utils.misc import COLORS, get_project, Print
 from nctime.utils.time import TimeInit
-
-BaseManager.register('graph', Graph, exposed=('get_graph',
-                                              'has_graph',
-                                              'set_graph',
-                                              'add_node',
-                                              'add_edge',
-                                              '__call__'))
-
-
-class ProcessManager(BaseManager):
-    pass
 
 
 class ProcessingContext(object):
@@ -53,9 +38,12 @@ class ProcessingContext(object):
         self.use_pool = (self.processes != 1)
         self.overlaps = 0
         self.broken = 0
-        self.scan_files = 0
-        self.scan_dsets = 0
-        self.scan_errors = 0
+        self.lock = Lock()
+        self.nbfiles = 0
+        self.nbnodes = 0
+        self.nbdsets = 0
+        self.nbskip = 0
+        self.nberrors = 0
         self.file_filter = []
         if args.include_file:
             self.file_filter.extend([(f, True) for f in args.include_file])
@@ -68,15 +56,17 @@ class ProcessingContext(object):
         else:
             self.file_filter.append(('^\..*$', False))
         self.dir_filter = args.ignore_dir
+        # Initialize print management
+        self.echo = Print(log=args.log, debug=args.debug, cmd=args.cmd, all=args.all)
 
     def __enter__(self):
         # Init process manager
         if self.use_pool:
-            manager = BaseManager()
+            manager = SyncManager()
             manager.start()
-            self.graph = manager.graph()
+            self.progress = manager.Value('i', 0)
         else:
-            self.graph = Graph()
+            self.progress = Value('i', 0)
         # Init data collector
         self.sources = Collector(sources=self.directory)
         # Init file filter
@@ -101,24 +91,26 @@ class ProcessingContext(object):
         return self
 
     def __exit__(self, exc_type, exc_val, traceback):
-        # Sleep time before final print
-        sleep(0.1)
         # Decline outputs depending on the scan results
-        msg = COLORS.HEADER + '\nNumber of files scanned: {}\n'.format(self.scan_files) + COLORS.ENDC
-        if self.scan_errors:
+        msg = COLORS.HEADER + '\nNumber of files scanned: {}'.format(self.nbfiles) + COLORS.ENDC
+        if self.nbskip:
             msg += COLORS.FAIL
         else:
             msg += COLORS.OKGREEN
-        msg += 'Number of files skipped: {}\n'.format(self.scan_errors) + COLORS.ENDC
-        msg += COLORS.HEADER + '\nNumber of datasets: {}\n'.format(self.scan_dsets) + COLORS.ENDC
-        if self.broken or self.overlaps:
+        msg += '\nNumber of file(s) skipped: {}'.format(self.nbskip) + COLORS.ENDC
+        msg += COLORS.OKBLUE + '\nNumber of node(s): {}'.format(self.nbnodes) + COLORS.ENDC
+        msg += COLORS.HEADER + '\nNumber of dataset(s): {}'.format(self.nbdsets) + COLORS.ENDC
+        if self.overlaps:
             msg += COLORS.FAIL
         else:
             msg += COLORS.OKGREEN
-        msg += 'Number of datasets with error(s): {}'.format(self.broken + self.overlaps) + COLORS.ENDC
-        # Critical level used to print in any case
-        logging.critical(msg)
+        msg += '\nNumber of datasets with overlap(s): {}'.format(self.overlaps) + COLORS.ENDC
+        if self.broken:
+            msg += COLORS.FAIL
+        else:
+            msg += COLORS.OKGREEN
+        msg += '\nNumber of datasets with broken time series: {}'.format(self.broken) + COLORS.ENDC
+        # Print summary
+        self.echo.summary(msg)
         # Print log path if exists
-        log_handler = logging.getLogger().handlers[0]
-        if hasattr(log_handler, 'baseFilename') and os.path.exists(log_handler.baseFilename):
-            print(COLORS.HEADER + '\nSee log: {}'.format(log_handler.baseFilename) + COLORS.ENDC)
+        self.echo.info(COLORS.HEADER + '\nSee log: {}'.format(self.echo._logfile) + COLORS.ENDC)

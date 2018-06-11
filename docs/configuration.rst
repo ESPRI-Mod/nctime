@@ -17,7 +17,7 @@ files has to be submitted using the ``-i`` option (see :ref:`usage`).
 ************************
 
 Those INI files declare all facets and allowed values according to the Data Reference Syntax (DRS) and the controlled
-vocabularies of the corresponding project. ``nctime`` espacially use the filename format to deduce facet values.
+vocabularies of the corresponding project. ``nctime`` especially use the filename format to deduce facet values.
 Preset ``esg.<project_id>.ini`` files have been properly built by ESGF community for the following projects:
 
  * CMIP6

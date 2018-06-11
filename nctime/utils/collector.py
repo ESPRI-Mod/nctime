@@ -12,6 +12,7 @@ import re
 import sys
 from uuid import uuid4 as uuid
 
+from custom_exceptions import NoFileFound
 from nctime.utils.misc import match
 
 
@@ -43,7 +44,6 @@ class Collector(object):
     Base collector class to yield regular NetCDF files.
 
     :param list sources: The list of sources to parse
-    :param object data: Any object to attach to each collected data
     :returns: The data collector
     :rtype: *iter*
 
@@ -81,12 +81,15 @@ class Collector(object):
 
         """
         progress = Collecting(self.spinner)
-        s = 0
-        for _ in self.__iter__():
-            progress.next()
-            s += 1
-        sys.stdout.write('\r\033[K')
-        sys.stdout.flush()
+        try:
+            s = 0
+            for _ in self.__iter__():
+                progress.next()
+                s += 1
+            sys.stdout.write('\r\033[K')
+            sys.stdout.flush()
+        except StopIteration:
+            raise NoFileFound(self.sources)
         return s
 
     def first(self):

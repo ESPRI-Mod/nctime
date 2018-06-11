@@ -9,10 +9,10 @@
 from netcdftime import datetime
 
 # Program version
-VERSION = '4.3.2'
+VERSION = '4.4.0'
 
 # Date
-VERSION_DATE = datetime(year=2018, month=5, day=31).strftime("%Y-%d-%m")
+VERSION_DATE = datetime(year=2018, month=6, day=11).strftime("%Y-%d-%m")
 
 # Help
 TITLE = \
@@ -374,7 +374,7 @@ CLIM_SUFFIX = '-clim.nc'
 # Frequency increment
 FREQ_INC = {'subhr': [30, 'minutes'],
             'subhrPt': [30, 'minutes'],
-            '1hr': [1, 'hours'],
+            '1hr': [1.0, 'hours'],
             '1hrCM': [1, 'hours'],
             '1hrPt': [1, 'hours'],
             '3hr': [3, 'hours'],

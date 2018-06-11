@@ -41,12 +41,15 @@ class TimeInit(object):
     def __init__(self, ref, tunits_default=None):
         with ncopen(ref) as nc:
             # Check time variable exists
-            if 'time' not in nc.variables.keys(): raise NoNetCDFVariable('time', ref)
+            if 'time' not in nc.variables.keys():
+                raise NoNetCDFVariable('time', ref)
             # Get reference time units
-            if 'units' not in nc.variables['time'].ncattrs(): raise NoNetCDFAttribute('units', ref, 'time')
+            if 'units' not in nc.variables['time'].ncattrs():
+                raise NoNetCDFAttribute('units', ref, 'time')
             self.tunits = control_time_units(nc.variables['time'].units, tunits_default)
             # Get reference calendar
-            if 'calendar' not in nc.variables['time'].ncattrs(): raise NoNetCDFAttribute('calendar', ref, 'time')
+            if 'calendar' not in nc.variables['time'].ncattrs():
+                raise NoNetCDFAttribute('calendar', ref, 'time')
             self.calendar = nc.variables['time'].calendar
 
 
@@ -310,6 +313,7 @@ def get_start_end_dates_from_filename(filename, pattern, frequency, calendar, co
     <https://docs.python.org/2/library/re.html>`_).
     :param str frequency: The time frequency
     :param str calendar: The NetCDF calendar attribute
+    :param boolean correction: Apply time correction if True
     :returns: Start and end dates from the filename
     :rtype: *netcdftime.datetime*
 
@@ -373,6 +377,20 @@ def get_next_timestep(ffp, current_timestep):
         next_timestep = time[index + 1]
         del time
         return next_timestep
+
+
+def trunc(array, ndecimals):
+    """
+    Truncates each item of a Numpy array to the decimal ndecimals
+
+    :param numpy.array array: The array to truncate
+    :param int ndecimals: Number of decimals to keep
+    :returns: The truncated array
+    :rtype: *numpy.array*
+
+    """
+    decade = 10 ** ndecimals
+    return np.trunc(array * decade) / decade
 
 
 def time_inc(frequency):

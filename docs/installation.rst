@@ -44,7 +44,7 @@ Dependencies
 Linux distribution with Python 2.6+ is required. ``nctime`` uses the following basic Python libraries. Ensure that
 your Python environment includes:
 
-``nctime`` uses the following basic Python libraries includes in Python 2.5+. Becareful your Python environment
+``nctime`` uses the following basic Python libraries includes in Python 2.5+. Be careful your Python environment
 includes:
 
  * `os <https://docs.python.org/2/library/os.html>`_

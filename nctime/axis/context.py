@@ -7,17 +7,15 @@
 
 """
 
-import logging
-import os
-from multiprocessing import cpu_count
-from time import sleep
+from multiprocessing import cpu_count, Value, Lock
+from multiprocessing.managers import SyncManager
 
 from ESGConfigParser import SectionParser
 
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
 from nctime.utils.custom_exceptions import InvalidFrequency
-from nctime.utils.misc import COLORS, get_project
+from nctime.utils.misc import COLORS, get_project, Print
 from nctime.utils.time import TimeInit
 
 
@@ -45,14 +43,16 @@ class ProcessingContext(object):
             for frequency, increment in dict(args.set_inc).items():
                 if frequency not in FREQ_INC.keys():
                     raise InvalidFrequency(frequency)
-                FREQ_INC[frequency][0] = int(increment)
+                FREQ_INC[frequency][0] = float(increment)
         self.tunits_default = None
         if self.project in DEFAULT_TIME_UNITS.keys():
             self.tunits_default = DEFAULT_TIME_UNITS[self.project]
         self.processes = args.max_processes if args.max_processes <= cpu_count() else cpu_count()
         self.use_pool = (self.processes != 1)
-        self.scan_files = 0
-        self.scan_errors = 0
+        self.lock = Lock()
+        self.nbfiles = 0
+        self.nbskip = 0
+        self.nberrors = 0
         self.correction = args.correct_timestamp
         self.status = []
         self.file_filter = []
@@ -67,8 +67,17 @@ class ProcessingContext(object):
         else:
             self.file_filter.append(('^\..*$', False))
         self.dir_filter = args.ignore_dir
+        # Initialize print management
+        self.echo = Print(log=args.log, debug=args.debug, cmd=args.cmd, all=args.all)
 
     def __enter__(self):
+        # Init process manager
+        if self.use_pool:
+            manager = SyncManager()
+            manager.start()
+            self.progress = manager.Value('i', 0)
+        else:
+            self.progress = Value('i', 0)
         # Init data collector
         self.sources = Collector(sources=self.input, spinner=False)
         # Init file filter
@@ -94,18 +103,19 @@ class ProcessingContext(object):
         return self
 
     def __exit__(self, exc_type, exc_val, traceback):
-        # Sleep time before final print
-        sleep(0.1)
         # Decline outputs depending on the scan results
-        msg = COLORS.HEADER + '\nNumber of files scanned: {}\n'.format(self.scan_files) + COLORS.ENDC
-        if self.scan_errors:
+        msg = COLORS.HEADER + '\nNumber of files scanned: {}'.format(self.nbfiles) + COLORS.ENDC
+        if self.nbskip:
             msg += COLORS.FAIL
         else:
             msg += COLORS.OKGREEN
-        msg += 'Number of file with error(s): {}'.format(self.scan_errors) + COLORS.ENDC
-        # Critical level used to print in any case
-        logging.critical(msg)
+        msg += '\nNumber of file(s) skipped: {}'.format(self.nbskip) + COLORS.ENDC
+        if self.nberrors:
+            msg += COLORS.FAIL
+        else:
+            msg += COLORS.OKGREEN
+        msg += '\nNumber of file with error(s): {}'.format(self.nberrors) + COLORS.ENDC
+        # Print summary
+        self.echo.summary(msg)
         # Print log path if exists
-        log_handler = logging.getLogger().handlers[0]
-        if hasattr(log_handler, 'baseFilename') and os.path.exists(log_handler.baseFilename):
-            print(COLORS.HEADER + '\nSee log: {}'.format(log_handler.baseFilename) + COLORS.ENDC)
+        self.echo.info(COLORS.HEADER + '\nSee log: {}'.format(self.echo._logfile) + COLORS.ENDC)

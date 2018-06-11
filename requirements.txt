@@ -1,8 +1,8 @@
+mock
 netcdftime
 netCDF4
 networkx
 numpy
 nco
-tqdm
 esgconfigparser
 fuzzywuzzy

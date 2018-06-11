@@ -28,4 +28,10 @@ PROCESS_VARS = ['pattern',
                 'on_fly',
                 'correction',
                 'limit',
+                'lock',
+                'progress',
+                'nbfiles',
                 'ignore_codes']
+
+# Number of decimal to keep in axis truncation
+NDECIMALS = 8

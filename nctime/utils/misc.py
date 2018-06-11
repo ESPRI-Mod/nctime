@@ -10,6 +10,7 @@
 import logging
 import os
 import re
+import sys
 
 from fuzzywuzzy import fuzz, process
 from netCDF4 import Dataset
@@ -42,77 +43,6 @@ class ncopen(object):
 
     def __exit__(self, *exc):
         self.nc.close()
-
-
-class LogFilter(logging.Filter):
-    """
-    Log filter with upper log level to use with the Python
-    `logging <https://docs.python.org/2/library/logging.html>`_ module.
-
-    """
-
-    def __init__(self, level):
-        self.level = level
-
-    def filter(self, log_record):
-        """
-        Set the upper log level.
-
-        """
-        return log_record.levelno <= self.level
-
-
-class NoColorFilter(logging.Filter):
-    """
-    Log filter with upper log level to use with the Python
-    `logging <https://docs.python.org/2/library/logging.html>`_ module.
-
-    """
-
-    def filter(self, record):
-        """
-        Use filter to post-process log record and remove color patterns.
-        Returns true in any case.
-
-        """
-        msg = record.msg
-        color_pattern = re.compile('\[[0-9;]*m')
-        found_patterns = re.findall(color_pattern, msg)
-        if found_patterns:
-            msg = re.sub(color_pattern, '', msg)
-        record.msg = msg
-        return True
-
-
-def init_logging(log, cmd, level='INFO'):
-    """
-    Initiates the logging configuration (output, date/message formatting).
-    If a directory is submitted the logfile name is unique and formatted as follows:
-    ``name-YYYYMMDD-HHMMSS-JOBID.log``If ``None`` the standard output is used.
-
-    :param str log: The logfile directory.
-    :param str cmd: The command name
-    :param str level: The log level.
-
-    """
-    logname = 'nctime-{}-{}'.format(cmd, datetime(1, 1, 1)._to_real_datetime().now().strftime("%Y%m%d-%H%M%S"))
-    formatter = logging.Formatter(fmt='%(message)s')
-    if log:
-        if not os.path.isdir(log):
-            os.makedirs(log)
-        logfile = os.path.join(log, logname)
-    else:
-        logfile = os.path.join(os.getcwd(), logname)
-    logging.getLogger().setLevel(logging.DEBUG)
-    if log:
-        handler = logging.FileHandler(filename='{}.log'.format(logfile), delay=True)
-    #    handler.addFilter(NoColorFilter())
-    else:
-        handler = logging.StreamHandler()
-    handler.setLevel(logging.__dict__[level])
-    # handler.addFilter(LogFilter(logging.CRITICAL))
-    handler.setFormatter(formatter)
-    logging.getLogger().addHandler(handler)
 
 
 def trunc(f, n):
@@ -208,3 +138,95 @@ class Colors:
 
 
 COLORS = Colors()
+
+
+class Print(object):
+    """
+    Class to manage and dispatch print statement depending on log and debug mode.
+
+    """
+
+    def __init__(self, log, debug, cmd, all):
+        self._log = log
+        self._debug = debug
+        self._cmd = cmd
+        self._all = all
+        self._buffer = ''
+        self._colors = COLORS.__dict__
+        logname = 'nctime-{}-{}'.format(self._cmd,
+                                        datetime(1, 1, 1)._to_real_datetime().now().strftime("%Y%m%d-%H%M%S"))
+        if self._log:
+            if not os.path.isdir(self._log):
+                os.makedirs(self._log)
+            self._logfile = os.path.join(self._log, logname)
+        else:
+            self._logfile = os.path.join(os.getcwd(), logname)
+
+    @staticmethod
+    def print_to_stdout(msg):
+        sys.stdout.write(msg)
+        sys.stdout.flush()
+
+    def print_to_logfile(self, msg):
+        with open(self._logfile, 'a+') as f:
+            for color in self._colors.values():
+                msg = msg.replace(color, '')
+            f.write(msg)
+
+    def progress(self, msg):
+        if self._log:
+            self.print_to_stdout(msg)
+        elif not self._debug:
+            self.print_to_stdout(msg)
+
+    def command(self, msg):
+        if self._log:
+            self.print_to_logfile(msg)
+        if self._debug:
+            self.print_to_stdout(msg)
+
+    def summary(self, msg):
+        if self._log:
+            self.print_to_stdout(msg)
+            self.print_to_logfile(msg)
+        else:
+            self.print_to_stdout(msg)
+
+    def info(self, msg):
+        if self._log:
+            self.print_to_stdout(msg)
+
+    def debug(self, msg):
+        if self._log:
+            self.print_to_logfile(msg)
+        elif self._debug:
+            self.print_to_stdout(msg)
+
+    def error(self, msg, buffer=False):
+        if self._log:
+            self.print_to_logfile(msg)
+        elif self._debug:
+            self.print_to_stdout(msg)
+        elif buffer:
+            self._buffer += msg
+        else:
+            self.print_to_stdout(msg)
+
+    def success(self, msg, buffer=False):
+        if self._all:
+            if self._log:
+                self.print_to_logfile(msg)
+            elif self._debug:
+                self.print_to_stdout(msg)
+            elif buffer:
+                self._buffer += msg
+            else:
+                self.print_to_stdout(msg)
+
+    def flush(self):
+        if self._buffer:
+            self._buffer = '\n' + self._buffer
+            if self._log:
+                self.print_to_logfile(self._buffer)
+            else:
+                self.print_to_stdout(self._buffer)

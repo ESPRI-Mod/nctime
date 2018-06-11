@@ -13,10 +13,8 @@
 import argparse
 import os
 import sys
-from importlib import import_module
 
 from utils.constants import *
-from utils.misc import init_logging
 from utils.parser import MultilineFormatter, DirectoryChecker, regex_validator, keyval_converter, processes_validator, \
     positive_only, InputChecker, CodeChecker
 
@@ -101,13 +99,12 @@ def get_args():
         type=regex_validator,
         action='append',
         help=EXCLUDE_FILE_HELP)
-    group = parent.add_mutually_exclusive_group(required=False)
-    group.add_argument(
+    parent.add_argument(
         '--debug',
         action='store_true',
         default=False,
         help=VERBOSE_HELP)
-    group.add_argument(
+    parent.add_argument(
         '--all',
         action='store_true',
         default=False,
@@ -208,22 +205,17 @@ def get_args():
     return main.parse_args()
 
 
-def run():
+def main():
     # Get command-line arguments
     args = get_args()
-    # Initialize logger
-    if args.all:
-        level = 'INFO'
-    elif args.debug:
-        level = 'DEBUG'
-    else:
-        level = 'ERROR'
-    init_logging(log=args.log, level=level, cmd=args.cmd)
     # Run program
-    main = import_module('.main', package='nctime.{}'.format(args.cmd))
-    main.run(args)
+    if args.cmd == 'overlap':
+        from overlap.main import run
+    else:
+        from axis.main import run
+    run(args)
 
 
 if __name__ == "__main__":
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-    run()
+    main()
