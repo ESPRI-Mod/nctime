@@ -92,7 +92,7 @@ class ProcessingContext(object):
 
     def __exit__(self, exc_type, exc_val, traceback):
         # Decline outputs depending on the scan results
-        msg = COLORS.HEADER + '\nNumber of files scanned: {}'.format(self.nbfiles) + COLORS.ENDC
+        msg = COLORS.HEADER + '\n\nNumber of files scanned: {}'.format(self.nbfiles) + COLORS.ENDC
         if self.nbskip:
             msg += COLORS.FAIL
         else:
@@ -109,8 +109,8 @@ class ProcessingContext(object):
             msg += COLORS.FAIL
         else:
             msg += COLORS.OKGREEN
-        msg += '\nNumber of datasets with broken time series: {}'.format(self.broken) + COLORS.ENDC
+        msg += '\nNumber of datasets with broken time series: {}\n'.format(self.broken) + COLORS.ENDC
         # Print summary
         self.echo.summary(msg)
         # Print log path if exists
-        self.echo.info(COLORS.HEADER + '\nSee log: {}'.format(self.echo._logfile) + COLORS.ENDC)
+        self.echo.info(COLORS.HEADER + '\nSee log: {}\n'.format(self.echo._logfile) + COLORS.ENDC)

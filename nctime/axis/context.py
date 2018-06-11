@@ -17,6 +17,7 @@ from nctime.utils.constants import *
 from nctime.utils.custom_exceptions import InvalidFrequency
 from nctime.utils.misc import COLORS, get_project, Print
 from nctime.utils.time import TimeInit
+from ctypes import c_char_p
 
 
 class ProcessingContext(object):
@@ -76,6 +77,7 @@ class ProcessingContext(object):
             manager = SyncManager()
             manager.start()
             self.progress = manager.Value('i', 0)
+            self.echo._buffer = manager.Value(c_char_p, '')
         else:
             self.progress = Value('i', 0)
         # Init data collector
@@ -104,7 +106,7 @@ class ProcessingContext(object):
 
     def __exit__(self, exc_type, exc_val, traceback):
         # Decline outputs depending on the scan results
-        msg = COLORS.HEADER + '\nNumber of files scanned: {}'.format(self.nbfiles) + COLORS.ENDC
+        msg = COLORS.HEADER + '\n\nNumber of files scanned: {}'.format(self.nbfiles) + COLORS.ENDC
         if self.nbskip:
             msg += COLORS.FAIL
         else:
@@ -114,8 +116,8 @@ class ProcessingContext(object):
             msg += COLORS.FAIL
         else:
             msg += COLORS.OKGREEN
-        msg += '\nNumber of file with error(s): {}'.format(self.nberrors) + COLORS.ENDC
+        msg += '\nNumber of file with error(s): {}\n'.format(self.nberrors) + COLORS.ENDC
         # Print summary
         self.echo.summary(msg)
         # Print log path if exists
-        self.echo.info(COLORS.HEADER + '\nSee log: {}'.format(self.echo._logfile) + COLORS.ENDC)
+        self.echo.info(COLORS.HEADER + '\nSee log: {}\n'.format(self.echo._logfile) + COLORS.ENDC)

@@ -15,9 +15,9 @@ import sys
 from fuzzywuzzy import fuzz, process
 from netCDF4 import Dataset
 from netcdftime import datetime
-
+from multiprocessing import Value
 from custom_exceptions import *
-
+from ctypes import c_char_p
 
 class ncopen(object):
     """
@@ -151,10 +151,10 @@ class Print(object):
         self._debug = debug
         self._cmd = cmd
         self._all = all
-        self._buffer = ''
+        self._buffer = Value(c_char_p, '')
         self._colors = COLORS.__dict__
-        logname = 'nctime-{}-{}'.format(self._cmd,
-                                        datetime(1, 1, 1)._to_real_datetime().now().strftime("%Y%m%d-%H%M%S"))
+        logname = 'nctime-{}-{}.log'.format(self._cmd,
+                                            datetime(1, 1, 1)._to_real_datetime().now().strftime("%Y%m%d-%H%M%S"))
         if self._log:
             if not os.path.isdir(self._log):
                 os.makedirs(self._log)
@@ -182,7 +182,7 @@ class Print(object):
     def command(self, msg):
         if self._log:
             self.print_to_logfile(msg)
-        if self._debug:
+        elif self._debug:
             self.print_to_stdout(msg)
 
     def summary(self, msg):
@@ -208,7 +208,7 @@ class Print(object):
         elif self._debug:
             self.print_to_stdout(msg)
         elif buffer:
-            self._buffer += msg
+            self._buffer.value += msg
         else:
             self.print_to_stdout(msg)
 
@@ -219,14 +219,14 @@ class Print(object):
             elif self._debug:
                 self.print_to_stdout(msg)
             elif buffer:
-                self._buffer += msg
+                self._buffer.value += msg
             else:
                 self.print_to_stdout(msg)
 
     def flush(self):
-        if self._buffer:
-            self._buffer = '\n' + self._buffer
+        if self._buffer.value:
+            self._buffer.value = '\n' + self._buffer.value
             if self._log:
-                self.print_to_logfile(self._buffer)
+                self.print_to_logfile(self._buffer.value)
             else:
-                self.print_to_stdout(self._buffer)
+                self.print_to_stdout(self._buffer.value)

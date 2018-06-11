@@ -9,6 +9,7 @@
 
 import itertools
 import re
+import os
 import sys
 from multiprocessing import Pool
 
@@ -98,7 +99,7 @@ def process(ffp):
             if fh.has_bounds:
                 fh.nc_var_overwrite('time_bounds', fh.time_bounds_rebuilt)
         # Diagnostic display
-        msg = """{}
+        msg = """\n{}
         Units: {} [ref = {}]
         Calendar: {} [ref = {}]
         Start: {} = {} = {}
@@ -152,7 +153,9 @@ def process(ffp):
     except KeyboardInterrupt:
         raise
     except Exception as e:
-        echo.error('{} skipped\n{}: {}'.format(ffp, e.__class__.__name__, e.message))
+        msg = """\n{}\nSkipped: {}""".format(COLORS.HEADER + os.path.basename(ffp) + COLORS.ENDC,
+                                    COLORS.FAIL + e.message + COLORS.ENDC)
+        echo.error(msg, buffer=True)
         return None
     finally:
         # Print progress
@@ -212,11 +215,12 @@ def run(args=None):
             pool.join()
         else:
             initializer(cctx.keys(), cctx.values())
-            handlers = [x for x in itertools.imap(process, ctx.sources)]
-        ctx.nbskip = ctx.nbfiles - len(handlers)
-        ctx.nberrors = sum(handlers)
+            handlers = [x for x in itertools.imap(process, ctx.sources) if x is not None]
         # Flush buffer
         echo.flush()
+        # Get number of errors
+        ctx.nbskip = ctx.nbfiles - len(handlers)
+        ctx.nberrors = sum(handlers)
     # Evaluate errors and exit with appropriate return code
     if ctx.nbskip or ctx.nberrors:
         if (ctx.nbskip + ctx.nberrors) == ctx.nbfiles:

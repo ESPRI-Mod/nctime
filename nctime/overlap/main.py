@@ -51,7 +51,7 @@ def get_overlaps(g, shortest):
         # Partial overlap from next_node[1] to current_node[2] (bounds included)
         # Overlap is hold on the next node (arbitrary)
         if (current_node['next'] - next_node['start']) > 0:
-            echo.debug('Partial overlap found between {} and {}\n'.format(shortest[n], shortest[n + 1]))
+            echo.debug('\nPartial overlap found between {} and {}'.format(shortest[n], shortest[n + 1]))
             cutting_timestep = get_next_timestep(next_node['path'], current_node['last_step'])
             overlaps['partial'][shortest[n + 1]] = next_node
             overlaps['partial'][shortest[n + 1]].update({'end_overlap': current_node['end'],
@@ -117,7 +117,7 @@ def extract_dates(ffp):
         fh.get_start_end_dates(pattern=pctx.pattern,
                                calendar=pctx.ref_calendar)
         with pctx.lock:
-            echo.debug('File: {} :: Start={}, End={}, Next={}\n'.format(fh.filename,
+            echo.debug('\nFile: {} :: Start={}, End={}, Next={}'.format(fh.filename,
                                                                         fh.start_date,
                                                                         fh.end_date,
                                                                         fh.next_date))
@@ -125,7 +125,9 @@ def extract_dates(ffp):
     except KeyboardInterrupt:
         raise
     except Exception as e:
-        echo.error('{} skipped\n{}: {}\n'.format(ffp, e.__class__.__name__, e.message))
+        msg = """\n{}\nSkipped: {}""".format(COLORS.HEADER + os.path.basename(ffp) + COLORS.ENDC,
+                                    COLORS.FAIL + e.message + COLORS.ENDC)
+        echo.error(msg, buffer=True)
         return None
     finally:
         # Print progress
@@ -163,7 +165,7 @@ def create_nodes(fh):
                           fh.end_date,
                           fh.next_date,
                           fh.ffp)
-    echo.debug('Graph: {} :: Node {} (start={}, end={}, next={})\n'.format(fh.id,
+    echo.debug('\nGraph: {} :: Node {} (start={}, end={}, next={})'.format(fh.id,
                                                                            fh.filename,
                                                                            node['start'],
                                                                            node['end'],
@@ -201,7 +203,7 @@ def create_edges(gid):
         # For each next node, build the corresponding edge in the graph
         for next_node in next_nodes:
             graph.add_edge(gid, node, next_node)
-            echo.debug('Graph: {} :: Edge {} --> {}\n'.format(gid, node, next_node))
+            echo.debug('\nGraph: {} :: Edge {} --> {}'.format(gid, node, next_node))
     # Find the node(s) with the earliest date
     start_dates = zip(*g.nodes(data='start'))[1]
     starts = [n for n in g.nodes() if g.nodes[n]['start'] == min(start_dates)]
@@ -211,11 +213,11 @@ def create_edges(gid):
     # Build starting node with edges to first node(s)
     for start in starts:
         graph.add_edge(gid, 'START', start)
-        echo.debug('Graph: {} :: Edge START --> {}\n'.format(gid, start))
+        echo.debug('\nGraph: {} :: Edge START --> {}'.format(gid, start))
     # Build ending node with edges from latest node(s)
     for end in ends:
         graph.add_edge(gid, end, 'END')
-        echo.debug('Graph: {} :: Edge {} --> END\n'.format(gid, end))
+        echo.debug('\nGraph: {} :: Edge {} --> END'.format(gid, end))
 
 
 def evaluate_graph(gid):
@@ -231,7 +233,7 @@ def evaluate_graph(gid):
     g = graph.get_graph(gid)
     path = list()
     full_overlaps, partial_overlaps = None, None
-    echo.debug('Process graph: {}\n'.format(gid))
+    echo.debug('\nProcess graph: {}'.format(gid))
     # Walk through the graph
     try:
         # Find shortest path between oldest and latest dates
@@ -262,6 +264,8 @@ def evaluate_graph(gid):
                 # If no "forward" nodes in edges target = BREAK
                 if not set(next_nodes).intersection(avail_targets):
                     path.append('BREAK')
+        # Remove last item because always 'BREAK'
+        _ = path.pop(-1)
     return path, partial_overlaps, full_overlaps
 
 
@@ -278,13 +282,14 @@ def format_path(path, partial_overlaps, full_overlaps):
 
     """
     msg = ''
-    for i in range(1, len(path) - 1):
-        m = '  {}'.format(path[i])
-        if partial_overlaps and path[i] in partial_overlaps:
-            m = '[ {} <-- overlap from {} to {} ] '.format(path[i],
-                                                           partial_overlaps[path[i]]['start'],
-                                                           partial_overlaps[path[i]]['end_overlap'])
-        msg += '\n{}'.format(m)
+    for node in path:
+        if node not in ['START', 'END']:
+            m = '  {}'.format(node)
+            if partial_overlaps and node in partial_overlaps:
+                m = '[ {} <-- overlap from {} to {} ] '.format(node,
+                                                               partial_overlaps[node]['start'],
+                                                               partial_overlaps[node]['end_overlap'])
+            msg += '\n{}'.format(m)
     if full_overlaps:
         for n in full_overlaps:
             m = '[ {} <-- to remove ]'.format(n)
@@ -326,7 +331,7 @@ def run(args=None):
         # Initialize print management
         echo = ctx.echo
         # Print command-line
-        echo.command(COLORS.OKBLUE + 'Command: ' + COLORS.ENDC + ' '.join(sys.argv) + '\n')
+        echo.command(COLORS.OKBLUE + 'Command: ' + COLORS.ENDC + ' '.join(sys.argv))
         # Collecting data
         echo.progress('\rCollecting data, please wait...')
         ctx.nbfiles = len(ctx.sources)
@@ -357,15 +362,15 @@ def run(args=None):
             # If broken time serie
             if 'BREAK' in path:
                 ctx.broken += 1
-                echo.error(COLORS.FAIL + 'Time series broken:' + COLORS.ENDC + '{}'.format(msg))
+                echo.error(COLORS.FAIL + '\nTime series broken:' + COLORS.ENDC + '{}'.format(msg))
             else:
                 # Print overlaps if exists
                 if full_overlaps or partial_overlaps:
                     ctx.overlaps += 1
-                    echo.error(COLORS.FAIL + 'Shortest path found WITH overlaps:' + COLORS.ENDC +
+                    echo.error(COLORS.FAIL + '\nShortest path found WITH overlaps:' + COLORS.ENDC +
                                '{}'.format(msg))
                 else:
-                    echo.success(COLORS.OKGREEN + 'Shortest path found without overlaps:' + COLORS.ENDC +
+                    echo.success(COLORS.OKGREEN + '\nShortest path found without overlaps:' + COLORS.ENDC +
                                  '{}'.format(msg))
             # Resolve overlaps
             if ctx.resolve:
