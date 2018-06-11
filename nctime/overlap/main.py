@@ -393,10 +393,10 @@ def run(args=None):
     if ctx.overlaps or ctx.broken or ctx.nberrors:
         if (ctx.broken + ctx.overlaps + ctx.nberrors) == ctx.nbdsets:
             # All datasets has error(s). Error code = -1
-            sys.exit(-1)
+            sys.exit(2)
         else:
             # Some datasets (at least one) has error(s). Error code = nb datasets with error(s)
-            sys.exit(ctx.broken + ctx.overlaps + ctx.nberrors)
+            sys.exit(1)
     else:
         # No errors. Error code = 0
         sys.exit(0)
