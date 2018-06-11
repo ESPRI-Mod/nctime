@@ -1,4 +1,3 @@
-mock
 netcdftime
 netCDF4
 networkx
