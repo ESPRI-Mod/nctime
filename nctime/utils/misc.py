@@ -197,10 +197,11 @@ class Print(object):
             self.print_to_stdout(msg)
 
     def debug(self, msg):
-        if self._log:
-            self.print_to_logfile(msg)
-        elif self._debug:
-            self.print_to_stdout(msg)
+        if self._debug:
+            if self._log:
+                self.print_to_logfile(msg)
+            else:
+                self.print_to_stdout(msg)
 
     def error(self, msg, buffer=False):
         if self._log:

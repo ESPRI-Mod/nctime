@@ -49,7 +49,7 @@ class Collector(object):
 
     """
 
-    def __init__(self, sources, spinner=True):
+    def __init__(self, sources, spinner=False):
         self.spinner = spinner
         self.sources = sources
         self.FileFilter = FilterCollection()

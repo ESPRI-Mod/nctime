@@ -331,7 +331,7 @@ def run(args=None):
         # Initialize print management
         echo = ctx.echo
         # Print command-line
-        echo.command(COLORS.OKBLUE + 'Command: ' + COLORS.ENDC + ' '.join(sys.argv))
+        echo.command(COLORS.OKBLUE + 'Command: ' + COLORS.ENDC + ' '.join(sys.argv) + '\n')
         # Collecting data
         echo.progress('\rCollecting data, please wait...')
         ctx.nbfiles = len(ctx.sources)
@@ -356,6 +356,8 @@ def run(args=None):
         # Process each directed graph to create appropriate edges
         ctx.nbdsets = len([x for x in itertools.imap(create_edges, graph())])
         # Evaluate each graph if a shortest path exist
+        echo.debug('\n')
+        echo.progress('\n')
         for path, partial_overlaps, full_overlaps in itertools.imap(evaluate_graph, graph()):
             # Format message about path
             msg = format_path(path, partial_overlaps, full_overlaps)
