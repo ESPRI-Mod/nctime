@@ -24,7 +24,7 @@ Detects overlaps or time gaps
 By default, ``nctime overlap`` consider a time serie as broken when time gaps exist between netCDF time period.
 Following the CMIP Data Request, some data can be asked only for sub-periods in the time serie, thus time gaps are expected.
 To check compare broken time series against CMIP DR ``nctime overlap`` is able to use DR2XML files patterns to deduce if
- a time gap is expected or not. To activate this just submit the directory including both your ``config.card`` and ``run.card``
+a time gap is expected or not. To activate this just submit the directory including both your ``config.card`` and ``run.card``
 provided by the libIGCM framework:
 
 .. code-block:: bash
