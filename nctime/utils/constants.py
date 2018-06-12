@@ -403,3 +403,11 @@ FREQ_INC = {'subhr': [30, 'minutes'],
             'monPt': [1, 'months'],
             'yr': [1, 'years'],
             'yrPt': [1, 'years']}
+
+# Known time units
+TIME_UNITS = {'s': 'seconds',
+              'm': 'minutes',
+              'h': 'hours',
+              'D': 'days',
+              'M': 'months',
+              'Y': 'years'}

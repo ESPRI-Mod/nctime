@@ -11,6 +11,8 @@ import os
 import re
 import textwrap
 from argparse import HelpFormatter, ArgumentTypeError, Action
+from constants import TIME_UNITS, FREQ_INC
+from custom_exceptions import InvalidUnits, InvalidFrequency
 
 
 class MultilineFormatter(HelpFormatter):
@@ -188,4 +190,14 @@ def keyval_converter(pair):
     if not pattern.search(pair):
         msg = 'Bad argument syntax: {}'.format(pair)
         raise ArgumentTypeError(msg)
-    return pattern.search(pair).groups()
+    else:
+        frequency, v = pattern.search(pair).groups()
+        inc, units = v[:-1], v[-1]
+        if not inc.isdigit():
+            msg = 'Bad argument syntax -- only digits allowed: {}'.format(inc)
+            raise ArgumentTypeError(msg)
+        if frequency not in FREQ_INC.keys():
+            raise InvalidFrequency(frequency)
+        if units not in TIME_UNITS.keys():
+            raise InvalidUnits(units)
+        return frequency, inc, TIME_UNITS[units]

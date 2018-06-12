@@ -16,7 +16,7 @@ from ESGConfigParser import SectionParser
 
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
-from nctime.utils.custom_exceptions import InvalidFrequency, NoRunCardFound
+from nctime.utils.custom_exceptions import InvalidFrequency, NoRunCardFound, InvalidUnits
 from nctime.utils.misc import COLORS, get_project, Print
 from nctime.utils.time import TimeInit
 
@@ -44,10 +44,9 @@ class ProcessingContext(object):
         self.ignore_codes = args.ignore_errors
         self.project = args.project
         if args.set_inc:
-            for frequency, increment in dict(args.set_inc).items():
-                if frequency not in FREQ_INC.keys():
-                    raise InvalidFrequency(frequency)
+            for frequency, increment, units in args.set_inc:
                 FREQ_INC[frequency][0] = float(increment)
+                FREQ_INC[frequency][1] = str(units)
         self.tunits_default = None
         if self.project in DEFAULT_TIME_UNITS.keys():
             self.tunits_default = DEFAULT_TIME_UNITS[self.project]
@@ -76,7 +75,8 @@ class ProcessingContext(object):
 
     def __enter__(self):
         # Print warning message if on-fly mode
-        self.echo.warning('WARNING :: "on-fly" mode activated -- Incomplete time axis expected\n')
+        if self.on_fly:
+            self.echo.warning('WARNING :: "on-fly" mode activated -- Incomplete time axis expected\n')
         # Init process manager
         if self.use_pool:
             manager = SyncManager()

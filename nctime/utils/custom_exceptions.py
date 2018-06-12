@@ -7,7 +7,7 @@
 
 """
 
-from constants import FREQ_INC
+from constants import FREQ_INC, TIME_UNITS, RUN_CARD, CONF_CARD
 
 
 ###############################
@@ -109,7 +109,21 @@ class InvalidFrequency(Exception):
     def __init__(self, frequency):
         self.msg = "Unknown frequency"
         self.msg += "\n<frequency: {}>".format(frequency)
-        self.msg += "\n<available frequencies: {}>".format(FREQ_INC.keys())
+        self.msg += "\n<available frequencies: {}>".format(', '.join(FREQ_INC.keys()))
+        super(self.__class__, self).__init__(self.msg)
+
+
+class InvalidUnits(Exception):
+    """
+    Raised when time units is unknown.
+
+    """
+
+    def __init__(self, units):
+        allowed_units = ['{} ({})'.format(u[0], u[1]) for u in zip(TIME_UNITS.keys(), TIME_UNITS.values())]
+        self.msg = "Unknown units"
+        self.msg += "\n<units: {}>".format(units)
+        self.msg += "\n<available units: {}>".format(', '.join(allowed_units))
         super(self.__class__, self).__init__(self.msg)
 
 
