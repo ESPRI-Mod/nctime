@@ -6,6 +6,7 @@
     :synopsis: Processing context used in this module.
 
 """
+import os
 from multiprocessing import cpu_count, Value, Lock
 from multiprocessing.managers import SyncManager
 
@@ -13,6 +14,7 @@ from ESGConfigParser import SectionParser
 
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
+from nctime.utils.custom_exceptions import NoConfigCardFound, NoRunCardFound
 from nctime.utils.misc import COLORS, get_project, Print
 from nctime.utils.time import TimeInit
 
@@ -38,6 +40,9 @@ class ProcessingContext(object):
         self.use_pool = (self.processes != 1)
         self.overlaps = 0
         self.broken = 0
+        self.card = args.card
+        if args.card:
+            self.card = list(yield_xml_from_card(args.card))
         self.lock = Lock()
         self.nbfiles = 0
         self.nbnodes = 0
@@ -114,3 +119,41 @@ class ProcessingContext(object):
         self.echo.summary(msg)
         # Print log path if exists
         self.echo.info(COLORS.HEADER + '\nSee log: {}\n'.format(self.echo._logfile) + COLORS.ENDC)
+
+
+def yield_xml_from_card(card_path):
+    """
+    Yields XML path from run.card and config.card attributes.
+
+    :param str card_path: Directory including run.card and config.card
+    :returns: The XML paths to use
+    :rtype: *iter*
+
+    """
+    # Check cards exist
+    if RUN_CARD not in os.listdir(card_path):
+        raise NoRunCardFound(card_path)
+    else:
+        run_card = os.path.join(card_path, RUN_CARD)
+    if CONF_CARD not in os.listdir(card_path):
+        raise NoConfigCardFound(card_path)
+    else:
+        conf_card = os.path.join(card_path, CONF_CARD)
+    # Extract config info from config.card
+    config = SectionParser('UserChoices')
+    config.read(conf_card)
+    xml_attrs = dict()
+    xml_attrs['root'] = FILEDEF_ROOT
+    xml_attrs['longname'] = config.get('longname').strip('"')
+    xml_attrs['experimentname'] = config.get('experimentname').strip('"')
+    xml_attrs['member'] = config.get('member').strip('"')
+    # Extract first and last simulated years from run.card
+    with open(run_card, 'r') as f:
+        lines = f.read().split('\n')
+    # Get run table without header
+    lines = [line for line in lines if line.count('|') == 8][1:]
+    year_start = int(lines[0].split()[3][:4])
+    year_end = int(lines[-1].split()[5][:4])
+    for year in range(year_start, year_end + 1):
+        xml_attrs['year'] = str(year)
+        yield FILEDEF_DIRECTORY_FORMAT.format(**xml_attrs)

@@ -7,17 +7,18 @@
 
 """
 
+import os
+from ctypes import c_char_p
 from multiprocessing import cpu_count, Value, Lock
 from multiprocessing.managers import SyncManager
-import os
-from ESGConfigParser import SectionParser, NoConfigSection, NoConfigOption
+
+from ESGConfigParser import SectionParser
 
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
 from nctime.utils.custom_exceptions import InvalidFrequency, NoRunCardFound
 from nctime.utils.misc import COLORS, get_project, Print
 from nctime.utils.time import TimeInit
-from ctypes import c_char_p
 
 
 class ProcessingContext(object):
@@ -74,6 +75,8 @@ class ProcessingContext(object):
         self.echo = Print(log=args.log, debug=args.debug, cmd=args.cmd, all=args.all)
 
     def __enter__(self):
+        # Print warning message if on-fly mode
+        self.echo.warning('WARNING :: "on-fly" mode activated -- Incomplete time axis expected\n')
         # Init process manager
         if self.use_pool:
             manager = SyncManager()
@@ -124,6 +127,7 @@ class ProcessingContext(object):
         # Print log path if exists
         self.echo.info(COLORS.HEADER + '\nSee log: {}\n'.format(self.echo._logfile) + COLORS.ENDC)
 
+
 def is_simulation_completed(card_path):
     """
     Returns True if the simulation is completed.
@@ -139,10 +143,6 @@ def is_simulation_completed(card_path):
     else:
         run_card = os.path.join(card_path, RUN_CARD)
     # Extract info from cards
-    config = SectionParser('UserChoices')
+    config = SectionParser('Configuration')
     config.read(run_card)
-    if not config.has_section('UserChoices'):
-        raise NoConfigSection()
-    if not config.has_option('periodstate'):
-        raise NoConfigOption('PeriodState')
-    return config.get('PeriodState').strip('"') == 'Completed'
+    return config.get('periodstate').strip('"') == 'Completed'

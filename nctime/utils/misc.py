@@ -11,13 +11,15 @@ import logging
 import os
 import re
 import sys
+from ctypes import c_char_p
+from multiprocessing import Value
 
 from fuzzywuzzy import fuzz, process
 from netCDF4 import Dataset
 from netcdftime import datetime
-from multiprocessing import Value
+
 from custom_exceptions import *
-from ctypes import c_char_p
+
 
 class ncopen(object):
     """
@@ -202,6 +204,14 @@ class Print(object):
                 self.print_to_logfile(msg)
             else:
                 self.print_to_stdout(msg)
+
+    def warning(self, msg):
+        if self._log:
+            self.print_to_logfile(msg)
+        elif self._debug:
+            self.print_to_stdout(msg)
+        else:
+            self.print_to_stdout(msg)
 
     def error(self, msg, buffer=False):
         if self._log:

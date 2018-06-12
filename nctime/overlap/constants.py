@@ -23,3 +23,6 @@ CMIP6_FILENAME_PATTERN = '^(?P<variable_id>[\w.-]+)_' \
                          '(?P<grid_label>[^-_]+)' \
                          '(_(?P<period_start>[\w.-]+)-(?P<period_end>[\w.-]+))?' \
                          '\\.nc$'
+
+# Facet to ignore
+IGNORED_FACETS = ['period_start', 'period_end']

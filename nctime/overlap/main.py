@@ -12,20 +12,19 @@ import os
 import re
 import sys
 from multiprocessing import Pool
+from xml.etree.ElementTree import parse
 
 import nco
 import networkx as nx
 import numpy as np
-from xml.etree.ElementTree import parse
 from ESGConfigParser import ExpressionNotMatch
+
 from constants import *
 from context import ProcessingContext
 from handler import Filename, Graph
 from nctime.utils.misc import COLORS, ProcessContext
 from nctime.utils.time import get_next_timestep
-from nctime.utils.custom_exceptions import NoRunCardFound, NoConfigCardFound
-from nctime.utils.constants import RUN_CARD, CONF_CARD, FILEDEF_ROOT, FILEDEF_DIRECTORY_FORMAT
-from ESGConfigParser import SectionParser, NoConfigOption, NoConfigSection
+
 
 def get_overlaps(g, shortest):
     """
@@ -129,7 +128,7 @@ def extract_dates(ffp):
         raise
     except Exception as e:
         msg = """\n{}\nSkipped: {}""".format(COLORS.HEADER + os.path.basename(ffp) + COLORS.ENDC,
-                                    COLORS.FAIL + e.message + COLORS.ENDC)
+                                             COLORS.FAIL + e.message + COLORS.ENDC)
         echo.error(msg, buffer=True)
         return None
     finally:
@@ -267,78 +266,36 @@ def evaluate_graph(gid):
                     avail_targets = []
                 # If no "forward" nodes in edges target and not last node = potential BREAK
                 if not set(next_nodes).intersection(avail_targets) and node != nodes[-1]:
-                    if conf_card:
+                    if patterns:
                         # Get gap start year from current node
-                        gap_start_year = str(g.node[node]['next'])[:4]
+                        gap_start_year = int(float(str(g.node[node]['next'])[:4]))
                         # Get gap end year from next node in list
-                        gap_end_year = str(g.node[nodes[nodes.index(node) + 1]])[:4]
+                        gap_end_year = int(float(str(g.node[nodes[nodes.index(node) + 1]]['start'])[:4]))
                         # Get filename pattern to search into XML files
                         facets = re.compile(CMIP6_FILENAME_PATTERN).groupindex
                         try:
                             attributes = re.search(CMIP6_FILENAME_PATTERN, node).groupdict()
                         except:
                             raise ExpressionNotMatch(node, CMIP6_FILENAME_PATTERN)
+                        filename_pattern = list()
                         for idx in sorted(facets.values()):
                             key = facets.keys()[facets.values().index(idx)]
-                            if key == 'period_start':
-                                attributes[key] = '%start_date%'
-                            if key == 'period_end':
-                                attributes[key] = '%end_date%'
-                        filename_pattern = '_'.join(attributes)
-                        filename_pattern = '-'.join(filename_pattern.rsplit('_', 1))
+                            if key not in IGNORED_FACETS:
+                                filename_pattern.append(attributes[key])
+                        filename_pattern = '_'.join(filename_pattern) + '_{}-{}'.format('%start_date%', '%end_date%')
                         if node.endswith('-clim.nc'):
                             filename_pattern += '-clim'
                         # Check into XML files in the gap period
-                        for xml in yield_xml_between_years(gap_start_year, gap_end_year, conf_card):
-                            xml_tree = parse(xml)
-                            # If pattern is found = real BREAK
-                            if xml_tree.findall('*/file[@name="{}"]'.format(filename_pattern)):
+                        for year in range(gap_start_year, gap_end_year):
+                            if filename_pattern in patterns[str(year)]:
+                                echo.debug('\nPattern found in XML :: Year = {} :: {}'.format(year, filename_pattern))
                                 path.append('BREAK')
-                                break
+                            else:
+                                path.append('XML GAP')
                     else:
-                        # If no file card submitted consider potential BREAK as real BREAK
+                        # If no file card submitted, no patterns loaded = potential BREAK as real BREAK
                         path.append('BREAK')
     return path, partial_overlaps, full_overlaps
-
-
-def yield_xml_between_years(year_start, year_end, card_path):
-    """
-    Yields XML path from run.card and config.card attributes.
-
-    :param str card_path: Directory including run.card and config.card
-    :returns: The XML paths to use
-    :rtype: *iter*
-
-    """
-    # Check cards exist
-    if RUN_CARD not in os.listdir(card_path):
-        raise NoRunCardFound(card_path)
-    else:
-        run_card = os.path.join(card_path, RUN_CARD)
-    if CONF_CARD not in os.listdir(card_path):
-        raise NoConfigCardFound(card_path)
-    else:
-        conf_card = os.path.join(card_path, CONF_CARD)
-    # Extract config info from config.card
-    config = SectionParser('UserChoices')
-    config.read(conf_card)
-    xml_attrs = dict()
-    xml_attrs['root'] = FILEDEF_ROOT
-    if not config.has_section('UserChoices'):
-        raise NoConfigSection()
-    if not config.has_option('longname'):
-        raise NoConfigOption('LongName')
-    xml_attrs['longname'] = config.get('UserChoices', 'longname').strip('"')
-    if not config.has_option('experimentname'):
-        raise NoConfigOption('ExperimentName')
-    xml_attrs['experimentname'] = config.get('UserChoices', 'experimentname').strip('"')
-    if not config.has_option('member'):
-        raise NoConfigOption('Member')
-    xml_attrs['member'] = config.get('UserChoices', 'member').strip('"')
-    # Extract first and last simulated years from run.card
-    for year in range(year_start, year_end):
-        xml_attrs['year'] = str(year)
-        yield FILEDEF_DIRECTORY_FORMAT.format(**xml_attrs)
 
 
 def format_path(path, partial_overlaps, full_overlaps):
@@ -369,6 +326,62 @@ def format_path(path, partial_overlaps, full_overlaps):
     return msg
 
 
+def yield_filedef(paths):
+    """
+    Yields all file definition produced by dr2xml as input for XIOS.
+
+    :param list paths: The list of filedef path
+    :returns: The dr2xml files
+    :rtype: *iter*
+
+    """
+    for path in paths:
+        for root, _, filenames in os.walk(path, followlinks=True):
+            for filename in filenames:
+                ffp = os.path.join(root, filename)
+                if os.path.isfile(ffp) and re.search('^dr2xml_.*\.xml$', filename):
+                    yield ffp
+
+
+def get_patterns_from_filedef(path):
+    """
+    Parses dr2xml files.
+    Each filename pattern is deserialized as a dictionary of facet: value.
+
+    :param str path: The path to scan
+    :returns: The filename deserialized with facets
+    :rtype: *dict*
+
+    """
+    # Get process content from process global env
+    assert 'pctx' in globals().keys()
+    pctx = globals()['pctx']
+    with pctx.lock:
+        echo.debug(COLORS.OKGREEN + '\nParse XML filedef :: ' + COLORS.ENDC + '{}'.format(path))
+    year = os.path.basename(os.path.dirname(path))
+    xml_tree = parse(path)
+    patterns = list()
+    for item in xml_tree.iterfind('*/file'):
+        # Get XML file_id entry name
+        item = item.attrib['name'].strip()
+        # Ignore "cfsites_grid" entry
+        if item == 'cfsites_grid':
+            continue
+        with pctx.lock:
+            echo.debug('\nProcess XML file_id entry :: {}'.format(item))
+        patterns.append(item)
+    # Print progress
+    with pctx.lock:
+        pctx.progress.value += 1
+        percentage = int(pctx.progress.value * 100 / pctx.nbxml)
+        msg = COLORS.OKGREEN + '\rProcess XML file(s): ' + COLORS.ENDC
+        msg += '{}% | {}/{} files'.format(percentage,
+                                          pctx.progress.value,
+                                          pctx.nbxml)
+        echo.progress(msg)
+    return year, patterns
+
+
 def initializer(keys, values):
     """
     Initialize process context by setting particular variables as global variables.
@@ -397,17 +410,16 @@ def run(args=None):
 
     """
     # Declare global variables
-    global graph, echo, conf_card
+    global graph, echo, patterns
     # Instantiate processing context
     with ProcessingContext(args) as ctx:
-        # Get config card path
-        conf_card = args.conf_card
         # Initialize print management
         echo = ctx.echo
         # Print command-line
         echo.command(COLORS.OKBLUE + 'Command: ' + COLORS.ENDC + ' '.join(sys.argv) + '\n')
         # Collecting data
         echo.progress('\rCollecting data, please wait...')
+        # Get number of files
         ctx.nbfiles = len(ctx.sources)
         # Init process context
         cctx = {name: getattr(ctx, name) for name in PROCESS_VARS}
@@ -423,6 +435,32 @@ def run(args=None):
             initializer(cctx.keys(), cctx.values())
             handlers = [x for x in itertools.imap(extract_dates, ctx.sources) if x is not None]
         ctx.skip = ctx.nbfiles - len(handlers)
+        # Process XML files if card
+        patterns = dict()
+        if ctx.card:
+            echo.progress('\n')
+            # Reset progress counter
+            cctx['progress'].value = 0
+            # Get number of xml
+            ctx.nbxml = len([x for x in yield_filedef(ctx.card)])
+            cctx['nbxml'] = ctx.nbxml
+            if ctx.use_pool:
+                # Init processes pool
+                pool = Pool(processes=ctx.processes, initializer=initializer, initargs=(cctx.keys(),
+                                                                                        cctx.values()))
+                for k, v in pool.imap(get_patterns_from_filedef, yield_filedef(ctx.card)):
+                    if k not in patterns.keys():
+                        patterns[k] = list()
+                    patterns[k].extend(v)
+                # Close pool of workers
+                pool.close()
+                pool.join()
+            else:
+                initializer(cctx.keys(), cctx.values())
+                for k, v in itertools.imap(get_patterns_from_filedef, yield_filedef(ctx.card)):
+                    if k not in patterns.keys():
+                        patterns[k] = list()
+                    patterns[k].extend(v)
         # Initialize Graph()
         graph = Graph()
         # Process filename handler to create nodes
@@ -439,6 +477,8 @@ def run(args=None):
             if 'BREAK' in path:
                 ctx.broken += 1
                 echo.error(COLORS.FAIL + '\nTime series broken:' + COLORS.ENDC + '{}'.format(msg))
+            elif 'XML GAP' in path:
+                echo.success(COLORS.WARNING + '\nNo path found because of XML gap(s):' + COLORS.ENDC + '{}'.format(msg))
             else:
                 # Print overlaps if exists
                 if full_overlaps or partial_overlaps:

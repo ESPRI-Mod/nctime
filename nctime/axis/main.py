@@ -8,8 +8,8 @@
 """
 
 import itertools
-import re
 import os
+import re
 import sys
 from multiprocessing import Pool
 
@@ -154,7 +154,7 @@ def process(ffp):
         raise
     except Exception as e:
         msg = """\n{}\nSkipped: {}""".format(COLORS.HEADER + os.path.basename(ffp) + COLORS.ENDC,
-                                    COLORS.FAIL + e.message + COLORS.ENDC)
+                                             COLORS.FAIL + e.message + COLORS.ENDC)
         echo.error(msg, buffer=True)
         return None
     finally:
