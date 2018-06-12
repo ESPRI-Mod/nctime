@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Check time axis squareness &mdash; nctime 4.3.2 documentation</title>
+  <title>Check time axis squareness &mdash; nctime 4.4.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="nctime 4.3.2 documentation" href="index.html"/>
+    <link rel="top" title="nctime 4.4.0 documentation" href="index.html"/>
         <link rel="next" title="Frequently asked questions" href="faq.html"/>
         <link rel="prev" title="Check time series continuity" href="overlap.html"/> 
 
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                4.3
+                4.4
               </div>
             
           
@@ -208,9 +208,20 @@ your input files. Be careful to activate <code class="docutils literal"><span cl
 <div class="section" id="check-an-on-going-simulation">
 <h2>Check an on going simulation<a class="headerlink" href="#check-an-on-going-simulation" title="Permalink to this headline">¶</a></h2>
 <p>The “on-fly” mode allows to check an incomplete time axis which is by construct inconsistent with the end timestamp of the file name.
-To disable the corresponding test and check the on goind time axis squareness use:</p>
+To disable the corresponding test and check the on going time axis squareness use:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ --on-fly
 </pre></div>
+</div>
+<p>Default is a deactivated “on-fly” mode.
+<code class="docutils literal"><span class="pre">nctime</span> <span class="pre">axis</span></code> is able to deduce if your simulation is completed or not. In the last case, the “on-fly” mode is
+automatically activated. You only need to submit the directory including both your <code class="docutils literal"><span class="pre">config.card</span></code> and <code class="docutils literal"><span class="pre">run.card</span></code>
+provided by the libIGCM framework:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ --card /PATH/TO/SUBMISSION/DIRECTORY
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This option is only available if you run your simulation within the IPSL libICM framework.</p>
 </div>
 </div>
 <div class="section" id="show-wrong-time-steps">
@@ -329,7 +340,7 @@ several error coma-separated codes can be submitted.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'4.3.2',
+            VERSION:'4.4.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

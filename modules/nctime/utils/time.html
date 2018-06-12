@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.utils.time &mdash; nctime 4.3.2 documentation</title>
+  <title>nctime.utils.time &mdash; nctime 4.4.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 4.3.2 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 4.4.0 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.3
+                4.4
               </div>
             
           
@@ -206,12 +206,15 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">tunits_default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">with</span> <span class="n">ncopen</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span> <span class="k">as</span> <span class="n">nc</span><span class="p">:</span>
             <span class="c1"># Check time variable exists</span>
-            <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span> <span class="k">raise</span> <span class="n">NoNetCDFVariable</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">ref</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="n">NoNetCDFVariable</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">ref</span><span class="p">)</span>
             <span class="c1"># Get reference time units</span>
-            <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">():</span> <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tunits</span> <span class="o">=</span> <span class="n">control_time_units</span><span class="p">(</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="n">tunits_default</span><span class="p">)</span>
             <span class="c1"># Get reference calendar</span>
-            <span class="k">if</span> <span class="s1">&#39;calendar&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">():</span> <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span class="s1">&#39;calendar&#39;</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;calendar&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span class="s1">&#39;calendar&#39;</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">calendar</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">calendar</span></div>
 
 
@@ -475,6 +478,7 @@
 <span class="sd">    &lt;https://docs.python.org/2/library/re.html&gt;`_).</span>
 <span class="sd">    :param str frequency: The time frequency</span>
 <span class="sd">    :param str calendar: The NetCDF calendar attribute</span>
+<span class="sd">    :param boolean correction: Apply time correction if True</span>
 <span class="sd">    :returns: Start and end dates from the filename</span>
 <span class="sd">    :rtype: *netcdftime.datetime*</span>
 
@@ -538,6 +542,20 @@
         <span class="n">next_timestep</span> <span class="o">=</span> <span class="n">time</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
         <span class="k">del</span> <span class="n">time</span>
         <span class="k">return</span> <span class="n">next_timestep</span></div>
+
+
+<div class="viewcode-block" id="trunc"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.trunc">[docs]</a><span class="k">def</span> <span class="nf">trunc</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">ndecimals</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Truncates each item of a Numpy array to the decimal ndecimals</span>
+
+<span class="sd">    :param numpy.array array: The array to truncate</span>
+<span class="sd">    :param int ndecimals: Number of decimals to keep</span>
+<span class="sd">    :returns: The truncated array</span>
+<span class="sd">    :rtype: *numpy.array*</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">decade</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="n">ndecimals</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">trunc</span><span class="p">(</span><span class="n">array</span> <span class="o">*</span> <span class="n">decade</span><span class="p">)</span> <span class="o">/</span> <span class="n">decade</span></div>
 
 
 <div class="viewcode-block" id="time_inc"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.time_inc">[docs]</a><span class="k">def</span> <span class="nf">time_inc</span><span class="p">(</span><span class="n">frequency</span><span class="p">):</span>
@@ -705,7 +723,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'4.3.2',
+            VERSION:'4.4.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

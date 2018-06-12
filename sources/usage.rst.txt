@@ -116,6 +116,20 @@ several files. One process seems sequential processing (the default). Set it -1 
 
 .. warning:: The number of maximal processes is limited to the maximum CPU count in any case.
 
+Use libIGCM infos
+*****************
+
+``nctime`` can use your libIGCM info to automatically apply some configuration. This requires to submit the
+directory including both your ``config.card`` and ``run.card`` provided by the libIGCM framework:
+
+.. code-block:: bash
+
+    $> nctime SUBCOMMAND --card /PATH/TO/SUBMISSION/DIRECTORY
+
+.. note:: This detailed documentation of ``nctime overlap`` and ``nctime axis``.
+
+.. warning:: This option is only available if you run your simulation within the IPSL libICM framework.
+
 Exit status
 ***********
 

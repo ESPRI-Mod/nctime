@@ -41,11 +41,22 @@ Check an on going simulation
 ****************************
 
 The "on-fly" mode allows to check an incomplete time axis which is by construct inconsistent with the end timestamp of the file name.
-To disable the corresponding test and check the on goind time axis squareness use:
+To disable the corresponding test and check the on going time axis squareness use:
 
 .. code-block:: bash
 
    $> nctime axis /PATH/TO/SCAN/ --on-fly
+
+Default is a deactivated "on-fly" mode.
+``nctime axis`` is able to deduce if your simulation is completed or not. In the last case, the "on-fly" mode is
+automatically activated. You only need to submit the directory including both your ``config.card`` and ``run.card``
+provided by the libIGCM framework:
+
+.. code-block:: bash
+
+    $> nctime axis /PATH/TO/SCAN/ --card /PATH/TO/SUBMISSION/DIRECTORY
+
+.. warning:: This option is only available if you run your simulation within the IPSL libICM framework.
 
 Show wrong time steps
 *********************

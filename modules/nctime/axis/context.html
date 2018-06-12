@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.axis.context &mdash; nctime 4.3.2 documentation</title>
+  <title>nctime.axis.context &mdash; nctime 4.4.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 4.3.2 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 4.4.0 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.3
+                4.4
               </div>
             
           
@@ -172,17 +172,17 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">cpu_count</span>
-<span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">sleep</span>
+<span class="kn">from</span> <span class="nn">ctypes</span> <span class="k">import</span> <span class="n">c_char_p</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">cpu_count</span><span class="p">,</span> <span class="n">Value</span><span class="p">,</span> <span class="n">Lock</span>
+<span class="kn">from</span> <span class="nn">multiprocessing.managers</span> <span class="k">import</span> <span class="n">SyncManager</span>
 
 <span class="kn">from</span> <span class="nn">ESGConfigParser</span> <span class="k">import</span> <span class="n">SectionParser</span>
 
 <span class="kn">from</span> <span class="nn">nctime.utils.collector</span> <span class="k">import</span> <span class="n">Collector</span>
 <span class="kn">from</span> <span class="nn">nctime.utils.constants</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">nctime.utils.custom_exceptions</span> <span class="k">import</span> <span class="n">InvalidFrequency</span>
-<span class="kn">from</span> <span class="nn">nctime.utils.misc</span> <span class="k">import</span> <span class="n">COLORS</span><span class="p">,</span> <span class="n">get_project</span>
+<span class="kn">from</span> <span class="nn">nctime.utils.custom_exceptions</span> <span class="k">import</span> <span class="n">InvalidFrequency</span><span class="p">,</span> <span class="n">NoRunCardFound</span><span class="p">,</span> <span class="n">InvalidUnits</span>
+<span class="kn">from</span> <span class="nn">nctime.utils.misc</span> <span class="k">import</span> <span class="n">COLORS</span><span class="p">,</span> <span class="n">get_project</span><span class="p">,</span> <span class="n">Print</span>
 <span class="kn">from</span> <span class="nn">nctime.utils.time</span> <span class="k">import</span> <span class="n">TimeInit</span>
 
 
@@ -203,21 +203,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">force</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">force</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">debug</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">on_fly</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">on_fly</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">card</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_fly</span> <span class="o">=</span> <span class="n">is_simulation_completed</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">card</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">limit</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">limit</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ignore_codes</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">ignore_errors</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">project</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">project</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">set_inc</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">increment</span> <span class="ow">in</span> <span class="nb">dict</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">set_inc</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">frequency</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">FREQ_INC</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                    <span class="k">raise</span> <span class="n">InvalidFrequency</span><span class="p">(</span><span class="n">frequency</span><span class="p">)</span>
-                <span class="n">FREQ_INC</span><span class="p">[</span><span class="n">frequency</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">increment</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">increment</span><span class="p">,</span> <span class="n">units</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">set_inc</span><span class="p">:</span>
+                <span class="n">FREQ_INC</span><span class="p">[</span><span class="n">frequency</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">increment</span><span class="p">)</span>
+                <span class="n">FREQ_INC</span><span class="p">[</span><span class="n">frequency</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tunits_default</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span> <span class="ow">in</span> <span class="n">DEFAULT_TIME_UNITS</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tunits_default</span> <span class="o">=</span> <span class="n">DEFAULT_TIME_UNITS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">processes</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">max_processes</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">max_processes</span> <span class="o">&lt;=</span> <span class="n">cpu_count</span><span class="p">()</span> <span class="k">else</span> <span class="n">cpu_count</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">use_pool</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">processes</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scan_files</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scan_errors</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lock</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nbfiles</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nbskip</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nberrors</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">correction</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">correct_timestamp</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_filter</span> <span class="o">=</span> <span class="p">[]</span>
@@ -232,8 +235,21 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">file_filter</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;^\..*$&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dir_filter</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">ignore_dir</span>
+        <span class="c1"># Initialize print management</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">echo</span> <span class="o">=</span> <span class="n">Print</span><span class="p">(</span><span class="n">log</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span> <span class="n">cmd</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">cmd</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">all</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Print warning message if on-fly mode</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_fly</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">echo</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;WARNING :: &quot;on-fly&quot; mode activated -- Incomplete time axis expected</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="c1"># Init process manager</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_pool</span><span class="p">:</span>
+            <span class="n">manager</span> <span class="o">=</span> <span class="n">SyncManager</span><span class="p">()</span>
+            <span class="n">manager</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">progress</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">Value</span><span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">echo</span><span class="o">.</span><span class="n">_buffer</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">Value</span><span class="p">(</span><span class="n">c_char_p</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">progress</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="c1"># Init data collector</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sources</span> <span class="o">=</span> <span class="n">Collector</span><span class="p">(</span><span class="n">sources</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="n">spinner</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="c1"># Init file filter</span>
@@ -259,21 +275,42 @@
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
-        <span class="c1"># Sleep time before final print</span>
-        <span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
         <span class="c1"># Decline outputs depending on the scan results</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">HEADER</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Number of files scanned: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scan_files</span><span class="p">)</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scan_errors</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">HEADER</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">Number of files scanned: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nbfiles</span><span class="p">)</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nbskip</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">FAIL</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">OKGREEN</span>
-        <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39;Number of file with error(s): </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scan_errors</span><span class="p">)</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span>
-        <span class="c1"># Critical level used to print in any case</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Number of file(s) skipped: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nbskip</span><span class="p">)</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nberrors</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">FAIL</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">OKGREEN</span>
+        <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Number of file with error(s): </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nberrors</span><span class="p">)</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span>
+        <span class="c1"># Print summary</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">echo</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="c1"># Print log path if exists</span>
-        <span class="n">log_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">log_handler</span><span class="p">,</span> <span class="s1">&#39;baseFilename&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">log_handler</span><span class="o">.</span><span class="n">baseFilename</span><span class="p">):</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">COLORS</span><span class="o">.</span><span class="n">HEADER</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">See log: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">log_handler</span><span class="o">.</span><span class="n">baseFilename</span><span class="p">)</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">echo</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">COLORS</span><span class="o">.</span><span class="n">HEADER</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">See log: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">echo</span><span class="o">.</span><span class="n">_logfile</span><span class="p">)</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="is_simulation_completed"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.context.is_simulation_completed">[docs]</a><span class="k">def</span> <span class="nf">is_simulation_completed</span><span class="p">(</span><span class="n">card_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns True if the simulation is completed.</span>
+
+<span class="sd">    :param str card_path: Directory including run.card</span>
+<span class="sd">    :returns: True if the simulation is completed</span>
+<span class="sd">    :rtype: *boolean*</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check cards exist</span>
+    <span class="k">if</span> <span class="n">RUN_CARD</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">card_path</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">NoRunCardFound</span><span class="p">(</span><span class="n">card_path</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">run_card</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">card_path</span><span class="p">,</span> <span class="n">RUN_CARD</span><span class="p">)</span>
+    <span class="c1"># Extract info from cards</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">SectionParser</span><span class="p">(</span><span class="s1">&#39;Configuration&#39;</span><span class="p">)</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">run_card</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;periodstate&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Completed&#39;</span></div>
 </pre></div>
 
            </div>
@@ -310,7 +347,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'4.3.2',
+            VERSION:'4.4.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

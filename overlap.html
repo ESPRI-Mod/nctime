@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Check time series continuity &mdash; nctime 4.3.2 documentation</title>
+  <title>Check time series continuity &mdash; nctime 4.4.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="nctime 4.3.2 documentation" href="index.html"/>
+    <link rel="top" title="nctime 4.4.0 documentation" href="index.html"/>
         <link rel="next" title="Check time axis squareness" href="axis.html"/>
         <link rel="prev" title="Generic usage" href="usage.html"/> 
 
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                4.3
+                4.4
               </div>
             
           
@@ -183,6 +183,19 @@ directories in order to save disk space.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime overlap /PATH/TO/SCAN/
 </pre></div>
 </div>
+<p>By default, <code class="docutils literal"><span class="pre">nctime</span> <span class="pre">overlap</span></code> consider a time serie as broken when time gaps exist between netCDF time period.
+Following the CMIP Data Request, some data can be asked only for sub-periods in the time serie, thus time gaps are expected.
+To check compare broken time series against CMIP DR <code class="docutils literal"><span class="pre">nctime</span> <span class="pre">overlap</span></code> is able to use DR2XML files patterns to deduce if</p>
+<blockquote>
+<div>a time gap is expected or not. To activate this just submit the directory including both your <code class="docutils literal"><span class="pre">config.card</span></code> and <code class="docutils literal"><span class="pre">run.card</span></code></div></blockquote>
+<p>provided by the libIGCM framework:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime overlap /PATH/TO/SCAN/ --card /PATH/TO/SUBMISSION/DIRECTORY
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This option is only available if you run your simulation within the IPSL libICM framework.</p>
+</div>
 </div>
 <div class="section" id="remove-overlapping-files">
 <h2>Remove overlapping files<a class="headerlink" href="#remove-overlapping-files" title="Permalink to this headline">¶</a></h2>
@@ -247,7 +260,7 @@ remove and/or rename files. Be careful to activate <code class="docutils literal
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'4.3.2',
+            VERSION:'4.4.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Code documentation &mdash; nctime 4.3.2 documentation</title>
+  <title>Code documentation &mdash; nctime 4.4.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="nctime 4.3.2 documentation" href="index.html"/>
+    <link rel="top" title="nctime 4.4.0 documentation" href="index.html"/>
         <link rel="prev" title="Change Log" href="log.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.3
+                4.4
               </div>
             
           
@@ -261,8 +261,32 @@ If partial overlap, the corresponding file is truncated into a new one and the o
 </dd></dl>
 
 <dl class="function">
+<dt id="nctime.overlap.main.extract_dates">
+<code class="descclassname">nctime.overlap.main.</code><code class="descname">extract_dates</code><span class="sig-paren">(</span><em>ffp</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/overlap/main.html#extract_dates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.overlap.main.extract_dates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract dates attributes from netCDF file..</p>
+<blockquote>
+<div><ul class="simple">
+<li>start = the start date of the file sub-period</li>
+<li>end = the end date of the file sub-period</li>
+<li>next = the date next to the end date depending on the frequency, the calendar, etc.</li>
+<li>first_step = the first time axis step</li>
+<li>last_step = the last time axis step</li>
+<li>path = the file full path</li>
+</ul>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ffp</strong> (<em>str</em>) – The file full path to process</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="nctime.overlap.main.create_nodes">
-<code class="descclassname">nctime.overlap.main.</code><code class="descname">create_nodes</code><span class="sig-paren">(</span><em>ffp</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/overlap/main.html#create_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.overlap.main.create_nodes" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nctime.overlap.main.</code><code class="descname">create_nodes</code><span class="sig-paren">(</span><em>fh</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/overlap/main.html#create_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.overlap.main.create_nodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates the node into the corresponding Graph().
 One directed graph per dataset. Each file is analysed to be a node in its graph.
 A node is a filename with some attributes:</p>
@@ -280,7 +304,7 @@ A node is a filename with some attributes:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ffp</strong> (<em>str</em>) – The file full path to process</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fh</strong> (<a class="reference internal" href="#nctime.overlap.handler.Filename" title="nctime.overlap.handler.Filename"><em>handler.Filename</em></a>) – The filename handler</td>
 </tr>
 </tbody>
 </table>
@@ -352,6 +376,43 @@ It walks through the evaluated path of the directed graph and print the filename
 </dd></dl>
 
 <dl class="function">
+<dt id="nctime.overlap.main.yield_filedef">
+<code class="descclassname">nctime.overlap.main.</code><code class="descname">yield_filedef</code><span class="sig-paren">(</span><em>paths</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/overlap/main.html#yield_filedef"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.overlap.main.yield_filedef" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yields all file definition produced by dr2xml as input for XIOS.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>paths</strong> (<em>list</em>) – The list of filedef path</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The dr2xml files</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>iter</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.overlap.main.get_patterns_from_filedef">
+<code class="descclassname">nctime.overlap.main.</code><code class="descname">get_patterns_from_filedef</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/overlap/main.html#get_patterns_from_filedef"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.overlap.main.get_patterns_from_filedef" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses dr2xml files.
+Each filename pattern is deserialized as a dictionary of facet: value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<em>str</em>) – The path to scan</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The filename deserialized with facets</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>dict</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="nctime.overlap.main.initializer">
 <code class="descclassname">nctime.overlap.main.</code><code class="descname">initializer</code><span class="sig-paren">(</span><em>keys</em>, <em>values</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/overlap/main.html#initializer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.overlap.main.initializer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize process context by setting particular variables as global variables.</p>
@@ -371,7 +432,7 @@ It walks through the evaluated path of the directed graph and print the filename
 
 <dl class="function">
 <dt id="nctime.overlap.main.run">
-<code class="descclassname">nctime.overlap.main.</code><code class="descname">run</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/overlap/main.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.overlap.main.run" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nctime.overlap.main.</code><code class="descname">run</code><span class="sig-paren">(</span><em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/overlap/main.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.overlap.main.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Main process that:</p>
 <blockquote>
 <div><ul class="simple">
@@ -467,6 +528,24 @@ It walks through the evaluated path of the directed graph and print the filename
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="nctime.overlap.context.yield_xml_from_card">
+<code class="descclassname">nctime.overlap.context.</code><code class="descname">yield_xml_from_card</code><span class="sig-paren">(</span><em>card_path</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/overlap/context.html#yield_xml_from_card"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.overlap.context.yield_xml_from_card" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yields XML path from run.card and config.card attributes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>card_path</strong> (<em>str</em>) – Directory including run.card and config.card</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The XML paths to use</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>iter</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <span class="target" id="module-nctime.overlap.constants"></span><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -538,7 +617,7 @@ It walks through the evaluated path of the directed graph and print the filename
 
 <dl class="function">
 <dt id="nctime.axis.main.run">
-<code class="descclassname">nctime.axis.main.</code><code class="descname">run</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/main.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.main.run" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nctime.axis.main.</code><code class="descname">run</code><span class="sig-paren">(</span><em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/main.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.main.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Main process that:</p>
 <blockquote>
 <div><ul class="simple">
@@ -625,7 +704,7 @@ instant status.</p>
 <dt id="nctime.axis.handler.File.nc_var_delete">
 <code class="descname">nc_var_delete</code><span class="sig-paren">(</span><em>variable</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/handler.html#File.nc_var_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.handler.File.nc_var_delete" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete a NetCDF variable using NCO operators.
-A unique filename is generated to avoid multithreading errors.
+A unique filename is generated to avoid multiprocessing errors.
 To overwrite the input file, the source file is dump using the <code class="docutils literal"><span class="pre">cat</span></code> Shell command-line
 to avoid Python memory limit.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -644,7 +723,7 @@ to avoid Python memory limit.</p>
 <dt id="nctime.axis.handler.File.nc_att_delete">
 <code class="descname">nc_att_delete</code><span class="sig-paren">(</span><em>variable</em>, <em>attribute</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/handler.html#File.nc_att_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.handler.File.nc_att_delete" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete a NetCDF dimension attribute using NCO operators.
-A unique filename is generated to avoid multithreading errors.
+A unique filename is generated to avoid multiprocessing errors.
 To overwrite the input file, the source file is dump using the <code class="docutils literal"><span class="pre">cat</span></code> Shell command-line
 to avoid Python memory limit.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -777,6 +856,24 @@ to avoid Python memory limit.</p>
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="nctime.axis.context.is_simulation_completed">
+<code class="descclassname">nctime.axis.context.</code><code class="descname">is_simulation_completed</code><span class="sig-paren">(</span><em>card_path</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/context.html#is_simulation_completed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.context.is_simulation_completed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if the simulation is completed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>card_path</strong> (<em>str</em>) – Directory including run.card</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if the simulation is completed</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>boolean</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 </div>
 <div class="section" id="module-nctime.utils.collector">
@@ -805,23 +902,17 @@ to avoid Python memory limit.</p>
 
 <dl class="class">
 <dt id="nctime.utils.collector.Collector">
-<em class="property">class </em><code class="descclassname">nctime.utils.collector.</code><code class="descname">Collector</code><span class="sig-paren">(</span><em>sources</em>, <em>spinner=True</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/collector.html#Collector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.collector.Collector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">nctime.utils.collector.</code><code class="descname">Collector</code><span class="sig-paren">(</span><em>sources</em>, <em>spinner=False</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/collector.html#Collector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.collector.Collector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base collector class to yield regular NetCDF files.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>sources</strong> (<em>list</em>) – The list of sources to parse</li>
-<li><strong>data</strong> (<em>object</em>) – Any object to attach to each collected data</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sources</strong> (<em>list</em>) – The list of sources to parse</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The data collector</p>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The data collector</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>iter</em></p>
-</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>iter</em></td>
 </tr>
 </tbody>
 </table>
@@ -880,54 +971,6 @@ indicating to match (i.e., include) or non-match (i.e., exclude) the correspondi
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The netCDF dataset object</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>netCDF4.Dataset</em></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="class">
-<dt id="nctime.utils.misc.LogFilter">
-<em class="property">class </em><code class="descclassname">nctime.utils.misc.</code><code class="descname">LogFilter</code><span class="sig-paren">(</span><em>level</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/misc.html#LogFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.misc.LogFilter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Log filter with upper log level to use with the Python
-<a class="reference external" href="https://docs.python.org/2/library/logging.html">logging</a> module.</p>
-<dl class="method">
-<dt id="nctime.utils.misc.LogFilter.filter">
-<code class="descname">filter</code><span class="sig-paren">(</span><em>log_record</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/misc.html#LogFilter.filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.misc.LogFilter.filter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the upper log level.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="nctime.utils.misc.NoColorFilter">
-<em class="property">class </em><code class="descclassname">nctime.utils.misc.</code><code class="descname">NoColorFilter</code><span class="sig-paren">(</span><em>name=''</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/misc.html#NoColorFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.misc.NoColorFilter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Log filter with upper log level to use with the Python
-<a class="reference external" href="https://docs.python.org/2/library/logging.html">logging</a> module.</p>
-<dl class="method">
-<dt id="nctime.utils.misc.NoColorFilter.filter">
-<code class="descname">filter</code><span class="sig-paren">(</span><em>record</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/misc.html#NoColorFilter.filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.misc.NoColorFilter.filter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Use filter to post-process log record and remove color patterns.
-Returns true in any case.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="nctime.utils.misc.init_logging">
-<code class="descclassname">nctime.utils.misc.</code><code class="descname">init_logging</code><span class="sig-paren">(</span><em>log</em>, <em>cmd</em>, <em>level='INFO'</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/misc.html#init_logging"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.misc.init_logging" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initiates the logging configuration (output, date/message formatting).
-If a directory is submitted the logfile name is unique and formatted as follows:
-<code class="docutils literal"><span class="pre">name-YYYYMMDD-HHMMSS-JOBID.log``If</span> <span class="pre">``None</span></code> the standard output is used.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>log</strong> (<em>str</em>) – The logfile directory.</li>
-<li><strong>cmd</strong> (<em>str</em>) – The command name</li>
-<li><strong>level</strong> (<em>str</em>) – The log level.</li>
-</ul>
-</td>
 </tr>
 </tbody>
 </table>
@@ -1024,6 +1067,12 @@ Default is to match inclusive regex.</p>
 <dt id="nctime.utils.misc.Colors">
 <em class="property">class </em><code class="descclassname">nctime.utils.misc.</code><code class="descname">Colors</code><a class="reference internal" href="modules/nctime/utils/misc.html#Colors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.misc.Colors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Background colors for print statements</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nctime.utils.misc.Print">
+<em class="property">class </em><code class="descclassname">nctime.utils.misc.</code><code class="descname">Print</code><span class="sig-paren">(</span><em>log</em>, <em>debug</em>, <em>cmd</em>, <em>all</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/misc.html#Print"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.misc.Print" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to manage and dispatch print statement depending on log and debug mode.</p>
 </dd></dl>
 
 <span class="target" id="module-nctime.utils.parser"></span><table class="docutils field-list" frame="void" rules="none">
@@ -1204,6 +1253,30 @@ Default is to match inclusive regex.</p>
 <dt id="nctime.utils.custom_exceptions.InvalidFrequency">
 <em class="property">exception </em><code class="descclassname">nctime.utils.custom_exceptions.</code><code class="descname">InvalidFrequency</code><span class="sig-paren">(</span><em>frequency</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/custom_exceptions.html#InvalidFrequency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.custom_exceptions.InvalidFrequency" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raised when frequency is unknown.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="nctime.utils.custom_exceptions.InvalidUnits">
+<em class="property">exception </em><code class="descclassname">nctime.utils.custom_exceptions.</code><code class="descname">InvalidUnits</code><span class="sig-paren">(</span><em>units</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/custom_exceptions.html#InvalidUnits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.custom_exceptions.InvalidUnits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when time units is unknown.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="nctime.utils.custom_exceptions.NoFileFound">
+<em class="property">exception </em><code class="descclassname">nctime.utils.custom_exceptions.</code><code class="descname">NoFileFound</code><span class="sig-paren">(</span><em>paths</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/custom_exceptions.html#NoFileFound"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.custom_exceptions.NoFileFound" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when frequency no file found.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="nctime.utils.custom_exceptions.NoRunCardFound">
+<em class="property">exception </em><code class="descclassname">nctime.utils.custom_exceptions.</code><code class="descname">NoRunCardFound</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/custom_exceptions.html#NoRunCardFound"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.custom_exceptions.NoRunCardFound" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when no file patterns found in filedef.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="nctime.utils.custom_exceptions.NoConfigCardFound">
+<em class="property">exception </em><code class="descclassname">nctime.utils.custom_exceptions.</code><code class="descname">NoConfigCardFound</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/custom_exceptions.html#NoConfigCardFound"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.custom_exceptions.NoConfigCardFound" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when no file patterns found in filedef.</p>
 </dd></dl>
 
 <span class="target" id="module-nctime.utils.time"></span><table class="docutils field-list" frame="void" rules="none">
@@ -1461,6 +1534,7 @@ time boundary and not the middle of the time interval.</p>
 </li>
 <li><strong>frequency</strong> (<em>str</em>) – The time frequency</li>
 <li><strong>calendar</strong> (<em>str</em>) – The NetCDF calendar attribute</li>
+<li><strong>correction</strong> (<em>boolean</em>) – Apply time correction if True</li>
 </ul>
 </td>
 </tr>
@@ -1492,6 +1566,30 @@ time boundary and not the middle of the time interval.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>int</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="nctime.utils.time.trunc">
+<code class="descclassname">nctime.utils.time.</code><code class="descname">trunc</code><span class="sig-paren">(</span><em>array</em>, <em>ndecimals</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#trunc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.trunc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Truncates each item of a Numpy array to the decimal ndecimals</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>array</strong> (<em>numpy.array</em>) – The array to truncate</li>
+<li><strong>ndecimals</strong> (<em>int</em>) – Number of decimals to keep</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The truncated array</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><em>numpy.array</em></p>
 </td>
 </tr>
 </tbody>
@@ -1694,7 +1792,7 @@ time boundary and not the middle of the time interval.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'4.3.2',
+            VERSION:'4.4.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

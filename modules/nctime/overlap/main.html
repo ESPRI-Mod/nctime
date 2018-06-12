@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.overlap.main &mdash; nctime 4.3.2 documentation</title>
+  <title>nctime.overlap.main &mdash; nctime 4.4.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 4.3.2 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 4.4.0 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.3
+                4.4
               </div>
             
           
@@ -173,20 +173,20 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">itertools</span>
-<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">sleep</span>
 <span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Pool</span>
+<span class="kn">from</span> <span class="nn">xml.etree.ElementTree</span> <span class="k">import</span> <span class="n">parse</span>
 
 <span class="kn">import</span> <span class="nn">nco</span>
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">ESGConfigParser</span> <span class="k">import</span> <span class="n">ExpressionNotMatch</span>
 
 <span class="kn">from</span> <span class="nn">constants</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">context</span> <span class="k">import</span> <span class="n">ProcessingContext</span><span class="p">,</span> <span class="n">ProcessManager</span>
-<span class="kn">from</span> <span class="nn">handler</span> <span class="k">import</span> <span class="n">Filename</span>
+<span class="kn">from</span> <span class="nn">context</span> <span class="k">import</span> <span class="n">ProcessingContext</span>
+<span class="kn">from</span> <span class="nn">handler</span> <span class="k">import</span> <span class="n">Filename</span><span class="p">,</span> <span class="n">Graph</span>
 <span class="kn">from</span> <span class="nn">nctime.utils.misc</span> <span class="k">import</span> <span class="n">COLORS</span><span class="p">,</span> <span class="n">ProcessContext</span>
 <span class="kn">from</span> <span class="nn">nctime.utils.time</span> <span class="k">import</span> <span class="n">get_next_timestep</span>
 
@@ -218,7 +218,7 @@
         <span class="c1"># Partial overlap from next_node[1] to current_node[2] (bounds included)</span>
         <span class="c1"># Overlap is hold on the next node (arbitrary)</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">current_node</span><span class="p">[</span><span class="s1">&#39;next&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">next_node</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Partial overlap found between </span><span class="si">{}</span><span class="s1"> and </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shortest</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">shortest</span><span class="p">[</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]))</span>
+            <span class="n">echo</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Partial overlap found between </span><span class="si">{}</span><span class="s1"> and </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shortest</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">shortest</span><span class="p">[</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]))</span>
             <span class="n">cutting_timestep</span> <span class="o">=</span> <span class="n">get_next_timestep</span><span class="p">(</span><span class="n">next_node</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">],</span> <span class="n">current_node</span><span class="p">[</span><span class="s1">&#39;last_step&#39;</span><span class="p">])</span>
             <span class="n">overlaps</span><span class="p">[</span><span class="s1">&#39;partial&#39;</span><span class="p">][</span><span class="n">shortest</span><span class="p">[</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">next_node</span>
             <span class="n">overlaps</span><span class="p">[</span><span class="s1">&#39;partial&#39;</span><span class="p">][</span><span class="n">shortest</span><span class="p">[</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;end_overlap&#39;</span><span class="p">:</span> <span class="n">current_node</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">],</span>
@@ -259,7 +259,54 @@
     <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="create_nodes"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.main.create_nodes">[docs]</a><span class="k">def</span> <span class="nf">create_nodes</span><span class="p">(</span><span class="n">ffp</span><span class="p">):</span>
+<div class="viewcode-block" id="extract_dates"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.main.extract_dates">[docs]</a><span class="k">def</span> <span class="nf">extract_dates</span><span class="p">(</span><span class="n">ffp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract dates attributes from netCDF file..</span>
+
+<span class="sd">     * start = the start date of the file sub-period</span>
+<span class="sd">     * end = the end date of the file sub-period</span>
+<span class="sd">     * next = the date next to the end date depending on the frequency, the calendar, etc.</span>
+<span class="sd">     * first_step = the first time axis step</span>
+<span class="sd">     * last_step = the last time axis step</span>
+<span class="sd">     * path = the file full path</span>
+
+<span class="sd">    :param str ffp: The file full path to process</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get process content from process global env</span>
+    <span class="k">assert</span> <span class="s1">&#39;pctx&#39;</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="n">pctx</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;pctx&#39;</span><span class="p">]</span>
+    <span class="c1"># Block to avoid program stop if a thread fails</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Instantiate filename handler</span>
+        <span class="n">fh</span> <span class="o">=</span> <span class="n">Filename</span><span class="p">(</span><span class="n">ffp</span><span class="o">=</span><span class="n">ffp</span><span class="p">)</span>
+        <span class="c1"># Extract start and end dates from filename</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">get_start_end_dates</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="n">pctx</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span>
+                               <span class="n">calendar</span><span class="o">=</span><span class="n">pctx</span><span class="o">.</span><span class="n">ref_calendar</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">pctx</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
+            <span class="n">echo</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">File: </span><span class="si">{}</span><span class="s1"> :: Start=</span><span class="si">{}</span><span class="s1">, End=</span><span class="si">{}</span><span class="s1">, Next=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+                                                                        <span class="n">fh</span><span class="o">.</span><span class="n">start_date</span><span class="p">,</span>
+                                                                        <span class="n">fh</span><span class="o">.</span><span class="n">end_date</span><span class="p">,</span>
+                                                                        <span class="n">fh</span><span class="o">.</span><span class="n">next_date</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">fh</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="k">raise</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\n</span><span class="si">{}</span><span class="se">\n</span><span class="s2">Skipped: </span><span class="si">{}</span><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">COLORS</span><span class="o">.</span><span class="n">HEADER</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ffp</span><span class="p">)</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span><span class="p">,</span>
+                                             <span class="n">COLORS</span><span class="o">.</span><span class="n">FAIL</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span><span class="p">)</span>
+        <span class="n">echo</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">buffer</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="c1"># Print progress</span>
+        <span class="k">with</span> <span class="n">pctx</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
+            <span class="n">pctx</span><span class="o">.</span><span class="n">progress</span><span class="o">.</span><span class="n">value</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">percentage</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pctx</span><span class="o">.</span><span class="n">progress</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">/</span> <span class="n">pctx</span><span class="o">.</span><span class="n">nbfiles</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">OKGREEN</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\r</span><span class="s1">Process netCDF file(s): &#39;</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">% | </span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1"> files&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">percentage</span><span class="p">,</span> <span class="n">pctx</span><span class="o">.</span><span class="n">progress</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">pctx</span><span class="o">.</span><span class="n">nbfiles</span><span class="p">)</span>
+            <span class="n">echo</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="create_nodes"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.main.create_nodes">[docs]</a><span class="k">def</span> <span class="nf">create_nodes</span><span class="p">(</span><span class="n">fh</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates the node into the corresponding Graph().</span>
 <span class="sd">    One directed graph per dataset. Each file is analysed to be a node in its graph.</span>
@@ -272,39 +319,24 @@
 <span class="sd">     * last_step = the last time axis step</span>
 <span class="sd">     * path = the file full path</span>
 
-<span class="sd">    :param str ffp: The file full path to process</span>
+<span class="sd">    :param handler.Filename fh: The filename handler</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Declare context from initializer to avoid IDE warnings</span>
-    <span class="k">global</span> <span class="n">cctx</span>
-    <span class="c1"># Block to avoid program stop if a thread fails</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="c1"># Instantiate filename handler</span>
-        <span class="n">fh</span> <span class="o">=</span> <span class="n">Filename</span><span class="p">(</span><span class="n">ffp</span><span class="o">=</span><span class="n">ffp</span><span class="p">)</span>
-        <span class="c1"># Extract start and end dates from filename</span>
-        <span class="n">fh</span><span class="o">.</span><span class="n">get_start_end_dates</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="n">cctx</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span>
-                               <span class="n">calendar</span><span class="o">=</span><span class="n">cctx</span><span class="o">.</span><span class="n">ref_calendar</span><span class="p">)</span>
-        <span class="c1"># Create corresponding DiGraph if not exist</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">cctx</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">has_graph</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">id</span><span class="p">):</span>
-            <span class="n">cctx</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">set_graph</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-        <span class="c1"># Update/add current file as node with dates as attributes</span>
-        <span class="n">node</span> <span class="o">=</span> <span class="n">cctx</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-                                   <span class="n">fh</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
-                                   <span class="n">fh</span><span class="o">.</span><span class="n">start_date</span><span class="p">,</span>
-                                   <span class="n">fh</span><span class="o">.</span><span class="n">end_date</span><span class="p">,</span>
-                                   <span class="n">fh</span><span class="o">.</span><span class="n">next_date</span><span class="p">,</span>
-                                   <span class="n">fh</span><span class="o">.</span><span class="n">ffp</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Graph: </span><span class="si">{}</span><span class="s1"> :: Node </span><span class="si">{}</span><span class="s1"> (start=</span><span class="si">{}</span><span class="s1">, end=</span><span class="si">{}</span><span class="s1">, next=</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-                                                                                <span class="n">fh</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
-                                                                                <span class="n">node</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">],</span>
-                                                                                <span class="n">node</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">],</span>
-                                                                                <span class="n">node</span><span class="p">[</span><span class="s1">&#39;next&#39;</span><span class="p">]))</span>
-        <span class="k">return</span> <span class="mi">0</span>
-    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
-        <span class="k">raise</span>
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> skipped</span><span class="se">\n</span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ffp</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">))</span>
-        <span class="k">return</span> <span class="mi">1</span></div>
+    <span class="c1"># Create corresponding DiGraph if not exist</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">graph</span><span class="o">.</span><span class="n">has_graph</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">id</span><span class="p">):</span>
+        <span class="n">graph</span><span class="o">.</span><span class="n">set_graph</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="c1"># Update/add current file as node with dates as attributes</span>
+    <span class="n">node</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                          <span class="n">fh</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+                          <span class="n">fh</span><span class="o">.</span><span class="n">start_date</span><span class="p">,</span>
+                          <span class="n">fh</span><span class="o">.</span><span class="n">end_date</span><span class="p">,</span>
+                          <span class="n">fh</span><span class="o">.</span><span class="n">next_date</span><span class="p">,</span>
+                          <span class="n">fh</span><span class="o">.</span><span class="n">ffp</span><span class="p">)</span>
+    <span class="n">echo</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Graph: </span><span class="si">{}</span><span class="s1"> :: Node </span><span class="si">{}</span><span class="s1"> (start=</span><span class="si">{}</span><span class="s1">, end=</span><span class="si">{}</span><span class="s1">, next=</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                                                           <span class="n">fh</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+                                                                           <span class="n">node</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">],</span>
+                                                                           <span class="n">node</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">],</span>
+                                                                           <span class="n">node</span><span class="p">[</span><span class="s1">&#39;next&#39;</span><span class="p">]))</span></div>
 
 
 <div class="viewcode-block" id="create_edges"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.main.create_edges">[docs]</a><span class="k">def</span> <span class="nf">create_edges</span><span class="p">(</span><span class="n">gid</span><span class="p">):</span>
@@ -338,7 +370,7 @@
         <span class="c1"># For each next node, build the corresponding edge in the graph</span>
         <span class="k">for</span> <span class="n">next_node</span> <span class="ow">in</span> <span class="n">next_nodes</span><span class="p">:</span>
             <span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">next_node</span><span class="p">)</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Graph: </span><span class="si">{}</span><span class="s1"> :: Edge </span><span class="si">{}</span><span class="s1"> --&gt; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">next_node</span><span class="p">))</span>
+            <span class="n">echo</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Graph: </span><span class="si">{}</span><span class="s1"> :: Edge </span><span class="si">{}</span><span class="s1"> --&gt; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">next_node</span><span class="p">))</span>
     <span class="c1"># Find the node(s) with the earliest date</span>
     <span class="n">start_dates</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="s1">&#39;start&#39;</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">starts</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span> <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="nb">min</span><span class="p">(</span><span class="n">start_dates</span><span class="p">)]</span>
@@ -348,11 +380,11 @@
     <span class="c1"># Build starting node with edges to first node(s)</span>
     <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="n">starts</span><span class="p">:</span>
         <span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="s1">&#39;START&#39;</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Graph: </span><span class="si">{}</span><span class="s1"> :: Edge START --&gt; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">start</span><span class="p">))</span>
+        <span class="n">echo</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Graph: </span><span class="si">{}</span><span class="s1"> :: Edge START --&gt; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">start</span><span class="p">))</span>
     <span class="c1"># Build ending node with edges from latest node(s)</span>
     <span class="k">for</span> <span class="n">end</span> <span class="ow">in</span> <span class="n">ends</span><span class="p">:</span>
         <span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="s1">&#39;END&#39;</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Graph: </span><span class="si">{}</span><span class="s1"> :: Edge </span><span class="si">{}</span><span class="s1"> --&gt; END&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">end</span><span class="p">))</span></div>
+        <span class="n">echo</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Graph: </span><span class="si">{}</span><span class="s1"> :: Edge </span><span class="si">{}</span><span class="s1"> --&gt; END&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">end</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="evaluate_graph"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.main.evaluate_graph">[docs]</a><span class="k">def</span> <span class="nf">evaluate_graph</span><span class="p">(</span><span class="n">gid</span><span class="p">):</span>
@@ -368,7 +400,7 @@
     <span class="n">g</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">get_graph</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
     <span class="n">path</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
     <span class="n">full_overlaps</span><span class="p">,</span> <span class="n">partial_overlaps</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Process graph: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="p">))</span>
+    <span class="n">echo</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Process graph: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gid</span><span class="p">))</span>
     <span class="c1"># Walk through the graph</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># Find shortest path between oldest and latest dates</span>
@@ -376,7 +408,8 @@
         <span class="c1"># Get overlaps</span>
         <span class="n">partial_overlaps</span><span class="p">,</span> <span class="n">full_overlaps</span> <span class="o">=</span> <span class="n">get_overlaps</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">nx</span><span class="o">.</span><span class="n">NetworkXNoPath</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">()):</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">node</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;START&#39;</span><span class="p">,</span> <span class="s1">&#39;END&#39;</span><span class="p">]:</span>
                 <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
                 <span class="c1"># A node is a &quot;forward&quot; node when the difference between the next current time step</span>
@@ -396,9 +429,37 @@
                     <span class="n">avail_targets</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">g</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">node</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span>
                 <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
                     <span class="n">avail_targets</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="c1"># If no &quot;forward&quot; nodes in edges target = BREAK</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">next_nodes</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">avail_targets</span><span class="p">):</span>
-                    <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;BREAK&#39;</span><span class="p">)</span>
+                <span class="c1"># If no &quot;forward&quot; nodes in edges target and not last node = potential BREAK</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">next_nodes</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">avail_targets</span><span class="p">)</span> <span class="ow">and</span> <span class="n">node</span> <span class="o">!=</span> <span class="n">nodes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">patterns</span><span class="p">:</span>
+                        <span class="c1"># Get gap start year from current node</span>
+                        <span class="n">gap_start_year</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;next&#39;</span><span class="p">])[:</span><span class="mi">4</span><span class="p">]))</span>
+                        <span class="c1"># Get gap end year from next node in list</span>
+                        <span class="n">gap_end_year</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="n">nodes</span><span class="p">[</span><span class="n">nodes</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]][</span><span class="s1">&#39;start&#39;</span><span class="p">])[:</span><span class="mi">4</span><span class="p">]))</span>
+                        <span class="c1"># Get filename pattern to search into XML files</span>
+                        <span class="n">facets</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">CMIP6_FILENAME_PATTERN</span><span class="p">)</span><span class="o">.</span><span class="n">groupindex</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">attributes</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">CMIP6_FILENAME_PATTERN</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span><span class="o">.</span><span class="n">groupdict</span><span class="p">()</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="n">ExpressionNotMatch</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">CMIP6_FILENAME_PATTERN</span><span class="p">)</span>
+                        <span class="n">filename_pattern</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">facets</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+                            <span class="n">key</span> <span class="o">=</span> <span class="n">facets</span><span class="o">.</span><span class="n">keys</span><span class="p">()[</span><span class="n">facets</span><span class="o">.</span><span class="n">values</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">idx</span><span class="p">)]</span>
+                            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">IGNORED_FACETS</span><span class="p">:</span>
+                                <span class="n">filename_pattern</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+                        <span class="n">filename_pattern</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filename_pattern</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_</span><span class="si">{}</span><span class="s1">-</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">tart_date%&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%e</span><span class="s1">nd_date%&#39;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;-clim.nc&#39;</span><span class="p">):</span>
+                            <span class="n">filename_pattern</span> <span class="o">+=</span> <span class="s1">&#39;-clim&#39;</span>
+                        <span class="c1"># Check into XML files in the gap period</span>
+                        <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">gap_start_year</span><span class="p">,</span> <span class="n">gap_end_year</span><span class="p">):</span>
+                            <span class="k">if</span> <span class="n">filename_pattern</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)]:</span>
+                                <span class="n">echo</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Pattern found in XML :: Year = </span><span class="si">{}</span><span class="s1"> :: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">filename_pattern</span><span class="p">))</span>
+                                <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;BREAK&#39;</span><span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;XML GAP&#39;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># If no file card submitted, no patterns loaded = potential BREAK as real BREAK</span>
+                        <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;BREAK&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">path</span><span class="p">,</span> <span class="n">partial_overlaps</span><span class="p">,</span> <span class="n">full_overlaps</span></div>
 
 
@@ -415,18 +476,75 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="n">m</span> <span class="o">=</span> <span class="s1">&#39;  </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-        <span class="k">if</span> <span class="n">partial_overlaps</span> <span class="ow">and</span> <span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="n">partial_overlaps</span><span class="p">:</span>
-            <span class="n">m</span> <span class="o">=</span> <span class="s1">&#39;[ </span><span class="si">{}</span><span class="s1"> &lt;-- overlap from </span><span class="si">{}</span><span class="s1"> to </span><span class="si">{}</span><span class="s1"> ] &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                                           <span class="n">partial_overlaps</span><span class="p">[</span><span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="s1">&#39;start&#39;</span><span class="p">],</span>
-                                                           <span class="n">partial_overlaps</span><span class="p">[</span><span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="s1">&#39;end_overlap&#39;</span><span class="p">])</span>
-        <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">node</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;START&#39;</span><span class="p">,</span> <span class="s1">&#39;END&#39;</span><span class="p">]:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="s1">&#39;  </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">partial_overlaps</span> <span class="ow">and</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">partial_overlaps</span><span class="p">:</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="s1">&#39;[ </span><span class="si">{}</span><span class="s1"> &lt;-- overlap from </span><span class="si">{}</span><span class="s1"> to </span><span class="si">{}</span><span class="s1"> ] &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">node</span><span class="p">,</span>
+                                                               <span class="n">partial_overlaps</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;start&#39;</span><span class="p">],</span>
+                                                               <span class="n">partial_overlaps</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;end_overlap&#39;</span><span class="p">])</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">full_overlaps</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">full_overlaps</span><span class="p">:</span>
             <span class="n">m</span> <span class="o">=</span> <span class="s1">&#39;[ </span><span class="si">{}</span><span class="s1"> &lt;-- to remove ]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
             <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">msg</span></div>
+
+
+<div class="viewcode-block" id="yield_filedef"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.main.yield_filedef">[docs]</a><span class="k">def</span> <span class="nf">yield_filedef</span><span class="p">(</span><span class="n">paths</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Yields all file definition produced by dr2xml as input for XIOS.</span>
+
+<span class="sd">    :param list paths: The list of filedef path</span>
+<span class="sd">    :returns: The dr2xml files</span>
+<span class="sd">    :rtype: *iter*</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">filenames</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">followlinks</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
+                <span class="n">ffp</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">ffp</span><span class="p">)</span> <span class="ow">and</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;^dr2xml_.*\.xml$&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="n">ffp</span></div>
+
+
+<div class="viewcode-block" id="get_patterns_from_filedef"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.main.get_patterns_from_filedef">[docs]</a><span class="k">def</span> <span class="nf">get_patterns_from_filedef</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses dr2xml files.</span>
+<span class="sd">    Each filename pattern is deserialized as a dictionary of facet: value.</span>
+
+<span class="sd">    :param str path: The path to scan</span>
+<span class="sd">    :returns: The filename deserialized with facets</span>
+<span class="sd">    :rtype: *dict*</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get process content from process global env</span>
+    <span class="k">assert</span> <span class="s1">&#39;pctx&#39;</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="n">pctx</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;pctx&#39;</span><span class="p">]</span>
+    <span class="k">with</span> <span class="n">pctx</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
+        <span class="n">echo</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">COLORS</span><span class="o">.</span><span class="n">OKGREEN</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Parse XML filedef :: &#39;</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+    <span class="n">year</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+    <span class="n">xml_tree</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">patterns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">xml_tree</span><span class="o">.</span><span class="n">iterfind</span><span class="p">(</span><span class="s1">&#39;*/file&#39;</span><span class="p">):</span>
+        <span class="c1"># Get XML file_id entry name</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="c1"># Ignore &quot;cfsites_grid&quot; entry</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="o">==</span> <span class="s1">&#39;cfsites_grid&#39;</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">with</span> <span class="n">pctx</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
+            <span class="n">echo</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Process XML file_id entry :: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+        <span class="n">patterns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+    <span class="c1"># Print progress</span>
+    <span class="k">with</span> <span class="n">pctx</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
+        <span class="n">pctx</span><span class="o">.</span><span class="n">progress</span><span class="o">.</span><span class="n">value</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">percentage</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pctx</span><span class="o">.</span><span class="n">progress</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">/</span> <span class="n">pctx</span><span class="o">.</span><span class="n">nbxml</span><span class="p">)</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">OKGREEN</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\r</span><span class="s1">Process XML file(s): &#39;</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span>
+        <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">% | </span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1"> files&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">percentage</span><span class="p">,</span>
+                                          <span class="n">pctx</span><span class="o">.</span><span class="n">progress</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                                          <span class="n">pctx</span><span class="o">.</span><span class="n">nbxml</span><span class="p">)</span>
+        <span class="n">echo</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">year</span><span class="p">,</span> <span class="n">patterns</span></div>
 
 
 <div class="viewcode-block" id="initializer"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.main.initializer">[docs]</a><span class="k">def</span> <span class="nf">initializer</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
@@ -438,11 +556,11 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
-    <span class="k">global</span> <span class="n">cctx</span>
-    <span class="n">cctx</span> <span class="o">=</span> <span class="n">ProcessContext</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keys</span><span class="p">)})</span></div>
+    <span class="k">global</span> <span class="n">pctx</span>
+    <span class="n">pctx</span> <span class="o">=</span> <span class="n">ProcessContext</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keys</span><span class="p">)})</span></div>
 
 
-<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.main.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.main.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Main process that:</span>
 
@@ -456,57 +574,84 @@
 <span class="sd">    :param ArgumentParser args: Command-line arguments parser</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Declare variables from initializer to avoid IDE warnings</span>
-    <span class="k">global</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">ref_calendar</span><span class="p">,</span> <span class="n">graph</span>
+    <span class="c1"># Declare global variables</span>
+    <span class="k">global</span> <span class="n">graph</span><span class="p">,</span> <span class="n">echo</span><span class="p">,</span> <span class="n">patterns</span>
     <span class="c1"># Instantiate processing context</span>
     <span class="k">with</span> <span class="n">ProcessingContext</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="k">as</span> <span class="n">ctx</span><span class="p">:</span>
-        <span class="c1"># Critical level used to print in any case</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;Command: &#39;</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">))</span>
-        <span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Analysing data, please wait...</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="c1"># Init process manager</span>
-        <span class="n">manager</span> <span class="o">=</span> <span class="n">ProcessManager</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">use_pool</span><span class="p">:</span>
-            <span class="n">manager</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="c1"># Initialize print management</span>
+        <span class="n">echo</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">echo</span>
+        <span class="c1"># Print command-line</span>
+        <span class="n">echo</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">COLORS</span><span class="o">.</span><span class="n">OKBLUE</span> <span class="o">+</span> <span class="s1">&#39;Command: &#39;</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="c1"># Collecting data</span>
+        <span class="n">echo</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">Collecting data, please wait...&#39;</span><span class="p">)</span>
+        <span class="c1"># Get number of files</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="n">nbfiles</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">sources</span><span class="p">)</span>
         <span class="c1"># Init process context</span>
         <span class="n">cctx</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">PROCESS_VARS</span><span class="p">}</span>
-        <span class="c1"># Declare graph as global for main process</span>
-        <span class="k">global</span> <span class="n">graph</span>
-        <span class="n">graph</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">graph</span><span class="p">()</span>
-        <span class="n">cctx</span><span class="p">[</span><span class="s1">&#39;graph&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">graph</span>
         <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">use_pool</span><span class="p">:</span>
             <span class="c1"># Init processes pool</span>
             <span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">processes</span><span class="p">,</span> <span class="n">initializer</span><span class="o">=</span><span class="n">initializer</span><span class="p">,</span> <span class="n">initargs</span><span class="o">=</span><span class="p">(</span><span class="n">cctx</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">cctx</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
             <span class="c1"># Process supplied files to create nodes in appropriate directed graph</span>
-            <span class="n">handlers</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pool</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">create_nodes</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">sources</span><span class="p">)]</span>
+            <span class="n">handlers</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pool</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">extract_dates</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">sources</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
             <span class="c1"># Close pool of workers</span>
             <span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">initializer</span><span class="p">(</span><span class="n">cctx</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">cctx</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-            <span class="n">handlers</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">create_nodes</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">sources</span><span class="p">)]</span>
-        <span class="n">ctx</span><span class="o">.</span><span class="n">scan_files</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">handlers</span><span class="p">)</span>
-        <span class="n">ctx</span><span class="o">.</span><span class="n">scan_errors</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">handlers</span><span class="p">)</span>
-        <span class="c1"># Retrieve graph instance from multiprocessing manager</span>
+            <span class="n">handlers</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">extract_dates</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">sources</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="n">skip</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">nbfiles</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">handlers</span><span class="p">)</span>
+        <span class="c1"># Process XML files if card</span>
+        <span class="n">patterns</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">card</span><span class="p">:</span>
+            <span class="n">echo</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="c1"># Reset progress counter</span>
+            <span class="n">cctx</span><span class="p">[</span><span class="s1">&#39;progress&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># Get number of xml</span>
+            <span class="n">ctx</span><span class="o">.</span><span class="n">nbxml</span> <span class="o">=</span> <span class="nb">len</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">yield_filedef</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">card</span><span class="p">)])</span>
+            <span class="n">cctx</span><span class="p">[</span><span class="s1">&#39;nbxml&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">nbxml</span>
+            <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">use_pool</span><span class="p">:</span>
+                <span class="c1"># Init processes pool</span>
+                <span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">processes</span><span class="p">,</span> <span class="n">initializer</span><span class="o">=</span><span class="n">initializer</span><span class="p">,</span> <span class="n">initargs</span><span class="o">=</span><span class="p">(</span><span class="n">cctx</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span>
+                                                                                        <span class="n">cctx</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pool</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">get_patterns_from_filedef</span><span class="p">,</span> <span class="n">yield_filedef</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">card</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">patterns</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="n">patterns</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                    <span class="n">patterns</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="c1"># Close pool of workers</span>
+                <span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">initializer</span><span class="p">(</span><span class="n">cctx</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">cctx</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">get_patterns_from_filedef</span><span class="p">,</span> <span class="n">yield_filedef</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">card</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">patterns</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="n">patterns</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                    <span class="n">patterns</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="c1"># Initialize Graph()</span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
+        <span class="c1"># Process filename handler to create nodes</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="n">nbnodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">create_nodes</span><span class="p">,</span> <span class="n">handlers</span><span class="p">)])</span>
         <span class="c1"># Process each directed graph to create appropriate edges</span>
-        <span class="n">ng</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">create_edges</span><span class="p">,</span> <span class="n">graph</span><span class="p">())]</span>
-        <span class="n">ctx</span><span class="o">.</span><span class="n">scan_dsets</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ng</span><span class="p">)</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="n">nbdsets</span> <span class="o">=</span> <span class="nb">len</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">create_edges</span><span class="p">,</span> <span class="n">graph</span><span class="p">())])</span>
         <span class="c1"># Evaluate each graph if a shortest path exist</span>
+        <span class="n">echo</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">echo</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">partial_overlaps</span><span class="p">,</span> <span class="n">full_overlaps</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">evaluate_graph</span><span class="p">,</span> <span class="n">graph</span><span class="p">()):</span>
             <span class="c1"># Format message about path</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="n">format_path</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">partial_overlaps</span><span class="p">,</span> <span class="n">full_overlaps</span><span class="p">)</span>
             <span class="c1"># If broken time serie</span>
             <span class="k">if</span> <span class="s1">&#39;BREAK&#39;</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
                 <span class="n">ctx</span><span class="o">.</span><span class="n">broken</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">COLORS</span><span class="o">.</span><span class="n">FAIL</span> <span class="o">+</span> <span class="s1">&#39;Time series broken: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span><span class="p">)</span>
+                <span class="n">echo</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">COLORS</span><span class="o">.</span><span class="n">FAIL</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Time series broken:&#39;</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="s1">&#39;XML GAP&#39;</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
+                <span class="n">echo</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">COLORS</span><span class="o">.</span><span class="n">WARNING</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">No path found because of XML gap(s):&#39;</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Print overlaps if exists</span>
                 <span class="k">if</span> <span class="n">full_overlaps</span> <span class="ow">or</span> <span class="n">partial_overlaps</span><span class="p">:</span>
                     <span class="n">ctx</span><span class="o">.</span><span class="n">overlaps</span> <span class="o">+=</span> <span class="mi">1</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">COLORS</span><span class="o">.</span><span class="n">FAIL</span> <span class="o">+</span> <span class="s1">&#39;Shortest path found WITH overlaps:&#39;</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span> <span class="o">+</span>
-                                  <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
+                    <span class="n">echo</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">COLORS</span><span class="o">.</span><span class="n">FAIL</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Shortest path found WITH overlaps:&#39;</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span> <span class="o">+</span>
+                               <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">COLORS</span><span class="o">.</span><span class="n">OKGREEN</span> <span class="o">+</span> <span class="s1">&#39;Shortest path found without overlaps:&#39;</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span> <span class="o">+</span>
+                    <span class="n">echo</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">COLORS</span><span class="o">.</span><span class="n">OKGREEN</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Shortest path found without overlaps:&#39;</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span> <span class="o">+</span>
                                  <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
             <span class="c1"># Resolve overlaps</span>
             <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">resolve</span><span class="p">:</span>
@@ -526,16 +671,20 @@
                                         <span class="n">cutting_timestep</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">overlaps</span><span class="p">[</span><span class="s1">&#39;partial&#39;</span><span class="p">][</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;cutting_timestep&#39;</span><span class="p">],</span>
                                         <span class="n">partial</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="c1"># Evaluate errors and exit with appropriate return code</span>
-    <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">overlaps</span> <span class="ow">or</span> <span class="n">ctx</span><span class="o">.</span><span class="n">broken</span> <span class="ow">or</span> <span class="n">ctx</span><span class="o">.</span><span class="n">scan_errors</span><span class="p">:</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">broken</span> <span class="o">+</span> <span class="n">ctx</span><span class="o">.</span><span class="n">overlaps</span><span class="p">)</span> <span class="o">==</span> <span class="n">ctx</span><span class="o">.</span><span class="n">scan_dsets</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">overlaps</span> <span class="ow">or</span> <span class="n">ctx</span><span class="o">.</span><span class="n">broken</span> <span class="ow">or</span> <span class="n">ctx</span><span class="o">.</span><span class="n">nberrors</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">broken</span> <span class="o">+</span> <span class="n">ctx</span><span class="o">.</span><span class="n">overlaps</span> <span class="o">+</span> <span class="n">ctx</span><span class="o">.</span><span class="n">nberrors</span><span class="p">)</span> <span class="o">==</span> <span class="n">ctx</span><span class="o">.</span><span class="n">nbdsets</span><span class="p">:</span>
             <span class="c1"># All datasets has error(s). Error code = -1</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Some datasets (at least one) has error(s). Error code = nb datasets with error(s)</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">broken</span> <span class="o">+</span> <span class="n">ctx</span><span class="o">.</span><span class="n">overlaps</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># No errors. Error code = 0</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">run</span><span class="p">()</span>
 </pre></div>
 
            </div>
@@ -572,7 +721,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'4.3.2',
+            VERSION:'4.4.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

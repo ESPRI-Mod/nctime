@@ -21,6 +21,18 @@ Detects overlaps or time gaps
 
     $> nctime overlap /PATH/TO/SCAN/
 
+By default, ``nctime overlap`` consider a time serie as broken when time gaps exist between netCDF time period.
+Following the CMIP Data Request, some data can be asked only for sub-periods in the time serie, thus time gaps are expected.
+To check compare broken time series against CMIP DR ``nctime overlap`` is able to use DR2XML files patterns to deduce if
+ a time gap is expected or not. To activate this just submit the directory including both your ``config.card`` and ``run.card``
+provided by the libIGCM framework:
+
+.. code-block:: bash
+
+    $> nctime overlap /PATH/TO/SCAN/ --card /PATH/TO/SUBMISSION/DIRECTORY
+
+.. warning:: This option is only available if you run your simulation within the IPSL libICM framework.
+
 Remove overlapping files
 ************************
 

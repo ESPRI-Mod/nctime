@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Generic usage &mdash; nctime 4.3.2 documentation</title>
+  <title>Generic usage &mdash; nctime 4.4.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="nctime 4.3.2 documentation" href="index.html"/>
+    <link rel="top" title="nctime 4.4.0 documentation" href="index.html"/>
         <link rel="next" title="Check time series continuity" href="overlap.html"/>
         <link rel="prev" title="Configuration" href="configuration.html"/> 
 
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                4.3
+                4.4
               </div>
             
           
@@ -103,6 +103,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#use-filters">Use filters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#use-a-logfile">Use a logfile</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#use-multiprocessing">Use multiprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#use-libigcm-infos">Use libIGCM infos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#exit-status">Exit status</a></li>
 </ul>
 </li>
@@ -276,6 +277,22 @@ several files. One process seems sequential processing (the default). Set it -1 
 <p class="last">The number of maximal processes is limited to the maximum CPU count in any case.</p>
 </div>
 </div>
+<div class="section" id="use-libigcm-infos">
+<h2>Use libIGCM infos<a class="headerlink" href="#use-libigcm-infos" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">nctime</span></code> can use your libIGCM info to automatically apply some configuration. This requires to submit the
+directory including both your <code class="docutils literal"><span class="pre">config.card</span></code> and <code class="docutils literal"><span class="pre">run.card</span></code> provided by the libIGCM framework:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND --card /PATH/TO/SUBMISSION/DIRECTORY
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This detailed documentation of <code class="docutils literal"><span class="pre">nctime</span> <span class="pre">overlap</span></code> and <code class="docutils literal"><span class="pre">nctime</span> <span class="pre">axis</span></code>.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This option is only available if you run your simulation within the IPSL libICM framework.</p>
+</div>
+</div>
 <div class="section" id="exit-status">
 <h2>Exit status<a class="headerlink" href="#exit-status" title="Permalink to this headline">¶</a></h2>
 <blockquote>
@@ -344,7 +361,7 @@ several files. One process seems sequential processing (the default). Set it -1 
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'4.3.2',
+            VERSION:'4.4.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

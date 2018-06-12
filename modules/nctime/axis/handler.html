@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.axis.handler &mdash; nctime 4.3.2 documentation</title>
+  <title>nctime.axis.handler &mdash; nctime 4.4.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 4.3.2 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 4.4.0 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.3
+                4.4
               </div>
             
           
@@ -180,13 +180,14 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">fuzzywuzzy</span> <span class="k">import</span> <span class="n">fuzz</span><span class="p">,</span> <span class="n">process</span>
 
+<span class="kn">from</span> <span class="nn">constants</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">custom_exceptions</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">nctime.utils.constants</span> <span class="k">import</span> <span class="n">CLIM_SUFFIX</span><span class="p">,</span> <span class="n">END_TIME_CORRECTION</span>
 <span class="kn">from</span> <span class="nn">nctime.utils.custom_exceptions</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">nctime.utils.misc</span> <span class="k">import</span> <span class="n">ncopen</span>
 <span class="kn">from</span> <span class="nn">nctime.utils.time</span> <span class="k">import</span> <span class="n">time_inc</span><span class="p">,</span> <span class="n">convert_time_units</span>
 <span class="kn">from</span> <span class="nn">nctime.utils.time</span> <span class="k">import</span> <span class="n">truncated_timestamp</span><span class="p">,</span> <span class="n">get_start_end_dates_from_filename</span><span class="p">,</span> <span class="n">dates2str</span><span class="p">,</span> <span class="n">num2date</span><span class="p">,</span> <span class="n">date2num</span><span class="p">,</span> \
-    <span class="n">control_time_units</span>
+    <span class="n">control_time_units</span><span class="p">,</span> <span class="n">trunc</span>
 
 
 <div class="viewcode-block" id="File"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.handler.File">[docs]</a><span class="k">class</span> <span class="nc">File</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -235,13 +236,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">EmptyTimeAxis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ffp</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">time_axis</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][:]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">time_axis</span> <span class="o">=</span> <span class="n">trunc</span><span class="p">(</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][:],</span> <span class="n">NDECIMALS</span><span class="p">)</span>
             <span class="c1"># Get time boundaries</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">has_bounds</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">if</span> <span class="s1">&#39;bounds&#39;</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">has_bounds</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tbnds</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">bounds</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">time_bounds</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tbnds</span><span class="p">][:,</span> <span class="p">:]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">time_bounds</span> <span class="o">=</span> <span class="n">trunc</span><span class="p">(</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tbnds</span><span class="p">][:,</span> <span class="p">:],</span> <span class="n">NDECIMALS</span><span class="p">)</span>
             <span class="c1"># Get time units from file</span>
             <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">():</span>
                 <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ffp</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
@@ -282,6 +283,10 @@
         <span class="c1"># Convert dates into timestamps</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start_timestamp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_timestamp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">truncated_timestamp</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timestamp_length</span><span class="p">)</span> <span class="k">for</span> <span class="n">date</span> <span class="ow">in</span> <span class="n">dates</span><span class="p">]</span>
+        <span class="c1"># Declare last time attribute</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_date</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_timestamp</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_num</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="File.load_last_date"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.handler.File.load_last_date">[docs]</a>    <span class="k">def</span> <span class="nf">load_last_date</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -312,7 +317,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">num_axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">start_axis</span><span class="p">,</span>
                              <span class="n">stop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">start_axis</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span>
-                             <span class="n">step</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+                             <span class="n">step</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">longdouble</span><span class="p">)</span>
         <span class="n">date_axis</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span><span class="n">num_axis</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">funits</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_calendar</span><span class="p">)</span>
         <span class="k">del</span> <span class="n">num_axis</span>
         <span class="k">return</span> <span class="n">date2num</span><span class="p">(</span><span class="n">date_axis</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_units</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_calendar</span><span class="p">)</span></div>
@@ -341,7 +346,7 @@
 <div class="viewcode-block" id="File.nc_var_delete"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.handler.File.nc_var_delete">[docs]</a>    <span class="k">def</span> <span class="nf">nc_var_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Delete a NetCDF variable using NCO operators.</span>
-<span class="sd">        A unique filename is generated to avoid multithreading errors.</span>
+<span class="sd">        A unique filename is generated to avoid multiprocessing errors.</span>
 <span class="sd">        To overwrite the input file, the source file is dump using the ``cat`` Shell command-line</span>
 <span class="sd">        to avoid Python memory limit.</span>
 
@@ -365,7 +370,7 @@
 <div class="viewcode-block" id="File.nc_att_delete"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.handler.File.nc_att_delete">[docs]</a>    <span class="k">def</span> <span class="nf">nc_att_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Delete a NetCDF dimension attribute using NCO operators.</span>
-<span class="sd">        A unique filename is generated to avoid multithreading errors.</span>
+<span class="sd">        A unique filename is generated to avoid multiprocessing errors.</span>
 <span class="sd">        To overwrite the input file, the source file is dump using the ``cat`` Shell command-line</span>
 <span class="sd">        to avoid Python memory limit.</span>
 
@@ -462,7 +467,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'4.3.2',
+            VERSION:'4.4.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
