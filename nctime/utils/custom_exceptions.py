@@ -124,3 +124,27 @@ class NoFileFound(Exception):
         for path in paths:
             self.msg += "\n<directory: {}>".format(path)
         super(self.__class__, self).__init__(self.msg)
+
+
+class NoRunCardFound(Exception):
+    """
+    Raised when no file patterns found in filedef.
+
+    """
+
+    def __init__(self, path):
+        self.msg = "No {} found".format(RUN_CARD)
+        self.msg += "\n<path: '{}'>".format(path)
+        super(self.__class__, self).__init__(self.msg)
+
+
+class NoConfigCardFound(Exception):
+    """
+    Raised when no file patterns found in filedef.
+
+    """
+
+    def __init__(self, path):
+        self.msg = "No {} found".format(CONF_CARD)
+        self.msg += "\n<path: '{}'>".format(path)
+        super(self.__class__, self).__init__(self.msg)

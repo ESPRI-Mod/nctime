@@ -13,3 +13,13 @@ PROCESS_VARS = ['pattern',
                 'progress',
                 'nbfiles',
                 'lock']
+
+# CMIP6 filename format
+CMIP6_FILENAME_PATTERN = '^(?P<variable_id>[\w.-]+)_' \
+                         '(?P<table_id>[\w.-]+)_' \
+                         '(?P<source_id>[\w.-]+)_' \
+                         '(?P<experiment_id>[\w.-]+)_' \
+                         '(?P<variant_label>[\w.-]+)_' \
+                         '(?P<grid_label>[^-_]+)' \
+                         '(_(?P<period_start>[\w.-]+)-(?P<period_end>[\w.-]+))?' \
+                         '\\.nc$'

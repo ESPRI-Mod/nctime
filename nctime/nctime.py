@@ -144,6 +144,10 @@ def get_args():
         action='store_true',
         default=False,
         help=FULL_ONLY_HELP)
+    overlap.add_argument(
+        '--card',
+        action=DirectoryChecker,
+        help=CARD_HELP)
 
     ###############################
     # Subparser for "nctime axis" #
@@ -179,11 +183,16 @@ def get_args():
         action='store_true',
         default=False,
         help=FORCE_HELP)
-    axis.add_argument(
+    group = axis.add_mutually_exclusive_group(required=False)
+    group.add_argument(
         '--on-fly',
         action='store_true',
         default=False,
         help=ON_FLY_HELP)
+    group.add_argument(
+        '--card',
+        action=DirectoryChecker,
+        help=CARD_HELP)
     axis.add_argument(
         '--limit',
         metavar='5',

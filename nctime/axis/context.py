@@ -9,12 +9,12 @@
 
 from multiprocessing import cpu_count, Value, Lock
 from multiprocessing.managers import SyncManager
-
-from ESGConfigParser import SectionParser
+import os
+from ESGConfigParser import SectionParser, NoConfigSection, NoConfigOption
 
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
-from nctime.utils.custom_exceptions import InvalidFrequency
+from nctime.utils.custom_exceptions import InvalidFrequency, NoRunCardFound
 from nctime.utils.misc import COLORS, get_project, Print
 from nctime.utils.time import TimeInit
 from ctypes import c_char_p
@@ -37,6 +37,8 @@ class ProcessingContext(object):
         self.force = args.force
         self.debug = args.debug
         self.on_fly = args.on_fly
+        if args.card:
+            self.on_fly = is_simulation_completed(args.card)
         self.limit = args.limit
         self.ignore_codes = args.ignore_errors
         self.project = args.project
@@ -121,3 +123,26 @@ class ProcessingContext(object):
         self.echo.summary(msg)
         # Print log path if exists
         self.echo.info(COLORS.HEADER + '\nSee log: {}\n'.format(self.echo._logfile) + COLORS.ENDC)
+
+def is_simulation_completed(card_path):
+    """
+    Returns True if the simulation is completed.
+
+    :param str card_path: Directory including run.card
+    :returns: True if the simulation is completed
+    :rtype: *boolean*
+
+    """
+    # Check cards exist
+    if RUN_CARD not in os.listdir(card_path):
+        raise NoRunCardFound(card_path)
+    else:
+        run_card = os.path.join(card_path, RUN_CARD)
+    # Extract info from cards
+    config = SectionParser('UserChoices')
+    config.read(run_card)
+    if not config.has_section('UserChoices'):
+        raise NoConfigSection()
+    if not config.has_option('periodstate'):
+        raise NoConfigOption('PeriodState')
+    return config.get('PeriodState').strip('"') == 'Completed'

@@ -16,13 +16,16 @@ from multiprocessing import Pool
 import nco
 import networkx as nx
 import numpy as np
-
+from xml.etree.ElementTree import parse
+from ESGConfigParser import ExpressionNotMatch
 from constants import *
 from context import ProcessingContext
 from handler import Filename, Graph
 from nctime.utils.misc import COLORS, ProcessContext
 from nctime.utils.time import get_next_timestep
-
+from nctime.utils.custom_exceptions import NoRunCardFound, NoConfigCardFound
+from nctime.utils.constants import RUN_CARD, CONF_CARD, FILEDEF_ROOT, FILEDEF_DIRECTORY_FORMAT
+from ESGConfigParser import SectionParser, NoConfigOption, NoConfigSection
 
 def get_overlaps(g, shortest):
     """
@@ -241,7 +244,8 @@ def evaluate_graph(gid):
         # Get overlaps
         partial_overlaps, full_overlaps = get_overlaps(g, path)
     except nx.NetworkXNoPath:
-        for node in sorted(g.nodes()):
+        nodes = sorted(g.nodes())
+        for node in nodes:
             if node not in ['START', 'END']:
                 path.append(node)
                 # A node is a "forward" node when the difference between the next current time step
@@ -261,12 +265,80 @@ def evaluate_graph(gid):
                     avail_targets = zip(*g.edges(node))[1]
                 except IndexError:
                     avail_targets = []
-                # If no "forward" nodes in edges target = BREAK
-                if not set(next_nodes).intersection(avail_targets):
-                    path.append('BREAK')
-        # Remove last item because always 'BREAK'
-        _ = path.pop(-1)
+                # If no "forward" nodes in edges target and not last node = potential BREAK
+                if not set(next_nodes).intersection(avail_targets) and node != nodes[-1]:
+                    if conf_card:
+                        # Get gap start year from current node
+                        gap_start_year = str(g.node[node]['next'])[:4]
+                        # Get gap end year from next node in list
+                        gap_end_year = str(g.node[nodes[nodes.index(node) + 1]])[:4]
+                        # Get filename pattern to search into XML files
+                        facets = re.compile(CMIP6_FILENAME_PATTERN).groupindex
+                        try:
+                            attributes = re.search(CMIP6_FILENAME_PATTERN, node).groupdict()
+                        except:
+                            raise ExpressionNotMatch(node, CMIP6_FILENAME_PATTERN)
+                        for idx in sorted(facets.values()):
+                            key = facets.keys()[facets.values().index(idx)]
+                            if key == 'period_start':
+                                attributes[key] = '%start_date%'
+                            if key == 'period_end':
+                                attributes[key] = '%end_date%'
+                        filename_pattern = '_'.join(attributes)
+                        filename_pattern = '-'.join(filename_pattern.rsplit('_', 1))
+                        if node.endswith('-clim.nc'):
+                            filename_pattern += '-clim'
+                        # Check into XML files in the gap period
+                        for xml in yield_xml_between_years(gap_start_year, gap_end_year, conf_card):
+                            xml_tree = parse(xml)
+                            # If pattern is found = real BREAK
+                            if xml_tree.findall('*/file[@name="{}"]'.format(filename_pattern)):
+                                path.append('BREAK')
+                                break
+                    else:
+                        # If no file card submitted consider potential BREAK as real BREAK
+                        path.append('BREAK')
     return path, partial_overlaps, full_overlaps
+
+
+def yield_xml_between_years(year_start, year_end, card_path):
+    """
+    Yields XML path from run.card and config.card attributes.
+
+    :param str card_path: Directory including run.card and config.card
+    :returns: The XML paths to use
+    :rtype: *iter*
+
+    """
+    # Check cards exist
+    if RUN_CARD not in os.listdir(card_path):
+        raise NoRunCardFound(card_path)
+    else:
+        run_card = os.path.join(card_path, RUN_CARD)
+    if CONF_CARD not in os.listdir(card_path):
+        raise NoConfigCardFound(card_path)
+    else:
+        conf_card = os.path.join(card_path, CONF_CARD)
+    # Extract config info from config.card
+    config = SectionParser('UserChoices')
+    config.read(conf_card)
+    xml_attrs = dict()
+    xml_attrs['root'] = FILEDEF_ROOT
+    if not config.has_section('UserChoices'):
+        raise NoConfigSection()
+    if not config.has_option('longname'):
+        raise NoConfigOption('LongName')
+    xml_attrs['longname'] = config.get('UserChoices', 'longname').strip('"')
+    if not config.has_option('experimentname'):
+        raise NoConfigOption('ExperimentName')
+    xml_attrs['experimentname'] = config.get('UserChoices', 'experimentname').strip('"')
+    if not config.has_option('member'):
+        raise NoConfigOption('Member')
+    xml_attrs['member'] = config.get('UserChoices', 'member').strip('"')
+    # Extract first and last simulated years from run.card
+    for year in range(year_start, year_end):
+        xml_attrs['year'] = str(year)
+        yield FILEDEF_DIRECTORY_FORMAT.format(**xml_attrs)
 
 
 def format_path(path, partial_overlaps, full_overlaps):
@@ -325,9 +397,11 @@ def run(args=None):
 
     """
     # Declare global variables
-    global graph, echo
+    global graph, echo, conf_card
     # Instantiate processing context
     with ProcessingContext(args) as ctx:
+        # Get config card path
+        conf_card = args.conf_card
         # Initialize print management
         echo = ctx.echo
         # Print command-line

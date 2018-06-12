@@ -14,6 +14,14 @@ VERSION = '4.4.0'
 # Date
 VERSION_DATE = datetime(year=2018, month=6, day=11).strftime("%Y-%d-%m")
 
+# Cards name
+RUN_CARD = 'run.card'
+CONF_CARD = 'config.card'
+
+# Filedef directory format
+FILEDEF_ROOT = '/ccc/work/cont003/igcmg/igcmg/IGCM'
+FILEDEF_DIRECTORY_FORMAT = '{root}/CMIP6/{longname}/IPSL-CM6A-LR/{experimentname}/{member}/{year}'
+
 # Help
 TITLE = \
     """
@@ -203,6 +211,13 @@ ON_FLY_HELP = \
     """
     Ignore the test on end date consistency for on going|n
     simulation (this also include completed files).
+
+    """
+
+CARD_HELP = \
+    """
+    The libIGCM directory with "run.card" and "config.card"|n
+    of the simulation. This option is IPSL-specific.
 
     """
 
