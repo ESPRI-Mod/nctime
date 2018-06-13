@@ -16,7 +16,7 @@ from ESGConfigParser import SectionParser
 
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
-from nctime.utils.custom_exceptions import InvalidFrequency, NoRunCardFound, InvalidUnits
+from nctime.utils.custom_exceptions import NoRunCardFound
 from nctime.utils.misc import COLORS, get_project, Print
 from nctime.utils.time import TimeInit
 
@@ -39,7 +39,7 @@ class ProcessingContext(object):
         self.debug = args.debug
         self.on_fly = args.on_fly
         if args.card:
-            self.on_fly = is_simulation_completed(args.card)
+            self.on_fly = True if not is_simulation_completed(args.card) else False
         self.limit = args.limit
         self.ignore_codes = args.ignore_errors
         self.project = args.project
