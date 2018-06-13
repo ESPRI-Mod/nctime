@@ -320,7 +320,7 @@ def format_path(path, partial_overlaps, full_overlaps):
                                                                partial_overlaps[node]['end_overlap'])
             msg += '\n{}'.format(m)
     if full_overlaps:
-        for n in full_overlaps:
+        for n in sorted(full_overlaps):
             m = '[ {} <-- to remove ]'.format(n)
             msg += '\n{}'.format(m)
     return msg
