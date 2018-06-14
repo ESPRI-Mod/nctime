@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.axis.context &mdash; nctime 4.4.1 documentation</title>
+  <title>nctime.axis.context &mdash; nctime 4.4.3 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 4.4.1 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 4.4.3 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -181,7 +181,7 @@
 
 <span class="kn">from</span> <span class="nn">nctime.utils.collector</span> <span class="k">import</span> <span class="n">Collector</span>
 <span class="kn">from</span> <span class="nn">nctime.utils.constants</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">nctime.utils.custom_exceptions</span> <span class="k">import</span> <span class="n">InvalidFrequency</span><span class="p">,</span> <span class="n">NoRunCardFound</span><span class="p">,</span> <span class="n">InvalidUnits</span>
+<span class="kn">from</span> <span class="nn">nctime.utils.custom_exceptions</span> <span class="k">import</span> <span class="n">NoRunCardFound</span>
 <span class="kn">from</span> <span class="nn">nctime.utils.misc</span> <span class="k">import</span> <span class="n">COLORS</span><span class="p">,</span> <span class="n">get_project</span><span class="p">,</span> <span class="n">Print</span>
 <span class="kn">from</span> <span class="nn">nctime.utils.time</span> <span class="k">import</span> <span class="n">TimeInit</span>
 
@@ -204,7 +204,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">debug</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">on_fly</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">on_fly</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">card</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">on_fly</span> <span class="o">=</span> <span class="n">is_simulation_completed</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">card</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_fly</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">is_simulation_completed</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">card</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">limit</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">limit</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ignore_codes</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">ignore_errors</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">project</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">project</span>
@@ -235,21 +235,19 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">file_filter</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;^\..*$&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dir_filter</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">ignore_dir</span>
-        <span class="c1"># Initialize print management</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">echo</span> <span class="o">=</span> <span class="n">Print</span><span class="p">(</span><span class="n">log</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span> <span class="n">cmd</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">cmd</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">all</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Print warning message if on-fly mode</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_fly</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">echo</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;WARNING :: &quot;on-fly&quot; mode activated -- Incomplete time axis expected</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="c1"># Init process manager</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_pool</span><span class="p">:</span>
             <span class="n">manager</span> <span class="o">=</span> <span class="n">SyncManager</span><span class="p">()</span>
             <span class="n">manager</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">progress</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">Value</span><span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">echo</span><span class="o">.</span><span class="n">_buffer</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">Value</span><span class="p">(</span><span class="n">c_char_p</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">Print</span><span class="o">.</span><span class="n">BUFFER</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">Value</span><span class="p">(</span><span class="n">c_char_p</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">progress</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Print warning message if on-fly mode</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_fly</span><span class="p">:</span>
+            <span class="n">Print</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;WARNING :: &quot;on-fly&quot; mode activated -- Incomplete time axis expected</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="c1"># Init data collector</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sources</span> <span class="o">=</span> <span class="n">Collector</span><span class="p">(</span><span class="n">sources</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="n">spinner</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="c1"># Init file filter</span>
@@ -288,9 +286,9 @@
             <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">OKGREEN</span>
         <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Number of file with error(s): </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nberrors</span><span class="p">)</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span>
         <span class="c1"># Print summary</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">echo</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">Print</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="c1"># Print log path if exists</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">echo</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">COLORS</span><span class="o">.</span><span class="n">HEADER</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">See log: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">echo</span><span class="o">.</span><span class="n">_logfile</span><span class="p">)</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span><span class="p">)</span></div>
+        <span class="n">Print</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">COLORS</span><span class="o">.</span><span class="n">HEADER</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">See log: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Print</span><span class="o">.</span><span class="n">LOGFILE</span><span class="p">)</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="is_simulation_completed"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.context.is_simulation_completed">[docs]</a><span class="k">def</span> <span class="nf">is_simulation_completed</span><span class="p">(</span><span class="n">card_path</span><span class="p">):</span>
@@ -347,7 +345,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'4.4.1',
+            VERSION:'4.4.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
