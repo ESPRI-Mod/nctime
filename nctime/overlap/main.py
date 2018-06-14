@@ -313,15 +313,15 @@ def format_path(path, partial_overlaps, full_overlaps):
     msg = ''
     for node in path:
         if node not in ['START', 'END']:
-            m = '  {}'.format(node)
+            m = '    {}'.format(node)
             if partial_overlaps and node in partial_overlaps:
-                m = '[ {} <-- overlap from {} to {} ] '.format(node,
+                m = '    {} <-- overlap from {} to {}'.format(node,
                                                                partial_overlaps[node]['start'],
                                                                partial_overlaps[node]['end_overlap'])
             msg += '\n{}'.format(m)
     if full_overlaps:
         for n in sorted(full_overlaps):
-            m = '[ {} <-- to remove ]'.format(n)
+            m = '    {} <-- full overlap'.format(n)
             msg += '\n{}'.format(m)
     return msg
 
@@ -483,15 +483,15 @@ def run(args=None):
                 Print.error(COLORS.FAIL + '\nTime series broken:' + COLORS.ENDC + '{}'.format(msg))
             elif 'XML GAP' in path:
                 Print.success(
-                    COLORS.WARNING + '\nNo path found because of XML gap(s):' + COLORS.ENDC + '{}'.format(msg))
+                    COLORS.WARNING + '\nTime series with XML gap(s):' + COLORS.ENDC + '{}'.format(msg))
             else:
                 # Print overlaps if exists
                 if full_overlaps or partial_overlaps:
                     ctx.overlaps += 1
-                    Print.error(COLORS.FAIL + '\nShortest path found WITH overlaps:' + COLORS.ENDC +
+                    Print.error(COLORS.FAIL + '\nContinuous time series with overlaps:' + COLORS.ENDC +
                                 '{}'.format(msg))
                 else:
-                    Print.success(COLORS.OKGREEN + '\nShortest path found without overlaps:' + COLORS.ENDC +
+                    Print.success(COLORS.OKGREEN + '\nContinuous time series:' + COLORS.ENDC +
                                   '{}'.format(msg))
             # Resolve overlaps
             if ctx.resolve:
