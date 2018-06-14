@@ -70,21 +70,19 @@ class ProcessingContext(object):
         else:
             self.file_filter.append(('^\..*$', False))
         self.dir_filter = args.ignore_dir
-        # Initialize print management
-        self.echo = Print(log=args.log, debug=args.debug, cmd=args.cmd, all=args.all)
-
-    def __enter__(self):
-        # Print warning message if on-fly mode
-        if self.on_fly:
-            self.echo.warning('WARNING :: "on-fly" mode activated -- Incomplete time axis expected\n')
         # Init process manager
         if self.use_pool:
             manager = SyncManager()
             manager.start()
             self.progress = manager.Value('i', 0)
-            self.echo._buffer = manager.Value(c_char_p, '')
+            Print.BUFFER = manager.Value(c_char_p, '')
         else:
             self.progress = Value('i', 0)
+
+    def __enter__(self):
+        # Print warning message if on-fly mode
+        if self.on_fly:
+            Print.warning('WARNING :: "on-fly" mode activated -- Incomplete time axis expected\n')
         # Init data collector
         self.sources = Collector(sources=self.input, spinner=False)
         # Init file filter
@@ -123,9 +121,9 @@ class ProcessingContext(object):
             msg += COLORS.OKGREEN
         msg += '\nNumber of file with error(s): {}\n'.format(self.nberrors) + COLORS.ENDC
         # Print summary
-        self.echo.summary(msg)
+        Print.summary(msg)
         # Print log path if exists
-        self.echo.info(COLORS.HEADER + '\nSee log: {}\n'.format(self.echo._logfile) + COLORS.ENDC)
+        Print.info(COLORS.HEADER + '\nSee log: {}\n'.format(Print.LOGFILE) + COLORS.ENDC)
 
 
 def is_simulation_completed(card_path):

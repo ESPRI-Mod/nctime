@@ -9,10 +9,10 @@
 from netcdftime import datetime
 
 # Program version
-VERSION = '4.4.2'
+VERSION = '4.4.3'
 
 # Date
-VERSION_DATE = datetime(year=2018, month=6, day=13).strftime("%Y-%d-%m")
+VERSION_DATE = datetime(year=2018, month=6, day=14).strftime("%Y-%d-%m")
 
 # Cards name
 RUN_CARD = 'run.card'
@@ -20,7 +20,7 @@ CONF_CARD = 'config.card'
 
 # Filedef directory format
 FILEDEF_ROOT = '/ccc/work/cont003/igcmg/igcmg/IGCM'
-FILEDEF_DIRECTORY_FORMAT = '{root}/CMIP6/{longname}/IPSL-CM6A-LR/{experimentname}/{member}/{year}'
+FILEDEF_DIRECTORY_FORMAT = '{root}/CMIP6/{longname}/{modelname}/{experimentname}/{member}/{year}'
 
 # Help
 TITLE = \

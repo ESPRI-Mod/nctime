@@ -61,8 +61,6 @@ class ProcessingContext(object):
         else:
             self.file_filter.append(('^\..*$', False))
         self.dir_filter = args.ignore_dir
-        # Initialize print management
-        self.echo = Print(log=args.log, debug=args.debug, cmd=args.cmd, all=args.all)
 
     def __enter__(self):
         # Init process manager
@@ -116,9 +114,9 @@ class ProcessingContext(object):
             msg += COLORS.OKGREEN
         msg += '\nNumber of datasets with broken time series: {}\n'.format(self.broken) + COLORS.ENDC
         # Print summary
-        self.echo.summary(msg)
+        Print.summary(msg)
         # Print log path if exists
-        self.echo.info(COLORS.HEADER + '\nSee log: {}\n'.format(self.echo._logfile) + COLORS.ENDC)
+        Print.info(COLORS.HEADER + '\nSee log: {}\n'.format(Print.LOGFILE) + COLORS.ENDC)
 
 
 def yield_xml_from_card(card_path):
@@ -146,6 +144,10 @@ def yield_xml_from_card(card_path):
     xml_attrs['root'] = FILEDEF_ROOT
     xml_attrs['longname'] = config.get('longname').strip('"')
     xml_attrs['experimentname'] = config.get('experimentname').strip('"')
+    if config.has_option('modelname'):
+        xml_attrs['modelname'] = config.get('modelname').strip('"')
+    else:
+        xml_attrs['modelname'] = 'IPSL-CM6A-LR'
     xml_attrs['member'] = config.get('member').strip('"')
     # Extract first and last simulated years from run.card
     with open(run_card, 'r') as f:

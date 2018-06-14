@@ -12,11 +12,11 @@ import os
 import re
 import sys
 from ctypes import c_char_p
+from datetime import datetime as dt
 from multiprocessing import Value
 
 from fuzzywuzzy import fuzz, process
 from netCDF4 import Dataset
-from netcdftime import datetime
 
 from custom_exceptions import *
 
@@ -122,24 +122,19 @@ class ProcessContext(object):
             setattr(self, key, value)
 
 
-class Colors:
+class COLORS:
     """
     Background colors for print statements
 
     """
-
-    def __init__(self):
-        self.HEADER = '\033[95m'
-        self.OKBLUE = '\033[94m'
-        self.OKGREEN = '\033[1;32m'
-        self.WARNING = '\033[1;34m'
-        self.FAIL = '\033[1;31m'
-        self.ENDC = '\033[0m'
-        self.BOLD = '\033[1m'
-        self.UNDERLINE = '\033[4m'
-
-
-COLORS = Colors()
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[1;32m'
+    WARNING = '\033[1;34m'
+    FAIL = '\033[1;31m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
 
 
 class Print(object):
@@ -147,97 +142,112 @@ class Print(object):
     Class to manage and dispatch print statement depending on log and debug mode.
 
     """
+    LOG = None
+    DEBUG = False
+    ALL = False
+    CMD = None
+    BUFFER = Value(c_char_p, '')
+    LOGFILE = None
 
-    def __init__(self, log, debug, cmd, all):
-        self._log = log
-        self._debug = debug
-        self._cmd = cmd
-        self._all = all
-        self._buffer = Value(c_char_p, '')
-        self._colors = COLORS.__dict__
-        logname = 'nctime-{}-{}.log'.format(self._cmd,
-                                            datetime(1, 1, 1)._to_real_datetime().now().strftime("%Y%m%d-%H%M%S"))
-        if self._log:
-            if not os.path.isdir(self._log):
-                os.makedirs(self._log)
-            self._logfile = os.path.join(self._log, logname)
+    @staticmethod
+    def init(log, debug, cmd, all):
+        Print.LOG = log
+        Print.DEBUG = debug
+        Print.CMD = cmd
+        Print.ALL = all
+        logname = '{}-{}'.format(Print.CMD, dt.now().strftime("%Y%m%d-%H%M%S"))
+        if Print.LOG:
+            logdir = Print.LOG
+            if not os.path.isdir(Print.LOG):
+                os.makedirs(Print.LOG)
         else:
-            self._logfile = os.path.join(os.getcwd(), logname)
+            logdir = os.getcwd()
+        Print.LOGFILE = os.path.join(logdir, logname + '.log')
 
     @staticmethod
     def print_to_stdout(msg):
         sys.stdout.write(msg)
         sys.stdout.flush()
 
-    def print_to_logfile(self, msg):
-        with open(self._logfile, 'a+') as f:
-            for color in self._colors.values():
+    @staticmethod
+    def print_to_logfile(msg):
+        with open(Print.LOGFILE, 'a+') as f:
+            for color in COLORS.__dict__.values():
                 msg = msg.replace(color, '')
             f.write(msg)
 
-    def progress(self, msg):
-        if self._log:
-            self.print_to_stdout(msg)
-        elif not self._debug:
-            self.print_to_stdout(msg)
+    @staticmethod
+    def progress(msg):
+        if Print.LOG:
+            Print.print_to_stdout(msg)
+        elif not Print.DEBUG:
+            Print.print_to_stdout(msg)
 
-    def command(self, msg):
-        if self._log:
-            self.print_to_logfile(msg)
-        elif self._debug:
-            self.print_to_stdout(msg)
+    @staticmethod
+    def command(msg):
+        if Print.LOG:
+            Print.print_to_logfile(msg)
+        elif Print.DEBUG:
+            Print.print_to_stdout(msg)
 
-    def summary(self, msg):
-        if self._log:
-            self.print_to_stdout(msg)
-            self.print_to_logfile(msg)
+    @staticmethod
+    def summary(msg):
+        if Print.LOG:
+            Print.print_to_stdout(msg)
+            Print.print_to_logfile(msg)
         else:
-            self.print_to_stdout(msg)
+            Print.print_to_stdout(msg)
 
-    def info(self, msg):
-        if self._log:
-            self.print_to_stdout(msg)
+    @staticmethod
+    def info(msg):
+        if Print.LOG:
+            Print.print_to_stdout(msg)
 
-    def debug(self, msg):
-        if self._debug:
-            if self._log:
-                self.print_to_logfile(msg)
+    @staticmethod
+    def debug(msg):
+        if Print.DEBUG:
+            if Print.LOG:
+                Print.print_to_logfile(msg)
             else:
-                self.print_to_stdout(msg)
+                Print.print_to_stdout(msg)
 
-    def warning(self, msg):
-        if self._log:
-            self.print_to_logfile(msg)
-        elif self._debug:
-            self.print_to_stdout(msg)
+    @staticmethod
+    def warning(msg):
+        if Print.LOG:
+            Print.print_to_logfile(msg)
+        elif Print.DEBUG:
+            Print.print_to_stdout(msg)
         else:
-            self.print_to_stdout(msg)
+            Print.print_to_stdout(msg)
 
-    def error(self, msg, buffer=False):
-        if self._log:
-            self.print_to_logfile(msg)
-        elif self._debug:
-            self.print_to_stdout(msg)
+    @staticmethod
+    def error(msg, buffer=False):
+        if Print.LOG:
+            Print.print_to_logfile(msg)
+        elif Print.DEBUG:
+            Print.print_to_stdout(msg)
         elif buffer:
-            self._buffer.value += msg
+            Print.BUFFER.value += msg
         else:
-            self.print_to_stdout(msg)
+            Print.print_to_stdout(msg)
 
-    def success(self, msg, buffer=False):
-        if self._all:
-            if self._log:
-                self.print_to_logfile(msg)
-            elif self._debug:
-                self.print_to_stdout(msg)
+    @staticmethod
+    def success(msg, buffer=False):
+        if Print.ALL:
+            if Print.LOG:
+                Print.print_to_logfile(msg)
+            elif Print.DEBUG:
+                Print.print_to_stdout(msg)
             elif buffer:
-                self._buffer.value += msg
+                Print.BUFFER.value += msg
             else:
-                self.print_to_stdout(msg)
+                Print.print_to_stdout(msg)
 
-    def flush(self):
-        if self._buffer.value:
-            self._buffer.value = '\n' + self._buffer.value
-            if self._log:
-                self.print_to_logfile(self._buffer.value)
+    @staticmethod
+    def flush():
+        if Print.BUFFER.value:
+            Print.BUFFER.value = '\n' + Print.BUFFER.value
+            if Print.LOG:
+                Print.print_to_logfile(Print.BUFFER.value)
             else:
-                self.print_to_stdout(self._buffer.value)
+                Print.print_to_stdout(Print.BUFFER.value)

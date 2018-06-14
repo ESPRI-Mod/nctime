@@ -211,12 +211,13 @@ def get_args():
         action='store_true',
         default=False,
         help=CORRECT_TIMESTAMP_HELP)
-    return main.parse_args()
+    return main.prog, main.parse_args()
 
 
 def main():
     # Get command-line arguments
-    args = get_args()
+    prog, args = get_args()
+    setattr(args, 'prog', prog)
     # Run program
     if args.cmd == 'overlap':
         from overlap.main import run

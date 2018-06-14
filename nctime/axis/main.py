@@ -11,6 +11,7 @@ import itertools
 import os
 import re
 import sys
+import traceback
 from multiprocessing import Pool
 
 import numpy as np
@@ -18,7 +19,7 @@ import numpy as np
 from constants import *
 from context import ProcessingContext
 from handler import File
-from nctime.utils.misc import trunc, COLORS, ProcessContext
+from nctime.utils.misc import trunc, COLORS, ProcessContext, Print
 from nctime.utils.time import trunc
 
 
@@ -45,13 +46,16 @@ def process(ffp):
         fh.load_last_date()
         # In the case of inconsistent timestamps, it may be due to float precision issue
         if not pctx.on_fly and fh.last_timestamp != fh.end_timestamp:
-            # fh.start_num = trunc(fh.start_num, 5)
-            # fh.load_last_date()
-            # if fh.last_timestamp != fh.end_timestamp:
-            fh.status.append('003')
+            if int(float(fh.last_timestamp)) < int(float(fh.end_timestamp)):
+                fh.status.append('003a')
+            else:
+                fh.status.append('003b')
         # Check consistency between last time date and end date from filename
         if not pctx.on_fly and fh.last_date != fh.end_date:
-            fh.status.append('008')
+            if fh.last_date < fh.end_date:
+                fh.status.append('008a')
+            else:
+                fh.status.append('008b')
         # Check file consistency between instant time and time boundaries
         if fh.is_instant and fh.has_bounds:
             fh.status.append('004')
@@ -60,16 +64,15 @@ def process(ffp):
             fh.status.append('005')
         # Check time axis squareness
         wrong_timesteps = list()
-        if not {'003', '008'}.intersection(set(fh.status)):
-            # Rebuild a theoretical time axis with appropriate precision
-            fh.time_axis_rebuilt = trunc(fh.build_time_axis(), NDECIMALS)
-            if not np.array_equal(fh.time_axis_rebuilt, fh.time_axis):
-                fh.status.append('001')
-                time_axis_diff = (fh.time_axis_rebuilt == fh.time_axis)
-                wrong_timesteps = list(np.where(time_axis_diff == False)[0])
+        # Rebuild a theoretical time axis with appropriate precision
+        fh.time_axis_rebuilt = trunc(fh.build_time_axis(), NDECIMALS)
+        if not np.array_equal(fh.time_axis_rebuilt, fh.time_axis):
+            fh.status.append('001')
+            time_axis_diff = (fh.time_axis_rebuilt == fh.time_axis)
+            wrong_timesteps = list(np.where(time_axis_diff == False)[0])
         # Check time boundaries squareness
         wrong_bounds = list()
-        if fh.has_bounds and not {'003', '008', '004'}.intersection(set(fh.status)):
+        if fh.has_bounds and not {'004'}.intersection(set(fh.status)):
             fh.time_bounds_rebuilt = trunc(fh.build_time_bounds(), NDECIMALS)
             if not np.array_equal(fh.time_bounds_rebuilt, fh.time_bounds):
                 fh.status.append('006')
@@ -140,9 +143,9 @@ def process(ffp):
         # Acquire lock to print result
         pctx.lock.acquire()
         if fh.status:
-            echo.error(msg, buffer=True)
+            Print.error(msg, buffer=True)
         else:
-            echo.success(msg, buffer=True)
+            Print.success(msg, buffer=True)
         # Release lock
         pctx.lock.release()
         # Return error if it is the case
@@ -152,10 +155,15 @@ def process(ffp):
             return 0
     except KeyboardInterrupt:
         raise
-    except Exception as e:
-        msg = """\n{}\nSkipped: {}""".format(COLORS.HEADER + os.path.basename(ffp) + COLORS.ENDC,
-                                             COLORS.FAIL + e.message + COLORS.ENDC)
-        echo.error(msg, buffer=True)
+    except Exception:
+        exc = traceback.format_exc().splitlines()
+        msg = COLORS.HEADER + '\n{}'.format(os.path.basename(ffp)) + COLORS.ENDC
+        msg += """\n        Status: {}""".format(COLORS.FAIL + 'Skipped' + COLORS.ENDC)
+        msg += """\n        {}""".format(exc[0])
+        msg += """\n      """
+        msg += """\n      """.join(exc[1:-1])
+        msg += COLORS.FAIL + """\n        {}""".format(exc[-1]) + COLORS.ENDC
+        Print.error(msg, buffer=True)
         return None
     finally:
         # Print progress
@@ -164,7 +172,7 @@ def process(ffp):
             percentage = int(pctx.progress.value * 100 / pctx.nbfiles)
             msg = COLORS.OKGREEN + '\rProcess netCDF file(s): ' + COLORS.ENDC
             msg += '{}% | {}/{} files'.format(percentage, pctx.progress.value, pctx.nbfiles)
-            echo.progress(msg)
+            Print.progress(msg)
 
 
 def initializer(keys, values):
@@ -192,16 +200,14 @@ def run(args=None):
     :param ArgumentParser args: Command-line arguments parser
 
     """
-    # Declare global variables
-    global echo
     # Instantiate processing context
     with ProcessingContext(args) as ctx:
-        # Initialize print management
-        echo = ctx.echo
+        # Init print management
+        Print.init(log=args.log, debug=args.debug, all=args.all, cmd='{}-{}'.format(args.prog, args.cmd))
         # Print command-line
-        echo.command(COLORS.OKBLUE + 'Command: ' + COLORS.ENDC + ' '.join(sys.argv) + '\n')
+        Print.command(COLORS.OKBLUE + 'Command: ' + COLORS.ENDC + ' '.join(sys.argv) + '\n')
         # Collecting data
-        echo.progress('\rAnalysing data, please wait...')
+        Print.progress('\rAnalysing data, please wait...')
         ctx.nbfiles = len(ctx.sources)
         # Init process context
         cctx = {name: getattr(ctx, name) for name in PROCESS_VARS}
@@ -209,15 +215,18 @@ def run(args=None):
             # Init processes pool
             pool = Pool(processes=ctx.processes, initializer=initializer, initargs=(cctx.keys(), cctx.values()))
             # Process supplied files
-            handlers = [x for x in pool.imap(process, ctx.sources) if x is not None]
-            # Close pool of workers
-            pool.close()
-            pool.join()
+            processes = pool.imap(process, ctx.sources)
         else:
             initializer(cctx.keys(), cctx.values())
-            handlers = [x for x in itertools.imap(process, ctx.sources) if x is not None]
+            processes = itertools.imap(process, ctx.sources)
+        # Process supplied sources
+        handlers = [x for x in processes if x is not None]
+        # Close pool of workers if exists
+        if 'pool' in locals().keys():
+            locals()['pool'].close()
+            locals()['pool'].join()
         # Flush buffer
-        echo.flush()
+        Print.flush()
         # Get number of errors
         ctx.nbskip = ctx.nbfiles - len(handlers)
         ctx.nberrors = sum(handlers)

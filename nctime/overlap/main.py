@@ -22,7 +22,7 @@ from ESGConfigParser import ExpressionNotMatch
 from constants import *
 from context import ProcessingContext
 from handler import Filename, Graph
-from nctime.utils.misc import COLORS, ProcessContext
+from nctime.utils.misc import COLORS, ProcessContext, Print
 from nctime.utils.time import get_next_timestep
 
 
@@ -53,7 +53,7 @@ def get_overlaps(g, shortest):
         # Partial overlap from next_node[1] to current_node[2] (bounds included)
         # Overlap is hold on the next node (arbitrary)
         if (current_node['next'] - next_node['start']) > 0:
-            echo.debug('\nPartial overlap found between {} and {}'.format(shortest[n], shortest[n + 1]))
+            Print.debug('\nPartial overlap found between {} and {}'.format(shortest[n], shortest[n + 1]))
             cutting_timestep = get_next_timestep(next_node['path'], current_node['last_step'])
             overlaps['partial'][shortest[n + 1]] = next_node
             overlaps['partial'][shortest[n + 1]].update({'end_overlap': current_node['end'],
@@ -119,17 +119,17 @@ def extract_dates(ffp):
         fh.get_start_end_dates(pattern=pctx.pattern,
                                calendar=pctx.ref_calendar)
         with pctx.lock:
-            echo.debug('\nFile: {} :: Start={}, End={}, Next={}'.format(fh.filename,
-                                                                        fh.start_date,
-                                                                        fh.end_date,
-                                                                        fh.next_date))
+            Print.debug('\nFile: {} :: Start={}, End={}, Next={}'.format(fh.filename,
+                                                                         fh.start_date,
+                                                                         fh.end_date,
+                                                                         fh.next_date))
         return fh
     except KeyboardInterrupt:
         raise
     except Exception as e:
         msg = """\n{}\nSkipped: {}""".format(COLORS.HEADER + os.path.basename(ffp) + COLORS.ENDC,
                                              COLORS.FAIL + e.message + COLORS.ENDC)
-        echo.error(msg, buffer=True)
+        Print.error(msg, buffer=True)
         return None
     finally:
         # Print progress
@@ -138,7 +138,7 @@ def extract_dates(ffp):
             percentage = int(pctx.progress.value * 100 / pctx.nbfiles)
             msg = COLORS.OKGREEN + '\rProcess netCDF file(s): ' + COLORS.ENDC
             msg += '{}% | {}/{} files'.format(percentage, pctx.progress.value, pctx.nbfiles)
-            echo.progress(msg)
+            Print.progress(msg)
 
 
 def create_nodes(fh):
@@ -167,11 +167,11 @@ def create_nodes(fh):
                           fh.end_date,
                           fh.next_date,
                           fh.ffp)
-    echo.debug('\nGraph: {} :: Node {} (start={}, end={}, next={})'.format(fh.id,
-                                                                           fh.filename,
-                                                                           node['start'],
-                                                                           node['end'],
-                                                                           node['next']))
+    Print.debug('\nGraph: {} :: Node {} (start={}, end={}, next={})'.format(fh.id,
+                                                                            fh.filename,
+                                                                            node['start'],
+                                                                            node['end'],
+                                                                            node['next']))
 
 
 def create_edges(gid):
@@ -205,7 +205,7 @@ def create_edges(gid):
         # For each next node, build the corresponding edge in the graph
         for next_node in next_nodes:
             graph.add_edge(gid, node, next_node)
-            echo.debug('\nGraph: {} :: Edge {} --> {}'.format(gid, node, next_node))
+            Print.debug('\nGraph: {} :: Edge {} --> {}'.format(gid, node, next_node))
     # Find the node(s) with the earliest date
     start_dates = zip(*g.nodes(data='start'))[1]
     starts = [n for n in g.nodes() if g.nodes[n]['start'] == min(start_dates)]
@@ -215,11 +215,11 @@ def create_edges(gid):
     # Build starting node with edges to first node(s)
     for start in starts:
         graph.add_edge(gid, 'START', start)
-        echo.debug('\nGraph: {} :: Edge START --> {}'.format(gid, start))
+        Print.debug('\nGraph: {} :: Edge START --> {}'.format(gid, start))
     # Build ending node with edges from latest node(s)
     for end in ends:
         graph.add_edge(gid, end, 'END')
-        echo.debug('\nGraph: {} :: Edge {} --> END'.format(gid, end))
+        Print.debug('\nGraph: {} :: Edge {} --> END'.format(gid, end))
 
 
 def evaluate_graph(gid):
@@ -235,7 +235,7 @@ def evaluate_graph(gid):
     g = graph.get_graph(gid)
     path = list()
     full_overlaps, partial_overlaps = None, None
-    echo.debug('\nProcess graph: {}'.format(gid))
+    Print.debug('\nProcess graph: {}'.format(gid))
     # Walk through the graph
     try:
         # Find shortest path between oldest and latest dates
@@ -288,7 +288,7 @@ def evaluate_graph(gid):
                         # Check into XML files in the gap period
                         for year in range(gap_start_year, gap_end_year):
                             if filename_pattern in patterns[str(year)]:
-                                echo.debug('\nPattern found in XML :: Year = {} :: {}'.format(year, filename_pattern))
+                                Print.debug('\nPattern found in XML :: Year = {} :: {}'.format(year, filename_pattern))
                                 path.append('BREAK')
                             else:
                                 path.append('XML GAP')
@@ -357,7 +357,7 @@ def get_patterns_from_filedef(path):
     assert 'pctx' in globals().keys()
     pctx = globals()['pctx']
     with pctx.lock:
-        echo.debug(COLORS.OKGREEN + '\nParse XML filedef :: ' + COLORS.ENDC + '{}'.format(path))
+        Print.debug(COLORS.OKGREEN + '\nParse XML filedef :: ' + COLORS.ENDC + '{}'.format(path))
     year = os.path.basename(os.path.dirname(path))
     xml_tree = parse(path)
     patterns = list()
@@ -368,7 +368,7 @@ def get_patterns_from_filedef(path):
         if item == 'cfsites_grid':
             continue
         with pctx.lock:
-            echo.debug('\nProcess XML file_id entry :: {}'.format(item))
+            Print.debug('\nProcess XML file_id entry :: {}'.format(item))
         patterns.append(item)
     # Print progress
     with pctx.lock:
@@ -378,7 +378,7 @@ def get_patterns_from_filedef(path):
         msg += '{}% | {}/{} files'.format(percentage,
                                           pctx.progress.value,
                                           pctx.nbxml)
-        echo.progress(msg)
+        Print.progress(msg)
     return year, patterns
 
 
@@ -410,15 +410,13 @@ def run(args=None):
 
     """
     # Declare global variables
-    global graph, echo, patterns
+    global graph, patterns
     # Instantiate processing context
     with ProcessingContext(args) as ctx:
-        # Initialize print management
-        echo = ctx.echo
         # Print command-line
-        echo.command(COLORS.OKBLUE + 'Command: ' + COLORS.ENDC + ' '.join(sys.argv) + '\n')
+        Print.command(COLORS.OKBLUE + 'Command: ' + COLORS.ENDC + ' '.join(sys.argv) + '\n')
         # Collecting data
-        echo.progress('\rCollecting data, please wait...')
+        Print.progress('\rCollecting data, please wait...')
         # Get number of files
         ctx.nbfiles = len(ctx.sources)
         # Init process context
@@ -427,18 +425,22 @@ def run(args=None):
             # Init processes pool
             pool = Pool(processes=ctx.processes, initializer=initializer, initargs=(cctx.keys(), cctx.values()))
             # Process supplied files to create nodes in appropriate directed graph
-            handlers = [x for x in pool.imap(extract_dates, ctx.sources) if x is not None]
-            # Close pool of workers
-            pool.close()
-            pool.join()
+            handlers = pool.imap(extract_dates, ctx.sources)
         else:
             initializer(cctx.keys(), cctx.values())
-            handlers = [x for x in itertools.imap(extract_dates, ctx.sources) if x is not None]
+            handlers = itertools.imap(extract_dates, ctx.sources)
+        # Process supplied sources
+        results = [x for x in handlers if x is not None]
+        # Close pool of workers if exists
+        if 'pool' in locals().keys():
+            locals()['pool'].close()
+            locals()['pool'].join()
+        # Get number of files skipped
         ctx.skip = ctx.nbfiles - len(handlers)
         # Process XML files if card
         patterns = dict()
         if ctx.card:
-            echo.progress('\n')
+            Print.progress('\n')
             # Reset progress counter
             cctx['progress'].value = 0
             # Get number of xml
@@ -468,26 +470,27 @@ def run(args=None):
         # Process each directed graph to create appropriate edges
         ctx.nbdsets = len([x for x in itertools.imap(create_edges, graph())])
         # Evaluate each graph if a shortest path exist
-        echo.debug('\n')
-        echo.progress('\n')
+        Print.debug('\n')
+        Print.progress('\n')
         for path, partial_overlaps, full_overlaps in itertools.imap(evaluate_graph, graph()):
             # Format message about path
             msg = format_path(path, partial_overlaps, full_overlaps)
             # If broken time serie
             if 'BREAK' in path:
                 ctx.broken += 1
-                echo.error(COLORS.FAIL + '\nTime series broken:' + COLORS.ENDC + '{}'.format(msg))
+                Print.error(COLORS.FAIL + '\nTime series broken:' + COLORS.ENDC + '{}'.format(msg))
             elif 'XML GAP' in path:
-                echo.success(COLORS.WARNING + '\nNo path found because of XML gap(s):' + COLORS.ENDC + '{}'.format(msg))
+                Print.success(
+                    COLORS.WARNING + '\nNo path found because of XML gap(s):' + COLORS.ENDC + '{}'.format(msg))
             else:
                 # Print overlaps if exists
                 if full_overlaps or partial_overlaps:
                     ctx.overlaps += 1
-                    echo.error(COLORS.FAIL + '\nShortest path found WITH overlaps:' + COLORS.ENDC +
-                               '{}'.format(msg))
+                    Print.error(COLORS.FAIL + '\nShortest path found WITH overlaps:' + COLORS.ENDC +
+                                '{}'.format(msg))
                 else:
-                    echo.success(COLORS.OKGREEN + '\nShortest path found without overlaps:' + COLORS.ENDC +
-                                 '{}'.format(msg))
+                    Print.success(COLORS.OKGREEN + '\nShortest path found without overlaps:' + COLORS.ENDC +
+                                  '{}'.format(msg))
             # Resolve overlaps
             if ctx.resolve:
                 # Full overlapping files has to be deleted before partial overlapping files are truncated.
