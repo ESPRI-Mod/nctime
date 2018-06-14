@@ -427,12 +427,12 @@ def run(args=None):
             # Init processes pool
             pool = Pool(processes=ctx.processes, initializer=initializer, initargs=(cctx.keys(), cctx.values()))
             # Process supplied files to create nodes in appropriate directed graph
-            handlers = pool.imap(extract_dates, ctx.sources)
+            processes = pool.imap(extract_dates, ctx.sources)
         else:
             initializer(cctx.keys(), cctx.values())
-            handlers = itertools.imap(extract_dates, ctx.sources)
+            processes = itertools.imap(extract_dates, ctx.sources)
         # Process supplied sources
-        results = [x for x in handlers if x is not None]
+        handlers = [x for x in processes if x is not None]
         # Close pool of workers if exists
         if 'pool' in locals().keys():
             locals()['pool'].close()
