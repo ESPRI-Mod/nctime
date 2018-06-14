@@ -200,10 +200,10 @@ def run(args=None):
     :param ArgumentParser args: Command-line arguments parser
 
     """
+    # Init print management
+    Print.init(log=args.log, debug=args.debug, all=args.all, cmd='{}-{}'.format(args.prog, args.cmd))
     # Instantiate processing context
     with ProcessingContext(args) as ctx:
-        # Init print management
-        Print.init(log=args.log, debug=args.debug, all=args.all, cmd='{}-{}'.format(args.prog, args.cmd))
         # Print command-line
         Print.command(COLORS.OKBLUE + 'Command: ' + COLORS.ENDC + ' '.join(sys.argv) + '\n')
         # Collecting data
