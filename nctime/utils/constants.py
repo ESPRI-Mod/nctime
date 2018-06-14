@@ -290,8 +290,8 @@ SET_INC_HELP = \
     """
     Overwrites the default time increment of a frequency.|n
     Duplicate the flag to overwrites several increment|n
-    (e.g., mon=2 will set monthly frequency equivalent to |n
-    2 months between time steps instead of 1).
+    (e.g., mon=2M will set monthly frequency equivalent to |n
+    2 Months between time steps instead of 1).
     """
 
 # Time constants numerical definition

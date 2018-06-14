@@ -100,12 +100,12 @@ def get_args():
         action='append',
         help=EXCLUDE_FILE_HELP)
     parent.add_argument(
-        '--debug',
+        '-d', '--debug',
         action='store_true',
         default=False,
         help=VERBOSE_HELP)
     parent.add_argument(
-        '--all',
+        '-a','--all',
         action='store_true',
         default=False,
         help=ALL_HELP)
@@ -145,7 +145,7 @@ def get_args():
         default=False,
         help=FULL_ONLY_HELP)
     overlap.add_argument(
-        '--card',
+        '-c', '--card',
         action=DirectoryChecker,
         help=CARD_HELP)
 
@@ -190,7 +190,7 @@ def get_args():
         default=False,
         help=ON_FLY_HELP)
     group.add_argument(
-        '--card',
+        '-c', '--card',
         action=DirectoryChecker,
         help=CARD_HELP)
     axis.add_argument(
