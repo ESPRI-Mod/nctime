@@ -352,6 +352,19 @@ def get_start_end_dates_from_filename(filename, pattern, frequency, calendar, co
     return dates
 
 
+def get_last_timestep(ffp):
+    """
+    Returns last time steps from time axis of a NetCDF file.
+    :param str ffp: The file full path
+    :returns: The last timestep
+    :rtype: *int*
+    """
+    with ncopen(ffp) as nc:
+        if 'time' not in nc.variables.keys():
+            raise NoNetCDFVariable('time', ffp)
+        return nc.variables['time'][-1]
+
+
 def get_next_timestep(ffp, current_timestep):
     """
     Returns next time step from time axis given the current one.

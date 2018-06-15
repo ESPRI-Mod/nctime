@@ -23,7 +23,7 @@ from constants import *
 from context import ProcessingContext
 from handler import Filename, Graph
 from nctime.utils.misc import COLORS, ProcessContext, Print
-from nctime.utils.time import get_next_timestep
+from nctime.utils.time import get_next_timestep, get_last_timestep
 
 
 def get_overlaps(g, shortest):
@@ -54,7 +54,8 @@ def get_overlaps(g, shortest):
         # Overlap is hold on the next node (arbitrary)
         if (current_node['next'] - next_node['start']) > 0:
             Print.debug('\nPartial overlap found between {} and {}'.format(shortest[n], shortest[n + 1]))
-            cutting_timestep = get_next_timestep(next_node['path'], current_node['last_step'])
+            last_current_step = get_last_timestep(current_node['path'])
+            cutting_timestep = get_next_timestep(next_node['path'], last_current_step)
             overlaps['partial'][shortest[n + 1]] = next_node
             overlaps['partial'][shortest[n + 1]].update({'end_overlap': current_node['end'],
                                                          'cutting_date': current_node['next'],
