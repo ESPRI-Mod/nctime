@@ -141,13 +141,11 @@ def process(ffp):
                 msg += """\n        Wrong bound: {} iso {}""".format(str(fh.time_bounds[v]).ljust(10),
                                                                      str(fh.time_bounds_rebuilt[v]).ljust(10))
         # Acquire lock to print result
-        pctx.lock.acquire()
-        if fh.status:
-            Print.error(msg, buffer=True)
-        else:
-            Print.success(msg, buffer=True)
-        # Release lock
-        pctx.lock.release()
+        with pctx.lock:
+            if fh.status:
+                Print.error(msg, buffer=True)
+            else:
+                Print.success(msg, buffer=True)
         # Return error if it is the case
         if fh.status:
             return 1
@@ -161,9 +159,9 @@ def process(ffp):
         msg += """\n        Status: {}""".format(COLORS.FAIL + 'Skipped' + COLORS.ENDC)
         msg += """\n        {}""".format(exc[0])
         msg += """\n      """
-        msg += """\n      """.join(exc[1:-1])
-        msg += COLORS.FAIL + """\n        {}""".format(exc[-1]) + COLORS.ENDC
-        Print.error(msg, buffer=True)
+        msg += """\n      """.join(exc[1:])
+        with pctx.lock:
+            Print.error(msg, buffer=True)
         return None
     finally:
         # Print progress

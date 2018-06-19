@@ -54,8 +54,11 @@ def get_overlaps(g, shortest):
         # Overlap is hold on the next node (arbitrary)
         if (current_node['next'] - next_node['start']) > 0:
             Print.debug('\nPartial overlap found between {} and {}'.format(shortest[n], shortest[n + 1]))
-            last_current_step = get_last_timestep(current_node['path'])
-            cutting_timestep = get_next_timestep(next_node['path'], last_current_step)
+            cutting_timestep = None
+            # Get cutting timestep only if resolve is True
+            if resolve:
+                last_current_step = get_last_timestep(current_node['path'])
+                cutting_timestep = get_next_timestep(next_node['path'], last_current_step)
             overlaps['partial'][shortest[n + 1]] = next_node
             overlaps['partial'][shortest[n + 1]].update({'end_overlap': current_node['end'],
                                                          'cutting_date': current_node['next'],
@@ -411,7 +414,7 @@ def run(args=None):
 
     """
     # Declare global variables
-    global graph, patterns
+    global graph, patterns, resolve
     # Init print management
     Print.init(log=args.log, debug=args.debug, all=args.all, cmd='{}-{}'.format(args.prog, args.cmd))
     # Instantiate processing context
@@ -475,6 +478,7 @@ def run(args=None):
         # Evaluate each graph if a shortest path exist
         Print.debug('\n')
         Print.progress('\n')
+        resolve = ctx.resolve
         for path, partial_overlaps, full_overlaps in itertools.imap(evaluate_graph, graph()):
             # Format message about path
             msg = format_path(path, partial_overlaps, full_overlaps)
