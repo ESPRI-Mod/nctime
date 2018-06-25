@@ -84,8 +84,11 @@ def process(ffp):
         # Check calendar consistency between file and ref
         if pctx.ref_calendar != fh.calendar:
             fh.status.append('007')
+        # Exclude codes to ignore from status codes
+        # Before correction to avoid undesired operations
+        fh.status = [code for code in fh.status if code not in pctx.ignore_codes]
         # Rename file depending on checking
-        if (pctx.write and {'003'}.intersection(set(fh.status))) or pctx.force:
+        if (pctx.write and {'003a', '003b'}.intersection(set(fh.status))) or pctx.force:
             # Change filename and file full path dynamically
             fh.nc_file_rename(new_filename=re.sub(fh.end_timestamp, fh.last_timestamp, fh.filename))
         # Remove time boundaries depending on checking
@@ -121,8 +124,6 @@ def process(ffp):
                                  fh.frequency, fh.step, fh.step_units,
                                  fh.is_instant,
                                  fh.has_bounds)
-        # Exclude codes to ignore from status codes
-        fh.status = [code for code in fh.status if code not in pctx.ignore_codes]
         # Add status message
         if fh.status:
             for s in fh.status:
@@ -133,13 +134,21 @@ def process(ffp):
         timestep_limit = pctx.limit if pctx.limit else len(wrong_timesteps)
         for i, v in enumerate(wrong_timesteps):
             if (i + 1) <= timestep_limit:
-                msg += """\n        Wrong timestep: {} iso {}""".format(str(fh.time_axis[v]).ljust(10),
-                                                                        str(fh.time_axis_rebuilt[v]).ljust(10))
+                msg += """\n        Wrong timestep: {} = {} iso {} = {}""".format(
+                    COLORS.FAIL + fh.date_axis[v] + COLORS.ENDC,
+                    COLORS.FAIL + str(fh.time_axis[v]).ljust(10) + COLORS.ENDC,
+                    COLORS.OKGREEN + fh.date_axis_rebuilt[v] + COLORS.ENDC,
+                    COLORS.OKGREEN + str(fh.time_axis_rebuilt[v]).ljust(10) + COLORS.ENDC)
         bounds_limit = pctx.limit if pctx.limit else len(wrong_bounds)
         for i, v in enumerate(wrong_bounds):
             if (i + 1) <= bounds_limit:
-                msg += """\n        Wrong bound: {} iso {}""".format(str(fh.time_bounds[v]).ljust(10),
-                                                                     str(fh.time_bounds_rebuilt[v]).ljust(10))
+                msg += """\n        Wrong bound: {} = {} iso {} = {}""".format(
+                    COLORS.FAIL + '[{} {}]'.format(fh.date_bounds[v][0],
+                                                   fh.date_bounds[v][1]) + COLORS.ENDC,
+                    COLORS.FAIL + str(fh.time_bounds[v]).ljust(20) + COLORS.ENDC,
+                    COLORS.OKGREEN + '[{} {}]'.format(fh.date_bounds_rebuilt[v][0],
+                                                      fh.date_bounds_rebuilt[v][1]) + COLORS.ENDC,
+                    COLORS.OKGREEN + str(fh.time_bounds_rebuilt[v]).ljust(20) + COLORS.ENDC)
         # Acquire lock to print result
         with pctx.lock:
             if fh.status:

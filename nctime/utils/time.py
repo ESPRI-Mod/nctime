@@ -427,7 +427,7 @@ def dates2int(dates):
     :rtype: *list* or *int*
 
     """
-    if isinstance(dates, list):
+    if isinstance(dates, list) or isinstance(dates, np.ndarray):
         return map(int, dates2str(dates, iso_format=False))
     else:
         return int(dates2str(dates, iso_format=False))
@@ -443,7 +443,7 @@ def dates2str(dates, iso_format=True):
     :rtype: *list* or *str*
 
     """
-    if isinstance(dates, list):
+    if isinstance(dates, list) or isinstance(dates, np.ndarray):
         return [date2str(date, iso_format) for date in dates]
     else:
         return date2str(dates, iso_format)

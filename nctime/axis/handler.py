@@ -51,7 +51,9 @@ class File(object):
         self.name = self.filename.replace(CLIM_SUFFIX, '.nc') if self.filename.endswith(CLIM_SUFFIX) else self.filename
         # Set variables for time axis diagnostic
         self.time_axis_rebuilt = None
+        self.date_axis_rebuilt = None
         self.time_bounds_rebuilt = None
+        self.date_bounds_rebuilt = None
         self.status = list()
         # Get netCDF time properties
         with ncopen(self.ffp) as nc:
@@ -71,13 +73,22 @@ class File(object):
             self.length = nc.variables['time'].shape[0]
             if self.length == 0:
                 raise EmptyTimeAxis(self.ffp)
-            self.time_axis = trunc(nc.variables['time'][:], NDECIMALS)
+            t = nc.variables['time'][:]
+            self.time_axis = trunc(t, NDECIMALS)
+            self.date_axis = dates2str(num2date(t, units=self.ref_units, calendar=self.ref_calendar))
+            del t
             # Get time boundaries
             self.has_bounds = False
             if 'bounds' in nc.variables['time'].ncattrs():
                 self.has_bounds = True
                 self.tbnds = nc.variables['time'].bounds
-                self.time_bounds = trunc(nc.variables[self.tbnds][:, :], NDECIMALS)
+                bnds = nc.variables[self.tbnds][:, :]
+                self.time_bounds = trunc(bnds, NDECIMALS)
+                self.date_bounds = np.column_stack((
+                dates2str(num2date(bnds[:,0], units=self.ref_units, calendar=self.ref_calendar)),
+                dates2str(num2date(bnds[:, 1], units=self.ref_units, calendar=self.ref_calendar))
+                ))
+                del bnds
             # Get time units from file
             if 'units' not in nc.variables['time'].ncattrs():
                 raise NoNetCDFAttribute('units', self.ffp, 'time')
@@ -155,7 +166,9 @@ class File(object):
                              step=self.step, dtype=np.longdouble)
         date_axis = num2date(num_axis, units=self.funits, calendar=self.ref_calendar)
         del num_axis
-        return date2num(date_axis, units=self.ref_units, calendar=self.ref_calendar)
+        axis_rebuilt = date2num(date_axis, units=self.ref_units, calendar=self.ref_calendar)
+        self.date_axis_rebuilt = dates2str(num2date(axis_rebuilt, units=self.ref_units, calendar=self.ref_calendar))
+        return axis_rebuilt
 
     def build_time_bounds(self):
         """
@@ -176,7 +189,12 @@ class File(object):
         del num_axis, num_axis_bnds_inf, num_axis_bnds_sup
         date_axis_bnds = num2date(num_axis_bnds, units=self.funits, calendar=self.ref_calendar)
         del num_axis_bnds
-        return date2num(date_axis_bnds, units=self.ref_units, calendar=self.ref_calendar)
+        axis_bnds_rebuilt = date2num(date_axis_bnds, units=self.ref_units, calendar=self.ref_calendar)
+        self.date_bounds_rebuilt = np.column_stack((
+        dates2str(num2date(axis_bnds_rebuilt[:, 0], units=self.ref_units, calendar=self.ref_calendar)),
+        dates2str(num2date(axis_bnds_rebuilt[:, 1], units=self.ref_units, calendar=self.ref_calendar))
+        ))
+        return axis_bnds_rebuilt
 
     def nc_var_delete(self, variable):
         """
@@ -195,11 +213,12 @@ class File(object):
             nc = nco.Nco()
             nc.ncks(input=self.ffp,
                     output=fftmp,
-                    options='-x -O -v {}'.format(variable))
+                    options=['-x', '-O', '-v {}'.format(variable)])
             os.popen("cat {} > {}".format(fftmp, self.ffp), 'r')
             os.remove(fftmp)
         except:
-            os.remove(fftmp)
+            if os.path.exists(fftmp):
+                os.remove(fftmp)
             raise NetCDFVariableRemoveFail(variable, self.ffp)
 
     def nc_att_delete(self, variable, attribute):
