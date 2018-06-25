@@ -8,9 +8,7 @@
 """
 
 import itertools
-import os
-import re
-import sys
+import traceback
 from multiprocessing import Pool
 from xml.etree.ElementTree import parse
 
@@ -22,7 +20,8 @@ from ESGConfigParser import ExpressionNotMatch
 from constants import *
 from context import ProcessingContext
 from handler import Filename, Graph
-from nctime.utils.misc import COLORS, ProcessContext, Print
+from nctime.utils.custom_print import *
+from nctime.utils.misc import ProcessContext
 from nctime.utils.time import get_next_timestep, get_last_timestep
 
 
@@ -53,7 +52,7 @@ def get_overlaps(g, shortest):
         # Partial overlap from next_node[1] to current_node[2] (bounds included)
         # Overlap is hold on the next node (arbitrary)
         if (current_node['next'] - next_node['start']) > 0:
-            Print.debug('\nPartial overlap found between {} and {}'.format(shortest[n], shortest[n + 1]))
+            Print.debug('Partial overlap found between {} and {}'.format(shortest[n], shortest[n + 1]))
             cutting_timestep = None
             # Get cutting timestep only if resolve is True
             if resolve:
@@ -123,24 +122,26 @@ def extract_dates(ffp):
         fh.get_start_end_dates(pattern=pctx.pattern,
                                calendar=pctx.ref_calendar)
         with pctx.lock:
-            Print.debug('\nFile: {} :: Start={}, End={}, Next={}'.format(fh.filename,
-                                                                         fh.start_date,
-                                                                         fh.end_date,
-                                                                         fh.next_date))
+            Print.debug('File: {} :: Start={}, End={}, Next={}'.format(fh.filename,
+                                                                       fh.start_date,
+                                                                       fh.end_date,
+                                                                       fh.next_date))
         return fh
     except KeyboardInterrupt:
         raise
-    except Exception as e:
-        msg = """\n{}\nSkipped: {}""".format(COLORS.HEADER + os.path.basename(ffp) + COLORS.ENDC,
-                                             COLORS.FAIL + e.message + COLORS.ENDC)
-        Print.error(msg, buffer=True)
+    except Exception:
+        exc = traceback.format_exc().splitlines()
+        msg = TAGS.SKIP
+        msg += COLORS.HEADER(os.path.basename(ffp))
+        msg += '\n'.join(exc)
+        Print.exception(msg, buffer=True)
         return None
     finally:
         # Print progress
         with pctx.lock:
             pctx.progress.value += 1
             percentage = int(pctx.progress.value * 100 / pctx.nbfiles)
-            msg = COLORS.OKGREEN + '\rProcess netCDF file(s): ' + COLORS.ENDC
+            msg = COLORS.OKBLUE('\rProcess netCDF file(s): ')
             msg += '{}% | {}/{} files'.format(percentage, pctx.progress.value, pctx.nbfiles)
             Print.progress(msg)
 
@@ -319,9 +320,9 @@ def format_path(path, partial_overlaps, full_overlaps):
         if node not in ['START', 'END']:
             m = '    {}'.format(node)
             if partial_overlaps and node in partial_overlaps:
-                m = '    {} <-- overlap from {} to {}'.format(COLORS.BOLD + node + COLORS.ENDC,
-                                                               partial_overlaps[node]['start'],
-                                                               partial_overlaps[node]['end_overlap'])
+                m = '    {} <-- overlap from {} to {}'.format(COLORS().bold(node),
+                                                              partial_overlaps[node]['start'],
+                                                              partial_overlaps[node]['end_overlap'])
             msg += '\n{}'.format(m)
     if full_overlaps:
         for n in sorted(full_overlaps):
@@ -361,7 +362,7 @@ def get_patterns_from_filedef(path):
     assert 'pctx' in globals().keys()
     pctx = globals()['pctx']
     with pctx.lock:
-        Print.debug(COLORS.OKGREEN + '\nParse XML filedef :: ' + COLORS.ENDC + '{}'.format(path))
+        Print.debug(COLORS.SUCCESS('Parse XML filedef :: ') + path)
     year = os.path.basename(os.path.dirname(path))
     xml_tree = parse(path)
     patterns = list()
@@ -372,13 +373,13 @@ def get_patterns_from_filedef(path):
         if item == 'cfsites_grid':
             continue
         with pctx.lock:
-            Print.debug('\nProcess XML file_id entry :: {}'.format(item))
+            Print.debug('Process XML file_id entry :: {}'.format(item))
         patterns.append(item)
     # Print progress
     with pctx.lock:
         pctx.progress.value += 1
         percentage = int(pctx.progress.value * 100 / pctx.nbxml)
-        msg = COLORS.OKGREEN + '\rProcess XML file(s): ' + COLORS.ENDC
+        msg = COLORS.OKBLUE('\rProcess XML file(s): ')
         msg += '{}% | {}/{} files'.format(percentage,
                                           pctx.progress.value,
                                           pctx.nbxml)
@@ -420,7 +421,7 @@ def run(args=None):
     # Instantiate processing context
     with ProcessingContext(args) as ctx:
         # Print command-line
-        Print.command(COLORS.OKBLUE + 'Command: ' + COLORS.ENDC + ' '.join(sys.argv) + '\n')
+        Print.command()
         # Collecting data
         Print.progress('\rCollecting data, please wait...')
         # Get number of files
@@ -485,19 +486,16 @@ def run(args=None):
             # If broken time serie
             if 'BREAK' in path:
                 ctx.broken += 1
-                Print.error(COLORS.FAIL + '\nTime series broken:' + COLORS.ENDC + '{}'.format(msg))
+                Print.error(COLORS.FAIL('Time series broken: ') + msg)
             elif 'XML GAP' in path:
-                Print.success(
-                    COLORS.WARNING + '\nTime series with XML gap(s):' + COLORS.ENDC + '{}'.format(msg))
+                Print.success(COLORS.WARNING('Time series with XML gap(s): ') + msg)
             else:
                 # Print overlaps if exists
                 if full_overlaps or partial_overlaps:
                     ctx.overlaps += 1
-                    Print.error(COLORS.FAIL + '\nContinuous time series with overlaps:' + COLORS.ENDC +
-                                '{}'.format(msg))
+                    Print.error(COLORS.FAIL('Continuous time series with overlaps: ') + msg)
                 else:
-                    Print.success(COLORS.OKGREEN + '\nContinuous time series:' + COLORS.ENDC +
-                                  '{}'.format(msg))
+                    Print.success(COLORS.SUCCESS('Continuous time series: ') + msg)
             # Resolve overlaps
             if ctx.resolve:
                 # Full overlapping files has to be deleted before partial overlapping files are truncated.

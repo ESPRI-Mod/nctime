@@ -105,7 +105,7 @@ def get_args():
         default=False,
         help=VERBOSE_HELP)
     parent.add_argument(
-        '-a','--all',
+        '-a', '--all',
         action='store_true',
         default=False,
         help=ALL_HELP)

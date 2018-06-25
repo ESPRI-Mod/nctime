@@ -1,3 +1,5 @@
+sphinx_rtd_theme
+mock
 netcdftime
 netCDF4
 networkx

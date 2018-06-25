@@ -22,6 +22,15 @@ CONF_CARD = 'config.card'
 FILEDEF_ROOT = '/ccc/work/cont003/igcmg/igcmg/IGCM'
 FILEDEF_DIRECTORY_FORMAT = '{root}/CMIP6/{longname}/{modelname}/{experimentname}/{member}/{year}'
 
+# Shell colors map
+SHELL_COLORS = {'red': 1,
+                'green': 2,
+                'yellow': 3,
+                'blue': 4,
+                'magenta': 5,
+                'cyan': 6,
+                'gray': 7}
+
 # Help
 TITLE = \
     """

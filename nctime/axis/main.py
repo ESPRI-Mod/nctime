@@ -19,7 +19,8 @@ import numpy as np
 from constants import *
 from context import ProcessingContext
 from handler import File
-from nctime.utils.misc import trunc, COLORS, ProcessContext, Print
+from nctime.utils.custom_print import *
+from nctime.utils.misc import trunc, ProcessContext
 from nctime.utils.time import trunc
 
 
@@ -114,7 +115,7 @@ def process(ffp):
         Length: {}
         Frequency: {} = {} {}
         Is instant: {}
-        Has bounds: {}""".format(COLORS.HEADER + fh.filename + COLORS.ENDC,
+        Has bounds: {}""".format(COLORS.HEADER(fh.filename),
                                  fh.tunits, pctx.ref_units,
                                  fh.calendar, pctx.ref_calendar,
                                  fh.start_timestamp, fh.start_date, fh.start_num,
@@ -127,28 +128,26 @@ def process(ffp):
         # Add status message
         if fh.status:
             for s in fh.status:
-                msg += """\n        Status: {} """.format(COLORS.FAIL + 'Error ' + s + ' -- ' + STATUS[s] + COLORS.ENDC)
+                msg += """\n        Status: {} """.format(COLORS.FAIL('Error {} -- {}'.format(s, STATUS[s])))
         else:
-            msg += """\n        Status: {}""".format(COLORS.OKGREEN + STATUS['000'] + COLORS.ENDC)
+            msg += """\n        Status: {}""".format(COLORS.SUCCESS(STATUS['000']))
         # Display wrong time steps and/or bounds
         timestep_limit = pctx.limit if pctx.limit else len(wrong_timesteps)
         for i, v in enumerate(wrong_timesteps):
             if (i + 1) <= timestep_limit:
                 msg += """\n        Wrong timestep: {} = {} iso {} = {}""".format(
-                    COLORS.FAIL + fh.date_axis[v] + COLORS.ENDC,
-                    COLORS.FAIL + str(fh.time_axis[v]).ljust(10) + COLORS.ENDC,
-                    COLORS.OKGREEN + fh.date_axis_rebuilt[v] + COLORS.ENDC,
-                    COLORS.OKGREEN + str(fh.time_axis_rebuilt[v]).ljust(10) + COLORS.ENDC)
+                    COLORS.FAIL(fh.date_axis[v]),
+                    COLORS.FAIL(str(fh.time_axis[v]).ljust(10)),
+                    COLORS.SUCCESS(fh.date_axis_rebuilt[v]),
+                    COLORS.SUCCESS(str(fh.time_axis_rebuilt[v]).ljust(10)))
         bounds_limit = pctx.limit if pctx.limit else len(wrong_bounds)
         for i, v in enumerate(wrong_bounds):
             if (i + 1) <= bounds_limit:
                 msg += """\n        Wrong bound: {} = {} iso {} = {}""".format(
-                    COLORS.FAIL + '[{} {}]'.format(fh.date_bounds[v][0],
-                                                   fh.date_bounds[v][1]) + COLORS.ENDC,
-                    COLORS.FAIL + str(fh.time_bounds[v]).ljust(20) + COLORS.ENDC,
-                    COLORS.OKGREEN + '[{} {}]'.format(fh.date_bounds_rebuilt[v][0],
-                                                      fh.date_bounds_rebuilt[v][1]) + COLORS.ENDC,
-                    COLORS.OKGREEN + str(fh.time_bounds_rebuilt[v]).ljust(20) + COLORS.ENDC)
+                    COLORS.FAIL('[{} {}]'.format(fh.date_bounds[v][0], fh.date_bounds[v][1])),
+                    COLORS.FAIL(str(fh.time_bounds[v]).ljust(20)),
+                    COLORS.SUCCESS('[{} {}]'.format(fh.date_bounds_rebuilt[v][0], fh.date_bounds_rebuilt[v][1])),
+                    COLORS.SUCCESS(str(fh.time_bounds_rebuilt[v]).ljust(20)))
         # Acquire lock to print result
         with pctx.lock:
             if fh.status:
@@ -164,7 +163,7 @@ def process(ffp):
         raise
     except Exception:
         exc = traceback.format_exc().splitlines()
-        msg = COLORS.HEADER + '\n{}'.format(os.path.basename(ffp)) + COLORS.ENDC
+        msg = COLORS.HEADER('{}'.format(os.path.basename(ffp)))
         msg += """\n        Status: {}""".format(COLORS.FAIL + 'Skipped' + COLORS.ENDC)
         msg += """\n        {}""".format(exc[0])
         msg += """\n      """
@@ -177,7 +176,7 @@ def process(ffp):
         with pctx.lock:
             pctx.progress.value += 1
             percentage = int(pctx.progress.value * 100 / pctx.nbfiles)
-            msg = COLORS.OKGREEN + '\rProcess netCDF file(s): ' + COLORS.ENDC
+            msg = COLORS.OKBLUE('\rProcess netCDF file(s): ')
             msg += '{}% | {}/{} files'.format(percentage, pctx.progress.value, pctx.nbfiles)
             Print.progress(msg)
 
@@ -212,7 +211,7 @@ def run(args=None):
     # Instantiate processing context
     with ProcessingContext(args) as ctx:
         # Print command-line
-        Print.command(COLORS.OKBLUE + 'Command: ' + COLORS.ENDC + ' '.join(sys.argv) + '\n')
+        Print.command()
         # Collecting data
         Print.progress('\rAnalysing data, please wait...')
         ctx.nbfiles = len(ctx.sources)

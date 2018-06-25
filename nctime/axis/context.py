@@ -7,9 +7,7 @@
 
 """
 
-import os
-from ctypes import c_char_p
-from multiprocessing import cpu_count, Value, Lock
+from multiprocessing import cpu_count, Lock
 from multiprocessing.managers import SyncManager
 
 from ESGConfigParser import SectionParser
@@ -17,7 +15,8 @@ from ESGConfigParser import SectionParser
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
 from nctime.utils.custom_exceptions import NoRunCardFound
-from nctime.utils.misc import COLORS, get_project, Print
+from nctime.utils.custom_print import *
+from nctime.utils.misc import get_project
 from nctime.utils.time import TimeInit
 
 
@@ -82,7 +81,7 @@ class ProcessingContext(object):
     def __enter__(self):
         # Print warning message if on-fly mode
         if self.on_fly:
-            Print.warning('WARNING :: "on-fly" mode activated -- Incomplete time axis expected\n')
+            Print.warning('"on-fly" mode activated -- Incomplete time axis expected')
         # Init data collector
         self.sources = Collector(sources=self.input, spinner=False)
         # Init file filter
@@ -109,21 +108,21 @@ class ProcessingContext(object):
 
     def __exit__(self, exc_type, exc_val, traceback):
         # Decline outputs depending on the scan results
-        msg = COLORS.HEADER + '\n\nNumber of files scanned: {}'.format(self.nbfiles) + COLORS.ENDC
+        msg = COLORS.HEADER('Number of files scanned: {}'.format(self.nbfiles))
+        m = 'Number of file(s) skipped: {}'.format(self.nbskip)
         if self.nbskip:
-            msg += COLORS.FAIL
+            msg += COLORS.FAIL(m)
         else:
-            msg += COLORS.OKGREEN
-        msg += '\nNumber of file(s) skipped: {}'.format(self.nbskip) + COLORS.ENDC
+            msg += COLORS.SUCCESS(m)
+        m = 'Number of file with error(s): {}'.format(self.nberrors)
         if self.nberrors:
-            msg += COLORS.FAIL
+            msg += COLORS.FAIL(m)
         else:
-            msg += COLORS.OKGREEN
-        msg += '\nNumber of file with error(s): {}\n'.format(self.nberrors) + COLORS.ENDC
+            msg += COLORS.SUCCESS(m)
         # Print summary
         Print.summary(msg)
         # Print log path if exists
-        Print.info(COLORS.HEADER + '\nSee log: {}\n'.format(Print.LOGFILE) + COLORS.ENDC)
+        Print.log()
 
 
 def is_simulation_completed(card_path):

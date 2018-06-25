@@ -15,7 +15,8 @@ from ESGConfigParser import SectionParser
 from nctime.utils.collector import Collector
 from nctime.utils.constants import *
 from nctime.utils.custom_exceptions import NoConfigCardFound, NoRunCardFound
-from nctime.utils.misc import COLORS, get_project, Print
+from nctime.utils.custom_print import *
+from nctime.utils.misc import get_project
 from nctime.utils.time import TimeInit
 
 
@@ -95,28 +96,28 @@ class ProcessingContext(object):
 
     def __exit__(self, exc_type, exc_val, traceback):
         # Decline outputs depending on the scan results
-        msg = COLORS.HEADER + '\n\nNumber of files scanned: {}'.format(self.nbfiles) + COLORS.ENDC
+        msg = COLORS.HEADER('Number of files scanned: {}'.format(self.nbfiles))
+        m = 'Number of file(s) skipped: {}'.format(self.nbskip)
         if self.nbskip:
-            msg += COLORS.FAIL
+            msg += COLORS.FAIL(m)
         else:
-            msg += COLORS.OKGREEN
-        msg += '\nNumber of file(s) skipped: {}'.format(self.nbskip) + COLORS.ENDC
-        msg += COLORS.OKBLUE + '\nNumber of node(s): {}'.format(self.nbnodes) + COLORS.ENDC
-        msg += COLORS.HEADER + '\nNumber of dataset(s): {}'.format(self.nbdsets) + COLORS.ENDC
+            msg += COLORS.SUCCESS(m)
+        msg += COLORS.OKBLUE('Number of node(s): {}'.format(self.nbnodes))
+        msg += COLORS.HEADER('Number of dataset(s): {}'.format(self.nbdsets))
+        m += 'Number of datasets with overlap(s): {}'.format(self.overlaps)
         if self.overlaps:
-            msg += COLORS.FAIL
+            msg += COLORS.FAIL(m)
         else:
-            msg += COLORS.OKGREEN
-        msg += '\nNumber of datasets with overlap(s): {}'.format(self.overlaps) + COLORS.ENDC
+            msg += COLORS.SUCCESS(m)
+        m += 'Number of datasets with broken time series: {}'.format(self.broken)
         if self.broken:
-            msg += COLORS.FAIL
+            msg += COLORS.FAIL(m)
         else:
-            msg += COLORS.OKGREEN
-        msg += '\nNumber of datasets with broken time series: {}\n'.format(self.broken) + COLORS.ENDC
+            msg += COLORS.SUCCESS(m)
         # Print summary
         Print.summary(msg)
         # Print log path if exists
-        Print.info(COLORS.HEADER + '\nSee log: {}\n'.format(Print.LOGFILE) + COLORS.ENDC)
+        Print.log()
 
 
 def yield_xml_from_card(card_path):

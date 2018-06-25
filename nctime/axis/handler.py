@@ -85,8 +85,8 @@ class File(object):
                 bnds = nc.variables[self.tbnds][:, :]
                 self.time_bounds = trunc(bnds, NDECIMALS)
                 self.date_bounds = np.column_stack((
-                dates2str(num2date(bnds[:,0], units=self.ref_units, calendar=self.ref_calendar)),
-                dates2str(num2date(bnds[:, 1], units=self.ref_units, calendar=self.ref_calendar))
+                    dates2str(num2date(bnds[:, 0], units=self.ref_units, calendar=self.ref_calendar)),
+                    dates2str(num2date(bnds[:, 1], units=self.ref_units, calendar=self.ref_calendar))
                 ))
                 del bnds
             # Get time units from file
@@ -191,8 +191,8 @@ class File(object):
         del num_axis_bnds
         axis_bnds_rebuilt = date2num(date_axis_bnds, units=self.ref_units, calendar=self.ref_calendar)
         self.date_bounds_rebuilt = np.column_stack((
-        dates2str(num2date(axis_bnds_rebuilt[:, 0], units=self.ref_units, calendar=self.ref_calendar)),
-        dates2str(num2date(axis_bnds_rebuilt[:, 1], units=self.ref_units, calendar=self.ref_calendar))
+            dates2str(num2date(axis_bnds_rebuilt[:, 0], units=self.ref_units, calendar=self.ref_calendar)),
+            dates2str(num2date(axis_bnds_rebuilt[:, 1], units=self.ref_units, calendar=self.ref_calendar))
         ))
         return axis_bnds_rebuilt
 
