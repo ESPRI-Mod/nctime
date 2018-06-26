@@ -172,11 +172,11 @@ def create_nodes(fh):
                           fh.end_date,
                           fh.next_date,
                           fh.ffp)
-    Print.debug('\nGraph: {} :: Node {} (start={}, end={}, next={})'.format(fh.id,
-                                                                            fh.filename,
-                                                                            node['start'],
-                                                                            node['end'],
-                                                                            node['next']))
+    Print.debug('Graph: {} :: Node {} (start={}, end={}, next={})'.format(fh.id,
+                                                                          fh.filename,
+                                                                          node['start'],
+                                                                          node['end'],
+                                                                          node['next']))
 
 
 def create_edges(gid):
@@ -210,7 +210,7 @@ def create_edges(gid):
         # For each next node, build the corresponding edge in the graph
         for next_node in next_nodes:
             graph.add_edge(gid, node, next_node)
-            Print.debug('\nGraph: {} :: Edge {} --> {}'.format(gid, node, next_node))
+            Print.debug('Graph: {} :: Edge {} --> {}'.format(gid, node, next_node))
     # Find the node(s) with the earliest date
     start_dates = zip(*g.nodes(data='start'))[1]
     starts = [n for n in g.nodes() if g.nodes[n]['start'] == min(start_dates)]
@@ -220,11 +220,11 @@ def create_edges(gid):
     # Build starting node with edges to first node(s)
     for start in starts:
         graph.add_edge(gid, 'START', start)
-        Print.debug('\nGraph: {} :: Edge START --> {}'.format(gid, start))
+        Print.debug('Graph: {} :: Edge START --> {}'.format(gid, start))
     # Build ending node with edges from latest node(s)
     for end in ends:
         graph.add_edge(gid, end, 'END')
-        Print.debug('\nGraph: {} :: Edge {} --> END'.format(gid, end))
+        Print.debug('Graph: {} :: Edge {} --> END'.format(gid, end))
 
 
 def evaluate_graph(gid):
@@ -240,7 +240,7 @@ def evaluate_graph(gid):
     g = graph.get_graph(gid)
     path = list()
     full_overlaps, partial_overlaps = None, None
-    Print.debug('\nProcess graph: {}'.format(gid))
+    Print.debug('Process graph: {}'.format(gid))
     # Walk through the graph
     try:
         # Find shortest path between oldest and latest dates
@@ -293,7 +293,7 @@ def evaluate_graph(gid):
                         # Check into XML files in the gap period
                         for year in range(gap_start_year, gap_end_year):
                             if filename_pattern in patterns[str(year)]:
-                                Print.debug('\nPattern found in XML :: Year = {} :: {}'.format(year, filename_pattern))
+                                Print.debug('Pattern found in XML :: Year = {} :: {}'.format(year, filename_pattern))
                                 path.append('BREAK')
                             else:
                                 path.append('XML GAP')
@@ -416,10 +416,6 @@ def run(args=None):
     """
     # Declare global variables
     global graph, patterns, resolve
-    # Init print management
-    Print.init(log=args.log, debug=args.debug, all=args.all, cmd='{}-{}'.format(args.prog, args.cmd))
-    # Print command-line
-    Print.command()
     # Instantiate processing context
     with ProcessingContext(args) as ctx:
         # Collecting data
@@ -436,6 +432,7 @@ def run(args=None):
         else:
             initializer(cctx.keys(), cctx.values())
             processes = itertools.imap(extract_dates, ctx.sources)
+        Print.progress('\n')
         # Process supplied sources
         handlers = [x for x in processes if x is not None]
         # Close pool of workers if exists
@@ -447,7 +444,6 @@ def run(args=None):
         # Process XML files if card
         patterns = dict()
         if ctx.card:
-            Print.progress('\n')
             # Reset progress counter
             cctx['progress'].value = 0
             # Get number of xml
@@ -470,6 +466,7 @@ def run(args=None):
                     if k not in patterns.keys():
                         patterns[k] = list()
                     patterns[k].extend(v)
+            Print.progress('\n')
         # Initialize Graph()
         graph = Graph()
         # Process filename handler to create nodes
@@ -477,8 +474,6 @@ def run(args=None):
         # Process each directed graph to create appropriate edges
         ctx.nbdsets = len([x for x in itertools.imap(create_edges, graph())])
         # Evaluate each graph if a shortest path exist
-        Print.debug('\n')
-        Print.progress('\n')
         resolve = ctx.resolve
         for path, partial_overlaps, full_overlaps in itertools.imap(evaluate_graph, graph()):
             # Format message about path

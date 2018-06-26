@@ -28,6 +28,10 @@ class BaseContext(object):
     """
 
     def __init__(self, args):
+        # Init print management
+        Print.init(log=args.log, debug=args.debug, all=args.all, cmd='{}-{}'.format(args.prog, args.cmd))
+        # Print command-line
+        Print.command()
         self.project = args.project
         self.config_dir = args.i
         self.processes = args.max_processes if args.max_processes <= cpu_count() else cpu_count()
