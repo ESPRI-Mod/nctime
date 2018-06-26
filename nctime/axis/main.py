@@ -205,10 +205,10 @@ def run(args=None):
     """
     # Init print management
     Print.init(log=args.log, debug=args.debug, all=args.all, cmd='{}-{}'.format(args.prog, args.cmd))
+    # Print command-line
+    Print.command()
     # Instantiate processing context
     with ProcessingContext(args) as ctx:
-        # Print command-line
-        Print.command()
         # Collecting data
         Print.progress('\rAnalysing data, please wait...')
         ctx.nbfiles = len(ctx.sources)
