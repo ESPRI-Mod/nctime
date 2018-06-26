@@ -231,7 +231,7 @@ class Print(object):
 
     @staticmethod
     def debug(msg):
-        msg += '\n'
+        msg = TAGS.DEBUG + COLOR().italic(msg) + '\n'
         if not Print.CARRIAGE_RETURNED:
             msg = '\n' + msg
         if Print.DEBUG:
