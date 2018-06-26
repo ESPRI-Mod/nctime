@@ -235,15 +235,7 @@ def run(args=None):
         ctx.nberrors = sum(handlers)
     # Evaluate errors and exit with appropriate return code
     if ctx.nbskip or ctx.nberrors:
-        if (ctx.nbskip + ctx.nberrors) == ctx.nbfiles:
-            # All files has error(s). Error code = -1
-            sys.exit(2)
-        else:
-            # Some files (at least one) has error(s). Error code = nb files with error(s)
-            sys.exit(1)
-    else:
-        # No errors. Error code = 0
-        sys.exit(0)
+        sys.exit(ctx.nbskip + ctx.nberrors)
 
 
 if __name__ == "__main__":

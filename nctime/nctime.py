@@ -16,7 +16,7 @@ import sys
 
 from utils.constants import *
 from utils.parser import MultilineFormatter, DirectoryChecker, regex_validator, keyval_converter, processes_validator, \
-    positive_only, InputChecker, CodeChecker
+    positive_only, InputChecker, CodeChecker, _ArgumentParser
 
 __version__ = 'v{} {}'.format(VERSION, VERSION_DATE)
 
@@ -32,7 +32,7 @@ def get_args():
     ############################
     # Main parser for "nctime" #
     ############################
-    main = argparse.ArgumentParser(
+    main = _ArgumentParser(
         prog='nctime',
         description=PROGRAM_DESC,
         formatter_class=MultilineFormatter,

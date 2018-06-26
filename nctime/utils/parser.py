@@ -9,11 +9,23 @@
 
 import os
 import re
+import sys
 import textwrap
-from argparse import HelpFormatter, ArgumentTypeError, Action
+from argparse import HelpFormatter, ArgumentTypeError, Action, ArgumentParser
+from gettext import gettext
 
 from constants import TIME_UNITS, FREQ_INC
 from custom_exceptions import InvalidUnits, InvalidFrequency
+
+
+class _ArgumentParser(ArgumentParser):
+    def error(self, message):
+        """
+        Overwrite the original method to change exist status.
+
+        """
+        self.print_usage(sys.stderr)
+        self.exit(-1, gettext('%s: error: %s\n') % (self.prog, message))
 
 
 class MultilineFormatter(HelpFormatter):
