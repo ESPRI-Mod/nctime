@@ -56,6 +56,7 @@ class BaseContext(object):
         if self.use_pool:
             manager = SyncManager()
             manager.start()
+            Print.BUFFER = manager.Value(c_char_p, '')
             self.progress = manager.Value('i', 0)
         else:
             self.progress = Value('i', 0)
