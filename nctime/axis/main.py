@@ -8,9 +8,6 @@
 """
 
 import itertools
-import os
-import re
-import sys
 import traceback
 from multiprocessing import Pool
 
@@ -164,7 +161,7 @@ def process(ffp):
     except Exception:
         exc = traceback.format_exc().splitlines()
         msg = COLORS.HEADER('{}'.format(os.path.basename(ffp)))
-        msg += """\n        Status: {}""".format(COLORS.FAIL + 'Skipped' + COLORS.ENDC)
+        msg += """\n        Status: {}""".format(COLORS.FAIL('Skipped'))
         msg += """\n        {}""".format(exc[0])
         msg += """\n      """
         msg += """\n      """.join(exc[1:])

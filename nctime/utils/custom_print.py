@@ -176,7 +176,7 @@ class Print(object):
     def print_to_logfile(msg):
         Print.check_carriage_return(msg)
         with open(Print.LOGFILE, 'a+') as f:
-            re.sub('\\033\[.*m', '', msg)
+            msg = re.sub('\\033\[([\d];)?[\d]*m', '', msg)
             f.write(msg)
 
     @staticmethod

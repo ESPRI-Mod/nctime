@@ -9,10 +9,10 @@
 from netcdftime import datetime
 
 # Program version
-VERSION = '4.4.3'
+VERSION = '4.4.4'
 
 # Date
-VERSION_DATE = datetime(year=2018, month=6, day=14).strftime("%Y-%d-%m")
+VERSION_DATE = datetime(year=2018, month=6, day=26).strftime("%Y-%d-%m")
 
 # Cards name
 RUN_CARD = 'run.card'

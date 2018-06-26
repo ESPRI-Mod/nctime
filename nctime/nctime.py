@@ -82,6 +82,12 @@ def get_args():
         action='help',
         help=HELP)
     parent.add_argument(
+        '--set-inc',
+        metavar='FREQUENCY=INCREMENT',
+        type=keyval_converter,
+        action='append',
+        help=SET_INC_HELP)
+    parent.add_argument(
         '--ignore-dir',
         metavar="PYTHON_REGEX",
         type=str,
@@ -167,12 +173,6 @@ def get_args():
         action=InputChecker,
         nargs='+',
         help=DIRECTORY_HELP)
-    axis.add_argument(
-        '--set-inc',
-        metavar='FREQUENCY=INCREMENT',
-        type=keyval_converter,
-        action='append',
-        help=SET_INC_HELP)
     axis.add_argument(
         '-w', '--write',
         action='store_true',

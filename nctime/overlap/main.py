@@ -320,13 +320,13 @@ def format_path(path, partial_overlaps, full_overlaps):
         if node not in ['START', 'END']:
             m = '    {}'.format(node)
             if partial_overlaps and node in partial_overlaps:
-                m = '    {} <-- overlap from {} to {}'.format(COLORS().bold(node),
+                m = '    {} <-- overlap from {} to {}'.format(COLOR().bold(node),
                                                               partial_overlaps[node]['start'],
                                                               partial_overlaps[node]['end_overlap'])
             msg += '\n{}'.format(m)
     if full_overlaps:
         for n in sorted(full_overlaps):
-            m = '    {} <-- full overlap'.format(COLORS.BOLD + n + COLORS.ENDC)
+            m = '    {} <-- full overlap'.format(COLOR().bold(n))
             msg += '\n{}'.format(m)
     return msg
 
