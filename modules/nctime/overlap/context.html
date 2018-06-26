@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.overlap.context &mdash; nctime 4.4.3 documentation</title>
+  <title>nctime.overlap.context &mdash; nctime 4.4.4 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 4.4.3 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 4.4.4 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -171,20 +171,17 @@
 <span class="sd">    :synopsis: Processing context used in this module.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">cpu_count</span><span class="p">,</span> <span class="n">Value</span><span class="p">,</span> <span class="n">Lock</span>
-<span class="kn">from</span> <span class="nn">multiprocessing.managers</span> <span class="k">import</span> <span class="n">SyncManager</span>
 
 <span class="kn">from</span> <span class="nn">ESGConfigParser</span> <span class="k">import</span> <span class="n">SectionParser</span>
 
 <span class="kn">from</span> <span class="nn">nctime.utils.collector</span> <span class="k">import</span> <span class="n">Collector</span>
 <span class="kn">from</span> <span class="nn">nctime.utils.constants</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">nctime.utils.context</span> <span class="k">import</span> <span class="n">BaseContext</span>
 <span class="kn">from</span> <span class="nn">nctime.utils.custom_exceptions</span> <span class="k">import</span> <span class="n">NoConfigCardFound</span><span class="p">,</span> <span class="n">NoRunCardFound</span>
-<span class="kn">from</span> <span class="nn">nctime.utils.misc</span> <span class="k">import</span> <span class="n">COLORS</span><span class="p">,</span> <span class="n">get_project</span><span class="p">,</span> <span class="n">Print</span>
-<span class="kn">from</span> <span class="nn">nctime.utils.time</span> <span class="k">import</span> <span class="n">TimeInit</span>
+<span class="kn">from</span> <span class="nn">nctime.utils.custom_print</span> <span class="k">import</span> <span class="o">*</span>
 
 
-<div class="viewcode-block" id="ProcessingContext"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.context.ProcessingContext">[docs]</a><span class="k">class</span> <span class="nc">ProcessingContext</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="ProcessingContext"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.context.ProcessingContext">[docs]</a><span class="k">class</span> <span class="nc">ProcessingContext</span><span class="p">(</span><span class="n">BaseContext</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Encapsulates the processing context/information for main process.</span>
 
@@ -195,93 +192,41 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">directory</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">directory</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">config_dir</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">i</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">resolve</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">resolve</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">full_only</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">full_only</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">project</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">project</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tunits_default</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">processes</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">max_processes</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">max_processes</span> <span class="o">&lt;=</span> <span class="n">cpu_count</span><span class="p">()</span> <span class="k">else</span> <span class="n">cpu_count</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">use_pool</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">processes</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">overlaps</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">broken</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">card</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">card</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">card</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">card</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">yield_xml_from_card</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">card</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lock</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nbfiles</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nbnodes</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nbdsets</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nbskip</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nberrors</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">file_filter</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">include_file</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">file_filter</span><span class="o">.</span><span class="n">extend</span><span class="p">([(</span><span class="n">f</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">include_file</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Default includes netCDF only</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">file_filter</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;^.*\.nc$&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">exclude_file</span><span class="p">:</span>
-            <span class="c1"># Default exclude hidden files</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">file_filter</span><span class="o">.</span><span class="n">extend</span><span class="p">([(</span><span class="n">f</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">exclude_file</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">file_filter</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;^\..*$&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dir_filter</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">ignore_dir</span>
 
     <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Init process manager</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_pool</span><span class="p">:</span>
-            <span class="n">manager</span> <span class="o">=</span> <span class="n">SyncManager</span><span class="p">()</span>
-            <span class="n">manager</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">progress</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">Value</span><span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">progress</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="c1"># Init data collector</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sources</span> <span class="o">=</span> <span class="n">Collector</span><span class="p">(</span><span class="n">sources</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span>
-        <span class="c1"># Init file filter</span>
-        <span class="k">for</span> <span class="n">regex</span><span class="p">,</span> <span class="n">inclusive</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_filter</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sources</span><span class="o">.</span><span class="n">FileFilter</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="n">regex</span><span class="p">,</span> <span class="n">inclusive</span><span class="o">=</span><span class="n">inclusive</span><span class="p">)</span>
-        <span class="c1"># Exclude fixed frequency in any case</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sources</span><span class="o">.</span><span class="n">FileFilter</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">&#39;(_fx_|_fixed_|_fx.|_fixed.|_.fx_)&#39;</span><span class="p">,</span> <span class="n">inclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="c1"># Init dir filter</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sources</span><span class="o">.</span><span class="n">PathFilter</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dir_filter</span><span class="p">,</span> <span class="n">inclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="c1"># Set driving time properties</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tinit</span> <span class="o">=</span> <span class="n">TimeInit</span><span class="p">(</span><span class="n">ref</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sources</span><span class="o">.</span><span class="n">first</span><span class="p">(),</span> <span class="n">tunits_default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tunits_default</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ref_calendar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">calendar</span>
-        <span class="c1"># Get project id</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">project</span> <span class="o">=</span> <span class="n">get_project</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sources</span><span class="o">.</span><span class="n">first</span><span class="p">())</span>
-        <span class="c1"># Get default time units if exists (i.e., CORDEX case)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span> <span class="ow">in</span> <span class="n">DEFAULT_TIME_UNITS</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tunits_default</span> <span class="o">=</span> <span class="n">DEFAULT_TIME_UNITS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">]</span>
-        <span class="c1"># Init configuration parser</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span> <span class="o">=</span> <span class="n">SectionParser</span><span class="p">(</span><span class="n">section</span><span class="o">=</span><span class="s1">&#39;project:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">),</span> <span class="n">directory</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config_dir</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="s1">&#39;filename_format&#39;</span><span class="p">)</span>
+        <span class="c1"># Run __enter__() BaseContext</span>
+        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__enter__</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
-        <span class="c1"># Decline outputs depending on the scan results</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">HEADER</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">Number of files scanned: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nbfiles</span><span class="p">)</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nbskip</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">FAIL</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">OKGREEN</span>
-        <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Number of file(s) skipped: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nbskip</span><span class="p">)</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span>
-        <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">OKBLUE</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Number of node(s): </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nbnodes</span><span class="p">)</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span>
-        <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">HEADER</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Number of dataset(s): </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nbdsets</span><span class="p">)</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">OKBLUE</span><span class="p">(</span><span class="s1">&#39;Number of node(s): </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nbnodes</span><span class="p">))</span>
+        <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">HEADER</span><span class="p">(</span><span class="s1">&#39;Number of dataset(s): </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nbdsets</span><span class="p">))</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="s1">&#39;Number of datasets with overlap(s): </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">overlaps</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">overlaps</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">FAIL</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">FAIL</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">OKGREEN</span>
-        <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Number of datasets with overlap(s): </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">overlaps</span><span class="p">)</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="s1">&#39;Number of datasets with broken time series: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broken</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">broken</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">FAIL</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">FAIL</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">OKGREEN</span>
-        <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Number of datasets with broken time series: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broken</span><span class="p">)</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span>
-        <span class="c1"># Print summary</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
         <span class="n">Print</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-        <span class="c1"># Print log path if exists</span>
-        <span class="n">Print</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">COLORS</span><span class="o">.</span><span class="n">HEADER</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">See log: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Print</span><span class="o">.</span><span class="n">LOGFILE</span><span class="p">)</span> <span class="o">+</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">ENDC</span><span class="p">)</span></div>
+        <span class="c1"># Run __exit__() BaseContext</span>
+        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__exit__</span><span class="p">(</span><span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">traceback</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="yield_xml_from_card"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.context.yield_xml_from_card">[docs]</a><span class="k">def</span> <span class="nf">yield_xml_from_card</span><span class="p">(</span><span class="n">card_path</span><span class="p">):</span>
@@ -360,7 +305,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'4.4.3',
+            VERSION:'4.4.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

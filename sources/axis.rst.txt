@@ -75,22 +75,6 @@ To print all wrong time steps:
 
 .. note:: This limit is also used to print wring time boundaries.
 
-Overwrites a frequency increment
-********************************
-
-By default, each supported frequency as its own unit and increment (e.g. mon = 1 months). In some case the frequency
-increment can be change, at least for diagnostic purposes.
-
-.. code-block:: bash
-
-    $> nctime axis --set-inc FREQUENCY=INCREMENT
-
-.. note::
-    Duplicate the flag to overwrite several frequency increment.
-
-.. warning::
-    Default increments are those expected by CMIP specifications. Overwrite them could lead to non CMIP-compliant files.
-
 Apply time correction on sud-daily frequencies
 **********************************************
 

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Check time axis squareness &mdash; nctime 4.4.3 documentation</title>
+  <title>Check time axis squareness &mdash; nctime 4.4.4 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="nctime 4.4.3 documentation" href="index.html"/>
+    <link rel="top" title="nctime 4.4.4 documentation" href="index.html"/>
         <link rel="next" title="Frequently asked questions" href="faq.html"/>
         <link rel="prev" title="Check time series continuity" href="overlap.html"/> 
 
@@ -101,7 +101,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#force-time-axis-rewriting">Force time axis rewriting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#check-an-on-going-simulation">Check an on going simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#show-wrong-time-steps">Show wrong time steps</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#overwrites-a-frequency-increment">Overwrites a frequency increment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#apply-time-correction-on-sud-daily-frequencies">Apply time correction on sud-daily frequencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#ignore-errors">Ignore errors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#time-axis-status">Time axis status</a></li>
@@ -239,22 +238,6 @@ provided by the libIGCM framework:</p>
 <p class="last">This limit is also used to print wring time boundaries.</p>
 </div>
 </div>
-<div class="section" id="overwrites-a-frequency-increment">
-<h2>Overwrites a frequency increment<a class="headerlink" href="#overwrites-a-frequency-increment" title="Permalink to this headline">¶</a></h2>
-<p>By default, each supported frequency as its own unit and increment (e.g. mon = 1 months). In some case the frequency
-increment can be change, at least for diagnostic purposes.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis --set-inc <span class="nv">FREQUENCY</span><span class="o">=</span>INCREMENT
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Duplicate the flag to overwrite several frequency increment.</p>
-</div>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">Default increments are those expected by CMIP specifications. Overwrite them could lead to non CMIP-compliant files.</p>
-</div>
-</div>
 <div class="section" id="apply-time-correction-on-sud-daily-frequencies">
 <h2>Apply time correction on sud-daily frequencies<a class="headerlink" href="#apply-time-correction-on-sud-daily-frequencies" title="Permalink to this headline">¶</a></h2>
 <p>By default <code class="docutils literal"><span class="pre">nctime</span></code> use the dates from the filename to start its processes. Due to different use cases, filename dates related
@@ -340,7 +323,7 @@ several error coma-separated codes can be submitted.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'4.4.3',
+            VERSION:'4.4.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

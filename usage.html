@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Generic usage &mdash; nctime 4.4.3 documentation</title>
+  <title>Generic usage &mdash; nctime 4.4.4 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="nctime 4.4.3 documentation" href="index.html"/>
+    <link rel="top" title="nctime 4.4.4 documentation" href="index.html"/>
         <link rel="next" title="Check time series continuity" href="overlap.html"/>
         <link rel="prev" title="Configuration" href="configuration.html"/> 
 
@@ -104,6 +104,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#use-a-logfile">Use a logfile</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#use-multiprocessing">Use multiprocessing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#use-libigcm-infos">Use libIGCM infos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#overwrites-a-frequency-increment">Overwrites a frequency increment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#exit-status">Exit status</a></li>
 </ul>
 </li>
@@ -293,6 +294,30 @@ directory including both your <code class="docutils literal"><span class="pre">c
 <p class="last">This option is only available if you run your simulation within the IPSL libICM framework.</p>
 </div>
 </div>
+<div class="section" id="overwrites-a-frequency-increment">
+<h2>Overwrites a frequency increment<a class="headerlink" href="#overwrites-a-frequency-increment" title="Permalink to this headline">¶</a></h2>
+<p>By default, each supported frequency as its own unit and increment (e.g. mon = 1 months). In some case the frequency
+increment or units can be change, at least for diagnostic purposes.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND --set-inc <span class="nv">FREQUENCY</span><span class="o">=</span>INCREMENT<span class="o">[</span>+<span class="o">]</span>UNITS
+</pre></div>
+</div>
+<p>For instance to change the time increment of sub-hourly files from 30min to 15min:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND --set-inc <span class="nv">subhr</span><span class="o">=</span>15m
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Duplicate the flag to overwrite several frequency increment.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Available increment units are: s (seconds), m (minutes), h (hours), D (days), M (months) and Y (years).</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Default increments are those expected by CMIP specifications. Overwrite them could lead to non CMIP-compliant files.</p>
+</div>
+</div>
 <div class="section" id="exit-status">
 <h2>Exit status<a class="headerlink" href="#exit-status" title="Permalink to this headline">¶</a></h2>
 <blockquote>
@@ -303,8 +328,8 @@ directory including both your <code class="docutils literal"><span class="pre">c
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt>Status = 1</dt>
-<dd>Errors occur during file scanning and quality checkup.</dd>
+<dt>Status = N</dt>
+<dd>Errors occur during file scanning and quality checkup. N is the number of errors</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
@@ -361,7 +386,7 @@ directory including both your <code class="docutils literal"><span class="pre">c
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'4.4.3',
+            VERSION:'4.4.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

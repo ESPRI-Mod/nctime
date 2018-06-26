@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Code documentation &mdash; nctime 4.4.3 documentation</title>
+  <title>Code documentation &mdash; nctime 4.4.4 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="nctime 4.4.3 documentation" href="index.html"/>
+    <link rel="top" title="nctime 4.4.4 documentation" href="index.html"/>
         <link rel="prev" title="Change Log" href="log.html"/> 
 
   
@@ -1063,18 +1063,6 @@ Default is to match inclusive regex.</p>
 </table>
 </dd></dl>
 
-<dl class="class">
-<dt id="nctime.utils.misc.COLORS">
-<em class="property">class </em><code class="descclassname">nctime.utils.misc.</code><code class="descname">COLORS</code><a class="reference internal" href="modules/nctime/utils/misc.html#COLORS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.misc.COLORS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Background colors for print statements</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="nctime.utils.misc.Print">
-<em class="property">class </em><code class="descclassname">nctime.utils.misc.</code><code class="descname">Print</code><a class="reference internal" href="modules/nctime/utils/misc.html#Print"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.misc.Print" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class to manage and dispatch print statement depending on log and debug mode.</p>
-</dd></dl>
-
 <span class="target" id="module-nctime.utils.parser"></span><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1549,6 +1537,15 @@ time boundary and not the middle of the time interval.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="nctime.utils.time.get_last_timestep">
+<code class="descclassname">nctime.utils.time.</code><code class="descname">get_last_timestep</code><span class="sig-paren">(</span><em>ffp</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#get_last_timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.get_last_timestep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns last time steps from time axis of a NetCDF file.
+:param str ffp: The file full path
+:returns: The last timestep
+:rtype: <em>int</em></p>
+</dd></dl>
+
+<dl class="function">
 <dt id="nctime.utils.time.get_next_timestep">
 <code class="descclassname">nctime.utils.time.</code><code class="descname">get_next_timestep</code><span class="sig-paren">(</span><em>ffp</em>, <em>current_timestep</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#get_next_timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.get_next_timestep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns next time step from time axis given the current one.</p>
@@ -1792,7 +1789,7 @@ time boundary and not the middle of the time interval.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'4.4.3',
+            VERSION:'4.4.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

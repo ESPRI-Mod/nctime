@@ -130,12 +130,37 @@ directory including both your ``config.card`` and ``run.card`` provided by the l
 
 .. warning:: This option is only available if you run your simulation within the IPSL libICM framework.
 
+Overwrites a frequency increment
+********************************
+
+By default, each supported frequency as its own unit and increment (e.g. mon = 1 months). In some case the frequency
+increment or units can be change, at least for diagnostic purposes.
+
+.. code-block:: bash
+
+    $> nctime SUBCOMMAND --set-inc FREQUENCY=INCREMENT[+]UNITS
+
+For instance to change the time increment of sub-hourly files from 30min to 15min:
+
+.. code-block:: bash
+
+    $> nctime SUBCOMMAND --set-inc subhr=15m
+
+.. note::
+    Duplicate the flag to overwrite several frequency increment.
+
+.. note::
+    Available increment units are: s (seconds), m (minutes), h (hours), D (days), M (months) and Y (years).
+
+.. warning::
+    Default increments are those expected by CMIP specifications. Overwrite them could lead to non CMIP-compliant files.
+
 Exit status
 ***********
 
  * Status = 0
     All the files have been successfully processed without errors.
- * Status = 1
-    Errors occur during file scanning and quality checkup.
+ * Status = N
+    Errors occur during file scanning and quality checkup. N is the number of errors
  * Status = -1
     Argument parsing error.
