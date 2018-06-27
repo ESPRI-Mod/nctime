@@ -49,12 +49,12 @@ class ProcessingContext(BaseContext):
     def __exit__(self, exc_type, exc_val, traceback):
         msg = COLORS.OKBLUE('Number of node(s): {}\n'.format(self.nbnodes))
         msg += COLORS.HEADER('Number of dataset(s): {}\n'.format(self.nbdsets))
-        m = 'Number of datasets with overlap(s): {}\n'.format(self.overlaps)
+        m = 'Number of dataset(s) with overlap(s): {}\n'.format(self.overlaps)
         if self.overlaps:
             msg += COLORS.FAIL(m)
         else:
             msg += COLORS.SUCCESS(m)
-        m = 'Number of datasets with broken time series: {}'.format(self.broken)
+        m = 'Number of dataset(s) with broken time series: {}'.format(self.broken)
         if self.broken:
             msg += COLORS.FAIL(m)
         else:

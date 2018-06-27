@@ -103,7 +103,7 @@ def process(ffp):
             if fh.has_bounds:
                 fh.nc_var_overwrite('time_bounds', fh.time_bounds_rebuilt)
         # Diagnostic display
-        msg = """\n{}
+        msg = """{}
         Units: {} [ref = {}]
         Calendar: {} [ref = {}]
         Start: {} = {} = {}
@@ -224,6 +224,7 @@ def run(args=None):
         if 'pool' in locals().keys():
             locals()['pool'].close()
             locals()['pool'].join()
+        Print.progress('\n')
         # Flush buffer
         Print.flush()
         # Get number of errors

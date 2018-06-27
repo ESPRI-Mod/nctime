@@ -93,7 +93,7 @@ class BaseContext(object):
 
     def __exit__(self, exc_type, exc_val, traceback):
         # Decline outputs depending on the scan results
-        msg = COLORS.HEADER('Number of files scanned: {}\n'.format(self.nbfiles))
+        msg = COLORS.HEADER('Number of file(s) scanned: {}\n'.format(self.nbfiles))
         m = 'Number of file(s) skipped: {}'.format(self.nbskip)
         if self.nbskip:
             msg += COLORS.FAIL(m)

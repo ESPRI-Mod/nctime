@@ -52,7 +52,7 @@ class ProcessingContext(BaseContext):
         return self
 
     def __exit__(self, exc_type, exc_val, traceback):
-        m = 'Number of file with error(s): {}'.format(self.nberrors)
+        m = 'Number of file(s) with error(s): {}'.format(self.nberrors)
         if self.nberrors:
             msg = COLORS.FAIL(m)
         else:

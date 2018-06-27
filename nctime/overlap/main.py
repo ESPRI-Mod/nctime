@@ -362,7 +362,7 @@ def get_patterns_from_filedef(path):
     assert 'pctx' in globals().keys()
     pctx = globals()['pctx']
     with pctx.lock:
-        Print.debug(COLORS.SUCCESS('Parse XML filedef :: ') + path)
+        Print.debug(COLOR().bold('Parse XML filedef :: ') + path)
     year = os.path.basename(os.path.dirname(path))
     xml_tree = parse(path)
     patterns = list()

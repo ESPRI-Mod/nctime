@@ -252,7 +252,7 @@ class Print(object):
 
     @staticmethod
     def error(msg, buffer=False):
-        msg = TAGS.ERROR + msg + '\n'
+        msg = msg + '\n'
         if not Print.CARRIAGE_RETURNED:
             msg = '\n' + msg
         if Print.LOG:
@@ -280,7 +280,7 @@ class Print(object):
 
     @staticmethod
     def success(msg, buffer=False):
-        msg = TAGS.SUCCESS + msg + '\n'
+        msg = msg + '\n'
         if not Print.CARRIAGE_RETURNED:
             msg = '\n' + msg
         if Print.ALL:
