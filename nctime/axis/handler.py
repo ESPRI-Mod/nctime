@@ -121,7 +121,12 @@ class File(object):
         # - NON-INSTANT axis
         # - AND NOT (frequency is 3hr or 6hr WITH corrected timestamps)
         if not self.is_instant and not (self.frequency in END_TIME_CORRECTION.keys() and not correction):
-            dates_num += 0.5
+            if self.frequency == "dec":
+                # Add half of 10 years because no "decenal" unit.
+                dates_num += 5
+            else:
+                # Add half of a unit
+                dates_num += 0.5
         self.start_axis = dates_num[0]
         dates = num2date(dates_num, units=self.funits, calendar=self.calendar)
         self.start_num, self.end_num, _ = date2num(dates, units=self.tunits, calendar=self.calendar)
