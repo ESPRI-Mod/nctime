@@ -7,7 +7,6 @@
 
 """
 
-import logging
 import re
 
 import netCDF4
@@ -71,7 +70,7 @@ def control_time_units(tunits, tunits_default=None):
     elif len(units[2].split('-')) == 2:
         units[2] += '-{}'.format('01')
     if tunits_default and ' '.join(units) != tunits_default:
-        logging.warning('Invalid time units. Replace "{}" by "{}"'.format(' '.join(units), tunits_default))
+        Print.warning('Invalid time units. Replace "{}" by "{}"'.format(' '.join(units), tunits_default))
         return tunits_default
     else:
         return ' '.join(units)

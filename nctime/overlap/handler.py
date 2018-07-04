@@ -5,7 +5,6 @@
 
 """
 
-import logging
 import os
 from copy import deepcopy as copy
 
@@ -63,7 +62,7 @@ class Filename(object):
                 key, score = process.extractOne('frequency', nc.ncattrs(), scorer=fuzz.partial_ratio)
                 if score >= 80:
                     frequency = nc.getncattr(key)
-                    logging.warning('Consider "{}" attribute instead of "frequency"'.format(key))
+                    Print.warning('Consider "{}" attribute instead of "frequency"'.format(key))
                 else:
                     raise NoNetCDFAttribute('frequency', self.ffp)
         dates = get_start_end_dates_from_filename(filename=self.name,

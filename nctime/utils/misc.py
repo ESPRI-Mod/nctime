@@ -7,13 +7,11 @@
 
 """
 
-import logging
-import re
-
 from fuzzywuzzy import fuzz, process
 from netCDF4 import Dataset
 
 from custom_exceptions import *
+from custom_print import *
 
 
 class ncopen(object):
@@ -95,7 +93,7 @@ def get_project(ffp):
             key, score = process.extractOne('project', nc.ncattrs(), scorer=fuzz.partial_ratio)
             if score >= 80:
                 project = nc.getncattr(key)
-                logging.warning('Consider "{}" attribute instead of "project"'.format(key))
+                Print.warning('Consider "{}" attribute instead of "project"'.format(key))
             else:
                 raise NoNetCDFAttribute('project', ffp)
     return project.lower()

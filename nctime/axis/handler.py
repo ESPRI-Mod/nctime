@@ -5,9 +5,6 @@
 
 """
 
-import logging
-import os
-import re
 from copy import deepcopy as copy
 from uuid import uuid4
 
@@ -19,6 +16,7 @@ from constants import *
 from custom_exceptions import *
 from nctime.utils.constants import CLIM_SUFFIX, END_TIME_CORRECTION
 from nctime.utils.custom_exceptions import *
+from nctime.utils.custom_print import *
 from nctime.utils.misc import ncopen
 from nctime.utils.time import time_inc, convert_time_units
 from nctime.utils.time import truncated_timestamp, get_start_end_dates_from_filename, dates2str, num2date, date2num, \
@@ -64,7 +62,7 @@ class File(object):
                 key, score = process.extractOne('frequency', nc.ncattrs(), scorer=fuzz.partial_ratio)
                 if score >= 80:
                     self.frequency = nc.getncattr(key)
-                    logging.warning('Consider "{}" attribute instead of "frequency"'.format(key))
+                    Print.warning('Consider "{}" attribute instead of "frequency"'.format(key))
                 else:
                     raise NoNetCDFAttribute('frequency', self.ffp)
             # Get time length and vector
@@ -76,12 +74,18 @@ class File(object):
             t = nc.variables['time'][:]
             self.time_axis = trunc(t, NDECIMALS)
             self.date_axis = dates2str(num2date(t, units=self.ref_units, calendar=self.ref_calendar))
-            del t
             # Get time boundaries
             self.has_bounds = False
+            self.time_bounds = None
+            self.date_bounds = None
+            self.tbnds = None
             if 'bounds' in nc.variables['time'].ncattrs():
                 self.has_bounds = True
                 self.tbnds = nc.variables['time'].bounds
+            if 'climatology' in nc.variables['time'].ncattrs():
+                self.has_bounds = True
+                self.tbnds = nc.variables['time'].climatology
+            if self.tbnds:
                 bnds = nc.variables[self.tbnds][:, :]
                 self.time_bounds = trunc(bnds, NDECIMALS)
                 self.date_bounds = np.column_stack((
@@ -104,6 +108,10 @@ class File(object):
             self.is_instant = False
             if 'time: point' in nc.variables[variable].cell_methods.lower():
                 self.is_instant = True
+            # Get boolean on climatology time axis
+            self.is_climatology = False
+            if 'climatology' in nc.variables['time'].ncattrs():
+                self.is_climatology = True
         # Get time step increment from frequency property
         self.step, self.step_units = time_inc(self.frequency)
         # Convert reference time units into frequency units depending on the file (i.e., months/year/hours since ...)
@@ -116,6 +124,7 @@ class File(object):
                                                   frequency=self.frequency,
                                                   calendar=self.calendar,
                                                   correction=self.correction)
+
         dates_num = date2num(dates, units=self.funits, calendar=self.calendar)
         # Apply time offset only if:
         # - NON-INSTANT axis
@@ -123,7 +132,7 @@ class File(object):
         if not self.is_instant and not (self.frequency in END_TIME_CORRECTION.keys() and not correction):
             if self.frequency == "dec":
                 # Add half of 10 years because no "decenal" unit.
-                dates_num += 5
+                dates_num += 0.5 * time_inc(self.frequency)[0]
             else:
                 # Add half of a unit
                 dates_num += 0.5

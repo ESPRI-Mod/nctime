@@ -112,6 +112,7 @@ def process(ffp):
         Length: {}
         Frequency: {} = {} {}
         Is instant: {}
+        Is climatology: {}
         Has bounds: {}""".format(COLORS.HEADER(fh.filename),
                                  fh.tunits, pctx.ref_units,
                                  fh.calendar, pctx.ref_calendar,
@@ -121,6 +122,7 @@ def process(ffp):
                                  fh.length,
                                  fh.frequency, fh.step, fh.step_units,
                                  fh.is_instant,
+                                 fh.is_climatology,
                                  fh.has_bounds)
         # Add status message
         if fh.status:
