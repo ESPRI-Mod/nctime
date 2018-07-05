@@ -28,7 +28,9 @@ utils
 *****
 .. automodule:: nctime.utils.collector
 .. automodule:: nctime.utils.constants
+.. automodule:: nctime.utils.context
 .. automodule:: nctime.utils.misc
+.. automodule:: nctime.utils.custom_print
 .. automodule:: nctime.utils.parser
 .. automodule:: nctime.utils.custom_exceptions
 .. automodule:: nctime.utils.time
