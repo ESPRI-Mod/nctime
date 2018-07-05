@@ -948,6 +948,34 @@ indicating to match (i.e., include) or non-match (i.e., exclude) the correspondi
 </tr>
 </tbody>
 </table>
+<span class="target" id="module-nctime.utils.context"></span><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">platform:</th><td class="field-body">Unix</td>
+</tr>
+<tr class="field-even field"><th class="field-name">synopsis:</th><td class="field-body">Processing context used in this module.</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="nctime.utils.context.BaseContext">
+<em class="property">class </em><code class="descclassname">nctime.utils.context.</code><code class="descname">BaseContext</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/context.html#BaseContext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.context.BaseContext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encapsulates the processing context/information for main process.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>ArgumentParser</em>) – Parsed command-line arguments</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The processing context</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>ProcessingContext</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <span class="target" id="module-nctime.utils.misc"></span><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1061,6 +1089,41 @@ Default is to match inclusive regex.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<span class="target" id="module-nctime.utils.custom_print"></span><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">platform:</th><td class="field-body">Unix</td>
+</tr>
+<tr class="field-even field"><th class="field-name">synopsis:</th><td class="field-body">Useful functions to use with this package.</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="nctime.utils.custom_print.COLOR">
+<em class="property">class </em><code class="descclassname">nctime.utils.custom_print.</code><code class="descname">COLOR</code><span class="sig-paren">(</span><em>color=None</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/custom_print.html#COLOR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.custom_print.COLOR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define color object for print statements
+Default is no color (i.e., restore original color)</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nctime.utils.custom_print.COLORS">
+<em class="property">class </em><code class="descclassname">nctime.utils.custom_print.</code><code class="descname">COLORS</code><a class="reference internal" href="modules/nctime/utils/custom_print.html#COLORS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.custom_print.COLORS" title="Permalink to this definition">¶</a></dt>
+<dd><p>String colors for print statements</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nctime.utils.custom_print.TAGS">
+<em class="property">class </em><code class="descclassname">nctime.utils.custom_print.</code><code class="descname">TAGS</code><a class="reference internal" href="modules/nctime/utils/custom_print.html#TAGS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.custom_print.TAGS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tags strings for print statements</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nctime.utils.custom_print.Print">
+<em class="property">class </em><code class="descclassname">nctime.utils.custom_print.</code><code class="descname">Print</code><a class="reference internal" href="modules/nctime/utils/custom_print.html#Print"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.custom_print.Print" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to manage and dispatch print statement depending on log and debug mode.</p>
 </dd></dl>
 
 <span class="target" id="module-nctime.utils.parser"></span><table class="docutils field-list" frame="void" rules="none">
