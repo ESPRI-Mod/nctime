@@ -7,7 +7,7 @@
 
 """
 
-from constants import FREQ_INC, TIME_UNITS, RUN_CARD, CONF_CARD
+from constants import FREQ_INC, TIME_UNITS, RUN_CARD, CONF_CARD, CLIMATOLOGY_FREQ
 
 
 ###############################
@@ -110,6 +110,19 @@ class InvalidFrequency(Exception):
         self.msg = "Unknown frequency"
         self.msg += "\n<frequency: {}>".format(frequency)
         self.msg += "\n<available frequencies: {}>".format(', '.join(FREQ_INC.keys()))
+        super(self.__class__, self).__init__(self.msg)
+
+
+class InvalidClimatologyFrequency(Exception):
+    """
+    Raised when frequency is unknown.
+
+    """
+
+    def __init__(self, frequency):
+        self.msg = "Unsupported climatology frequency"
+        self.msg += "\n<frequency: {}>".format(frequency)
+        self.msg += "\n<available frequencies: {}>".format(', '.join(CLIMATOLOGY_FREQ))
         super(self.__class__, self).__init__(self.msg)
 
 

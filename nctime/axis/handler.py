@@ -11,10 +11,10 @@ from uuid import uuid4
 import nco
 import numpy as np
 from fuzzywuzzy import fuzz, process
-
+from netcdftime import datetime
 from constants import *
 from custom_exceptions import *
-from nctime.utils.constants import CLIM_SUFFIX, END_TIME_CORRECTION
+from nctime.utils.constants import CLIM_SUFFIX, AVERAGE_CORRECTION_FREQ
 from nctime.utils.custom_exceptions import *
 from nctime.utils.custom_print import *
 from nctime.utils.misc import ncopen
@@ -32,15 +32,13 @@ class File(object):
 
     """
 
-    def __init__(self, ffp, pattern, ref_units, ref_calendar, correction):
+    def __init__(self, ffp, pattern, ref_units, ref_calendar):
         # Retrieve the file full path
         self.ffp = ffp
         # Retrieve the reference time units to use
         self.ref_units = ref_units
         # Retrieve the reference calendar to use
         self.ref_calendar = ref_calendar
-        # If true dates from filename
-        self.correction = correction
         # Retrieve the file size
         self.size = os.stat(self.ffp).st_size
         # Retrieve directory and filename full path
@@ -122,20 +120,22 @@ class File(object):
         dates = get_start_end_dates_from_filename(filename=self.name,
                                                   pattern=pattern,
                                                   frequency=self.frequency,
-                                                  calendar=self.calendar,
-                                                  correction=self.correction)
-
+                                                  calendar=self.calendar)
         dates_num = date2num(dates, units=self.funits, calendar=self.calendar)
-        # Apply time offset only if:
-        # - NON-INSTANT axis
-        # - AND NOT (frequency is 3hr or 6hr WITH corrected timestamps)
-        if not self.is_instant and not (self.frequency in END_TIME_CORRECTION.keys() and not correction):
-            if self.frequency == "dec":
-                # Add half of 10 years because no "decenal" unit.
-                dates_num += 0.5 * time_inc(self.frequency)[0]
+        if self.is_climatology:
+            # Apply time offset corresponding to the climatology:
+            self.clim_diff = (dates_num[1] - dates_num[0]) / 2
+            if self.frequency == 'monC':
+                dates_num[0] += self.clim_diff - 11
+                dates_num[1] -= self.clim_diff
+            elif self.frequency == '1hrCM':
+                dates_num[0] += self.clim_diff - 23.5
+                dates_num[1] -= self.clim_diff + 0.5
             else:
-                # Add half of a unit
-                dates_num += 0.5
+                raise InvalidClimatologyFrequency(self.frequency)
+        elif not self.is_instant and self.frequency in AVERAGE_CORRECTION_FREQ:
+            # Apply time offset for non-instant time axis:
+            dates_num += 0.5
         self.start_axis = dates_num[0]
         dates = num2date(dates_num, units=self.funits, calendar=self.calendar)
         self.start_num, self.end_num, _ = date2num(dates, units=self.tunits, calendar=self.calendar)
@@ -148,7 +148,7 @@ class File(object):
         self.last_timestamp = None
         self.last_num = None
 
-    def load_last_date(self):
+    def get_last_date(self):
         """
         Builds the last theoretical date and timestamp.
 
@@ -197,8 +197,16 @@ class File(object):
                              stop=self.start_axis + self.length * self.step,
                              step=self.step)
         num_axis_bnds_inf, num_axis_bnds_sup = num_axis, copy(num_axis)
-        num_axis_bnds_inf -= 0.5 * self.step
-        num_axis_bnds_sup += 0.5 * self.step
+        if self.is_climatology:
+            if self.frequency == 'monC':
+                num_axis_bnds_inf -= self.clim_diff - 11
+                num_axis_bnds_sup += self.clim_diff + 1
+            elif self.frequency == '1hrCM':
+                num_axis_bnds_inf -= self.clim_diff - 23.5
+                num_axis_bnds_sup += self.clim_diff + 0.5
+        else:
+            num_axis_bnds_inf -= 0.5 * self.step
+            num_axis_bnds_sup += 0.5 * self.step
         num_axis_bnds = np.column_stack((num_axis_bnds_inf, num_axis_bnds_sup))
         del num_axis, num_axis_bnds_inf, num_axis_bnds_sup
         date_axis_bnds = num2date(num_axis_bnds, units=self.funits, calendar=self.ref_calendar)

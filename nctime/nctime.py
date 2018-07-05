@@ -206,11 +206,6 @@ def get_args():
         metavar='CODE',
         default='',
         help=IGNORE_ERROR_HELP)
-    axis.add_argument(
-        '--correct-timestamp',
-        action='store_true',
-        default=False,
-        help=CORRECT_TIMESTAMP_HELP)
     return main.prog, main.parse_args()
 
 

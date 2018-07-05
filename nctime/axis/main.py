@@ -39,9 +39,8 @@ def process(ffp):
         fh = File(ffp=ffp,
                   pattern=pctx.pattern,
                   ref_units=pctx.ref_units,
-                  ref_calendar=pctx.ref_calendar,
-                  correction=pctx.correction)
-        fh.load_last_date()
+                  ref_calendar=pctx.ref_calendar)
+        fh.get_last_date()
         # In the case of inconsistent timestamps, it may be due to float precision issue
         if not pctx.on_fly and fh.last_timestamp != fh.end_timestamp:
             if int(float(fh.last_timestamp)) < int(float(fh.end_timestamp)):

@@ -204,18 +204,6 @@ AXIS_HELP = \
     
     """
 
-CORRECT_TIMESTAMP_HELP = \
-    """
-    Filename digits for sub-daily frequencies should start|n
-    at 000000 and end at 2100000 (180000) respectively|n
-    whether the time axis is instantaneous or not. This|n
-    applies the appropriate correction on filename timestamp|n
-    for sub-daily frequencies.|n
-    By default start and end timestamps will stricly|n
-    correspond to the filename.
-
-    """
-
 ON_FLY_HELP = \
     """
     Ignore the test on end date consistency for on going|n
@@ -303,91 +291,6 @@ SET_INC_HELP = \
     2 Months between time steps instead of 1).
     """
 
-# Time constants numerical definition
-HALF_HOUR = 0.125 / 6.0
-QUARTER_HOUR = 0.125 / 12.0
-
-# Filename date correction for 3hr and 6hr files
-START_TIME_CORRECTION = {'000000': 0.0,
-                         '003000': -HALF_HOUR,
-                         '010000': -HALF_HOUR * 2,
-                         '013000': -HALF_HOUR * 3,
-                         '020000': -HALF_HOUR * 4,
-                         '020300': -HALF_HOUR * 5,
-                         '030000': -HALF_HOUR * 6,
-                         '033000': -HALF_HOUR * 7,
-                         '040000': -HALF_HOUR * 8,
-                         '043000': -HALF_HOUR * 9,
-                         '050000': -HALF_HOUR * 10,
-                         '053000': -HALF_HOUR * 11,
-                         '060000': -HALF_HOUR * 12,
-                         '063000': -HALF_HOUR * 13}
-
-END_TIME_CORRECTION = {'subhr': {'233000': 0.0,
-                                 '234500': -QUARTER_HOUR,
-                                 '000000': -HALF_HOUR,
-                                 '001500': -QUARTER_HOUR * 3,
-                                 '003000': -HALF_HOUR * 2},
-                       'subhrPt': {'233000': 0.0,
-                                   '234500': -QUARTER_HOUR,
-                                   '000000': -HALF_HOUR,
-                                   '001500': -QUARTER_HOUR * 3,
-                                   '003000': -HALF_HOUR * 2},
-                       '1hr': {'230000': 0.0,
-                               '233000': -HALF_HOUR,
-                               '000000': -HALF_HOUR * 2,
-                               '003000': -HALF_HOUR * 3},
-                       '1hrCM': {'230000': 0.0,
-                                 '233000': -HALF_HOUR,
-                                 '000000': -HALF_HOUR * 2,
-                                 '003000': -HALF_HOUR * 3},
-                       '1hrPt': {'230000': 0.0,
-                                 '233000': -HALF_HOUR,
-                                 '000000': -HALF_HOUR * 2,
-                                 '003000': -HALF_HOUR * 3},
-                       '3hr': {'210000': 0.0,
-                               '213000': -HALF_HOUR,
-                               '220000': -HALF_HOUR * 2,
-                               '223000': -HALF_HOUR * 3,
-                               '230000': -HALF_HOUR * 4,
-                               '000000': -HALF_HOUR * 6,
-                               '003000': -HALF_HOUR * 7},
-                       '3hrPt': {'210000': 0.0,
-                                 '213000': -HALF_HOUR,
-                                 '220000': -HALF_HOUR * 2,
-                                 '223000': -HALF_HOUR * 3,
-                                 '230000': -HALF_HOUR * 4,
-                                 '000000': -HALF_HOUR * 6,
-                                 '003000': -HALF_HOUR * 7},
-                       '6hr': {'180000': 0.0,
-                               '183000': -HALF_HOUR * 1,
-                               '190000': -HALF_HOUR * 2,
-                               '193000': -HALF_HOUR * 3,
-                               '200000': -HALF_HOUR * 4,
-                               '203000': -HALF_HOUR * 5,
-                               '210000': -HALF_HOUR * 6,
-                               '213000': -HALF_HOUR * 7,
-                               '220000': -HALF_HOUR * 8,
-                               '223000': -HALF_HOUR * 9,
-                               '230000': -HALF_HOUR * 10,
-                               '233000': -HALF_HOUR * 11,
-                               '000000': -HALF_HOUR * 12,
-                               '003000': -HALF_HOUR * 13},
-                       '6hrPt': {'180000': 0.0,
-                                 '183000': -HALF_HOUR * 1,
-                                 '190000': -HALF_HOUR * 2,
-                                 '193000': -HALF_HOUR * 3,
-                                 '200000': -HALF_HOUR * 4,
-                                 '203000': -HALF_HOUR * 5,
-                                 '210000': -HALF_HOUR * 6,
-                                 '213000': -HALF_HOUR * 7,
-                                 '220000': -HALF_HOUR * 8,
-                                 '223000': -HALF_HOUR * 9,
-                                 '230000': -HALF_HOUR * 10,
-                                 '233000': -HALF_HOUR * 11,
-                                 '000000': -HALF_HOUR * 12,
-                                 '003000': -HALF_HOUR * 13}}
-
 # Default time units
 DEFAULT_TIME_UNITS = {'cordex': 'days since 1949-12-01 00:00:00',
                       'cordex-adjust': 'days since 1949-12-01 00:00:00'}
@@ -420,3 +323,9 @@ TIME_UNITS = {'s': 'seconds',
               'D': 'days',
               'M': 'months',
               'Y': 'years'}
+
+# Frequencies to consider in case of non-instant time correction
+AVERAGE_CORRECTION_FREQ = ['day', 'mon', 'monPt', 'yr', 'yrPt']
+
+# Frequencies to consider in case of non-instant time correction
+CLIMATOLOGY_FREQ = ['monC', '1hrCM']

@@ -37,7 +37,6 @@ class ProcessingContext(BaseContext):
             self.on_fly = True if not is_simulation_completed(args.card) else False
         self.limit = args.limit
         self.ignore_codes = args.ignore_errors
-        self.correction = args.correct_timestamp
         self.status = []
         self.file_filter = []
 
