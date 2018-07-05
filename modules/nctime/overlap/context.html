@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.overlap.context &mdash; nctime 4.4.4 documentation</title>
+  <title>nctime.overlap.context &mdash; nctime 4.4.6 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 4.4.4 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 4.4.6 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -214,12 +214,12 @@
     <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">OKBLUE</span><span class="p">(</span><span class="s1">&#39;Number of node(s): </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nbnodes</span><span class="p">))</span>
         <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">HEADER</span><span class="p">(</span><span class="s1">&#39;Number of dataset(s): </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nbdsets</span><span class="p">))</span>
-        <span class="n">m</span> <span class="o">=</span> <span class="s1">&#39;Number of datasets with overlap(s): </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">overlaps</span><span class="p">)</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="s1">&#39;Number of dataset(s) with overlap(s): </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">overlaps</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">overlaps</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">FAIL</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-        <span class="n">m</span> <span class="o">=</span> <span class="s1">&#39;Number of datasets with broken time series: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broken</span><span class="p">)</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="s1">&#39;Number of dataset(s) with broken time series: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broken</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">broken</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">FAIL</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -305,7 +305,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'4.4.4',
+            VERSION:'4.4.6',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Code documentation &mdash; nctime 4.4.4 documentation</title>
+  <title>Code documentation &mdash; nctime 4.4.6 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="nctime 4.4.4 documentation" href="index.html"/>
+    <link rel="top" title="nctime 4.4.6 documentation" href="index.html"/>
         <link rel="prev" title="Change Log" href="log.html"/> 
 
   
@@ -649,7 +649,7 @@ Each filename pattern is deserialized as a dictionary of facet: value.</p>
 </table>
 <dl class="class">
 <dt id="nctime.axis.handler.File">
-<em class="property">class </em><code class="descclassname">nctime.axis.handler.</code><code class="descname">File</code><span class="sig-paren">(</span><em>ffp</em>, <em>pattern</em>, <em>ref_units</em>, <em>ref_calendar</em>, <em>correction</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/handler.html#File"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.handler.File" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">nctime.axis.handler.</code><code class="descname">File</code><span class="sig-paren">(</span><em>ffp</em>, <em>pattern</em>, <em>ref_units</em>, <em>ref_calendar</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/handler.html#File"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.handler.File" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handler providing methods to deal with file processing.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -662,8 +662,8 @@ Each filename pattern is deserialized as a dictionary of facet: value.</p>
 </tbody>
 </table>
 <dl class="method">
-<dt id="nctime.axis.handler.File.load_last_date">
-<code class="descname">load_last_date</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/handler.html#File.load_last_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.handler.File.load_last_date" title="Permalink to this definition">¶</a></dt>
+<dt id="nctime.axis.handler.File.get_last_date">
+<code class="descname">get_last_date</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/handler.html#File.get_last_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.handler.File.get_last_date" title="Permalink to this definition">¶</a></dt>
 <dd><p>Builds the last theoretical date and timestamp.</p>
 </dd></dl>
 
@@ -1244,6 +1244,12 @@ Default is to match inclusive regex.</p>
 </dd></dl>
 
 <dl class="exception">
+<dt id="nctime.utils.custom_exceptions.InvalidClimatologyFrequency">
+<em class="property">exception </em><code class="descclassname">nctime.utils.custom_exceptions.</code><code class="descname">InvalidClimatologyFrequency</code><span class="sig-paren">(</span><em>frequency</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/custom_exceptions.html#InvalidClimatologyFrequency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.custom_exceptions.InvalidClimatologyFrequency" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when frequency is unknown.</p>
+</dd></dl>
+
+<dl class="exception">
 <dt id="nctime.utils.custom_exceptions.InvalidUnits">
 <em class="property">exception </em><code class="descclassname">nctime.utils.custom_exceptions.</code><code class="descname">InvalidUnits</code><span class="sig-paren">(</span><em>units</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/custom_exceptions.html#InvalidUnits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.custom_exceptions.InvalidUnits" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raised when time units is unknown.</p>
@@ -1508,7 +1514,7 @@ If time units are not “years since” or “months since” calls usual <code 
 
 <dl class="function">
 <dt id="nctime.utils.time.get_start_end_dates_from_filename">
-<code class="descclassname">nctime.utils.time.</code><code class="descname">get_start_end_dates_from_filename</code><span class="sig-paren">(</span><em>filename</em>, <em>pattern</em>, <em>frequency</em>, <em>calendar</em>, <em>correction=False</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#get_start_end_dates_from_filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.get_start_end_dates_from_filename" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nctime.utils.time.</code><code class="descname">get_start_end_dates_from_filename</code><span class="sig-paren">(</span><em>filename</em>, <em>pattern</em>, <em>frequency</em>, <em>calendar</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/time.html#get_start_end_dates_from_filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.time.get_start_end_dates_from_filename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns datetime objects for start and end dates from the filename.
 To rebuild a proper time axis, the dates from filename are expected to set the first
 time boundary and not the middle of the time interval.</p>
@@ -1522,7 +1528,6 @@ time boundary and not the middle of the time interval.</p>
 </li>
 <li><strong>frequency</strong> (<em>str</em>) – The time frequency</li>
 <li><strong>calendar</strong> (<em>str</em>) – The NetCDF calendar attribute</li>
-<li><strong>correction</strong> (<em>boolean</em>) – Apply time correction if True</li>
 </ul>
 </td>
 </tr>
@@ -1789,7 +1794,7 @@ time boundary and not the middle of the time interval.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'4.4.4',
+            VERSION:'4.4.6',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

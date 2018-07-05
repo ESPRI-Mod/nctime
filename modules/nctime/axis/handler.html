@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.axis.handler &mdash; nctime 4.4.4 documentation</title>
+  <title>nctime.axis.handler &mdash; nctime 4.4.6 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 4.4.4 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 4.4.6 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -170,20 +170,18 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span> <span class="k">as</span> <span class="n">copy</span>
 <span class="kn">from</span> <span class="nn">uuid</span> <span class="k">import</span> <span class="n">uuid4</span>
 
 <span class="kn">import</span> <span class="nn">nco</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">fuzzywuzzy</span> <span class="k">import</span> <span class="n">fuzz</span><span class="p">,</span> <span class="n">process</span>
-
+<span class="kn">from</span> <span class="nn">netcdftime</span> <span class="k">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">constants</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">custom_exceptions</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">nctime.utils.constants</span> <span class="k">import</span> <span class="n">CLIM_SUFFIX</span><span class="p">,</span> <span class="n">END_TIME_CORRECTION</span>
+<span class="kn">from</span> <span class="nn">nctime.utils.constants</span> <span class="k">import</span> <span class="n">CLIM_SUFFIX</span><span class="p">,</span> <span class="n">AVERAGE_CORRECTION_FREQ</span>
 <span class="kn">from</span> <span class="nn">nctime.utils.custom_exceptions</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">nctime.utils.custom_print</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">nctime.utils.misc</span> <span class="k">import</span> <span class="n">ncopen</span>
 <span class="kn">from</span> <span class="nn">nctime.utils.time</span> <span class="k">import</span> <span class="n">time_inc</span><span class="p">,</span> <span class="n">convert_time_units</span>
 <span class="kn">from</span> <span class="nn">nctime.utils.time</span> <span class="k">import</span> <span class="n">truncated_timestamp</span><span class="p">,</span> <span class="n">get_start_end_dates_from_filename</span><span class="p">,</span> <span class="n">dates2str</span><span class="p">,</span> <span class="n">num2date</span><span class="p">,</span> <span class="n">date2num</span><span class="p">,</span> \
@@ -199,15 +197,13 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ffp</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">ref_units</span><span class="p">,</span> <span class="n">ref_calendar</span><span class="p">,</span> <span class="n">correction</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ffp</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">ref_units</span><span class="p">,</span> <span class="n">ref_calendar</span><span class="p">):</span>
         <span class="c1"># Retrieve the file full path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ffp</span> <span class="o">=</span> <span class="n">ffp</span>
         <span class="c1"># Retrieve the reference time units to use</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ref_units</span> <span class="o">=</span> <span class="n">ref_units</span>
         <span class="c1"># Retrieve the reference calendar to use</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ref_calendar</span> <span class="o">=</span> <span class="n">ref_calendar</span>
-        <span class="c1"># If true dates from filename</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">correction</span> <span class="o">=</span> <span class="n">correction</span>
         <span class="c1"># Retrieve the file size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ffp</span><span class="p">)</span><span class="o">.</span><span class="n">st_size</span>
         <span class="c1"># Retrieve directory and filename full path</span>
@@ -229,7 +225,7 @@
                 <span class="n">key</span><span class="p">,</span> <span class="n">score</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">extractOne</span><span class="p">(</span><span class="s1">&#39;frequency&#39;</span><span class="p">,</span> <span class="n">nc</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">(),</span> <span class="n">scorer</span><span class="o">=</span><span class="n">fuzz</span><span class="o">.</span><span class="n">partial_ratio</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="mi">80</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">getncattr</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Consider &quot;</span><span class="si">{}</span><span class="s1">&quot; attribute instead of &quot;frequency&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+                    <span class="n">Print</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Consider &quot;</span><span class="si">{}</span><span class="s1">&quot; attribute instead of &quot;frequency&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span class="s1">&#39;frequency&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ffp</span><span class="p">)</span>
             <span class="c1"># Get time length and vector</span>
@@ -241,12 +237,18 @@
             <span class="n">t</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][:]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">time_axis</span> <span class="o">=</span> <span class="n">trunc</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">NDECIMALS</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">date_axis</span> <span class="o">=</span> <span class="n">dates2str</span><span class="p">(</span><span class="n">num2date</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_units</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_calendar</span><span class="p">))</span>
-            <span class="k">del</span> <span class="n">t</span>
             <span class="c1"># Get time boundaries</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">has_bounds</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">time_bounds</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">date_bounds</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tbnds</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">if</span> <span class="s1">&#39;bounds&#39;</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">has_bounds</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tbnds</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">bounds</span>
+            <span class="k">if</span> <span class="s1">&#39;climatology&#39;</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">has_bounds</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tbnds</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">climatology</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tbnds</span><span class="p">:</span>
                 <span class="n">bnds</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tbnds</span><span class="p">][:,</span> <span class="p">:]</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">time_bounds</span> <span class="o">=</span> <span class="n">trunc</span><span class="p">(</span><span class="n">bnds</span><span class="p">,</span> <span class="n">NDECIMALS</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">date_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span>
@@ -269,6 +271,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">is_instant</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">if</span> <span class="s1">&#39;time: point&#39;</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">cell_methods</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">is_instant</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="c1"># Get boolean on climatology time axis</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_climatology</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="s1">&#39;climatology&#39;</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">is_climatology</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="c1"># Get time step increment from frequency property</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_units</span> <span class="o">=</span> <span class="n">time_inc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">)</span>
         <span class="c1"># Convert reference time units into frequency units depending on the file (i.e., months/year/hours since ...)</span>
@@ -279,13 +285,21 @@
         <span class="n">dates</span> <span class="o">=</span> <span class="n">get_start_end_dates_from_filename</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                                                   <span class="n">pattern</span><span class="o">=</span><span class="n">pattern</span><span class="p">,</span>
                                                   <span class="n">frequency</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">,</span>
-                                                  <span class="n">calendar</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calendar</span><span class="p">,</span>
-                                                  <span class="n">correction</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">correction</span><span class="p">)</span>
+                                                  <span class="n">calendar</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calendar</span><span class="p">)</span>
         <span class="n">dates_num</span> <span class="o">=</span> <span class="n">date2num</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">funits</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calendar</span><span class="p">)</span>
-        <span class="c1"># Apply time offset only if:</span>
-        <span class="c1"># - NON-INSTANT axis</span>
-        <span class="c1"># - AND NOT (frequency is 3hr or 6hr WITH corrected timestamps)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_instant</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frequency</span> <span class="ow">in</span> <span class="n">END_TIME_CORRECTION</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">correction</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_climatology</span><span class="p">:</span>
+            <span class="c1"># Apply time offset corresponding to the climatology:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clim_diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">dates_num</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">dates_num</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span> <span class="o">==</span> <span class="s1">&#39;monC&#39;</span><span class="p">:</span>
+                <span class="n">dates_num</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clim_diff</span> <span class="o">-</span> <span class="mi">11</span>
+                <span class="n">dates_num</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clim_diff</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span> <span class="o">==</span> <span class="s1">&#39;1hrCM&#39;</span><span class="p">:</span>
+                <span class="n">dates_num</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clim_diff</span> <span class="o">-</span> <span class="mf">23.5</span>
+                <span class="n">dates_num</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clim_diff</span> <span class="o">+</span> <span class="mf">0.5</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InvalidClimatologyFrequency</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_instant</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span> <span class="ow">in</span> <span class="n">AVERAGE_CORRECTION_FREQ</span><span class="p">:</span>
+            <span class="c1"># Apply time offset for non-instant time axis:</span>
             <span class="n">dates_num</span> <span class="o">+=</span> <span class="mf">0.5</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start_axis</span> <span class="o">=</span> <span class="n">dates_num</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">dates</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span><span class="n">dates_num</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">funits</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calendar</span><span class="p">)</span>
@@ -299,7 +313,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">last_timestamp</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_num</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="File.load_last_date"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.handler.File.load_last_date">[docs]</a>    <span class="k">def</span> <span class="nf">load_last_date</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="File.get_last_date"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.handler.File.get_last_date">[docs]</a>    <span class="k">def</span> <span class="nf">get_last_date</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Builds the last theoretical date and timestamp.</span>
 
@@ -348,8 +362,16 @@
                              <span class="n">stop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">start_axis</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span>
                              <span class="n">step</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
         <span class="n">num_axis_bnds_inf</span><span class="p">,</span> <span class="n">num_axis_bnds_sup</span> <span class="o">=</span> <span class="n">num_axis</span><span class="p">,</span> <span class="n">copy</span><span class="p">(</span><span class="n">num_axis</span><span class="p">)</span>
-        <span class="n">num_axis_bnds_inf</span> <span class="o">-=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span>
-        <span class="n">num_axis_bnds_sup</span> <span class="o">+=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_climatology</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span> <span class="o">==</span> <span class="s1">&#39;monC&#39;</span><span class="p">:</span>
+                <span class="n">num_axis_bnds_inf</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clim_diff</span> <span class="o">-</span> <span class="mi">11</span>
+                <span class="n">num_axis_bnds_sup</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clim_diff</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span> <span class="o">==</span> <span class="s1">&#39;1hrCM&#39;</span><span class="p">:</span>
+                <span class="n">num_axis_bnds_inf</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clim_diff</span> <span class="o">-</span> <span class="mf">23.5</span>
+                <span class="n">num_axis_bnds_sup</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clim_diff</span> <span class="o">+</span> <span class="mf">0.5</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">num_axis_bnds_inf</span> <span class="o">-=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span>
+            <span class="n">num_axis_bnds_sup</span> <span class="o">+=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span>
         <span class="n">num_axis_bnds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">num_axis_bnds_inf</span><span class="p">,</span> <span class="n">num_axis_bnds_sup</span><span class="p">))</span>
         <span class="k">del</span> <span class="n">num_axis</span><span class="p">,</span> <span class="n">num_axis_bnds_inf</span><span class="p">,</span> <span class="n">num_axis_bnds_sup</span>
         <span class="n">date_axis_bnds</span> <span class="o">=</span> <span class="n">num2date</span><span class="p">(</span><span class="n">num_axis_bnds</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">funits</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_calendar</span><span class="p">)</span>
@@ -486,7 +508,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'4.4.4',
+            VERSION:'4.4.6',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
