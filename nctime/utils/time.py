@@ -76,7 +76,7 @@ def control_time_units(tunits, tunits_default=None):
         return ' '.join(units)
 
 
-def convert_time_units(tunits, frequency):
+def convert_time_units(tunits, table, frequency):
     """
     Converts default time units from file into time units using the MIP frequency.
     As en example, for a 3-hourly file, the time units "days since YYYY-MM-DD" becomes
@@ -88,7 +88,7 @@ def convert_time_units(tunits, frequency):
     :rtype: *str*
 
     """
-    return tunits.replace('days', FREQ_INC[frequency][1])
+    return tunits.replace('days', FREQ_INC[(table,frequency)][1])
 
 
 def untruncated_timestamp(timestamp):
@@ -301,7 +301,7 @@ def add_year(date, years_to_add):
     return date_next
 
 
-def get_start_end_dates_from_filename(filename, pattern, frequency, calendar):
+def get_start_end_dates_from_filename(filename, pattern, table, frequency, calendar, start=None, end=None):
     """
     Returns datetime objects for start and end dates from the filename.
     To rebuild a proper time axis, the dates from filename are expected to set the first
@@ -310,16 +310,20 @@ def get_start_end_dates_from_filename(filename, pattern, frequency, calendar):
     :param str filename: The filename
     :param re Object pattern: The filename pattern as a regex (from `re library \
     <https://docs.python.org/2/library/re.html>`_).
+    :param str table: The MIP table
     :param str frequency: The time frequency
     :param str calendar: The NetCDF calendar attribute
+    :param str start: The timestamp to consider as start instead of filename timestamps
+    :param str calendar: The timestamp to consider as end instead of filename timestamps
     :returns: Start and end dates from the filename
     :rtype: *netcdftime.datetime*
 
     """
     dates = []
     date_as_since = None
+    inputs = {'period_start': start, 'period_end': end}
     for key in ['period_start', 'period_end']:
-        date = re.match(pattern, filename).groupdict()[key]
+        date = inputs[key] if inputs[key] else re.match(pattern, filename).groupdict()[key]
         digits = untruncated_timestamp(date)
         # Convert string digits to %Y-%m-%d %H:%M:%S format
         date_as_since = ''.join([''.join(triple) for triple in
@@ -328,12 +332,12 @@ def get_start_end_dates_from_filename(filename, pattern, frequency, calendar):
         dates.append(num2date(0.0, units='days since ' + date_as_since, calendar=calendar))
     # Append date next to the end date for overlap diagnostic
     try:
-        dates.append(num2date(time_inc(frequency)[0],
-                              units=time_inc(frequency)[1] + ' since ' + date_as_since,
+        dates.append(num2date(time_inc(table, frequency)[0],
+                              units=time_inc(table, frequency)[1] + ' since ' + date_as_since,
                               calendar=calendar)[0])
     except TypeError:
-        dates.append(num2date(time_inc(frequency)[0],
-                              units=time_inc(frequency)[1] + ' since ' + date_as_since,
+        dates.append(num2date(time_inc(table, frequency)[0],
+                              units=time_inc(table, frequency)[1] + ' since ' + date_as_since,
                               calendar=calendar))
     return dates
 
@@ -392,16 +396,21 @@ def trunc(array, ndecimals):
     return np.trunc(array * decade) / decade
 
 
-def time_inc(frequency):
+def time_inc(table, frequency):
     """
-    Returns the time incrementation and time units depending on the MIP frequency.
+    Returns the time incrementation and time units depending on the MIP frequency and table.
 
+    :param str table: The MIP table
     :param str frequency: The MIP frequency
     :returns: The corresponding time value and units
     :rtype: *list*
 
     """
-    return FREQ_INC[frequency]
+    if table not in set(zip(*FREQ_INC.keys())[0]):
+        raise InvalidTable(table)
+    if frequency not in set(zip(*FREQ_INC.keys())[1]):
+        raise InvalidFrequency(frequency)
+    return FREQ_INC[table, frequency]
 
 
 def dates2int(dates):

@@ -65,9 +65,16 @@ class BaseContext(object):
             self.tunits_default = DEFAULT_TIME_UNITS[self.project]
         # Change frequency increment
         if args.set_inc:
-            for frequency, increment, units in args.set_inc:
-                FREQ_INC[frequency][0] = float(increment)
-                FREQ_INC[frequency][1] = str(units)
+            for table, frequency, increment, units in args.set_inc:
+                keys = [(table, frequency)]
+                tables = [table]
+                frequencies = [frequency]
+                if table == 'all':
+                    keys = [k for k in FREQ_INC.keys() if k[1] == frequency]
+                if frequency == 'all':
+                    keys = [k for k in FREQ_INC.keys() if k[0] == table]
+                for key in keys:
+                    FREQ_INC[key] = [float(increment), str(units)]
         # Init collector
         self.sources = None
 

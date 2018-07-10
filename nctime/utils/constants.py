@@ -218,6 +218,20 @@ CARD_HELP = \
 
     """
 
+START_HELP = \
+    """
+    Theoretical starting timestamp to consider.|n
+    Default is to consider timestamps from filename.
+
+    """
+
+END_HELP = \
+    """
+    Theoretical ending timestamp to consider.|n
+    Default is to consider timestamps from filename.
+
+    """
+
 LIMIT_HELP = \
     """
     Limit of displayed wrong timesteps (if exist)|n
@@ -285,10 +299,13 @@ EXCLUDE_FILE_HELP = \
 
 SET_INC_HELP = \
     """
-    Overwrites the default time increment of a frequency.|n
-    Duplicate the flag to overwrites several increment|n
-    (e.g., mon=2M will set monthly frequency equivalent to |n
-    2 Months between time steps instead of 1).
+    Overwrites the default time increment of a |n
+    table:frequency couple. Duplicate the flag to |n
+    overwrites several increments. Wildcard "*" is allowed|n
+    to overwite increment for all frequencies or all tables|n
+    (e.g., *:mon=2M will set monthly frequency equivalent to |n
+    2 Months between time steps instead of 1 for all tables).
+
     """
 
 # Default time units
@@ -299,22 +316,93 @@ DEFAULT_TIME_UNITS = {'cordex': 'days since 1949-12-01 00:00:00',
 CLIM_SUFFIX = '-clim.nc'
 
 # Frequency increment
-FREQ_INC = {'subhr': [30, 'minutes'],
-            'subhrPt': [30, 'minutes'],
-            '1hr': [1, 'hours'],
-            '1hrCM': [1, 'hours'],
-            '1hrPt': [1, 'hours'],
-            '3hr': [3, 'hours'],
-            '3hrPt': [3, 'hours'],
-            '6hr': [6, 'hours'],
-            '6hrPt': [6, 'hours'],
-            'day': [1, 'days'],
-            'dec': [10, 'years'],
-            'mon': [1, 'months'],
-            'monC': [1, 'months'],
-            'monPt': [1, 'months'],
-            'yr': [1, 'years'],
-            'yrPt': [1, 'years']}
+FREQ_INC = {('None', 'subhr'): [30, 'minutes'],
+            ('None', 'subhrPt'): [30, 'minutes'],
+            ('None', '1hr'): [1, 'hours'],
+            ('None', '1hrCM'): [1, 'hours'],
+            ('None', '1hrPt'): [1, 'hours'],
+            ('None', '3hr'): [3, 'hours'],
+            ('None', '3hrPt'): [3, 'hours'],
+            ('None', '6hr'): [6, 'hours'],
+            ('None', '6hrPt'): [6, 'hours'],
+            ('None', 'day'): [1, 'days'],
+            ('None', 'dec'): [10, 'years'],
+            ('None', 'mon'): [1, 'months'],
+            ('None', 'monC'): [1, 'months'],
+            ('None', 'monPt'): [1, 'months'],
+            ('None', 'yr'): [1, 'years'],
+            ('None', 'yrPt'): [1, 'years'],
+            ('3hr', '3hr'): [3, 'hours'],
+            ('3hr', '3hrPt'): [3, 'hours'],
+            ('3hrCurt', '3hr'): [3, 'hours'],
+            ('3hrMlev', '3hr'): [3, 'hours'],
+            ('3hrPlev', '3hr'): [3, 'hours'],
+            ('3hrSlev', '3hr'): [3, 'hours'],
+            ('6hrLev', '6hrPt'): [6, 'hours'],
+            ('6hrLev', '6hr'): [6, 'hours'],
+            ('6hrPlev', '6hr'): [6, 'hours'],
+            ('6hrPlevPt', '6hr'): [6, 'hours'],
+            ('6hrPlevPt', '6hrPt'): [6, 'hours'],
+            ('Aclim', 'monClim'): [1, 'months'],
+            ('AERday', 'day'): [1, 'days'],
+            ('AERhr', '1hr'): [1, 'hours'],
+            ('AERmon', 'mon'): [1, 'months'],
+            ('AERmonZ', 'mon'): [1, 'months'],
+            ('aero', 'mon'): [1, 'months'],
+            ('Amon', 'mon'): [1, 'months'],
+            ('Amon', 'monC'): [1, 'months'],
+            ('Amon', 'monClim'): [1, 'months'],
+            ('AmonExtras', 'mon'): [1, 'months'],
+            ('CF3hr', '3hrPt'): [3, 'hours'],
+            ('cf3hr', '3hr'): [3, 'hours'],
+            ('CFday', 'day'): [1, 'days'],
+            ('cfDay', 'day'): [1, 'days'],
+            ('CFmon', 'day'): [1, 'days'],
+            ('cfMon', 'mon'): [1, 'months'],
+            ('cfOff', 'mon'): [1, 'months'],
+            ('cfSites', '3hr'): [3, 'hours'],
+            ('cfSites', '6hr'): [6, 'hours'],
+            ('cfSites', 'subhr'): [30, 'minutes'],
+            ('CFsubhr', 'subhrPt'): [30, 'minutes'],
+            ('day', 'day'): [1, 'days'],
+            ('dayExtras', 'day'): [1, 'days'],
+            ('E1hr', '1hr'): [1, 'hours'],
+            ('E1hr', '1hrPt'): [1, 'hours'],
+            ('E1hrClimMon', '1hrCM'): [1, 'hours'],
+            ('E3hr', '3hr'): [3, 'hours'],
+            ('E3hrPt', '3hrPt'): [3, 'hours'],
+            ('E6hrZ', '6hr'): [6, 'hours'],
+            ('E6hrZ', '6hrPt'): [6, 'hours'],
+            ('Eday', 'day'): [1, 'days'],
+            ('EdayZ', 'day'): [1, 'days'],
+            ('Emon', 'mon'): [1, 'months'],
+            ('EmonZ', 'mon'): [1, 'months'],
+            ('Esubhr', 'subhrPt'): [30, 'minutes'],
+            ('Eyr', 'yr'): [1, 'years'],
+            ('Eyr', 'yrPt'): [1, 'years'],
+            ('ImonAnt', 'mon'): [1, 'months'],
+            ('ImonGre', 'mon'): [1, 'months'],
+            ('IyrAnt', 'yr'): [1, 'years'],
+            ('IyrGre', 'yr'): [1, 'years'],
+            ('Lclim', 'monClim'): [1, 'months'],
+            ('LIclim', 'monClim'): [1, 'months'],
+            ('LImon', 'mon'): [1, 'months'],
+            ('Lmon', 'mon'): [1, 'months'],
+            ('Oclim', 'monClim'): [1, 'months'],
+            ('Oclim', 'monC'): [1, 'months'],
+            ('Oday', 'day'): [1, 'days'],
+            ('Odec', 'dec'): [10, 'years'],
+            ('OIclim', 'monClim'): [1, 'months'],
+            ('OImon', 'mon'): [1, 'months'],
+            ('Omon', 'mon'): [1, 'months'],
+            ('OmonExtras', 'mon'): [1, 'months'],
+            ('Oyr', 'yr'): [1, 'years'],
+            ('OyrExtras', 'yr'): [1, 'years'],
+            ('SIday', 'day'): [1, 'days'],
+            ('SImon', 'mon'): [1, 'months'],
+            ('SImon', 'monPt'): [1, 'months'],
+            ('sites', 'subhr'): [30, 'minutes']}
+
 
 # Known time units
 TIME_UNITS = {'s': 'seconds',
@@ -328,4 +416,4 @@ TIME_UNITS = {'s': 'seconds',
 AVERAGE_CORRECTION_FREQ = ['day', 'mon', 'monPt', 'yr', 'yrPt']
 
 # Frequencies to consider in case of non-instant time correction
-CLIMATOLOGY_FREQ = ['monC', '1hrCM']
+CLIMATOLOGY_FREQ = ['monC', 'monClim', '1hrCM']

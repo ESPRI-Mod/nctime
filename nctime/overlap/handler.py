@@ -52,24 +52,50 @@ class Filename(object):
         :rtype: *float*
 
         """
-        # Get frequency
-        frequency = None
-        with ncopen(self.ffp) as nc:
-            # Get frequency from file
-            if 'frequency' in nc.ncattrs():
-                frequency = nc.getncattr('frequency')
-            else:
-                key, score = process.extractOne('frequency', nc.ncattrs(), scorer=fuzz.partial_ratio)
-                if score >= 80:
-                    frequency = nc.getncattr(key)
-                    Print.warning('Consider "{}" attribute instead of "frequency"'.format(key))
-                else:
-                    raise NoNetCDFAttribute('frequency', self.ffp)
+        # Get table from file
+        try:
+            table = self.nc_att_get('table_id')
+            # Extract MIP table from string if needed
+            table = table.split(" ")[1]
+        except IndexError:
+            table = self.nc_att_get('table_id')
+        except NoNetCDFAttribute:
+            table = 'None'
+        # Get frequency from file
+        frequency = self.nc_att_get('frequency')
         dates = get_start_end_dates_from_filename(filename=self.name,
                                                   pattern=pattern,
+                                                  table=table,
                                                   frequency=frequency,
                                                   calendar=calendar)
         self.start_date, self.end_date, self.next_date = dates2int(dates)
+
+    def nc_att_get(self, attribute, variable=None):
+        """
+        Get attribute from NetCDF file. Default is to find into global attributes.
+        If attribute key is not found, get the closest key name instead.
+
+
+        :param str attribute: The attribute key to get
+        :param str variable: The variable from which to find the attribute. Global is None.
+        :return: The attribute value
+        :rtype: *str*
+
+        """
+        with ncopen(self.ffp) as nc:
+            if variable:
+                attrs = nc.variables[variable].__dict__
+            else:
+                attrs = nc.__dict__
+            if attribute in attrs.keys():
+                return attrs[attribute]
+            else:
+                key, score = process.extractOne(attribute, attrs, scorer=fuzz.partial_ratio)
+                if score >= 80:
+                    Print.warning('Consider "{}" attribute instead of "frequency"'.format(key))
+                    return attrs(key)
+                else:
+                    raise NoNetCDFAttribute(attribute, self.ffp)
 
 
 class Graph(object):

@@ -15,10 +15,10 @@ from argparse import HelpFormatter, ArgumentTypeError, Action, ArgumentParser
 from gettext import gettext
 
 from constants import TIME_UNITS, FREQ_INC
-from custom_exceptions import InvalidUnits, InvalidFrequency
+from custom_exceptions import InvalidUnits, InvalidFrequency, InvalidTable
 
 
-class _ArgumentParser(ArgumentParser):
+class CustomParser(ArgumentParser):
     def error(self, message):
         """
         Overwrite the original method to change exist status.
@@ -140,6 +140,24 @@ class CodeChecker(Action):
         return codes
 
 
+class TimestampChecker(Action):
+    """
+    Checks if the supplied input exists.
+
+    """
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        checked_values = self.timestamp_checker(values)
+        setattr(namespace, self.dest, checked_values)
+
+    @staticmethod
+    def timestamp_checker(timestamp):
+        if not timestamp.isdigit():
+            msg = 'Bad timestamp format -- Digits only (e.g.: YYYYMMDDmmhhss).'
+            raise ArgumentTypeError(msg)
+        return timestamp
+
+
 def regex_validator(string):
     """
     Validates a Python regular expression syntax.
@@ -189,7 +207,40 @@ def processes_validator(value):
         return pnum
 
 
-def keyval_converter(pair):
+def inc_converter(string):
+    """
+    Checks the increment value syntax.
+
+    :param str string: The string to check
+    :returns: The key/value tuple
+    :rtype: *list*
+    :raises Error: If invalid pair syntax
+
+    """
+    pattern = re.compile(r'([^=]+):([^=]+)=([^=]+)(?:,|$)')
+    if not pattern.search(string):
+        msg = 'Bad argument syntax: {}'.format(string)
+        raise ArgumentTypeError(msg)
+    else:
+        table, frequency, v = pattern.search(string).groups()
+        inc, units = v[:-1], v[-1]
+        if not inc.isdigit():
+            msg = 'Bad argument syntax -- only digits allowed: {}'.format(inc)
+            raise ArgumentTypeError(msg)
+        tables = set(zip(*FREQ_INC.keys())[0])
+        tables.add('all')
+        if table not in tables:
+            raise InvalidTable(table)
+        frequencies = set(zip(*FREQ_INC.keys())[1])
+        frequencies.add('all')
+        if frequency not in frequencies:
+            raise InvalidFrequency(frequency)
+        if units not in TIME_UNITS.keys():
+            raise InvalidUnits(units)
+        return table, frequency, inc, TIME_UNITS[units]
+
+
+def table_inc_converter(pair):
     """
     Checks the key value syntax.
 
@@ -204,13 +255,13 @@ def keyval_converter(pair):
         msg = 'Bad argument syntax: {}'.format(pair)
         raise ArgumentTypeError(msg)
     else:
-        frequency, v = pattern.search(pair).groups()
+        table, v = pattern.search(pair).groups()
         inc, units = v[:-1], v[-1]
         if not inc.isdigit():
             msg = 'Bad argument syntax -- only digits allowed: {}'.format(inc)
             raise ArgumentTypeError(msg)
-        if frequency not in FREQ_INC.keys():
-            raise InvalidFrequency(frequency)
+        if table not in TABLE_INC.keys():
+            raise InvalidTable(table)
         if units not in TIME_UNITS.keys():
             raise InvalidUnits(units)
-        return frequency, inc, TIME_UNITS[units]
+        return table, inc, TIME_UNITS[units]

@@ -32,6 +32,8 @@ class ProcessingContext(BaseContext):
         self.write = args.write
         self.force = args.force
         self.debug = args.debug
+        self.ref_start = args.start
+        self.ref_end = args.end
         self.on_fly = args.on_fly
         if args.card:
             self.on_fly = True if not is_simulation_completed(args.card) else False

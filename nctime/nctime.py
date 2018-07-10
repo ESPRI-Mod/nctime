@@ -11,12 +11,9 @@
 """
 
 import argparse
-import os
-import sys
 
 from utils.constants import *
-from utils.parser import MultilineFormatter, DirectoryChecker, regex_validator, keyval_converter, processes_validator, \
-    positive_only, InputChecker, CodeChecker, _ArgumentParser
+from utils.parser import *
 
 __version__ = 'v{} {}'.format(VERSION, VERSION_DATE)
 
@@ -32,7 +29,7 @@ def get_args():
     ############################
     # Main parser for "nctime" #
     ############################
-    main = _ArgumentParser(
+    main = CustomParser(
         prog='nctime',
         description=PROGRAM_DESC,
         formatter_class=MultilineFormatter,
@@ -83,8 +80,8 @@ def get_args():
         help=HELP)
     parent.add_argument(
         '--set-inc',
-        metavar='FREQUENCY=INCREMENT',
-        type=keyval_converter,
+        metavar='TABLE:FREQUENCY=INCREMENT',
+        type=inc_converter,
         action='append',
         help=SET_INC_HELP)
     parent.add_argument(
@@ -193,6 +190,18 @@ def get_args():
         '-c', '--card',
         action=DirectoryChecker,
         help=CARD_HELP)
+    axis.add_argument(
+        '--start',
+        action=TimestampChecker,
+        metavar='TIMESTAMP',
+        default=None,
+        help=START_HELP)
+    axis.add_argument(
+        '--end',
+        action=TimestampChecker,
+        metavar='TIMESTAMP',
+        default=None,
+        help=END_HELP)
     axis.add_argument(
         '--limit',
         metavar='5',

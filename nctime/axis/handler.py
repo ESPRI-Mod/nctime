@@ -11,7 +11,6 @@ from uuid import uuid4
 import nco
 import numpy as np
 from fuzzywuzzy import fuzz, process
-from netcdftime import datetime
 from constants import *
 from custom_exceptions import *
 from nctime.utils.constants import CLIM_SUFFIX, AVERAGE_CORRECTION_FREQ
@@ -32,7 +31,7 @@ class File(object):
 
     """
 
-    def __init__(self, ffp, pattern, ref_units, ref_calendar):
+    def __init__(self, ffp, pattern, ref_units, ref_calendar, input_start_timestamp=None, input_end_timestamp=None):
         # Retrieve the file full path
         self.ffp = ffp
         # Retrieve the reference time units to use
@@ -51,18 +50,19 @@ class File(object):
         self.time_bounds_rebuilt = None
         self.date_bounds_rebuilt = None
         self.status = list()
+        # Get table from file
+        try:
+            self.table = self.nc_att_get('table_id')
+            # Extract MIP table from string if needed
+            self.table = self.table.split(" ")[1]
+        except IndexError:
+            self.table = self.nc_att_get('table_id')
+        except NoNetCDFAttribute:
+            self.table = 'None'
+        # Get frequency from file
+        self.frequency = self.nc_att_get('frequency')
         # Get netCDF time properties
         with ncopen(self.ffp) as nc:
-            # Get frequency from file
-            if 'frequency' in nc.ncattrs():
-                self.frequency = nc.getncattr('frequency')
-            else:
-                key, score = process.extractOne('frequency', nc.ncattrs(), scorer=fuzz.partial_ratio)
-                if score >= 80:
-                    self.frequency = nc.getncattr(key)
-                    Print.warning('Consider "{}" attribute instead of "frequency"'.format(key))
-                else:
-                    raise NoNetCDFAttribute('frequency', self.ffp)
             # Get time length and vector
             if 'time' not in nc.variables.keys():
                 raise NoNetCDFVariable('time', self.ffp)
@@ -110,22 +110,26 @@ class File(object):
             self.is_climatology = False
             if 'climatology' in nc.variables['time'].ncattrs():
                 self.is_climatology = True
-        # Get time step increment from frequency property
-        self.step, self.step_units = time_inc(self.frequency)
+        # Get time step increment from frequency and table
+        self.step, self.step_units = time_inc(self.table, self.frequency)
         # Convert reference time units into frequency units depending on the file (i.e., months/year/hours since ...)
-        self.funits = convert_time_units(self.ref_units, self.frequency)
+        self.funits = convert_time_units(self.ref_units, self.table, self.frequency)
         # Get timestamps length from filename
         self.timestamp_length = len(re.match(pattern, self.name).groupdict()['period_end'])
+        # Overwrite filename timestamp if submitted
         # Extract start and end dates from filename
         dates = get_start_end_dates_from_filename(filename=self.name,
                                                   pattern=pattern,
+                                                  table=self.table,
                                                   frequency=self.frequency,
-                                                  calendar=self.calendar)
+                                                  calendar=self.calendar,
+                                                  start=input_start_timestamp,
+                                                  end=input_end_timestamp)
         dates_num = date2num(dates, units=self.funits, calendar=self.calendar)
         if self.is_climatology:
             # Apply time offset corresponding to the climatology:
             self.clim_diff = (dates_num[1] - dates_num[0]) / 2
-            if self.frequency == 'monC':
+            if self.frequency in ['monC', 'monClim']:
                 dates_num[0] += self.clim_diff - 11
                 dates_num[1] -= self.clim_diff
             elif self.frequency == '1hrCM':
@@ -283,13 +287,40 @@ class File(object):
         """
         Rewrite attribute to NetCDF file without copy.
 
-        :param str attribute: THe attribute to replace
+        :param str attribute: The attribute to replace
         :param str variable: The variable that has the attribute
         :param str data: The string to add to overwrite
 
         """
         with ncopen(self.ffp, 'r+') as nc:
             setattr(nc.variables[variable], attribute, data)
+
+    def nc_att_get(self, attribute, variable=None):
+        """
+        Get attribute from NetCDF file. Default is to find into global attributes.
+        If attribute key is not found, get the closest key name instead.
+
+
+        :param str attribute: The attribute key to get
+        :param str variable: The variable from which to find the attribute. Global is None.
+        :return: The attribute value
+        :rtype: *str*
+
+        """
+        with ncopen(self.ffp) as nc:
+            if variable:
+                attrs = nc.variables[variable].__dict__
+            else:
+                attrs = nc.__dict__
+            if attribute in attrs.keys():
+                return attrs[attribute]
+            else:
+                key, score = process.extractOne(attribute, attrs, scorer=fuzz.partial_ratio)
+                if score >= 80:
+                    Print.warning('Consider "{}" attribute instead of "frequency"'.format(key))
+                    return attrs(key)
+                else:
+                    raise NoNetCDFAttribute(attribute, self.ffp)
 
     def nc_file_rename(self, new_filename):
         """

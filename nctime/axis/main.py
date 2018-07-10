@@ -39,7 +39,9 @@ def process(ffp):
         fh = File(ffp=ffp,
                   pattern=pctx.pattern,
                   ref_units=pctx.ref_units,
-                  ref_calendar=pctx.ref_calendar)
+                  ref_calendar=pctx.ref_calendar,
+                  input_start_timestamp=pctx.ref_start,
+                  input_end_timestamp=pctx.ref_end)
         fh.get_last_date()
         # In the case of inconsistent timestamps, it may be due to float precision issue
         if not pctx.on_fly and fh.last_timestamp != fh.end_timestamp:
@@ -112,6 +114,7 @@ def process(ffp):
         End:   {} = {} = {}
         Last:  {} = {} = {}
         Length: {}
+        MIP table: {}
         Frequency: {} = {} {}
         Is instant: {}
         Is climatology: {}
@@ -122,6 +125,7 @@ def process(ffp):
                                  fh.end_timestamp, fh.end_date, fh.end_num,
                                  fh.last_timestamp, fh.last_date, fh.last_num,
                                  fh.length,
+                                 fh.table,
                                  fh.frequency, fh.step, fh.step_units,
                                  fh.is_instant,
                                  fh.is_climatology,
@@ -136,7 +140,7 @@ def process(ffp):
         timestep_limit = pctx.limit if pctx.limit else len(wrong_timesteps)
         for i, v in enumerate(wrong_timesteps):
             if (i + 1) <= timestep_limit:
-                msg += """\n        Wrong timestep: {} = {} iso {} = {}""".format(
+                msg += """\n        Wrong time step: {} = {} iso {} = {}""".format(
                     COLORS.FAIL(fh.date_axis[v]),
                     COLORS.FAIL(str(fh.time_axis[v]).ljust(10)),
                     COLORS.SUCCESS(fh.date_axis_rebuilt[v]),
@@ -144,7 +148,7 @@ def process(ffp):
         bounds_limit = pctx.limit if pctx.limit else len(wrong_bounds)
         for i, v in enumerate(wrong_bounds):
             if (i + 1) <= bounds_limit:
-                msg += """\n        Wrong bound: {} = {} iso {} = {}""".format(
+                msg += """\n        Wrong time bounds: {} = {} iso {} = {}""".format(
                     COLORS.FAIL('[{} {}]'.format(fh.date_bounds[v][0], fh.date_bounds[v][1])),
                     COLORS.FAIL(str(fh.time_bounds[v]).ljust(20)),
                     COLORS.SUCCESS('[{} {}]'.format(fh.date_bounds_rebuilt[v][0], fh.date_bounds_rebuilt[v][1])),
