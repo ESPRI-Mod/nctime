@@ -7,7 +7,6 @@
 
 from copy import deepcopy as copy
 from uuid import uuid4
-
 import nco
 import numpy as np
 from fuzzywuzzy import fuzz, process

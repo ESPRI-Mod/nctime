@@ -7,14 +7,13 @@
 
 """
 
-import re
-
 import netCDF4
 import numpy as np
 from netcdftime import utime
 
 from constants import *
 from custom_exceptions import *
+from custom_print import *
 from misc import ncopen
 
 
@@ -64,7 +63,7 @@ def control_time_units(tunits, tunits_default=None):
 
     """
     units = tunits.split()
-    units[0] = unicode('days')
+    units[0] = 'days'
     if len(units[2].split('-')) == 1:
         units[2] += '-{}-{}'.format('01', '01')
     elif len(units[2].split('-')) == 2:
@@ -84,11 +83,12 @@ def convert_time_units(tunits, table, frequency):
 
     :param str tunits: The NetCDF time units string from file
     :param str frequency: The time frequency
+    :param str table: The MIP table
     :returns: The converted time units string
     :rtype: *str*
 
     """
-    return tunits.replace('days', FREQ_INC[(table,frequency)][1])
+    return tunits.replace('days', FREQ_INC[(table, frequency)][1])
 
 
 def untruncated_timestamp(timestamp):
@@ -314,13 +314,12 @@ def get_start_end_dates_from_filename(filename, pattern, table, frequency, calen
     :param str frequency: The time frequency
     :param str calendar: The NetCDF calendar attribute
     :param str start: The timestamp to consider as start instead of filename timestamps
-    :param str calendar: The timestamp to consider as end instead of filename timestamps
+    :param str end: The timestamp to consider as end instead of filename timestamps
     :returns: Start and end dates from the filename
     :rtype: *netcdftime.datetime*
 
     """
     dates = []
-    date_as_since = None
     inputs = {'period_start': start, 'period_end': end}
     for key in ['period_start', 'period_end']:
         date = inputs[key] if inputs[key] else re.match(pattern, filename).groupdict()[key]
@@ -468,65 +467,3 @@ def date2str(date, iso_format=True):
                                                                    date.hour,
                                                                    date.minute,
                                                                    date.second)
-
-
-def ints2date(dates):
-    """
-    Converts (a list of) integer into corresponding datetime objects.
-
-    :param list dates: A list of formatted integer
-    :returns: The corresponding datetime objects
-    :rtype: *list* or *netcdftime.datetime*
-
-    """
-    if isinstance(dates, list):
-        dates = map(str, dates)
-    else:
-        dates = str(dates)
-    return strs2date(dates, iso_format=False)
-
-
-def strs2date(dates, iso_format=False):
-    """
-    Converts (a list of) formatted string %Y%m%d%H:%M:%s into corresponding datetime objects.
-
-    :param list/str dates: A list of formatted dated
-    :param boolean iso_format: ISO format date if True
-    :returns: The corresponding datetime objects
-    :rtype: *list* or *netcdftime.datetime*
-
-    """
-    if isinstance(dates, list):
-        return [str2date(date, iso_format) for date in dates]
-    else:
-        return str2date(dates, iso_format)
-
-
-def str2date(date, iso_format=True):
-    """
-    Converts a string format %Y%m%d%H:%M:%s into datetime object.
-
-    :param str date: The formatted date
-    :param boolean iso_format: ISO format date if True
-    :returns: The corresponding datetime
-    :rtype: *netcdftime.datetime*
-
-    """
-    if iso_format:
-        pattern = re.compile(r'^(?P<year>\d{})-'
-                             r'(?P<month>\d{2})-'
-                             r'(?P<day>\d{2})T'
-                             r'(?P<hour>\d{2}):'
-                             r'(?P<minute>\d{2}):'
-                             r'(?P<second>\d{2})$')
-    else:
-        pattern = re.compile(r'^(?P<year>\d{4})'
-                             r'(?P<month>\d{2})'
-                             r'(?P<day>\d{2})'
-                             r'(?P<hour>\d{2})'
-                             r'(?P<minute>\d{2})'
-                             r'(?P<second>\d{2})$')
-    attr = pattern.match(str(date)).groupdict()
-    for k, v in attr.iteritems():
-        attr[k] = int(v)
-    return datetime(**attr)
