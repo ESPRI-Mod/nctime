@@ -301,10 +301,12 @@ SET_INC_HELP = \
     """
     Overwrites the default time increment of a |n
     table:frequency couple. Duplicate the flag to |n
-    overwrites several increments. Wildcard "*" is allowed|n
-    to overwite increment for all frequencies or all tables|n
-    (e.g., *:mon=2M will set monthly frequency equivalent to |n
-    2 Months between time steps instead of 1 for all tables).
+    overwrites several increments. "all" keyword is allowed|n
+    to overwrite increment for all frequencies or all tables|n
+    (e.g., all:mon=2M will set monthly frequency equivalent to |n
+    2 Months between time steps instead of 1 for all tables).|n
+    Available units are: s, m, h, D, M, Y respectively for|n
+    seconds, minutes, hours, days, months, years.
 
     """
 

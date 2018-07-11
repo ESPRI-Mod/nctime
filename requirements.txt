@@ -7,3 +7,4 @@ numpy
 nco
 esgconfigparser
 fuzzywuzzy
+python-Levenshtein
