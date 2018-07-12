@@ -201,7 +201,7 @@ class File(object):
                              step=self.step)
         num_axis_bnds_inf, num_axis_bnds_sup = num_axis, copy(num_axis)
         if self.is_climatology:
-            if self.frequency == 'monC':
+            if self.frequency in ['monC', 'monClim']:
                 num_axis_bnds_inf -= self.clim_diff - 11
                 num_axis_bnds_sup += self.clim_diff + 1
             elif self.frequency == '1hrCM':

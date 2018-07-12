@@ -75,6 +75,10 @@ class BaseContext(object):
                     keys = [k for k in FREQ_INC.keys() if k[0] == table]
                 for key in keys:
                     FREQ_INC[key] = [float(increment), str(units)]
+        # Get reference time properties if submitted
+        # Default is to deduce them from first file scanned
+        self.ref_calendar = args.calendar
+        self.ref_units = args.units
         # Init collector
         self.sources = None
 
@@ -87,9 +91,11 @@ class BaseContext(object):
         # Init dir filter
         self.sources.PathFilter.add(regex=self.dir_filter, inclusive=False)
         # Set driving time properties
-        self.tinit = TimeInit(ref=self.sources.first(), tunits_default=self.tunits_default)
-        self.ref_calendar = self.tinit.calendar
-        self.ref_units = self.tinit.tunits
+        tinit = TimeInit(ref=self.sources.first(), tunits_default=self.tunits_default)
+        if not self.ref_calendar:
+            self.ref_calendar = tinit.calendar
+        if not self.ref_units:
+            self.ref_units = tinit.tunits
         # Get project id
         if not self.project:
             self.project = get_project(self.sources.first())

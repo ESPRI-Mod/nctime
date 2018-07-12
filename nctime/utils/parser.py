@@ -14,9 +14,9 @@ import textwrap
 from argparse import HelpFormatter, ArgumentTypeError, Action, ArgumentParser
 from gettext import gettext
 
-from constants import TIME_UNITS, FREQ_INC
+from constants import TIME_UNITS, FREQ_INC, CALENDARS, TIME_UNITS_FORMAT
 from custom_exceptions import InvalidUnits, InvalidFrequency, InvalidTable
-
+from netcdftime import utime
 
 class CustomParser(ArgumentParser):
     def error(self, message):
@@ -142,7 +142,7 @@ class CodeChecker(Action):
 
 class TimestampChecker(Action):
     """
-    Checks if the supplied input exists.
+    Checks if the supplied timestamp is valid.
 
     """
 
@@ -156,6 +156,45 @@ class TimestampChecker(Action):
             msg = 'Bad timestamp format -- Digits only (e.g.: YYYYMMDDmmhhss).'
             raise ArgumentTypeError(msg)
         return timestamp
+
+
+class CalendarChecker(Action):
+    """
+    Checks if the supplied calendar is valid.
+
+    """
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        checked_values = self.calendar_checker(values)
+        setattr(namespace, self.dest, checked_values)
+
+    @staticmethod
+    def calendar_checker(calendar):
+        if calendar not in CALENDARS:
+            msg = 'Invalid calendar - Available calendars are {}'.format(', '.join(CALENDARS))
+            raise ArgumentTypeError(msg)
+        return calendar
+
+
+class UnitsChecker(Action):
+    """
+    Checks if the supplied time units has valid format.
+
+    """
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        checked_values = self.units_checker(values)
+        setattr(namespace, self.dest, checked_values)
+
+    @staticmethod
+    def units_checker(units):
+        try:
+            u = utime(units)
+            return u.unit_string
+        except ValueError, TypeError:
+            msg = 'Invalid time units format - Available format is "{}"'.format(TIME_UNITS_FORMAT)
+            raise ArgumentTypeError(msg)
+
 
 
 def regex_validator(string):

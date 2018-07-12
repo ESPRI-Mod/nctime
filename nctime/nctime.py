@@ -85,6 +85,16 @@ def get_args():
         action='append',
         help=SET_INC_HELP)
     parent.add_argument(
+        '--calendar',
+        action=CalendarChecker,
+        default=None,
+        help=CALENDAR_HELP)
+    parent.add_argument(
+        '--calendar',
+        action=TimeUnitsChecker,
+        default=None,
+        help=UNITS_HELP)
+    parent.add_argument(
         '--ignore-dir',
         metavar="PYTHON_REGEX",
         type=str,

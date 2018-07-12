@@ -310,6 +310,27 @@ SET_INC_HELP = \
 
     """
 
+CALENDAR_HELP = \
+    """
+    Defines reference calendar for the check.|n
+    Default is to consider the calendar from|n 
+    the first file scanned.|n
+    Available calendars are those from CF conventions:|n
+    gregorian, standard, proleptic_gregorian, noleap,|n
+    365_day, all_leap, 366_day, 360_day.
+    
+    """
+
+UNITS_HELP = \
+    """
+    Defines reference time units for the check.|n
+    Default is to consider the time units from|n 
+    the first file scanned.|n
+    Available time units format is:|n
+    "days since YYYY-MM-DD HH:mm:ss"    
+    
+    """
+
 # Default time units
 DEFAULT_TIME_UNITS = {'cordex': 'days since 1949-12-01 00:00:00',
                       'cordex-adjust': 'days since 1949-12-01 00:00:00'}
@@ -359,7 +380,7 @@ FREQ_INC = {('None', 'subhr'): [30, 'minutes'],
             ('cf3hr', '3hr'): [3, 'hours'],
             ('CFday', 'day'): [1, 'days'],
             ('cfDay', 'day'): [1, 'days'],
-            ('CFmon', 'day'): [1, 'days'],
+            ('CFmon', 'mon'): [1, 'months'],
             ('cfMon', 'mon'): [1, 'months'],
             ('cfOff', 'mon'): [1, 'months'],
             ('cfSites', '3hr'): [3, 'hours'],
@@ -419,3 +440,16 @@ AVERAGE_CORRECTION_FREQ = ['day', 'mon', 'monPt', 'yr', 'yrPt']
 
 # Frequencies to consider in case of non-instant time correction
 CLIMATOLOGY_FREQ = ['monC', 'monClim', '1hrCM']
+
+# Available CF calendars
+CALENDARS = ['gregorian',
+             'standard',
+             'proleptic_gregorian',
+             'noleap',
+             'julian',
+             '365_day',
+             'all_leap',
+             '366_day',
+             '360_day']
+
+TIME_UNITS_FORMAT = "{seconds,minutes,hours,days} since YYYY-MM-DD [HH:mm:ss]"
