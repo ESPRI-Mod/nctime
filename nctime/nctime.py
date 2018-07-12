@@ -90,7 +90,7 @@ def get_args():
         default=None,
         help=CALENDAR_HELP)
     parent.add_argument(
-        '--calendar',
+        '--units',
         action=TimeUnitsChecker,
         default=None,
         help=UNITS_HELP)

@@ -176,7 +176,7 @@ class CalendarChecker(Action):
         return calendar
 
 
-class UnitsChecker(Action):
+class TimeUnitsChecker(Action):
     """
     Checks if the supplied time units has valid format.
 
