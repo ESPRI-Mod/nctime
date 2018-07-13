@@ -16,16 +16,15 @@ from nctime.utils.constants import CLIM_SUFFIX, AVERAGE_CORRECTION_FREQ
 from nctime.utils.custom_exceptions import *
 from nctime.utils.custom_print import *
 from nctime.utils.misc import ncopen
-from nctime.utils.time import time_inc, convert_time_units
 from nctime.utils.time import truncated_timestamp, get_start_end_dates_from_filename, dates2str, num2date, date2num, \
-    control_time_units, trunc
+    control_time_units, trunc, time_inc, convert_time_units
 
 
 class File(object):
     """
     Handler providing methods to deal with file processing.
 
-    :returns: The axis status
+    :returns: The file handler
     :rtype: *File*
 
     """
@@ -124,7 +123,7 @@ class File(object):
                                                   calendar=self.calendar,
                                                   start=input_start_timestamp,
                                                   end=input_end_timestamp)
-        dates_num = date2num(dates, units=self.funits, calendar=self.calendar)
+        dates_num = trunc(date2num(dates, units=self.funits, calendar=self.calendar), NDECIMALS)
         if self.is_climatology:
             # Apply time offset corresponding to the climatology:
             self.clim_diff = (dates_num[1] - dates_num[0]) / 2
@@ -181,6 +180,7 @@ class File(object):
         num_axis = np.arange(start=self.start_axis,
                              stop=self.start_axis + self.length * self.step,
                              step=self.step, dtype=np.longdouble)
+        assert len(num_axis) == self.length
         date_axis = num2date(num_axis, units=self.funits, calendar=self.ref_calendar)
         del num_axis
         axis_rebuilt = date2num(date_axis, units=self.ref_units, calendar=self.ref_calendar)
@@ -199,6 +199,7 @@ class File(object):
         num_axis = np.arange(start=self.start_axis,
                              stop=self.start_axis + self.length * self.step,
                              step=self.step)
+        assert len(num_axis) == self.length
         num_axis_bnds_inf, num_axis_bnds_sup = num_axis, copy(num_axis)
         if self.is_climatology:
             if self.frequency in ['monC', 'monClim']:
@@ -232,18 +233,11 @@ class File(object):
         :raises Error: If the deletion failed
 
         """
-        # Generate unique filename
-        fftmp = '{}/{}{}'.format(self.directory, str(uuid4()), '.nc')
         try:
             nc = nco.Nco()
             nc.ncks(input=self.ffp,
-                    output=fftmp,
-                    options=['-x', '-O', '-v {}'.format(variable)])
-            os.popen("cat {} > {}".format(fftmp, self.ffp), 'r')
-            os.remove(fftmp)
+                    options=['-O', '-x', '-v {}'.format(variable)])
         except:
-            if os.path.exists(fftmp):
-                os.remove(fftmp)
             raise NetCDFVariableRemoveFail(variable, self.ffp)
 
     def nc_att_delete(self, variable, attribute):
@@ -258,17 +252,11 @@ class File(object):
         :raises Error: If the deletion failed
 
         """
-        # Generate unique filename
-        fftmp = '{}/{}{}'.format(self.directory, str(uuid4()), '.nc')
         try:
             nc = nco.Nco()
             nc.ncatted(input=self.ffp,
-                       output=fftmp,
-                       options='-a {},{},d,,'.format(attribute, variable))
-            os.popen("cat {} > {}".format(fftmp, self.ffp), 'r')
-            os.remove(fftmp)
+                       options=['-O', '-a {},{},d,,'.format(attribute, variable)])
         except:
-            os.remove(fftmp)
             raise NetCDFAttributeRemoveFail(attribute, self.ffp, variable)
 
     def nc_var_overwrite(self, variable, data):
@@ -282,17 +270,22 @@ class File(object):
         with ncopen(self.ffp, 'r+') as nc:
             nc.variables[variable][:] = data
 
-    def nc_att_overwrite(self, attribute, variable, data):
+    def nc_att_overwrite(self, attribute, data, variable=None):
         """
         Rewrite attribute to NetCDF file without copy.
 
         :param str attribute: The attribute to replace
-        :param str variable: The variable that has the attribute
         :param str data: The string to add to overwrite
+        :param str variable: The variable that has the attribute, default is global attributes
 
         """
         with ncopen(self.ffp, 'r+') as nc:
-            setattr(nc.variables[variable], attribute, data)
+            if variable:
+                if variable not in nc.variables.keys():
+                    raise NoNetCDFVariable(variable, nc.path)
+                nc.variables[variable].setncattr(attribute, data)
+            else:
+                nc.setncattr(attribute, data)
 
     def nc_att_get(self, attribute, variable=None):
         """

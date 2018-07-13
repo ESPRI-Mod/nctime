@@ -17,9 +17,8 @@ from constants import *
 from context import ProcessingContext
 from handler import File
 from nctime.utils.custom_print import *
-from nctime.utils.misc import trunc, ProcessContext
+from nctime.utils.misc import ProcessContext
 from nctime.utils.time import trunc
-
 
 def process(ffp):
     """

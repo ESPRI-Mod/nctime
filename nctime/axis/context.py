@@ -40,7 +40,6 @@ class ProcessingContext(BaseContext):
         self.limit = args.limit
         self.ignore_codes = args.ignore_errors
         self.status = []
-        self.file_filter = []
 
     def __enter__(self):
         # Print warning message if on-fly mode

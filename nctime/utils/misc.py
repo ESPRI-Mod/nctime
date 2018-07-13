@@ -40,20 +40,6 @@ class ncopen(object):
         self.nc.close()
 
 
-def trunc(f, n):
-    """
-    Truncates a float f to n decimal places before rounding
-
-    :param float f: The number to truncates
-    :param int n: Decimal number to place before rounding
-    :returns: The corresponding truncated number
-    :rtype: *float*
-
-    """
-    slen = len('%.*f' % (n, f))
-    return float(str(f)[:slen])
-
-
 def match(pattern, string, inclusive=True):
     """
     Validates a string against a regular expression.
