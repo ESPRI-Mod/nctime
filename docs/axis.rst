@@ -81,9 +81,8 @@ The same can be done with the ending time stamp even if it is unused in time axi
 
     $> nctime axis /PATH/TO/SCAN/ --end YYYYMMDD
 
-Define ending time stamp
-************************
-
+.. note::
+    Both flags can be used independently.
 
 Show wrong time steps
 *********************
