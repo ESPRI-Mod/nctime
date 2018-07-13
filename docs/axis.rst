@@ -58,6 +58,33 @@ provided by the libIGCM framework:
 
 .. warning:: This option is only available if you run your simulation within the IPSL libICM framework.
 
+Define starting and/or ending time stamps
+*****************************************
+
+Default is to consider for each file scanned the starting timestamp as true to rebuilt the theoretical time axis.
+This allow to to process each file independently. Nevertheless, at least for debugging purpose, it could be useful
+to submit another reference starting time stamp to make time axis rebuilding free from filename hypothesis:
+
+.. code-block:: bash
+
+    $> nctime axis /PATH/TO/SCAN/ --start YYYYMMDD
+
+.. note::
+    The submitted time stamp will be completed to 14 digits. We highly recommend to submit a digit as most precise as possible for the first date of the time axis.
+
+.. warning::
+    Be careful this new submitted time stamp will be use to rebuilt time axis of all the file scanned.
+
+The same can be done with the ending time stamp even if it is unused in time axis rebuilding:
+
+.. code-block:: bash
+
+    $> nctime axis /PATH/TO/SCAN/ --end YYYYMMDD
+
+Define ending time stamp
+************************
+
+
 Show wrong time steps
 *********************
 
