@@ -406,8 +406,7 @@ def time_inc(table, frequency):
 
     """
     if table not in set(zip(*FREQ_INC.keys())[0]):
-        Print.warning('Unknown MIP table "{}" -- Consider default increment for the given frequency.'.format(table))
-        table = 'None'
+        raise InvalidTable(table)
     if frequency not in set(zip(*FREQ_INC.keys())[1]):
         raise InvalidFrequency(frequency)
     return FREQ_INC[table, frequency]

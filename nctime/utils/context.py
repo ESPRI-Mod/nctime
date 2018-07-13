@@ -11,6 +11,7 @@ from multiprocessing.managers import SyncManager
 
 from ESGConfigParser import SectionParser
 
+from custom_exceptions import InvalidTable, InvalidFrequency
 from nctime.utils.constants import *
 from nctime.utils.custom_print import *
 from nctime.utils.misc import get_project
@@ -66,9 +67,11 @@ class BaseContext(object):
         # Change frequency increment
         if args.set_inc:
             for table, frequency, increment, units in args.set_inc:
+                if table not in set(zip(*FREQ_INC.keys())[0]):
+                    raise InvalidTable(table)
+                if frequency not in set(zip(*FREQ_INC.keys())[1]):
+                    raise InvalidFrequency(frequency)
                 keys = [(table, frequency)]
-                tables = [table]
-                frequencies = [frequency]
                 if table == 'all':
                     keys = [k for k in FREQ_INC.keys() if k[1] == frequency]
                 if frequency == 'all':
