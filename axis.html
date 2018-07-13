@@ -100,6 +100,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#rewrite-a-wrong-time-axis">Rewrite a wrong time axis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#force-time-axis-rewriting">Force time axis rewriting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#check-an-on-going-simulation">Check an on going simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#define-starting-and-or-ending-time-stamps">Define starting and/or ending time stamps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#define-ending-time-stamp">Define ending time stamp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#show-wrong-time-steps">Show wrong time steps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#apply-time-correction-on-sud-daily-frequencies">Apply time correction on sud-daily frequencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#ignore-errors">Ignore errors</a></li>
@@ -222,6 +224,30 @@ provided by the libIGCM framework:</p>
 <p class="first admonition-title">Warning</p>
 <p class="last">This option is only available if you run your simulation within the IPSL libICM framework.</p>
 </div>
+</div>
+<div class="section" id="define-starting-and-or-ending-time-stamps">
+<h2>Define starting and/or ending time stamps<a class="headerlink" href="#define-starting-and-or-ending-time-stamps" title="Permalink to this headline">¶</a></h2>
+<p>Default is to consider for each file scanned the starting timestamp as true to rebuilt the theoretical time axis.
+This allow to to process each file independently. Nevertheless, at least for debugging purpose, it could be useful
+to submit another reference starting time stamp to make time axis rebuilding free from filename hypothesis:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ --start YYYYMMDD
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The submitted time stamp will be completed to 14 digits. We highly recommend to submit a digit as most precise as possible for the first date of the time axis.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Be careful this new submitted time stamp will be use to rebuilt time axis of all the file scanned.</p>
+</div>
+<p>The same can be done with the ending time stamp even if it is unused in time axis rebuilding:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ --end YYYYMMDD
+</pre></div>
+</div>
+</div>
+<div class="section" id="define-ending-time-stamp">
+<h2>Define ending time stamp<a class="headerlink" href="#define-ending-time-stamp" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="show-wrong-time-steps">
 <h2>Show wrong time steps<a class="headerlink" href="#show-wrong-time-steps" title="Permalink to this headline">¶</a></h2>
