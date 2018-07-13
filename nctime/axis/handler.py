@@ -158,6 +158,7 @@ class File(object):
         num_axis = np.arange(start=self.start_axis,
                              stop=self.start_axis + self.length * self.step,
                              step=self.step)
+        num_axis = self.check_axis_length(num_axis)
         self.last_num = num_axis[-1]
         del num_axis
         try:
@@ -179,8 +180,8 @@ class File(object):
         """
         num_axis = np.arange(start=self.start_axis,
                              stop=self.start_axis + self.length * self.step,
-                             step=self.step, dtype=np.longdouble)
-        assert len(num_axis) == self.length
+                             step=self.step)
+        num_axis = self.check_axis_length(num_axis)
         date_axis = num2date(num_axis, units=self.funits, calendar=self.ref_calendar)
         del num_axis
         axis_rebuilt = date2num(date_axis, units=self.ref_units, calendar=self.ref_calendar)
@@ -199,7 +200,7 @@ class File(object):
         num_axis = np.arange(start=self.start_axis,
                              stop=self.start_axis + self.length * self.step,
                              step=self.step)
-        assert len(num_axis) == self.length
+        num_axis = self.check_axis_length(num_axis)
         num_axis_bnds_inf, num_axis_bnds_sup = num_axis, copy(num_axis)
         if self.is_climatology:
             if self.frequency in ['monC', 'monClim']:
@@ -221,6 +222,22 @@ class File(object):
             dates2str(num2date(axis_bnds_rebuilt[:, 1], units=self.ref_units, calendar=self.ref_calendar))
         ))
         return axis_bnds_rebuilt
+
+    def check_axis_length(self, axis):
+        """
+        numpy.arange could suddenly add last endpoint to the array in the case of high number of steps
+        Due to rounding float issue and pre-calculated length in memory.
+        As a workaround, always check length and remove last point if length are different.
+
+        :param *numpy.array* axis: The axis to check
+        :returns: The cut axis
+        :rtype: *numpy.array*
+
+        """
+        if len(axis) == self.length + 1:
+            axis = axis[:-1]
+        assert len(axis) == self.length
+        return axis
 
     def nc_var_delete(self, variable):
         """
