@@ -426,8 +426,11 @@ FREQ_INC = {('None', 'subhr'): [30, 'minutes'],
             ('SIday', 'day'): [1, 'days'],
             ('SImon', 'mon'): [1, 'months'],
             ('SImon', 'monPt'): [1, 'months'],
-            ('sites', 'subhr'): [30, 'minutes']}
-
+            ('sites', 'subhr'): [30, 'minutes'],
+            ('HOMAL3hrPt', '3hrPt'): [3, 'hours'],
+            ('HOMALmon', 'mon'): [1, 'months'],
+            ('HOMEPmon', 'mon'): [1, 'months'],
+            ('HOMOImon', 'mon'): [1, 'months']}
 
 # Known time units
 TIME_UNITS = {'s': 'seconds',
