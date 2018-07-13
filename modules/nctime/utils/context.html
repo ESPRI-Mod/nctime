@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.utils.context &mdash; nctime 4.4.6 documentation</title>
+  <title>nctime.utils.context &mdash; nctime 4.4.7 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 4.4.6 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 4.4.7 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -230,9 +230,20 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">tunits_default</span> <span class="o">=</span> <span class="n">DEFAULT_TIME_UNITS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">]</span>
         <span class="c1"># Change frequency increment</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">set_inc</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">increment</span><span class="p">,</span> <span class="n">units</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">set_inc</span><span class="p">:</span>
-                <span class="n">FREQ_INC</span><span class="p">[</span><span class="n">frequency</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">increment</span><span class="p">)</span>
-                <span class="n">FREQ_INC</span><span class="p">[</span><span class="n">frequency</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">increment</span><span class="p">,</span> <span class="n">units</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">set_inc</span><span class="p">:</span>
+                <span class="n">keys</span> <span class="o">=</span> <span class="p">[(</span><span class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span class="p">)]</span>
+                <span class="n">tables</span> <span class="o">=</span> <span class="p">[</span><span class="n">table</span><span class="p">]</span>
+                <span class="n">frequencies</span> <span class="o">=</span> <span class="p">[</span><span class="n">frequency</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">table</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+                    <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">FREQ_INC</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">frequency</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">frequency</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+                    <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">FREQ_INC</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">table</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+                    <span class="n">FREQ_INC</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">increment</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">units</span><span class="p">)]</span>
+        <span class="c1"># Get reference time properties if submitted</span>
+        <span class="c1"># Default is to deduce them from first file scanned</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ref_calendar</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">calendar</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ref_units</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">units</span>
         <span class="c1"># Init collector</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sources</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -245,9 +256,11 @@
         <span class="c1"># Init dir filter</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sources</span><span class="o">.</span><span class="n">PathFilter</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dir_filter</span><span class="p">,</span> <span class="n">inclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="c1"># Set driving time properties</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tinit</span> <span class="o">=</span> <span class="n">TimeInit</span><span class="p">(</span><span class="n">ref</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sources</span><span class="o">.</span><span class="n">first</span><span class="p">(),</span> <span class="n">tunits_default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tunits_default</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ref_calendar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">calendar</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ref_units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tinit</span><span class="o">.</span><span class="n">tunits</span>
+        <span class="n">tinit</span> <span class="o">=</span> <span class="n">TimeInit</span><span class="p">(</span><span class="n">ref</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sources</span><span class="o">.</span><span class="n">first</span><span class="p">(),</span> <span class="n">tunits_default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tunits_default</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_calendar</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ref_calendar</span> <span class="o">=</span> <span class="n">tinit</span><span class="o">.</span><span class="n">calendar</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_units</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ref_units</span> <span class="o">=</span> <span class="n">tinit</span><span class="o">.</span><span class="n">tunits</span>
         <span class="c1"># Get project id</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">project</span> <span class="o">=</span> <span class="n">get_project</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sources</span><span class="o">.</span><span class="n">first</span><span class="p">())</span>
@@ -304,7 +317,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'4.4.6',
+            VERSION:'4.4.7',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.overlap.handler &mdash; nctime 4.4.6 documentation</title>
+  <title>nctime.overlap.handler &mdash; nctime 4.4.7 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 4.4.6 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 4.4.7 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -217,24 +217,50 @@
 <span class="sd">        :rtype: *float*</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Get frequency</span>
-        <span class="n">frequency</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">with</span> <span class="n">ncopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ffp</span><span class="p">)</span> <span class="k">as</span> <span class="n">nc</span><span class="p">:</span>
-            <span class="c1"># Get frequency from file</span>
-            <span class="k">if</span> <span class="s1">&#39;frequency&#39;</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">():</span>
-                <span class="n">frequency</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">getncattr</span><span class="p">(</span><span class="s1">&#39;frequency&#39;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">key</span><span class="p">,</span> <span class="n">score</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">extractOne</span><span class="p">(</span><span class="s1">&#39;frequency&#39;</span><span class="p">,</span> <span class="n">nc</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">(),</span> <span class="n">scorer</span><span class="o">=</span><span class="n">fuzz</span><span class="o">.</span><span class="n">partial_ratio</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="mi">80</span><span class="p">:</span>
-                    <span class="n">frequency</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">getncattr</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-                    <span class="n">Print</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Consider &quot;</span><span class="si">{}</span><span class="s1">&quot; attribute instead of &quot;frequency&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span class="s1">&#39;frequency&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ffp</span><span class="p">)</span>
+        <span class="c1"># Get table from file</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc_att_get</span><span class="p">(</span><span class="s1">&#39;table_id&#39;</span><span class="p">)</span>
+            <span class="c1"># Extract MIP table from string if needed</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc_att_get</span><span class="p">(</span><span class="s1">&#39;table_id&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">NoNetCDFAttribute</span><span class="p">:</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="s1">&#39;None&#39;</span>
+        <span class="c1"># Get frequency from file</span>
+        <span class="n">frequency</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc_att_get</span><span class="p">(</span><span class="s1">&#39;frequency&#39;</span><span class="p">)</span>
         <span class="n">dates</span> <span class="o">=</span> <span class="n">get_start_end_dates_from_filename</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                                                   <span class="n">pattern</span><span class="o">=</span><span class="n">pattern</span><span class="p">,</span>
+                                                  <span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">,</span>
                                                   <span class="n">frequency</span><span class="o">=</span><span class="n">frequency</span><span class="p">,</span>
                                                   <span class="n">calendar</span><span class="o">=</span><span class="n">calendar</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_date</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_date</span> <span class="o">=</span> <span class="n">dates2int</span><span class="p">(</span><span class="n">dates</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_date</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_date</span> <span class="o">=</span> <span class="n">dates2int</span><span class="p">(</span><span class="n">dates</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Filename.nc_att_get"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.handler.Filename.nc_att_get">[docs]</a>    <span class="k">def</span> <span class="nf">nc_att_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get attribute from NetCDF file. Default is to find into global attributes.</span>
+<span class="sd">        If attribute key is not found, get the closest key name instead.</span>
+
+
+<span class="sd">        :param str attribute: The attribute key to get</span>
+<span class="sd">        :param str variable: The variable from which to find the attribute. Global is None.</span>
+<span class="sd">        :return: The attribute value</span>
+<span class="sd">        :rtype: *str*</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">ncopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ffp</span><span class="p">)</span> <span class="k">as</span> <span class="n">nc</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">variable</span><span class="p">:</span>
+                <span class="n">attrs</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="vm">__dict__</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">attrs</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="vm">__dict__</span>
+            <span class="k">if</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">attrs</span><span class="p">[</span><span class="n">attribute</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">key</span><span class="p">,</span> <span class="n">score</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">extractOne</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">scorer</span><span class="o">=</span><span class="n">fuzz</span><span class="o">.</span><span class="n">partial_ratio</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="mi">80</span><span class="p">:</span>
+                    <span class="n">Print</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Consider &quot;</span><span class="si">{}</span><span class="s1">&quot; attribute instead of &quot;frequency&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+                    <span class="k">return</span> <span class="n">attrs</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ffp</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="Graph"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.handler.Graph">[docs]</a><span class="k">class</span> <span class="nc">Graph</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -306,7 +332,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'4.4.6',
+            VERSION:'4.4.7',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

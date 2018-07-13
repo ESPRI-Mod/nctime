@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Generic usage &mdash; nctime 4.4.6 documentation</title>
+  <title>Generic usage &mdash; nctime 4.4.7 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="nctime 4.4.6 documentation" href="index.html"/>
+    <link rel="top" title="nctime 4.4.7 documentation" href="index.html"/>
         <link rel="next" title="Check time series continuity" href="overlap.html"/>
         <link rel="prev" title="Configuration" href="configuration.html"/> 
 
@@ -104,6 +104,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#use-a-logfile">Use a logfile</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#use-multiprocessing">Use multiprocessing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#use-libigcm-infos">Use libIGCM infos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#define-a-reference-calendar">Define a reference calendar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#define-reference-time-units">Define reference time units</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#overwrites-a-frequency-increment">Overwrites a frequency increment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#exit-status">Exit status</a></li>
 </ul>
@@ -294,15 +296,59 @@ directory including both your <code class="docutils literal"><span class="pre">c
 <p class="last">This option is only available if you run your simulation within the IPSL libICM framework.</p>
 </div>
 </div>
+<div class="section" id="define-a-reference-calendar">
+<h2>Define a reference calendar<a class="headerlink" href="#define-a-reference-calendar" title="Permalink to this headline">¶</a></h2>
+<p>The reference calendar is the calendar use by <code class="docutils literal"><span class="pre">nctime</span></code> to rebuilt theoretical dates during the whole check.
+By default, the reference calendar is one from the first file scanned.
+You can specify your own reference calendar with:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND --calendar CALENDAR
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Available calendars are those from CF conventions: gregorian, standard, proleptic_gregorian, noleap, 365_day, all_leap, 366_day, 360_day.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The reference calendar is use for all the files scanned during the check.</p>
+</div>
+</div>
+<div class="section" id="define-reference-time-units">
+<h2>Define reference time units<a class="headerlink" href="#define-reference-time-units" title="Permalink to this headline">¶</a></h2>
+<p>The reference time units are use by <code class="docutils literal"><span class="pre">nctime</span></code> to rebuilt theoretical dates during the whole check.
+By default, the reference time units are those from the first file scanned.
+You can specify your own reference time units with:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND --units <span class="s2">&quot;{seconds,minutes,hours,days} since YYYY-MM-DD [HH:mm:ss]&quot;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Available units format is the one from CF conventions: “&lt;units&gt; since YYYY-MM-DD [HH:mm:ss]” where <code class="docutils literal"><span class="pre">&lt;units&gt;</span></code> stands for seconds, minutes, hours or days.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The reference time units are use for all the files scanned during the check.</p>
+</div>
+</div>
 <div class="section" id="overwrites-a-frequency-increment">
 <h2>Overwrites a frequency increment<a class="headerlink" href="#overwrites-a-frequency-increment" title="Permalink to this headline">¶</a></h2>
 <p>By default, each supported frequency as its own unit and increment (e.g. mon = 1 months). In some case the frequency
-increment or units can be change, at least for diagnostic purposes.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND --set-inc <span class="nv">FREQUENCY</span><span class="o">=</span>INCREMENT<span class="o">[</span>+<span class="o">]</span>UNITS
+increment or units can be change, at least for diagnostic purposes. For finer modification, the increment is change for
+a couple of MIP TABLE and FREQUENCY. The “all” keyword can be use to change the time increment for “all” table or “all”
+frequencies values.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND --set-inc TABLE:FREQUENCY<span class="o">=</span>INCREMENT<span class="o">[</span>+<span class="o">]</span>UNITS
 </pre></div>
 </div>
-<p>For instance to change the time increment of sub-hourly files from 30min to 15min:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND --set-inc <span class="nv">subhr</span><span class="o">=</span>15m
+<p>To change the time increment of sub-hourly files from the CFsubhr table from 30min to 15min:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND --set-inc CFsubhr:subhrPt<span class="o">=</span>15m
+</pre></div>
+</div>
+<p>To change the time increment of all sub-hourly files whatever the MIP table:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND --set-inc all:subhr<span class="o">=</span>15m
+</pre></div>
+</div>
+<p>To change the time increment of all CFsubhr files whatever the frequency:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND --set-inc CFsubhr:all<span class="o">=</span>15m
 </pre></div>
 </div>
 <div class="admonition note">
@@ -386,7 +432,7 @@ increment or units can be change, at least for diagnostic purposes.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'4.4.6',
+            VERSION:'4.4.7',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

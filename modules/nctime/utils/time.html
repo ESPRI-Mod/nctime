@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.utils.time &mdash; nctime 4.4.6 documentation</title>
+  <title>nctime.utils.time &mdash; nctime 4.4.7 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 4.4.6 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 4.4.7 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -172,14 +172,13 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">re</span>
-
 <span class="kn">import</span> <span class="nn">netCDF4</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">netcdftime</span> <span class="k">import</span> <span class="n">utime</span>
 
 <span class="kn">from</span> <span class="nn">constants</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">custom_exceptions</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">custom_print</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">misc</span> <span class="k">import</span> <span class="n">ncopen</span>
 
 
@@ -229,7 +228,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">units</span> <span class="o">=</span> <span class="n">tunits</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-    <span class="n">units</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">unicode</span><span class="p">(</span><span class="s1">&#39;days&#39;</span><span class="p">)</span>
+    <span class="n">units</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;days&#39;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;-</span><span class="si">{}</span><span class="s1">-</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;01&#39;</span><span class="p">,</span> <span class="s1">&#39;01&#39;</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
@@ -241,7 +240,7 @@
         <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">units</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="convert_time_units"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.convert_time_units">[docs]</a><span class="k">def</span> <span class="nf">convert_time_units</span><span class="p">(</span><span class="n">tunits</span><span class="p">,</span> <span class="n">frequency</span><span class="p">):</span>
+<div class="viewcode-block" id="convert_time_units"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.convert_time_units">[docs]</a><span class="k">def</span> <span class="nf">convert_time_units</span><span class="p">(</span><span class="n">tunits</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts default time units from file into time units using the MIP frequency.</span>
 <span class="sd">    As en example, for a 3-hourly file, the time units &quot;days since YYYY-MM-DD&quot; becomes</span>
@@ -249,11 +248,12 @@
 
 <span class="sd">    :param str tunits: The NetCDF time units string from file</span>
 <span class="sd">    :param str frequency: The time frequency</span>
+<span class="sd">    :param str table: The MIP table</span>
 <span class="sd">    :returns: The converted time units string</span>
 <span class="sd">    :rtype: *str*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">tunits</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;days&#39;</span><span class="p">,</span> <span class="n">FREQ_INC</span><span class="p">[</span><span class="n">frequency</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span></div>
+    <span class="k">return</span> <span class="n">tunits</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;days&#39;</span><span class="p">,</span> <span class="n">FREQ_INC</span><span class="p">[(</span><span class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span class="p">)][</span><span class="mi">1</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="untruncated_timestamp"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.untruncated_timestamp">[docs]</a><span class="k">def</span> <span class="nf">untruncated_timestamp</span><span class="p">(</span><span class="n">timestamp</span><span class="p">):</span>
@@ -466,7 +466,7 @@
     <span class="k">return</span> <span class="n">date_next</span></div>
 
 
-<div class="viewcode-block" id="get_start_end_dates_from_filename"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.get_start_end_dates_from_filename">[docs]</a><span class="k">def</span> <span class="nf">get_start_end_dates_from_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">calendar</span><span class="p">):</span>
+<div class="viewcode-block" id="get_start_end_dates_from_filename"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.get_start_end_dates_from_filename">[docs]</a><span class="k">def</span> <span class="nf">get_start_end_dates_from_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">calendar</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns datetime objects for start and end dates from the filename.</span>
 <span class="sd">    To rebuild a proper time axis, the dates from filename are expected to set the first</span>
@@ -475,16 +475,19 @@
 <span class="sd">    :param str filename: The filename</span>
 <span class="sd">    :param re Object pattern: The filename pattern as a regex (from `re library \</span>
 <span class="sd">    &lt;https://docs.python.org/2/library/re.html&gt;`_).</span>
+<span class="sd">    :param str table: The MIP table</span>
 <span class="sd">    :param str frequency: The time frequency</span>
 <span class="sd">    :param str calendar: The NetCDF calendar attribute</span>
+<span class="sd">    :param str start: The timestamp to consider as start instead of filename timestamps</span>
+<span class="sd">    :param str end: The timestamp to consider as end instead of filename timestamps</span>
 <span class="sd">    :returns: Start and end dates from the filename</span>
 <span class="sd">    :rtype: *netcdftime.datetime*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">dates</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">date_as_since</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;period_start&#39;</span><span class="p">:</span> <span class="n">start</span><span class="p">,</span> <span class="s1">&#39;period_end&#39;</span><span class="p">:</span> <span class="n">end</span><span class="p">}</span>
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;period_start&#39;</span><span class="p">,</span> <span class="s1">&#39;period_end&#39;</span><span class="p">]:</span>
-        <span class="n">date</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">groupdict</span><span class="p">()[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">if</span> <span class="n">inputs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">else</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">groupdict</span><span class="p">()[</span><span class="n">key</span><span class="p">]</span>
         <span class="n">digits</span> <span class="o">=</span> <span class="n">untruncated_timestamp</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
         <span class="c1"># Convert string digits to %Y-%m-%d %H:%M:%S format</span>
         <span class="n">date_as_since</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">triple</span><span class="p">)</span> <span class="k">for</span> <span class="n">triple</span> <span class="ow">in</span>
@@ -493,12 +496,12 @@
         <span class="n">dates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">num2date</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;days since &#39;</span> <span class="o">+</span> <span class="n">date_as_since</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="n">calendar</span><span class="p">))</span>
     <span class="c1"># Append date next to the end date for overlap diagnostic</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">dates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">num2date</span><span class="p">(</span><span class="n">time_inc</span><span class="p">(</span><span class="n">frequency</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
-                              <span class="n">units</span><span class="o">=</span><span class="n">time_inc</span><span class="p">(</span><span class="n">frequency</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; since &#39;</span> <span class="o">+</span> <span class="n">date_as_since</span><span class="p">,</span>
+        <span class="n">dates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">num2date</span><span class="p">(</span><span class="n">time_inc</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                              <span class="n">units</span><span class="o">=</span><span class="n">time_inc</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; since &#39;</span> <span class="o">+</span> <span class="n">date_as_since</span><span class="p">,</span>
                               <span class="n">calendar</span><span class="o">=</span><span class="n">calendar</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-        <span class="n">dates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">num2date</span><span class="p">(</span><span class="n">time_inc</span><span class="p">(</span><span class="n">frequency</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
-                              <span class="n">units</span><span class="o">=</span><span class="n">time_inc</span><span class="p">(</span><span class="n">frequency</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; since &#39;</span> <span class="o">+</span> <span class="n">date_as_since</span><span class="p">,</span>
+        <span class="n">dates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">num2date</span><span class="p">(</span><span class="n">time_inc</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                              <span class="n">units</span><span class="o">=</span><span class="n">time_inc</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; since &#39;</span> <span class="o">+</span> <span class="n">date_as_since</span><span class="p">,</span>
                               <span class="n">calendar</span><span class="o">=</span><span class="n">calendar</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">dates</span></div>
 
@@ -557,16 +560,21 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">trunc</span><span class="p">(</span><span class="n">array</span> <span class="o">*</span> <span class="n">decade</span><span class="p">)</span> <span class="o">/</span> <span class="n">decade</span></div>
 
 
-<div class="viewcode-block" id="time_inc"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.time_inc">[docs]</a><span class="k">def</span> <span class="nf">time_inc</span><span class="p">(</span><span class="n">frequency</span><span class="p">):</span>
+<div class="viewcode-block" id="time_inc"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.time_inc">[docs]</a><span class="k">def</span> <span class="nf">time_inc</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the time incrementation and time units depending on the MIP frequency.</span>
+<span class="sd">    Returns the time incrementation and time units depending on the MIP frequency and table.</span>
 
+<span class="sd">    :param str table: The MIP table</span>
 <span class="sd">    :param str frequency: The MIP frequency</span>
 <span class="sd">    :returns: The corresponding time value and units</span>
 <span class="sd">    :rtype: *list*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">FREQ_INC</span><span class="p">[</span><span class="n">frequency</span><span class="p">]</span></div>
+    <span class="k">if</span> <span class="n">table</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">FREQ_INC</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="k">raise</span> <span class="n">InvalidTable</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">frequency</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">FREQ_INC</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">raise</span> <span class="n">InvalidFrequency</span><span class="p">(</span><span class="n">frequency</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">FREQ_INC</span><span class="p">[</span><span class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="dates2int"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.dates2int">[docs]</a><span class="k">def</span> <span class="nf">dates2int</span><span class="p">(</span><span class="n">dates</span><span class="p">):</span>
@@ -624,68 +632,6 @@
                                                                    <span class="n">date</span><span class="o">.</span><span class="n">hour</span><span class="p">,</span>
                                                                    <span class="n">date</span><span class="o">.</span><span class="n">minute</span><span class="p">,</span>
                                                                    <span class="n">date</span><span class="o">.</span><span class="n">second</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="ints2date"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.ints2date">[docs]</a><span class="k">def</span> <span class="nf">ints2date</span><span class="p">(</span><span class="n">dates</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts (a list of) integer into corresponding datetime objects.</span>
-
-<span class="sd">    :param list dates: A list of formatted integer</span>
-<span class="sd">    :returns: The corresponding datetime objects</span>
-<span class="sd">    :rtype: *list* or *netcdftime.datetime*</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-        <span class="n">dates</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">dates</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">dates</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">dates</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">strs2date</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="n">iso_format</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="strs2date"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.strs2date">[docs]</a><span class="k">def</span> <span class="nf">strs2date</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="n">iso_format</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts (a list of) formatted string %Y%m%d%H:%M:%s into corresponding datetime objects.</span>
-
-<span class="sd">    :param list/str dates: A list of formatted dated</span>
-<span class="sd">    :param boolean iso_format: ISO format date if True</span>
-<span class="sd">    :returns: The corresponding datetime objects</span>
-<span class="sd">    :rtype: *list* or *netcdftime.datetime*</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">str2date</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">iso_format</span><span class="p">)</span> <span class="k">for</span> <span class="n">date</span> <span class="ow">in</span> <span class="n">dates</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">str2date</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="n">iso_format</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="str2date"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.str2date">[docs]</a><span class="k">def</span> <span class="nf">str2date</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">iso_format</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts a string format %Y%m%d%H:%M:%s into datetime object.</span>
-
-<span class="sd">    :param str date: The formatted date</span>
-<span class="sd">    :param boolean iso_format: ISO format date if True</span>
-<span class="sd">    :returns: The corresponding datetime</span>
-<span class="sd">    :rtype: *netcdftime.datetime*</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">iso_format</span><span class="p">:</span>
-        <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^(?P&lt;year&gt;\d</span><span class="si">{}</span><span class="s1">)-&#39;</span>
-                             <span class="sa">r</span><span class="s1">&#39;(?P&lt;month&gt;\d</span><span class="si">{2}</span><span class="s1">)-&#39;</span>
-                             <span class="sa">r</span><span class="s1">&#39;(?P&lt;day&gt;\d</span><span class="si">{2}</span><span class="s1">)T&#39;</span>
-                             <span class="sa">r</span><span class="s1">&#39;(?P&lt;hour&gt;\d</span><span class="si">{2}</span><span class="s1">):&#39;</span>
-                             <span class="sa">r</span><span class="s1">&#39;(?P&lt;minute&gt;\d</span><span class="si">{2}</span><span class="s1">):&#39;</span>
-                             <span class="sa">r</span><span class="s1">&#39;(?P&lt;second&gt;\d</span><span class="si">{2}</span><span class="s1">)$&#39;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^(?P&lt;year&gt;\d</span><span class="si">{4}</span><span class="s1">)&#39;</span>
-                             <span class="sa">r</span><span class="s1">&#39;(?P&lt;month&gt;\d</span><span class="si">{2}</span><span class="s1">)&#39;</span>
-                             <span class="sa">r</span><span class="s1">&#39;(?P&lt;day&gt;\d</span><span class="si">{2}</span><span class="s1">)&#39;</span>
-                             <span class="sa">r</span><span class="s1">&#39;(?P&lt;hour&gt;\d</span><span class="si">{2}</span><span class="s1">)&#39;</span>
-                             <span class="sa">r</span><span class="s1">&#39;(?P&lt;minute&gt;\d</span><span class="si">{2}</span><span class="s1">)&#39;</span>
-                             <span class="sa">r</span><span class="s1">&#39;(?P&lt;second&gt;\d</span><span class="si">{2}</span><span class="s1">)$&#39;</span><span class="p">)</span>
-    <span class="n">attr</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">))</span><span class="o">.</span><span class="n">groupdict</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-        <span class="n">attr</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">datetime</span><span class="p">(</span><span class="o">**</span><span class="n">attr</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
@@ -722,7 +668,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'4.4.6',
+            VERSION:'4.4.7',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

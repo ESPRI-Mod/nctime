@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.utils.misc &mdash; nctime 4.4.6 documentation</title>
+  <title>nctime.utils.misc &mdash; nctime 4.4.7 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 4.4.6 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 4.4.7 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -205,20 +205,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="trunc"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.misc.trunc">[docs]</a><span class="k">def</span> <span class="nf">trunc</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Truncates a float f to n decimal places before rounding</span>
-
-<span class="sd">    :param float f: The number to truncates</span>
-<span class="sd">    :param int n: Decimal number to place before rounding</span>
-<span class="sd">    :returns: The corresponding truncated number</span>
-<span class="sd">    :rtype: *float*</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">slen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%.*f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
-    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">)[:</span><span class="n">slen</span><span class="p">])</span></div>
-
-
 <div class="viewcode-block" id="match"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.misc.match">[docs]</a><span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">string</span><span class="p">,</span> <span class="n">inclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Validates a string against a regular expression.</span>
@@ -314,7 +300,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'4.4.6',
+            VERSION:'4.4.7',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.axis.context &mdash; nctime 4.4.6 documentation</title>
+  <title>nctime.axis.context &mdash; nctime 4.4.7 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 4.4.6 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 4.4.7 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -197,13 +197,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">write</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">write</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">force</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">force</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">debug</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ref_start</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">start</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ref_end</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">end</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">on_fly</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">on_fly</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">card</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">on_fly</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">is_simulation_completed</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">card</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">limit</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">limit</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ignore_codes</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">ignore_errors</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">file_filter</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Print warning message if on-fly mode</span>
@@ -280,7 +281,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'4.4.6',
+            VERSION:'4.4.7',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
