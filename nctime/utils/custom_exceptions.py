@@ -109,7 +109,7 @@ class InvalidFrequency(Exception):
     def __init__(self, frequency):
         self.msg = "Unknown frequency"
         self.msg += "\n<frequency: {}>".format(frequency)
-        self.msg += "\n<available frequencies: {}>".format(', '.join(set(zip(*FREQ_INC.keys())[0])))
+        self.msg += "\n<available frequencies: {}>".format(', '.join(set(zip(*FREQ_INC.keys())[1])))
         super(self.__class__, self).__init__(self.msg)
 
 
@@ -122,7 +122,7 @@ class InvalidTable(Exception):
     def __init__(self, frequency):
         self.msg = "Unknown MIP table"
         self.msg += "\n<table: {}>".format(frequency)
-        self.msg += "\n<available tables: {}>".format(', '.join(set(zip(*FREQ_INC.keys())[1])))
+        self.msg += "\n<available tables: {}>".format(', '.join(set(zip(*FREQ_INC.keys())[0])))
         super(self.__class__, self).__init__(self.msg)
 
 
