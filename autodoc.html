@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Code documentation &mdash; nctime 4.4.8 documentation</title>
+  <title>Code documentation &mdash; nctime 4.4.9 documentation</title>
   
 
   
@@ -35,8 +35,8 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="nctime 4.4.8 documentation" href="index.html"/>
-        <link rel="prev" title="Change Log" href="log.html"/> 
+    <link rel="top" title="nctime 4.4.9 documentation" href="index.html"/>
+        <link rel="prev" title="Credits" href="credits.html"/> 
 
   
   <script src="static/js/modernizr.min.js"></script>
@@ -97,7 +97,6 @@
 <li class="toctree-l1"><a class="reference internal" href="axis.html">Check time axis squareness</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="credits.html">Credits</a></li>
-<li class="toctree-l1"><a class="reference internal" href="log.html">Change Log</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Code documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#module-nctime.nctime">nctime</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#module-nctime.overlap.main">overlap</a></li>
@@ -720,6 +719,26 @@ instant status.</p>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The corresponding theoretical time boundaries as a [n, 2] array</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><em>numpy.array</em></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="nctime.axis.handler.File.check_axis_length">
+<code class="descname">check_axis_length</code><span class="sig-paren">(</span><em>axis</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/axis/handler.html#File.check_axis_length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.axis.handler.File.check_axis_length" title="Permalink to this definition">¶</a></dt>
+<dd><p>numpy.arange could suddenly add last endpoint to the array in the case of high number of steps
+Due to rounding float issue and pre-calculated length in memory.
+As a workaround, always check length and remove last point if length are different.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>axis</strong> (<em>numpy.array</em>) – The axis to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The cut axis</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><em>numpy.array</em></td>
 </tr>
 </tbody>
 </table>
@@ -1840,7 +1859,7 @@ time boundary and not the middle of the time interval.</p>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="log.html" class="btn btn-neutral" title="Change Log" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="credits.html" class="btn btn-neutral" title="Credits" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -1871,7 +1890,7 @@ time boundary and not the middle of the time interval.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'4.4.8',
+            VERSION:'4.4.9',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
