@@ -327,7 +327,9 @@ UNITS_HELP = \
     Default is to consider the time units from|n 
     the first file scanned.|n
     Available time units format is:|n
-    "days since YYYY-MM-DD HH:mm:ss"    
+    "<units> since YYYY-MM-DD HH:mm:ss" where|n
+    <units> stands for seconds, minutes, hours|n
+    or days.
     
     """
 

@@ -130,21 +130,69 @@ directory including both your ``config.card`` and ``run.card`` provided by the l
 
 .. warning:: This option is only available if you run your simulation within the IPSL libICM framework.
 
+Define a reference calendar
+***************************
+
+The reference calendar is the calendar use by ``nctime`` to rebuilt theoretical dates during the whole check.
+By default, the reference calendar is one from the first file scanned.
+You can specify your own reference calendar with:
+
+.. code-block:: bash
+
+    $> nctime SUBCOMMAND --calendar CALENDAR
+
+.. note::
+    Available calendars are those from CF conventions: gregorian, standard, proleptic_gregorian, noleap, 365_day, all_leap, 366_day, 360_day.
+
+.. warning::
+    The reference calendar is use for all the files scanned during the check.
+
+Define reference time units
+***************************
+
+The reference time units are use by ``nctime`` to rebuilt theoretical dates during the whole check.
+By default, the reference time units are those from the first file scanned.
+You can specify your own reference time units with:
+
+.. code-block:: bash
+
+    $> nctime SUBCOMMAND --units "{seconds,minutes,hours,days} since YYYY-MM-DD [HH:mm:ss]"
+
+.. note::
+    Available units format is the one from CF conventions: "<units> since YYYY-MM-DD [HH:mm:ss]" where ``<units>`` stands for seconds, minutes, hours or days.
+
+.. warning::
+    The reference time units are use for all the files scanned during the check.
+
 Overwrites a frequency increment
 ********************************
 
 By default, each supported frequency as its own unit and increment (e.g. mon = 1 months). In some case the frequency
-increment or units can be change, at least for diagnostic purposes.
+increment or units can be change, at least for diagnostic purposes. For finer modification, the increment is change for
+a couple of MIP TABLE and FREQUENCY. The "all" keyword can be use to change the time increment for "all" table or "all"
+frequencies values.
 
 .. code-block:: bash
 
-    $> nctime SUBCOMMAND --set-inc FREQUENCY=INCREMENT[+]UNITS
+    $> nctime SUBCOMMAND --set-inc TABLE:FREQUENCY=INCREMENT[+]UNITS
 
-For instance to change the time increment of sub-hourly files from 30min to 15min:
+To change the time increment of sub-hourly files from the CFsubhr table from 30min to 15min:
 
 .. code-block:: bash
 
-    $> nctime SUBCOMMAND --set-inc subhr=15m
+    $> nctime SUBCOMMAND --set-inc CFsubhr:subhrPt=15m
+
+To change the time increment of all sub-hourly files whatever the MIP table:
+
+.. code-block:: bash
+
+    $> nctime SUBCOMMAND --set-inc all:subhr=15m
+
+To change the time increment of all CFsubhr files whatever the frequency:
+
+.. code-block:: bash
+
+    $> nctime SUBCOMMAND --set-inc CFsubhr:all=15m
 
 .. note::
     Duplicate the flag to overwrite several frequency increment.
