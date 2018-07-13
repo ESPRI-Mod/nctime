@@ -235,11 +235,9 @@ class File(object):
 
         """
         if len(axis) == self.length + 1:
-            assert len(axis) == self.length
-            return axis[:-1]
-        else:
-            assert len(axis) == self.length
-            return axis
+            axis = axis[:-1]
+        assert len(axis) == self.length
+        return axis
 
     def nc_var_delete(self, variable):
         """
