@@ -61,6 +61,11 @@ class Filename(object):
             table = self.nc_att_get('table_id')
         except NoNetCDFAttribute:
             table = 'None'
+        # Rollback to None if unknown table
+        if table not in set(zip(*FREQ_INC.keys())[0]):
+            msg = 'Unknown MIP table "{}" -- Consider default increment for the given frequency.'.format(table)
+            Print.warning(msg)
+            table = 'None'
         # Get frequency from file
         frequency = self.nc_att_get('frequency')
         dates = get_start_end_dates_from_filename(filename=self.name,
