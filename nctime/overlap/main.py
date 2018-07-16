@@ -432,7 +432,6 @@ def run(args=None):
         else:
             initializer(cctx.keys(), cctx.values())
             processes = itertools.imap(extract_dates, ctx.sources)
-        Print.progress('\n')
         # Process supplied sources
         handlers = [x for x in processes if x is not None]
         # Close pool of workers if exists
@@ -442,6 +441,7 @@ def run(args=None):
         # Get number of files skipped
         ctx.skip = ctx.nbfiles - len(handlers)
         # Process XML files if card
+        Print.progress('\n')
         patterns = dict()
         if ctx.card:
             # Reset progress counter
