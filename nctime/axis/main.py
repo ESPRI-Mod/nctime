@@ -139,7 +139,8 @@ def process(ffp):
         timestep_limit = pctx.limit if pctx.limit else len(wrong_timesteps)
         for i, v in enumerate(wrong_timesteps):
             if (i + 1) <= timestep_limit:
-                msg += """\n        Wrong time step: {} = {} iso {} = {}""".format(
+                msg += """\n        Wrong time step at index {}: {} = {} iso {} = {}""".format(
+                    COLORS.HEADER(str(v + 1)),
                     COLORS.FAIL(fh.date_axis[v]),
                     COLORS.FAIL(str(fh.time_axis[v]).ljust(10)),
                     COLORS.SUCCESS(fh.date_axis_rebuilt[v]),
@@ -147,7 +148,8 @@ def process(ffp):
         bounds_limit = pctx.limit if pctx.limit else len(wrong_bounds)
         for i, v in enumerate(wrong_bounds):
             if (i + 1) <= bounds_limit:
-                msg += """\n        Wrong time bounds: {} = {} iso {} = {}""".format(
+                msg += """\n        Wrong time bounds at index {}: {} = {} iso {} = {}""".format(
+                    COLORS.HEADER(str(v + 1)),
                     COLORS.FAIL('[{} {}]'.format(fh.date_bounds[v][0], fh.date_bounds[v][1])),
                     COLORS.FAIL(str(fh.time_bounds[v]).ljust(20)),
                     COLORS.SUCCESS('[{} {}]'.format(fh.date_bounds_rebuilt[v][0], fh.date_bounds_rebuilt[v][1])),
