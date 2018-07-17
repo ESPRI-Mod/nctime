@@ -97,8 +97,8 @@ def process(ffp):
         # Rewrite time axis depending on checking
         if (pctx.write and {'001', '002', '006', '007'}.intersection(set(fh.status))) or pctx.force:
             fh.nc_var_overwrite('time', fh.time_axis_rebuilt)
-            fh.nc_att_overwrite('units', 'time', pctx.ref_units)
-            fh.nc_att_overwrite('calendar', 'time', pctx.ref_calendar)
+            fh.nc_att_overwrite('units', variable='time', data=pctx.ref_units)
+            fh.nc_att_overwrite('calendar', variable='time', data=pctx.ref_calendar)
             # Rewrite time boundaries if needed
             if fh.has_bounds:
                 if fh.is_climatology:
