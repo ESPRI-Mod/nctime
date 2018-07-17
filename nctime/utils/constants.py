@@ -428,6 +428,7 @@ FREQ_INC = {('None', 'subhr'): [30, 'minutes'],
             ('SImon', 'monPt'): [1, 'months'],
             ('sites', 'subhr'): [30, 'minutes'],
             ('HOMAL3hrPt', '3hrPt'): [3, 'hours'],
+            ('HOMAL3hrPt', '3hr'): [3, 'hours'],
             ('HOMALmon', 'mon'): [1, 'months'],
             ('HOMEPmon', 'mon'): [1, 'months'],
             ('HOMOImon', 'mon'): [1, 'months']}
