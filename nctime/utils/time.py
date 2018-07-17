@@ -241,8 +241,8 @@ def date2num(date_axis, units, calendar):
             # If units are 'months since'
             # Define the number of maximum and minimum months to build a date axis covering
             # the whole 'num_axis' period
-            max_months = np.max(12 * (years - start_date.year + 1))
-            min_months = np.min(12 * (years - start_date.year - 1))
+            max_months = np.max(12 * (years - start_date.year + 12))
+            min_months = np.min(12 * (years - start_date.year - 12))
             # Create a date axis with one month that spans the entire period by month
             months_axis = np.array([add_month(start_date, mid)
                                     for mid in np.arange(min_months, max_months)])
