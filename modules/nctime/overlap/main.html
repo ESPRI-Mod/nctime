@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.overlap.main &mdash; nctime 4.4.9 documentation</title>
+  <title>nctime.overlap.main &mdash; nctime 4.5.1 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 4.4.9 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 4.5.1 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                4.4
+                4.5
               </div>
             
           
@@ -597,7 +597,6 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">initializer</span><span class="p">(</span><span class="n">cctx</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">cctx</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
             <span class="n">processes</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">extract_dates</span><span class="p">,</span> <span class="n">ctx</span><span class="o">.</span><span class="n">sources</span><span class="p">)</span>
-        <span class="n">Print</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="c1"># Process supplied sources</span>
         <span class="n">handlers</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">processes</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
         <span class="c1"># Close pool of workers if exists</span>
@@ -607,6 +606,7 @@
         <span class="c1"># Get number of files skipped</span>
         <span class="n">ctx</span><span class="o">.</span><span class="n">skip</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">nbfiles</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">handlers</span><span class="p">)</span>
         <span class="c1"># Process XML files if card</span>
+        <span class="n">Print</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">patterns</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">card</span><span class="p">:</span>
             <span class="c1"># Reset progress counter</span>
@@ -716,7 +716,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'4.4.9',
+            VERSION:'4.5.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
