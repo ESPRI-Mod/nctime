@@ -155,26 +155,6 @@ class File(object):
         self.last_timestamp = None
         self.last_num = None
 
-    def get_last_date(self):
-        """
-        Builds the last theoretical date and timestamp.
-
-        """
-        num_axis = np.arange(start=self.start_axis,
-                             stop=self.start_axis + self.length * self.step,
-                             step=self.step)
-        num_axis = self.check_axis_length(num_axis)
-        self.last_num = num_axis[-1]
-        del num_axis
-        try:
-            last_date = num2date(self.last_num, units=self.funits, calendar=self.calendar)[0]
-        except TypeError:
-            last_date = num2date(self.last_num, units=self.funits, calendar=self.calendar)
-        self.last_date = dates2str(last_date)
-        # Convert dates into timestamps
-        self.last_timestamp = truncated_timestamp(last_date, self.timestamp_length)
-        self.last_num = date2num(last_date, units=self.tunits, calendar=self.calendar)
-
     def build_time_axis(self):
         """
         Rebuilds time axis from date axis, depending on MIP frequency, calendar and instant status.

@@ -18,7 +18,7 @@ from context import ProcessingContext
 from handler import File
 from nctime.utils.custom_print import *
 from nctime.utils.misc import ProcessContext
-from nctime.utils.time import trunc
+from nctime.utils.time import trunc, truncated_timestamp, str2dates
 
 def process(ffp):
     """
@@ -41,25 +41,6 @@ def process(ffp):
                   ref_calendar=pctx.ref_calendar,
                   input_start_timestamp=pctx.ref_start,
                   input_end_timestamp=pctx.ref_end)
-        fh.get_last_date()
-        # In the case of inconsistent timestamps, it may be due to float precision issue
-        if not pctx.on_fly and fh.last_timestamp != fh.end_timestamp:
-            if int(float(fh.last_timestamp)) < int(float(fh.end_timestamp)):
-                fh.status.append('003a')
-            else:
-                fh.status.append('003b')
-        # Check consistency between last time date and end date from filename
-        if not pctx.on_fly and fh.last_date != fh.end_date:
-            if fh.last_date < fh.end_date:
-                fh.status.append('008a')
-            else:
-                fh.status.append('008b')
-        # Check file consistency between instant time and time boundaries
-        if fh.is_instant and fh.has_bounds:
-            fh.status.append('004')
-        # Check file consistency between averaged time and time boundaries
-        if not fh.is_instant and not fh.has_bounds:
-            fh.status.append('005')
         # Check time axis squareness
         wrong_timesteps = list()
         # Rebuild a theoretical time axis with appropriate precision
@@ -76,6 +57,22 @@ def process(ffp):
                 fh.status.append('006')
                 time_bounds_diff = (fh.time_bounds_rebuilt == fh.time_bounds)
                 wrong_bounds = list(np.where(np.all(time_bounds_diff, axis=1) == False)[0])
+        # Get last theoretical date
+        fh.last_num = fh.time_axis_rebuilt[-1]
+        fh.last_date = fh.date_axis_rebuilt[-1]
+        fh.last_timestamp = truncated_timestamp(str2dates(fh.last_date), fh.timestamp_length)
+        # Check consistency between last time date and end date from filename
+        if not pctx.on_fly and fh.last_date != fh.end_date:
+            if fh.last_date < fh.end_date:
+                fh.status.append('003')
+            else:
+                fh.status.append('008')
+        # Check file consistency between instant time and time boundaries
+        if fh.is_instant and fh.has_bounds:
+            fh.status.append('004')
+        # Check file consistency between averaged time and time boundaries
+        if not fh.is_instant and not fh.has_bounds:
+            fh.status.append('005')
         # Check time units consistency between file and ref
         if pctx.ref_units != fh.tunits:
             fh.status.append('002')
@@ -139,7 +136,7 @@ def process(ffp):
         timestep_limit = pctx.limit if pctx.limit else len(wrong_timesteps)
         for i, v in enumerate(wrong_timesteps):
             if (i + 1) <= timestep_limit:
-                msg += """\n        Wrong time step at index {}: {} = {} iso {} = {}""".format(
+                msg += """\n        Wrong time step at index {}: IN FILE -- {} = {} vs. REBUILT -- {} = {}""".format(
                     COLORS.HEADER(str(v + 1)),
                     COLORS.FAIL(fh.date_axis[v]),
                     COLORS.FAIL(str(fh.time_axis[v]).ljust(10)),
@@ -148,7 +145,7 @@ def process(ffp):
         bounds_limit = pctx.limit if pctx.limit else len(wrong_bounds)
         for i, v in enumerate(wrong_bounds):
             if (i + 1) <= bounds_limit:
-                msg += """\n        Wrong time bounds at index {}: {} = {} iso {} = {}""".format(
+                msg += """\n        Wrong time bounds at index {}: IN FILE -- {} = {} vs. REBUILT -- {} = {}""".format(
                     COLORS.HEADER(str(v + 1)),
                     COLORS.FAIL('[{} {}]'.format(fh.date_bounds[v][0], fh.date_bounds[v][1])),
                     COLORS.FAIL(str(fh.time_bounds[v]).ljust(20)),

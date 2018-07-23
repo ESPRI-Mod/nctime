@@ -11,6 +11,8 @@ import netCDF4
 import numpy as np
 from netcdftime import utime
 
+from datetime import datetime as dt
+
 from constants import *
 from custom_exceptions import *
 from custom_print import *
@@ -467,3 +469,35 @@ def date2str(date, iso_format=True):
                                                                    date.hour,
                                                                    date.minute,
                                                                    date.second)
+
+
+def str2dates(strings, iso_format=True):
+    """
+    Converts (a list of) string in format: %Y%m%d %H:%M:%s into datetime objects.
+
+    :param string/list strings: A list of string to convert
+    :param boolean iso_format: ISO format date if True
+    :returns: A list of datetime or phony datetime objects
+    :rtype: *list* or *str*
+
+    """
+    if isinstance(strings, list) or isinstance(strings, np.ndarray):
+        return [str2date(string, iso_format) for string in strings]
+    else:
+        return str2date(strings, iso_format)
+
+
+def str2date(string, iso_format=True):
+    """
+    Converts string date format: %Y%m%d %H:%M:%s into datetime object
+
+    :param str string: The string to format
+    :param boolean iso_format: ISO format date if True
+    :returns: A datetime or phony datetime objects
+    :rtype: *netcdftime.datetime*
+
+    """
+    if iso_format:
+        return dt.strptime(string, "%Y-%m-%dT%H:%M:%S")
+    else:
+        return dt.strptime(string, "%Y%m%d%H%M%S")
