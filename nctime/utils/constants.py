@@ -6,13 +6,13 @@
     :synopsis: Constants used in this package.
 
 """
-from netcdftime import datetime
+from datetime import datetime as dt
 
 # Program version
 VERSION = '4.5.2'
 
 # Date
-VERSION_DATE = datetime(year=2018, month=7, day=17).strftime("%Y-%d-%m")
+VERSION_DATE = dt(year=2018, month=7, day=17).strftime("%Y-%d-%m")
 
 # Cards name
 RUN_CARD = 'run.card'
