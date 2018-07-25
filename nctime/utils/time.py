@@ -9,9 +9,7 @@
 
 import netCDF4
 import numpy as np
-from netcdftime import utime
-
-from datetime import datetime as dt
+from netcdftime import utime, datetime
 
 from constants import *
 from custom_exceptions import *
