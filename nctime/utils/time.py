@@ -11,7 +11,6 @@ import netCDF4
 import numpy as np
 from netcdftime import utime, datetime
 
-from constants import *
 from custom_exceptions import *
 from custom_print import *
 from misc import ncopen

@@ -182,30 +182,34 @@ class File(object):
         :rtype: *numpy.array*
 
         """
-        num_axis = np.arange(start=self.start_axis,
-                             stop=self.start_axis + self.length * self.step,
-                             step=self.step)
-        num_axis = self.check_axis_length(num_axis)
-        num_axis_bnds_inf, num_axis_bnds_sup = num_axis, copy(num_axis)
-        if self.is_climatology:
-            if self.frequency in ['monC', 'monClim']:
-                num_axis_bnds_inf -= self.clim_diff - 11
-                num_axis_bnds_sup += self.clim_diff + 1
-            elif self.frequency == '1hrCM':
-                num_axis_bnds_inf -= self.clim_diff - 23.5
-                num_axis_bnds_sup += self.clim_diff + 0.5
+        if self.is_instant:
+            self.date_bounds_rebuilt = np.column_stack((self.date_axis_rebuilt, self.date_axis_rebuilt))
+            axis_bnds_rebuilt = np.column_stack((self.time_axis_rebuilt, self.time_axis_rebuilt))
         else:
-            num_axis_bnds_inf -= 0.5 * self.step
-            num_axis_bnds_sup += 0.5 * self.step
-        num_axis_bnds = np.column_stack((num_axis_bnds_inf, num_axis_bnds_sup))
-        del num_axis, num_axis_bnds_inf, num_axis_bnds_sup
-        date_axis_bnds = num2date(num_axis_bnds, units=self.funits, calendar=self.ref_calendar)
-        del num_axis_bnds
-        axis_bnds_rebuilt = date2num(date_axis_bnds, units=self.ref_units, calendar=self.ref_calendar)
-        self.date_bounds_rebuilt = np.column_stack((
-            dates2str(num2date(axis_bnds_rebuilt[:, 0], units=self.ref_units, calendar=self.ref_calendar)),
-            dates2str(num2date(axis_bnds_rebuilt[:, 1], units=self.ref_units, calendar=self.ref_calendar))
-        ))
+            num_axis = np.arange(start=self.start_axis,
+                                 stop=self.start_axis + self.length * self.step,
+                                 step=self.step)
+            num_axis = self.check_axis_length(num_axis)
+            num_axis_bnds_inf, num_axis_bnds_sup = num_axis, copy(num_axis)
+            if self.is_climatology:
+                if self.frequency in ['monC', 'monClim']:
+                    num_axis_bnds_inf -= self.clim_diff - 11
+                    num_axis_bnds_sup += self.clim_diff + 1
+                elif self.frequency == '1hrCM':
+                    num_axis_bnds_inf -= self.clim_diff - 23.5
+                    num_axis_bnds_sup += self.clim_diff + 0.5
+            else:
+                num_axis_bnds_inf -= 0.5 * self.step
+                num_axis_bnds_sup += 0.5 * self.step
+            num_axis_bnds = np.column_stack((num_axis_bnds_inf, num_axis_bnds_sup))
+            del num_axis, num_axis_bnds_inf, num_axis_bnds_sup
+            date_axis_bnds = num2date(num_axis_bnds, units=self.funits, calendar=self.ref_calendar)
+            del num_axis_bnds
+            axis_bnds_rebuilt = date2num(date_axis_bnds, units=self.ref_units, calendar=self.ref_calendar)
+            self.date_bounds_rebuilt = np.column_stack((
+                dates2str(num2date(axis_bnds_rebuilt[:, 0], units=self.ref_units, calendar=self.ref_calendar)),
+                dates2str(num2date(axis_bnds_rebuilt[:, 1], units=self.ref_units, calendar=self.ref_calendar))
+            ))
         return axis_bnds_rebuilt
 
     def check_axis_length(self, axis):
