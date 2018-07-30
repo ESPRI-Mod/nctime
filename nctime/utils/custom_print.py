@@ -150,7 +150,7 @@ class Print(object):
         Print.DEBUG = debug
         Print.CMD = cmd
         Print.ALL = all
-        logname = '{}-{}'.format(Print.CMD, dt.now().strftime("%Y%m%d-%H%M%S"))
+        logname = '{}-{}-{}'.format(Print.CMD, dt.now().strftime("%Y%m%d-%H%M%S"), os.getpid())
         if Print.LOG:
             logdir = Print.LOG
             if not os.path.isdir(Print.LOG):
