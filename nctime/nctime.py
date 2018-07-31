@@ -132,7 +132,6 @@ def get_args():
         '--chunksize',
         metavar='INT',
         type=int,
-        default=1,
         help=CHUNKSIZE_HELP)
 
     ##################################
