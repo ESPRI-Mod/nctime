@@ -220,7 +220,7 @@ def run(args=None):
             # Init processes pool
             pool = Pool(processes=ctx.processes, initializer=initializer, initargs=(cctx.keys(), cctx.values()))
             # Process supplied files
-            processes = pool.imap(process, ctx.sources)
+            processes = pool.imap(process, ctx.sources, chunksize=ctx.chunksize)
         else:
             initializer(cctx.keys(), cctx.values())
             processes = itertools.imap(process, ctx.sources)
@@ -230,6 +230,7 @@ def run(args=None):
         if 'pool' in locals().keys():
             locals()['pool'].close()
             locals()['pool'].join()
+            locals()['pool'].terminate()
         Print.progress('\n')
         # Flush buffer
         Print.flush()

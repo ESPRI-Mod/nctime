@@ -128,6 +128,12 @@ def get_args():
         type=processes_validator,
         default=4,
         help=MAX_PROCESSES_HELP)
+    parent.add_argument(
+        '--chunksize',
+        metavar='INT',
+        type=int,
+        default=1,
+        help=CHUNKSIZE_HELP)
 
     ##################################
     # Subparser for "nctime overlap" #

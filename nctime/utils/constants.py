@@ -270,6 +270,15 @@ MAX_PROCESSES_HELP = \
     
     """
 
+CHUNKSIZE_HELP = \
+    """
+    Process chunksize, as the number of maximal task|n
+    per process. Each process can treat several files|n
+    before the next iteration of files.|n
+    Default is to treat 1 file per process.
+
+    """
+
 IGNORE_DIR_HELP = \
     """
     Filter directories NON-matching the regular expression.|n

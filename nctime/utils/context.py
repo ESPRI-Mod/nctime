@@ -36,6 +36,7 @@ class BaseContext(object):
         self.project = args.project
         self.config_dir = args.i
         self.processes = args.max_processes if args.max_processes <= cpu_count() else cpu_count()
+        self.chunksize = args.chunksize
         self.use_pool = (self.processes != 1)
         self.lock = Lock()
         self.nbfiles = 0
