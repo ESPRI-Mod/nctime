@@ -6,10 +6,11 @@
 """
 
 from copy import deepcopy as copy
-from uuid import uuid4
+
 import nco
 import numpy as np
 from fuzzywuzzy import fuzz, process
+
 from constants import *
 from custom_exceptions import *
 from nctime.utils.constants import CLIM_SUFFIX, AVERAGE_CORRECTION_FREQ
@@ -128,19 +129,14 @@ class File(object):
                                                   calendar=self.calendar,
                                                   start=input_start_timestamp,
                                                   end=input_end_timestamp)
-        dates_num = trunc(date2num(dates, units=self.funits, calendar=self.calendar), NDECIMALS)
         if self.is_climatology:
-            # Apply time offset corresponding to the climatology:
-            self.clim_diff = (dates_num[1] - dates_num[0]) / 2
-            if self.frequency in ['monC', 'monClim']:
-                dates_num[0] += self.clim_diff - 11
-                dates_num[1] -= self.clim_diff
-            elif self.frequency == '1hrCM':
-                dates_num[0] += self.clim_diff - 23.5
-                dates_num[1] -= self.clim_diff + 0.5
-            else:
-                raise InvalidClimatologyFrequency(self.frequency)
-        elif not self.is_instant and self.frequency in AVERAGE_CORRECTION_FREQ:
+            # Climatology is on the same year in the middle of the period
+            year_diff = dates[1].year - dates[0].year
+            dates[0] = dates[0].replace(year=dates[0].year + year_diff / 2)
+            dates[1] = dates[1].replace(year=dates[0].year)
+            dates[2] = dates[2].replace(year=dates[0].year)
+        dates_num = trunc(date2num(dates, units=self.funits, calendar=self.calendar), NDECIMALS)
+        if not self.is_instant and (self.frequency in AVERAGE_CORRECTION_FREQ or self.frequency in CLIMATOLOGY_FREQ):
             # Apply time offset for non-instant time axis:
             dates_num += 0.5
         self.start_axis = dates_num[0]
@@ -187,14 +183,7 @@ class File(object):
                              step=self.step)
         num_axis = self.check_axis_length(num_axis)
         num_axis_bnds_inf, num_axis_bnds_sup = num_axis, copy(num_axis)
-        if self.is_climatology:
-            if self.frequency in ['monC', 'monClim']:
-                num_axis_bnds_inf -= self.clim_diff - 11
-                num_axis_bnds_sup += self.clim_diff + 1
-            elif self.frequency == '1hrCM':
-                num_axis_bnds_inf -= self.clim_diff - 23.5
-                num_axis_bnds_sup += self.clim_diff + 0.5
-        elif not self.is_instant:
+        if not self.is_instant:
             num_axis_bnds_inf -= 0.5 * self.step
             num_axis_bnds_sup += 0.5 * self.step
         num_axis_bnds = np.column_stack((num_axis_bnds_inf, num_axis_bnds_sup))

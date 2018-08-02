@@ -444,7 +444,7 @@ TIME_UNITS = {'s': 'seconds',
 # Frequencies to consider in case of non-instant time correction
 AVERAGE_CORRECTION_FREQ = ['day', 'mon', 'monPt', 'yr', 'yrPt']
 
-# Frequencies to consider in case of non-instant time correction
+# Climatology frequencies
 CLIMATOLOGY_FREQ = ['monC', 'monClim', '1hrCM']
 
 # Available CF calendars

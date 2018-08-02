@@ -5,7 +5,6 @@
 
 """
 
-import os
 from copy import deepcopy as copy
 
 from fuzzywuzzy import fuzz, process
@@ -13,9 +12,9 @@ from networkx import DiGraph
 
 from nctime.utils.constants import CLIM_SUFFIX
 from nctime.utils.custom_exceptions import *
+from nctime.utils.custom_print import *
 from nctime.utils.misc import ncopen
 from nctime.utils.time import get_start_end_dates_from_filename, dates2int
-from nctime.utils.custom_print import *
 
 
 class Filename(object):

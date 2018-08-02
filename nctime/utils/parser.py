@@ -14,9 +14,11 @@ import textwrap
 from argparse import HelpFormatter, ArgumentTypeError, Action, ArgumentParser
 from gettext import gettext
 
+from netcdftime import utime
+
 from constants import TIME_UNITS, FREQ_INC, CALENDARS, TIME_UNITS_FORMAT
 from custom_exceptions import InvalidUnits, InvalidFrequency, InvalidTable
-from netcdftime import utime
+
 
 class CustomParser(ArgumentParser):
     def error(self, message):

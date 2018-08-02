@@ -20,6 +20,7 @@ from nctime.utils.custom_print import *
 from nctime.utils.misc import ProcessContext
 from nctime.utils.time import trunc, truncated_timestamp, str2dates
 
+
 def process(ffp):
     """
     Process time axis checkup and rewriting if needed.
@@ -220,7 +221,7 @@ def run(args=None):
             # Init processes pool
             pool = Pool(processes=ctx.processes, initializer=initializer, initargs=(cctx.keys(), cctx.values()))
             # Process supplied files
-            processes = pool.imap(process, ctx.sources, chunksize=ctx.chunksize)
+            processes = pool.imap(process, ctx.sources)
         else:
             initializer(cctx.keys(), cctx.values())
             processes = itertools.imap(process, ctx.sources)
