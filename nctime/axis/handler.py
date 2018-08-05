@@ -134,16 +134,19 @@ class File(object):
             # Get climatology offset to start in the middle of the interval
             year_diff = dates[1].year - dates[0].year
             start_clim_date = dates[0].replace(year=dates[0].year + year_diff / 2)
+            end_clim_date = dates[1].replace(year=dates[0].year + year_diff / 2)
             start_clim_num = trunc(date2num(start_clim_date, units=self.funits, calendar=self.calendar), NDECIMALS)
+            end_clim_num = trunc(date2num(end_clim_date, units=self.funits, calendar=self.calendar), NDECIMALS)
             # Apply time offset corresponding to the climatology:
+            self.clim_diff = [start_clim_num - dates_num[0], dates_num[1] - end_clim_num]
             if self.frequency in ['monC', 'monClim']:
-                self.clim_diff = (start_clim_num - dates_num[0], dates_num[1] - 10 - start_clim_num)
+                self.clim_diff.append(dates_num[1] - 10 - start_clim_num)
             elif self.frequency == '1hrCM':
-                self.clim_diff = (start_clim_num - dates_num[0], dates_num[1] - 22.5 - start_clim_num)
+                self.clim_diff.append(dates_num[1] - 22.5 - start_clim_num)
             else:
                 raise InvalidClimatologyFrequency(self.frequency)
-            dates_num[0] += self.clim_diff[0]
-            dates_num[1] -= self.clim_diff[1]
+            dates_num[0] += self.clim_diff[0] + 0.5
+            dates_num[1] -= self.clim_diff[1] - 0.5
         elif not self.is_instant and self.frequency in AVERAGE_CORRECTION_FREQ:
             # Apply time offset for non-instant time axis:
             dates_num += 0.5
@@ -171,8 +174,6 @@ class File(object):
                              stop=self.start_axis + self.length * self.step,
                              step=self.step)
         num_axis = self.check_axis_length(num_axis)
-        if self.is_climatology:
-            num_axis += 0.5
         date_axis = num2date(num_axis, units=self.funits, calendar=self.ref_calendar)
         del num_axis
         axis_rebuilt = date2num(date_axis, units=self.ref_units, calendar=self.ref_calendar)
@@ -194,8 +195,8 @@ class File(object):
         num_axis = self.check_axis_length(num_axis)
         num_axis_bnds_inf, num_axis_bnds_sup = num_axis, copy(num_axis)
         if self.is_climatology:
-            num_axis_bnds_inf -= self.clim_diff[0]
-            num_axis_bnds_sup += self.clim_diff[1]
+            num_axis_bnds_inf -= self.clim_diff[0] - 0.5
+            num_axis_bnds_sup += self.clim_diff[2] - 0.5
         elif not self.is_instant:
             num_axis_bnds_inf -= 0.5 * self.step
             num_axis_bnds_sup += 0.5 * self.step
