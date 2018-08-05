@@ -195,7 +195,7 @@ class File(object):
         num_axis = self.check_axis_length(num_axis)
         num_axis_bnds_inf, num_axis_bnds_sup = num_axis, copy(num_axis)
         if self.is_climatology:
-            num_axis_bnds_inf -= self.clim_diff[0] - 0.5
+            num_axis_bnds_inf -= self.clim_diff[0] + 0.5
             num_axis_bnds_sup += self.clim_diff[2] - 0.5
         elif not self.is_instant:
             num_axis_bnds_inf -= 0.5 * self.step
