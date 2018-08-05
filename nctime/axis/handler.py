@@ -137,9 +137,9 @@ class File(object):
             start_clim_num = trunc(date2num(start_clim_date, units=self.funits, calendar=self.calendar), NDECIMALS)
             # Apply time offset corresponding to the climatology:
             if self.frequency in ['monC', 'monClim']:
-                self.clim_diff = (start_clim_num - dates_num[0], dates_num[1] - 11 - start_clim_num)
+                self.clim_diff = (start_clim_num - dates_num[0], dates_num[1] - 10 - start_clim_num)
             elif self.frequency == '1hrCM':
-                self.clim_diff = (start_clim_num - dates_num[0], dates_num[1] - 23.5 - start_clim_num)
+                self.clim_diff = (start_clim_num - dates_num[0], dates_num[1] - 22.5 - start_clim_num)
             else:
                 raise InvalidClimatologyFrequency(self.frequency)
             dates_num[0] += self.clim_diff[0]
