@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Generic usage &mdash; nctime 4.5.1 documentation</title>
+  <title>Generic usage &mdash; nctime 4.5.4 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="nctime 4.5.1 documentation" href="index.html"/>
+    <link rel="top" title="nctime 4.5.4 documentation" href="index.html"/>
         <link rel="next" title="Check time series continuity" href="overlap.html"/>
         <link rel="prev" title="Configuration" href="configuration.html"/> 
 
@@ -270,8 +270,9 @@ $&gt; nctime SUBCOMMAND -l /PATH/TO/LOGDIR/
 <h2>Use multiprocessing<a class="headerlink" href="#use-multiprocessing" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal"><span class="pre">nctime</span></code> uses a multiprocessing interface. This is useful to process a large amount of data, especially in the case
 of <code class="docutils literal"><span class="pre">axis</span></code> subcommands with the time axis calculation. Set the number of maximal processes to simultaneously treat
-several files. One process seems sequential processing (the default). Set it -1 to use all available CPU processes
-(as returned by <code class="docutils literal"><span class="pre">multiprocessing.cpu_count()</span></code>). Default is set to 4 processes.</p>
+several files. One process seems sequential processing. Set it -1 to use all available CPU processes</p>
+<blockquote>
+<div>(as returned by <code class="docutils literal"><span class="pre">multiprocessing.cpu_count()</span></code>). Default is set to 4 processes.</div></blockquote>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND --max-processes <span class="m">4</span>
 </pre></div>
 </div>
@@ -432,7 +433,7 @@ frequencies values.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'4.5.1',
+            VERSION:'4.5.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

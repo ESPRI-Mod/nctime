@@ -107,8 +107,8 @@ Use multiprocessing
 
 ``nctime`` uses a multiprocessing interface. This is useful to process a large amount of data, especially in the case
 of ``axis`` subcommands with the time axis calculation. Set the number of maximal processes to simultaneously treat
-several files. One process seems sequential processing (the default). Set it -1 to use all available CPU processes
-(as returned by ``multiprocessing.cpu_count()``). Default is set to 4 processes.
+several files. One process seems sequential processing. Set it -1 to use all available CPU processes
+    (as returned by ``multiprocessing.cpu_count()``). Default is set to 4 processes.
 
 .. code-block:: bash
 

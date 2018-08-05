@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.axis.main &mdash; nctime 4.5.1 documentation</title>
+  <title>nctime.axis.main &mdash; nctime 4.5.4 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 4.5.1 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 4.5.4 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -183,7 +183,8 @@
 <span class="kn">from</span> <span class="nn">handler</span> <span class="k">import</span> <span class="n">File</span>
 <span class="kn">from</span> <span class="nn">nctime.utils.custom_print</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">nctime.utils.misc</span> <span class="k">import</span> <span class="n">ProcessContext</span>
-<span class="kn">from</span> <span class="nn">nctime.utils.time</span> <span class="k">import</span> <span class="n">trunc</span>
+<span class="kn">from</span> <span class="nn">nctime.utils.time</span> <span class="k">import</span> <span class="n">trunc</span><span class="p">,</span> <span class="n">truncated_timestamp</span><span class="p">,</span> <span class="n">str2dates</span>
+
 
 <div class="viewcode-block" id="process"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.main.process">[docs]</a><span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="n">ffp</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -206,25 +207,6 @@
                   <span class="n">ref_calendar</span><span class="o">=</span><span class="n">pctx</span><span class="o">.</span><span class="n">ref_calendar</span><span class="p">,</span>
                   <span class="n">input_start_timestamp</span><span class="o">=</span><span class="n">pctx</span><span class="o">.</span><span class="n">ref_start</span><span class="p">,</span>
                   <span class="n">input_end_timestamp</span><span class="o">=</span><span class="n">pctx</span><span class="o">.</span><span class="n">ref_end</span><span class="p">)</span>
-        <span class="n">fh</span><span class="o">.</span><span class="n">get_last_date</span><span class="p">()</span>
-        <span class="c1"># In the case of inconsistent timestamps, it may be due to float precision issue</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">pctx</span><span class="o">.</span><span class="n">on_fly</span> <span class="ow">and</span> <span class="n">fh</span><span class="o">.</span><span class="n">last_timestamp</span> <span class="o">!=</span> <span class="n">fh</span><span class="o">.</span><span class="n">end_timestamp</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">last_timestamp</span><span class="p">))</span> <span class="o">&lt;</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">end_timestamp</span><span class="p">)):</span>
-                <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;003a&#39;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;003b&#39;</span><span class="p">)</span>
-        <span class="c1"># Check consistency between last time date and end date from filename</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">pctx</span><span class="o">.</span><span class="n">on_fly</span> <span class="ow">and</span> <span class="n">fh</span><span class="o">.</span><span class="n">last_date</span> <span class="o">!=</span> <span class="n">fh</span><span class="o">.</span><span class="n">end_date</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">fh</span><span class="o">.</span><span class="n">last_date</span> <span class="o">&lt;</span> <span class="n">fh</span><span class="o">.</span><span class="n">end_date</span><span class="p">:</span>
-                <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;008a&#39;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;008b&#39;</span><span class="p">)</span>
-        <span class="c1"># Check file consistency between instant time and time boundaries</span>
-        <span class="k">if</span> <span class="n">fh</span><span class="o">.</span><span class="n">is_instant</span> <span class="ow">and</span> <span class="n">fh</span><span class="o">.</span><span class="n">has_bounds</span><span class="p">:</span>
-            <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;004&#39;</span><span class="p">)</span>
-        <span class="c1"># Check file consistency between averaged time and time boundaries</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">fh</span><span class="o">.</span><span class="n">is_instant</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">fh</span><span class="o">.</span><span class="n">has_bounds</span><span class="p">:</span>
-            <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;005&#39;</span><span class="p">)</span>
         <span class="c1"># Check time axis squareness</span>
         <span class="n">wrong_timesteps</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="c1"># Rebuild a theoretical time axis with appropriate precision</span>
@@ -241,6 +223,22 @@
                 <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;006&#39;</span><span class="p">)</span>
                 <span class="n">time_bounds_diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">time_bounds_rebuilt</span> <span class="o">==</span> <span class="n">fh</span><span class="o">.</span><span class="n">time_bounds</span><span class="p">)</span>
                 <span class="n">wrong_bounds</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">time_bounds_diff</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="c1"># Get last theoretical date</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">last_num</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">time_axis_rebuilt</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">last_date</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">date_axis_rebuilt</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">last_timestamp</span> <span class="o">=</span> <span class="n">truncated_timestamp</span><span class="p">(</span><span class="n">str2dates</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">last_date</span><span class="p">),</span> <span class="n">fh</span><span class="o">.</span><span class="n">timestamp_length</span><span class="p">)</span>
+        <span class="c1"># Check consistency between last time date and end date from filename</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pctx</span><span class="o">.</span><span class="n">on_fly</span> <span class="ow">and</span> <span class="n">fh</span><span class="o">.</span><span class="n">last_date</span> <span class="o">!=</span> <span class="n">fh</span><span class="o">.</span><span class="n">end_date</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">fh</span><span class="o">.</span><span class="n">last_date</span> <span class="o">&lt;</span> <span class="n">fh</span><span class="o">.</span><span class="n">end_date</span><span class="p">:</span>
+                <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;003&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;008&#39;</span><span class="p">)</span>
+        <span class="c1"># Check file consistency between instant time and time boundaries</span>
+        <span class="k">if</span> <span class="n">fh</span><span class="o">.</span><span class="n">is_instant</span> <span class="ow">and</span> <span class="n">fh</span><span class="o">.</span><span class="n">has_bounds</span><span class="p">:</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;004&#39;</span><span class="p">)</span>
+        <span class="c1"># Check file consistency between averaged time and time boundaries</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fh</span><span class="o">.</span><span class="n">is_instant</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">fh</span><span class="o">.</span><span class="n">has_bounds</span><span class="p">:</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;005&#39;</span><span class="p">)</span>
         <span class="c1"># Check time units consistency between file and ref</span>
         <span class="k">if</span> <span class="n">pctx</span><span class="o">.</span><span class="n">ref_units</span> <span class="o">!=</span> <span class="n">fh</span><span class="o">.</span><span class="n">tunits</span><span class="p">:</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;002&#39;</span><span class="p">)</span>
@@ -262,8 +260,8 @@
         <span class="c1"># Rewrite time axis depending on checking</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">pctx</span><span class="o">.</span><span class="n">write</span> <span class="ow">and</span> <span class="p">{</span><span class="s1">&#39;001&#39;</span><span class="p">,</span> <span class="s1">&#39;002&#39;</span><span class="p">,</span> <span class="s1">&#39;006&#39;</span><span class="p">,</span> <span class="s1">&#39;007&#39;</span><span class="p">}</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">status</span><span class="p">)))</span> <span class="ow">or</span> <span class="n">pctx</span><span class="o">.</span><span class="n">force</span><span class="p">:</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">nc_var_overwrite</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">time_axis_rebuilt</span><span class="p">)</span>
-            <span class="n">fh</span><span class="o">.</span><span class="n">nc_att_overwrite</span><span class="p">(</span><span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">pctx</span><span class="o">.</span><span class="n">ref_units</span><span class="p">)</span>
-            <span class="n">fh</span><span class="o">.</span><span class="n">nc_att_overwrite</span><span class="p">(</span><span class="s1">&#39;calendar&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">pctx</span><span class="o">.</span><span class="n">ref_calendar</span><span class="p">)</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">nc_att_overwrite</span><span class="p">(</span><span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">pctx</span><span class="o">.</span><span class="n">ref_units</span><span class="p">)</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">nc_att_overwrite</span><span class="p">(</span><span class="s1">&#39;calendar&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">pctx</span><span class="o">.</span><span class="n">ref_calendar</span><span class="p">)</span>
             <span class="c1"># Rewrite time boundaries if needed</span>
             <span class="k">if</span> <span class="n">fh</span><span class="o">.</span><span class="n">has_bounds</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">fh</span><span class="o">.</span><span class="n">is_climatology</span><span class="p">:</span>
@@ -304,7 +302,7 @@
         <span class="n">timestep_limit</span> <span class="o">=</span> <span class="n">pctx</span><span class="o">.</span><span class="n">limit</span> <span class="k">if</span> <span class="n">pctx</span><span class="o">.</span><span class="n">limit</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">wrong_timesteps</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">wrong_timesteps</span><span class="p">):</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">timestep_limit</span><span class="p">:</span>
-                <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\n</span><span class="s2">        Wrong time step at index </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2"> = </span><span class="si">{}</span><span class="s2"> iso </span><span class="si">{}</span><span class="s2"> = </span><span class="si">{}</span><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\n</span><span class="s2">        Wrong time step at index </span><span class="si">{}</span><span class="s2">: IN FILE -- </span><span class="si">{}</span><span class="s2"> = </span><span class="si">{}</span><span class="s2"> vs. REBUILT -- </span><span class="si">{}</span><span class="s2"> = </span><span class="si">{}</span><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">COLORS</span><span class="o">.</span><span class="n">HEADER</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)),</span>
                     <span class="n">COLORS</span><span class="o">.</span><span class="n">FAIL</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">date_axis</span><span class="p">[</span><span class="n">v</span><span class="p">]),</span>
                     <span class="n">COLORS</span><span class="o">.</span><span class="n">FAIL</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">time_axis</span><span class="p">[</span><span class="n">v</span><span class="p">])</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">10</span><span class="p">)),</span>
@@ -313,7 +311,7 @@
         <span class="n">bounds_limit</span> <span class="o">=</span> <span class="n">pctx</span><span class="o">.</span><span class="n">limit</span> <span class="k">if</span> <span class="n">pctx</span><span class="o">.</span><span class="n">limit</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">wrong_bounds</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">wrong_bounds</span><span class="p">):</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">bounds_limit</span><span class="p">:</span>
-                <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\n</span><span class="s2">        Wrong time bounds at index </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2"> = </span><span class="si">{}</span><span class="s2"> iso </span><span class="si">{}</span><span class="s2"> = </span><span class="si">{}</span><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\n</span><span class="s2">        Wrong time bounds at index </span><span class="si">{}</span><span class="s2">: IN FILE -- </span><span class="si">{}</span><span class="s2"> = </span><span class="si">{}</span><span class="s2"> vs. REBUILT -- </span><span class="si">{}</span><span class="s2"> = </span><span class="si">{}</span><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">COLORS</span><span class="o">.</span><span class="n">HEADER</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)),</span>
                     <span class="n">COLORS</span><span class="o">.</span><span class="n">FAIL</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">date_bounds</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">fh</span><span class="o">.</span><span class="n">date_bounds</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="mi">1</span><span class="p">])),</span>
                     <span class="n">COLORS</span><span class="o">.</span><span class="n">FAIL</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">time_bounds</span><span class="p">[</span><span class="n">v</span><span class="p">])</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">20</span><span class="p">)),</span>
@@ -398,6 +396,7 @@
         <span class="k">if</span> <span class="s1">&#39;pool&#39;</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="nb">locals</span><span class="p">()[</span><span class="s1">&#39;pool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="nb">locals</span><span class="p">()[</span><span class="s1">&#39;pool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+            <span class="nb">locals</span><span class="p">()[</span><span class="s1">&#39;pool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
         <span class="n">Print</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="c1"># Flush buffer</span>
         <span class="n">Print</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
@@ -447,7 +446,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'4.5.1',
+            VERSION:'4.5.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
