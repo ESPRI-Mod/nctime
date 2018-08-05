@@ -270,9 +270,8 @@ $&gt; nctime SUBCOMMAND -l /PATH/TO/LOGDIR/
 <h2>Use multiprocessing<a class="headerlink" href="#use-multiprocessing" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal"><span class="pre">nctime</span></code> uses a multiprocessing interface. This is useful to process a large amount of data, especially in the case
 of <code class="docutils literal"><span class="pre">axis</span></code> subcommands with the time axis calculation. Set the number of maximal processes to simultaneously treat
-several files. One process seems sequential processing. Set it -1 to use all available CPU processes</p>
-<blockquote>
-<div>(as returned by <code class="docutils literal"><span class="pre">multiprocessing.cpu_count()</span></code>). Default is set to 4 processes.</div></blockquote>
+several files. One process seems sequential processing. Set it -1 to use all available CPU processes
+(as returned by <code class="docutils literal"><span class="pre">multiprocessing.cpu_count()</span></code>). Default is set to 4 processes.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND --max-processes <span class="m">4</span>
 </pre></div>
 </div>
