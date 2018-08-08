@@ -9,10 +9,10 @@
 from datetime import datetime as dt
 
 # Program version
-VERSION = '4.5.4'
+VERSION = '4.5.5'
 
 # Date
-VERSION_DATE = dt(year=2018, month=8, day=2).strftime("%Y-%d-%m")
+VERSION_DATE = dt(year=2018, month=8, day=8).strftime("%Y-%d-%m")
 
 # Cards name
 RUN_CARD = 'run.card'
@@ -113,7 +113,7 @@ INI_HELP = \
     """
     Initialization/configuration directory containing|n
     "esg.<project>.ini" files. If not specified, the|n
-    environment variable ESGINI is used. If not exist|n
+    environment variable ESGINI_DIR is used. If not exist|n
     usual datanode directory is used.
 
     """

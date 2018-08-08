@@ -63,9 +63,9 @@ def get_args():
         help=PROJECT_HELP)
     parent.add_argument(
         '-i',
-        metavar='$ESGINI',
+        metavar='$ESGINI_DIR',
         type=str,
-        default=os.environ['ESGINI'] if 'ESGINI' in os.environ.keys() else '/esg/config/esgcet',
+        default=os.environ['ESGINI_DIR'] if 'ESGINI_DIR' in os.environ.keys() else '/esg/config/esgcet',
         help=INI_HELP)
     parent.add_argument(
         '-l', '--log',
