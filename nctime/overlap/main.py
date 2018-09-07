@@ -93,7 +93,7 @@ def resolve_overlap(directory, pattern, filename, from_date=None, to_date=None, 
         nc = nco.Nco()
         nc.ncks(input=os.path.join(directory, filename),
                 output=os.path.join(directory, new_filename),
-                options='-O -d time,{},,1'.format(cutting_timestep))
+                options=['-O', '-d time,{},,1'.format(cutting_timestep)])
     os.remove(os.path.join(directory, filename))
 
 
@@ -492,15 +492,15 @@ def run(args=None):
                 else:
                     Print.success(COLORS.SUCCESS('Continuous time series: ') + msg)
             # Resolve overlaps
-            if ctx.resolve:
+            if resolve:
                 # Full overlapping files has to be deleted before partial overlapping files are truncated.
-                for node in ctx.full_overlaps:
+                for node in full_overlaps:
                     resolve_overlap(directory=ctx.directory,
                                     pattern=ctx.pattern,
                                     filename=node,
                                     partial=False)
                 if not ctx.full_only:
-                    for node in ctx.partial_overlaps:
+                    for node in partial_overlaps:
                         resolve_overlap(directory=ctx.directory,
                                         pattern=ctx.pattern,
                                         filename=node,

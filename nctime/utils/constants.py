@@ -442,7 +442,7 @@ TIME_UNITS = {'s': 'seconds',
               'Y': 'years'}
 
 # Frequencies to consider in case of non-instant time correction
-AVERAGE_CORRECTION_FREQ = ['day', 'mon', 'monPt', 'yr', 'yrPt']
+AVERAGE_CORRECTION_FREQ = ['day', 'mon', 'monPt', 'yr', 'yrPt', '1hrCM']
 
 # Climatology frequencies
 CLIMATOLOGY_FREQ = ['monC', 'monClim', '1hrCM']

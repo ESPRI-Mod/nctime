@@ -18,7 +18,7 @@ from nctime.utils.custom_exceptions import *
 from nctime.utils.custom_print import *
 from nctime.utils.misc import ncopen
 from nctime.utils.time import truncated_timestamp, get_start_end_dates_from_filename, dates2str, num2date, date2num, \
-    control_time_units, trunc, time_inc, convert_time_units
+    control_time_units, trunc, time_inc, convert_time_units, str2date
 
 
 class File(object):
@@ -58,6 +58,8 @@ class File(object):
             self.table = self.nc_att_get('table_id')
         except NoNetCDFAttribute:
             self.table = 'None'
+        # Get timestamps length from filename
+        self.timestamp_length = len(re.match(pattern, self.name).groupdict()['period_end'])
         # Rollback to None if unknown table
         if self.table not in set(zip(*FREQ_INC.keys())[0]):
             msg= 'Unknown MIP table "{}" -- Consider default increment for the given frequency.'.format(self.table)
@@ -75,7 +77,14 @@ class File(object):
                 raise EmptyTimeAxis(self.ffp)
             t = nc.variables['time'][:]
             self.time_axis = trunc(t, NDECIMALS)
+            self.start_num_infile = self.time_axis[1]
+            self.end_num_infile = self.time_axis[-1]
             self.date_axis = dates2str(num2date(t, units=self.ref_units, calendar=self.ref_calendar))
+            self.start_date_infile = self.date_axis[1]
+            self.end_date_infile = self.date_axis[-1]
+            self.start_timestamp_infile = truncated_timestamp(str2date(self.start_date_infile), self.timestamp_length)
+            self.end_timestamp_infile = truncated_timestamp(str2date(self.end_date_infile), self.timestamp_length)
+            del t
             # Get time boundaries
             self.has_bounds = False
             self.time_bounds = None
@@ -118,8 +127,6 @@ class File(object):
         self.step, self.step_units = time_inc(self.table, self.frequency)
         # Convert reference time units into frequency units depending on the file (i.e., months/year/hours since ...)
         self.funits = convert_time_units(self.ref_units, self.table, self.frequency)
-        # Get timestamps length from filename
-        self.timestamp_length = len(re.match(pattern, self.name).groupdict()['period_end'])
         # Overwrite filename timestamp if submitted
         # Extract start and end dates from filename
         dates = get_start_end_dates_from_filename(filename=self.name,
