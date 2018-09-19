@@ -12,7 +12,7 @@ from datetime import datetime as dt
 VERSION = '4.5.5'
 
 # Date
-VERSION_DATE = dt(year=2018, month=8, day=8).strftime("%Y-%d-%m")
+VERSION_DATE = dt(year=2018, month=9, day=19).strftime("%Y-%d-%m")
 
 # Cards name
 RUN_CARD = 'run.card'
