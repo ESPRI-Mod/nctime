@@ -107,9 +107,10 @@ def process(ffp):
         msg = """{}
         Units: {} [ref = {}]
         Calendar: {} [ref = {}]
-        Start: IN FILE -- {} = {} = {} vs. REBUILT -- {} = {} = {}
-        End:   IN FILE -- {} = {} = {} vs. REBUILT -- {} = {} = {}
-        Last:  REBUILT -- {} = {} = {}
+        Start: IN FILE -- {} = {} = {}
+               REBUILT -- {} = {} = {}
+        End:   IN FILE -- {} = {} = {}
+               REBUILT -- {} = {} = {}
         Length: {}
         MIP table: {}
         Frequency: {} = {} {}
@@ -118,11 +119,15 @@ def process(ffp):
         Has bounds: {}""".format(COLORS.HEADER(fh.filename),
                                  fh.tunits, pctx.ref_units,
                                  fh.calendar, pctx.ref_calendar,
-                                 fh.start_timestamp_infile, fh.start_date_infile, fh.start_num_infile,
+                                 COLOR('cyan').bold(fh.start_timestamp_infile),
+                                 COLOR('cyan').bold(fh.start_date_infile),
+                                 COLOR('cyan').bold(str(fh.start_num_infile)),
                                  fh.start_timestamp, fh.start_date, fh.start_num,
-                                 fh.end_timestamp_infile, fh.end_date_infile, fh.end_num_infile,
+                                 COLOR('cyan').bold(fh.end_timestamp_infile),
+                                 COLOR('cyan').bold(fh.end_date_infile),
+                                 COLOR('cyan').bold(str(fh.end_num_infile)),
                                  fh.end_timestamp, fh.end_date, fh.end_num,
-                                 fh.last_timestamp, fh.last_date, fh.last_num,
+                                 #fh.last_timestamp, fh.last_date, fh.last_num,
                                  fh.length,
                                  fh.table,
                                  fh.frequency, fh.step, fh.step_units,
