@@ -17,8 +17,7 @@ included in NetCDF files as vectors.
 Time is a key dimension from NetCDF files that could lead to flawed studies or unused data if misdeclared. ``nctime``
 allows researchers to easily diagnose the time definition of their data to ensure a proper analysis.
 
-.. note:: ``nctime`` is based on uncorrupted filename period dates and properly-defined times units, time calendar
-    and frequency NetCDF attributes.
+See the :ref:`faq` to learn more about what is behind the scene of ``nctime``.
 
 .. toctree::
    :maxdepth: 1

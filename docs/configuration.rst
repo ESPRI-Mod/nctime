@@ -4,7 +4,7 @@ Configuration
 =============
 
 ``nctime`` works according to
-`the configuration INI file(s) of the ESGF nodes <https://acme-climate.atlassian.net/wiki/x/JADm>`_.
+`the configuration INI file(s) of the ESGF nodes <https://github.com/ESGF/config/tree/master/publisher-configs/ini>`_.
 
 Location
 ********

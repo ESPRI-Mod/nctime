@@ -55,15 +55,17 @@ Submit a configuration directory
 ********************************
 
 By default, the configuration files are fetched or read from ``/esg/config/esgcet`` that is the usual configuration
-directory on ESGF nodes. If you're preparing your data outside of an ESGF node, you can submit another directory to
-fetch and read the configuration files.
+directory on ESGF nodes. If you're checking your data outside of an ESGF node, you have to fetch those project-specific
+INI files from `GitHub <https://github.com/ESGF/config/tree/master/publisher-configs/ini>`_ using the
+`esgfetchini <http://esgf.github.io/esgf-prepare/fetchini.html>`_ command line from the
+`esgprep library <http://esgf.github.io/esgf-prepare>`_. Then you can submit another directory to read the configuration files.
 
 .. code-block:: bash
 
     $> nctime SUBCOMMAND -i /PATH/TO/CONFIG/
 
 .. note::
-    If not submitted it takes the $ESGINI environment variable. If not exists the usual datanode path is used (i.e., ``/esg/config/esgcet``)
+    If not submitted it takes the ``ESGINI`` environment variable. If not exists the usual datanode path is used (i.e., ``/esg/config/esgcet``)
 
 Use filters
 ***********

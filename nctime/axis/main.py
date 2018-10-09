@@ -121,27 +121,33 @@ def process(ffp):
             time_cal = COLORS.SUCCESS(fh.calendar)
             time_ref_cal = COLOR('cyan').bold(pctx.ref_calendar)
         if {'003', '008'}.intersection(set(fh.status)):
-            time_end_timestamp = COLORS.FAIL(fh.end_timestamp_infile),
-            time_end_date = COLORS.FAIL(fh.end_date_infile),
-            time_end_num = COLORS.FAIL(str(fh.end_num_infile)),
-            time_ref_end_timestamp = COLORS.SUCCESS(fh.end_timestamp),
-            time_ref_end_date = COLORS.SUCCESS(fh.end_date),
-            time_ref_end_num = COLORS.SUCCESS(str(fh.end_num)),
+            time_end_timestamp = COLORS.FAIL(fh.end_timestamp_infile)
+            time_end_date = COLORS.FAIL(fh.end_date_infile)
+            time_end_num = COLORS.FAIL(str(fh.end_num_infile))
+            time_ref_end_timestamp = COLORS.SUCCESS(fh.end_timestamp)
+            time_ref_end_date = COLORS.SUCCESS(fh.end_date)
+            time_ref_end_num = COLORS.SUCCESS(str(fh.end_num))
         else:
-            time_end_timestamp = COLORS.SUCCESS(fh.end_timestamp_infile),
-            time_end_date = COLORS.SUCCESS(fh.end_date_infile),
-            time_end_num = COLORS.SUCCESS(str(fh.end_num_infile)),
-            time_ref_end_timestamp = COLOR('cyan').bold(fh.end_timestamp),
-            time_ref_end_date = COLOR('cyan').bold(fh.end_date),
-            time_ref_end_num = COLOR('cyan').bold(str(fh.end_num)),
+            time_end_timestamp = COLORS.SUCCESS(fh.end_timestamp_infile)
+            time_end_date = COLORS.SUCCESS(fh.end_date_infile)
+            time_end_num = COLORS.SUCCESS(str(fh.end_num_infile))
+            time_ref_end_timestamp = COLOR('cyan').bold(fh.end_timestamp)
+            time_ref_end_date = COLOR('cyan').bold(fh.end_date)
+            time_ref_end_num = COLOR('cyan').bold(str(fh.end_num))
 
         msg = """{}
-        Units: {} [ref = {}]
-        Calendar: {} [ref = {}]
-        Start: IN FILE -- {} = {} = {}
-               REBUILT -- {} = {} = {}
-        End:   IN FILE -- {} = {} = {}
-               REBUILT -- {} = {} = {}
+        Units:
+            IN FILE -- {}
+            REF     -- {}
+        Calendar:
+            IN FILE -- {}
+            REF     -- {}
+        Start: 
+            IN FILE -- {} = {} = {}
+            REBUILT -- {} = {} = {}
+        End:
+            IN FILE -- {} = {} = {}
+            REBUILT -- {} = {} = {}
         Length: {}
         MIP table: {}
         Frequency: {} = {} {}
