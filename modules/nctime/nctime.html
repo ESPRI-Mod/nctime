@@ -1,168 +1,130 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en"> <!--<![endif]-->
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>nctime.nctime &mdash; nctime 4.5.4 documentation</title>
-  
+    <meta charset="utf-8">
 
-  
-  
-  
-  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  
+    <title>nctime.nctime &mdash; nctime 4.5.4 documentation</title>
 
-  
-  
-    
 
-  
+    <link rel="stylesheet" href="../../static/css/theme.css" type="text/css"/>
 
-  
-  
-    <link rel="stylesheet" href="../../static/css/theme.css" type="text/css" />
-  
 
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../genindex.html"/>
-        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="index" title="Index"
+          href="../../genindex.html"/>
+    <link rel="search" title="Search" href="../../search.html"/>
     <link rel="top" title="nctime 4.5.4 documentation" href="../../index.html"/>
-        <link rel="up" title="Module code" href="../index.html"/> 
+    <link rel="up" title="Module code" href="../index.html"/>
 
-  
-  <script src="../../static/js/modernizr.min.js"></script>
+
+    <script src="../../static/js/modernizr.min.js"></script>
 
 </head>
 
 <body class="wy-body-for-nav" role="document">
 
-   
-  <div class="wy-grid-for-nav">
 
-    
+<div class="wy-grid-for-nav">
+
+
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
+        <div class="wy-side-scroll">
+            <div class="wy-side-nav-search">
 
-          
-            <a href="../../index.html" class="icon icon-home"> nctime
-          
 
-          
-          </a>
+                <a href="../../index.html" class="icon icon-home"> nctime
 
-          
-            
-            
-              <div class="version">
-                4.5
-              </div>
-            
-          
 
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
+                </a>
 
-          
+
+                <div class="version">
+                    4.5
+                </div>
+
+
+                <div role="search">
+                    <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+                        <input type="text" name="q" placeholder="Search docs"/>
+                        <input type="hidden" name="check_keywords" value="yes"/>
+                        <input type="hidden" name="area" value="default"/>
+                    </form>
+                </div>
+
+
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal"
+                                              href="../../configuration.html">Configuration</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Generic usage</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../overlap.html">Check time series
+                        continuity</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../axis.html">Check time axis
+                        squareness</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently asked
+                        questions</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../credits.html">Credits</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../log.html">Change Log</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../autodoc.html">Code
+                        documentation</a></li>
+                </ul>
+
+
+            </div>
         </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Generic usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../overlap.html">Check time series continuity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../axis.html">Check time axis squareness</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently asked questions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../credits.html">Credits</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../log.html">Change Log</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../autodoc.html">Code documentation</a></li>
-</ul>
-
-            
-          
-        </div>
-      </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
-      
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">nctime</a>
-        
-      </nav>
+
+        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+
+            <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+            <a href="../../index.html">nctime</a>
+
+        </nav>
 
 
-      
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          
+        <div class="wy-nav-content">
+            <div class="rst-content">
 
 
+                <div role="navigation" aria-label="breadcrumbs navigation">
+
+                    <ul class="wy-breadcrumbs">
+
+                        <li><a href="../../index.html">Docs</a> &raquo;</li>
+
+                        <li><a href="../index.html">Module code</a> &raquo;</li>
+
+                        <li>nctime.nctime</li>
 
 
+                        <li class="wy-breadcrumbs-aside">
 
 
+                        </li>
+
+                    </ul>
 
 
+                    <hr/>
+                </div>
+                <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+                    <div itemprop="articleBody">
 
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
-        
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-        
-      <li>nctime.nctime</li>
-    
-    
-      <li class="wy-breadcrumbs-aside">
-        
-            
-        
-      </li>
-    
-  </ul>
-
-  
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-            
-  <h1>Source code for nctime.nctime</h1><div class="highlight"><pre>
+                        <h1>Source code for nctime.nctime</h1>
+                        <div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
@@ -177,13 +139,18 @@
 
 <span class="kn">import</span> <span class="nn">argparse</span>
 
-<span class="kn">from</span> <span class="nn">utils.constants</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">utils.constants</span> <span class="k">import</span> <span
+                                class="o">*</span>
 <span class="kn">from</span> <span class="nn">utils.parser</span> <span class="k">import</span> <span class="o">*</span>
 
-<span class="n">__version__</span> <span class="o">=</span> <span class="s1">&#39;v</span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">VERSION</span><span class="p">,</span> <span class="n">VERSION_DATE</span><span class="p">)</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s1">&#39;v</span><span
+                                class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">&#39;</span><span
+                                class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">VERSION</span><span
+                                class="p">,</span> <span class="n">VERSION_DATE</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="get_args"><a class="viewcode-back" href="../../autodoc.html#nctime.nctime.get_args">[docs]</a><span class="k">def</span> <span class="nf">get_args</span><span class="p">():</span>
+<div class="viewcode-block" id="get_args"><a class="viewcode-back" href="../../autodoc.html#nctime.nctime.get_args">[docs]</a><span
+        class="k">def</span> <span class="nf">get_args</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns parsed command-line arguments.</span>
 
@@ -195,23 +162,35 @@
     <span class="c1"># Main parser for &quot;nctime&quot; #</span>
     <span class="c1">############################</span>
     <span class="n">main</span> <span class="o">=</span> <span class="n">CustomParser</span><span class="p">(</span>
-        <span class="n">prog</span><span class="o">=</span><span class="s1">&#39;nctime&#39;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="n">PROGRAM_DESC</span><span class="p">,</span>
-        <span class="n">formatter_class</span><span class="o">=</span><span class="n">MultilineFormatter</span><span class="p">,</span>
+        <span class="n">prog</span><span class="o">=</span><span class="s1">&#39;nctime&#39;</span><span
+            class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="n">PROGRAM_DESC</span><span
+            class="p">,</span>
+        <span class="n">formatter_class</span><span class="o">=</span><span class="n">MultilineFormatter</span><span
+            class="p">,</span>
         <span class="n">add_help</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">epilog</span><span class="o">=</span><span class="n">EPILOG</span><span class="p">)</span>
-    <span class="n">main</span><span class="o">.</span><span class="n">_optionals</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">OPTIONAL</span>
-    <span class="n">main</span><span class="o">.</span><span class="n">_positionals</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">POSITIONAL</span>
+    <span class="n">main</span><span class="o">.</span><span class="n">_optionals</span><span class="o">.</span><span
+            class="n">title</span> <span class="o">=</span> <span class="n">OPTIONAL</span>
+    <span class="n">main</span><span class="o">.</span><span class="n">_positionals</span><span class="o">.</span><span
+            class="n">title</span> <span class="o">=</span> <span class="n">POSITIONAL</span>
     <span class="n">main</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;-h&#39;</span><span class="p">,</span> <span class="s1">&#39;--help&#39;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;help&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;-h&#39;</span><span class="p">,</span> <span class="s1">&#39;--help&#39;</span><span
+            class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;help&#39;</span><span
+            class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="n">HELP</span><span class="p">)</span>
     <span class="n">main</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s1">&#39;-v&#39;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;version&#39;</span><span class="p">,</span>
-        <span class="n">version</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(prog)s</span><span class="s1"> (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">__version__</span><span class="p">),</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;version&#39;</span><span
+            class="p">,</span>
+        <span class="n">version</span><span class="o">=</span><span class="s1">&#39;</span><span
+            class="si">%(prog)s</span><span class="s1"> (</span><span class="si">{}</span><span class="s1">)&#39;</span><span
+            class="o">.</span><span class="n">format</span><span class="p">(</span><span
+            class="n">__version__</span><span class="p">),</span>
         <span class="n">help</span><span class="o">=</span><span class="n">VERSION_HELP</span><span class="p">)</span>
-    <span class="n">subparsers</span> <span class="o">=</span> <span class="n">main</span><span class="o">.</span><span class="n">add_subparsers</span><span class="p">(</span>
+    <span class="n">subparsers</span> <span class="o">=</span> <span class="n">main</span><span class="o">.</span><span
+            class="n">add_subparsers</span><span class="p">(</span>
         <span class="n">title</span><span class="o">=</span><span class="n">SUBCOMMANDS</span><span class="p">,</span>
         <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;cmd&#39;</span><span class="p">,</span>
         <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
@@ -220,166 +199,238 @@
     <span class="c1">#######################################</span>
     <span class="c1"># Parent parser with common arguments #</span>
     <span class="c1">#######################################</span>
-    <span class="n">parent</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">add_help</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span
+            class="n">ArgumentParser</span><span class="p">(</span><span class="n">add_help</span><span
+            class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">parent</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="s1">&#39;--project&#39;</span><span class="p">,</span>
-        <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;PROJECT&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="s1">&#39;--project&#39;</span><span
+            class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;PROJECT&#39;</span><span
+            class="p">,</span>
         <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="n">PROJECT_HELP</span><span class="p">)</span>
     <span class="n">parent</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s1">&#39;-i&#39;</span><span class="p">,</span>
-        <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;$ESGINI&#39;</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;$ESGINI&#39;</span><span
+            class="p">,</span>
         <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;ESGINI&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;ESGINI&#39;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;/esg/config/esgcet&#39;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span
+            class="n">environ</span><span class="p">[</span><span class="s1">&#39;ESGINI&#39;</span><span
+            class="p">]</span> <span class="k">if</span> <span class="s1">&#39;ESGINI&#39;</span> <span
+            class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span
+            class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">else</span> <span
+            class="s1">&#39;/esg/config/esgcet&#39;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="n">INI_HELP</span><span class="p">)</span>
     <span class="n">parent</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;-l&#39;</span><span class="p">,</span> <span class="s1">&#39;--log&#39;</span><span class="p">,</span>
-        <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;CWD&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;-l&#39;</span><span class="p">,</span> <span class="s1">&#39;--log&#39;</span><span
+            class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;CWD&#39;</span><span
+            class="p">,</span>
         <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-        <span class="n">const</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/logs&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()),</span>
+        <span class="n">const</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{}</span><span
+            class="s1">/logs&#39;</span><span class="o">.</span><span class="n">format</span><span
+            class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span
+            class="p">()),</span>
         <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;?&#39;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="n">LOG_HELP</span><span class="p">)</span>
     <span class="n">parent</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;-h&#39;</span><span class="p">,</span> <span class="s1">&#39;--help&#39;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;help&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;-h&#39;</span><span class="p">,</span> <span class="s1">&#39;--help&#39;</span><span
+            class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;help&#39;</span><span
+            class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="n">HELP</span><span class="p">)</span>
     <span class="n">parent</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s1">&#39;--set-inc&#39;</span><span class="p">,</span>
-        <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;TABLE:FREQUENCY=INCREMENT&#39;</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span
+            class="s1">&#39;TABLE:FREQUENCY=INCREMENT&#39;</span><span class="p">,</span>
         <span class="nb">type</span><span class="o">=</span><span class="n">inc_converter</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;append&#39;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;append&#39;</span><span
+            class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="n">SET_INC_HELP</span><span class="p">)</span>
     <span class="n">parent</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s1">&#39;--calendar&#39;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="n">CalendarChecker</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="n">CalendarChecker</span><span
+            class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="n">CALENDAR_HELP</span><span class="p">)</span>
     <span class="n">parent</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s1">&#39;--units&#39;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="n">TimeUnitsChecker</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="n">TimeUnitsChecker</span><span
+            class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="n">UNITS_HELP</span><span class="p">)</span>
     <span class="n">parent</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s1">&#39;--ignore-dir&#39;</span><span class="p">,</span>
-        <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;PYTHON_REGEX&quot;</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;PYTHON_REGEX&quot;</span><span
+            class="p">,</span>
         <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;^.*/\.[\w]*.*$&#39;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="n">IGNORE_DIR_HELP</span><span class="p">)</span>
+        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;^.*/\.[\w]*.*$&#39;</span><span
+            class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="n">IGNORE_DIR_HELP</span><span
+            class="p">)</span>
     <span class="n">parent</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s1">&#39;--include-file&#39;</span><span class="p">,</span>
-        <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;PYTHON_REGEX&#39;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="n">regex_validator</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;append&#39;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="n">INCLUDE_FILE_HELP</span><span class="p">)</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;PYTHON_REGEX&#39;</span><span
+            class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">regex_validator</span><span
+            class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;append&#39;</span><span
+            class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="n">INCLUDE_FILE_HELP</span><span
+            class="p">)</span>
     <span class="n">parent</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s1">&#39;--exclude-file&#39;</span><span class="p">,</span>
-        <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;PYTHON_REGEX&#39;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="n">regex_validator</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;append&#39;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="n">EXCLUDE_FILE_HELP</span><span class="p">)</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;PYTHON_REGEX&#39;</span><span
+            class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">regex_validator</span><span
+            class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;append&#39;</span><span
+            class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="n">EXCLUDE_FILE_HELP</span><span
+            class="p">)</span>
     <span class="n">parent</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;-d&#39;</span><span class="p">,</span> <span class="s1">&#39;--debug&#39;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;-d&#39;</span><span class="p">,</span> <span class="s1">&#39;--debug&#39;</span><span
+            class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span
+            class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="n">VERBOSE_HELP</span><span class="p">)</span>
     <span class="n">parent</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;-a&#39;</span><span class="p">,</span> <span class="s1">&#39;--all&#39;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;-a&#39;</span><span class="p">,</span> <span class="s1">&#39;--all&#39;</span><span
+            class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span
+            class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="n">ALL_HELP</span><span class="p">)</span>
     <span class="n">parent</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s1">&#39;--max-processes&#39;</span><span class="p">,</span>
-        <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;INT&#39;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="n">processes_validator</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;INT&#39;</span><span
+            class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">processes_validator</span><span
+            class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="n">MAX_PROCESSES_HELP</span><span class="p">)</span>
+        <span class="n">help</span><span class="o">=</span><span class="n">MAX_PROCESSES_HELP</span><span
+            class="p">)</span>
 
     <span class="c1">##################################</span>
     <span class="c1"># Subparser for &quot;nctime overlap&quot; #</span>
     <span class="c1">##################################</span>
-    <span class="n">overlap</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
+    <span class="n">overlap</span> <span class="o">=</span> <span class="n">subparsers</span><span
+            class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
         <span class="s1">&#39;overlap&#39;</span><span class="p">,</span>
-        <span class="n">prog</span><span class="o">=</span><span class="s1">&#39;nctime overlap&#39;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="n">OVERLAP_DESC</span><span class="p">,</span>
-        <span class="n">formatter_class</span><span class="o">=</span><span class="n">MultilineFormatter</span><span class="p">,</span>
+        <span class="n">prog</span><span class="o">=</span><span class="s1">&#39;nctime overlap&#39;</span><span
+            class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="n">OVERLAP_DESC</span><span
+            class="p">,</span>
+        <span class="n">formatter_class</span><span class="o">=</span><span class="n">MultilineFormatter</span><span
+            class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="n">OVERLAP_HELP</span><span class="p">,</span>
         <span class="n">add_help</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">parent</span><span class="p">])</span>
-    <span class="n">overlap</span><span class="o">.</span><span class="n">_optionals</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">OPTIONAL</span>
-    <span class="n">overlap</span><span class="o">.</span><span class="n">_positionals</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">POSITIONAL</span>
+        <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">parent</span><span
+            class="p">])</span>
+    <span class="n">overlap</span><span class="o">.</span><span class="n">_optionals</span><span class="o">.</span><span
+            class="n">title</span> <span class="o">=</span> <span class="n">OPTIONAL</span>
+    <span class="n">overlap</span><span class="o">.</span><span class="n">_positionals</span><span
+            class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">POSITIONAL</span>
     <span class="n">overlap</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s1">&#39;directory&#39;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="n">DirectoryChecker</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="n">DirectoryChecker</span><span
+            class="p">,</span>
         <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="n">DIRECTORY_HELP</span><span class="p">)</span>
     <span class="n">overlap</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;-r&#39;</span><span class="p">,</span> <span class="s1">&#39;--resolve&#39;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;-r&#39;</span><span class="p">,</span> <span class="s1">&#39;--resolve&#39;</span><span
+            class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span
+            class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="n">RESOLVE_HELP</span><span class="p">)</span>
     <span class="n">overlap</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s1">&#39;--full-only&#39;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span
+            class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="n">FULL_ONLY_HELP</span><span class="p">)</span>
     <span class="n">overlap</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;-c&#39;</span><span class="p">,</span> <span class="s1">&#39;--card&#39;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="n">DirectoryChecker</span><span class="p">,</span>
+        <span class="s1">&#39;-c&#39;</span><span class="p">,</span> <span class="s1">&#39;--card&#39;</span><span
+            class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="n">DirectoryChecker</span><span
+            class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="n">CARD_HELP</span><span class="p">)</span>
 
     <span class="c1">###############################</span>
     <span class="c1"># Subparser for &quot;nctime axis&quot; #</span>
     <span class="c1">###############################</span>
-    <span class="n">axis</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
+    <span class="n">axis</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span
+            class="n">add_parser</span><span class="p">(</span>
         <span class="s1">&#39;axis&#39;</span><span class="p">,</span>
         <span class="n">prog</span><span class="o">=</span><span class="s1">&#39;nctime axis&#39;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="n">AXIS_DESC</span><span class="p">,</span>
-        <span class="n">formatter_class</span><span class="o">=</span><span class="n">MultilineFormatter</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="n">AXIS_DESC</span><span
+            class="p">,</span>
+        <span class="n">formatter_class</span><span class="o">=</span><span class="n">MultilineFormatter</span><span
+            class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="n">AXIS_HELP</span><span class="p">,</span>
         <span class="n">add_help</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">parent</span><span class="p">])</span>
-    <span class="n">axis</span><span class="o">.</span><span class="n">_optionals</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">OPTIONAL</span>
-    <span class="n">axis</span><span class="o">.</span><span class="n">_positionals</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">POSITIONAL</span>
+        <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">parent</span><span
+            class="p">])</span>
+    <span class="n">axis</span><span class="o">.</span><span class="n">_optionals</span><span class="o">.</span><span
+            class="n">title</span> <span class="o">=</span> <span class="n">OPTIONAL</span>
+    <span class="n">axis</span><span class="o">.</span><span class="n">_positionals</span><span class="o">.</span><span
+            class="n">title</span> <span class="o">=</span> <span class="n">POSITIONAL</span>
     <span class="n">axis</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s1">&#39;input&#39;</span><span class="p">,</span>
         <span class="n">action</span><span class="o">=</span><span class="n">InputChecker</span><span class="p">,</span>
         <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="n">DIRECTORY_HELP</span><span class="p">)</span>
     <span class="n">axis</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;-w&#39;</span><span class="p">,</span> <span class="s1">&#39;--write&#39;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;-w&#39;</span><span class="p">,</span> <span class="s1">&#39;--write&#39;</span><span
+            class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span
+            class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="n">WRITE_HELP</span><span class="p">)</span>
     <span class="n">axis</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;-f&#39;</span><span class="p">,</span> <span class="s1">&#39;--force&#39;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;-f&#39;</span><span class="p">,</span> <span class="s1">&#39;--force&#39;</span><span
+            class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span
+            class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="n">FORCE_HELP</span><span class="p">)</span>
-    <span class="n">group</span> <span class="o">=</span> <span class="n">axis</span><span class="o">.</span><span class="n">add_mutually_exclusive_group</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">group</span> <span class="o">=</span> <span class="n">axis</span><span class="o">.</span><span
+            class="n">add_mutually_exclusive_group</span><span class="p">(</span><span class="n">required</span><span
+            class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s1">&#39;--on-fly&#39;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span
+            class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="n">ON_FLY_HELP</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;-c&#39;</span><span class="p">,</span> <span class="s1">&#39;--card&#39;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="n">DirectoryChecker</span><span class="p">,</span>
+        <span class="s1">&#39;-c&#39;</span><span class="p">,</span> <span class="s1">&#39;--card&#39;</span><span
+            class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="n">DirectoryChecker</span><span
+            class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="n">CARD_HELP</span><span class="p">)</span>
     <span class="n">axis</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s1">&#39;--start&#39;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="n">TimestampChecker</span><span class="p">,</span>
-        <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;TIMESTAMP&#39;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="n">TimestampChecker</span><span
+            class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;TIMESTAMP&#39;</span><span
+            class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="n">START_HELP</span><span class="p">)</span>
     <span class="n">axis</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s1">&#39;--end&#39;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="n">TimestampChecker</span><span class="p">,</span>
-        <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;TIMESTAMP&#39;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="n">TimestampChecker</span><span
+            class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;TIMESTAMP&#39;</span><span
+            class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="n">END_HELP</span><span class="p">)</span>
     <span class="n">axis</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s1">&#39;--limit&#39;</span><span class="p">,</span>
-        <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;5&#39;</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;5&#39;</span><span
+            class="p">,</span>
         <span class="nb">type</span><span class="o">=</span><span class="n">positive_only</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
         <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;?&#39;</span><span class="p">,</span>
@@ -387,61 +438,78 @@
     <span class="n">axis</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s1">&#39;--ignore-errors&#39;</span><span class="p">,</span>
         <span class="n">action</span><span class="o">=</span><span class="n">CodeChecker</span><span class="p">,</span>
-        <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;CODE&#39;</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;CODE&#39;</span><span
+            class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="n">IGNORE_ERROR_HELP</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">main</span><span class="o">.</span><span class="n">prog</span><span class="p">,</span> <span class="n">main</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span></div>
+        <span class="n">help</span><span class="o">=</span><span class="n">IGNORE_ERROR_HELP</span><span
+            class="p">)</span>
+    <span class="k">return</span> <span class="n">main</span><span class="o">.</span><span class="n">prog</span><span
+            class="p">,</span> <span class="n">main</span><span class="o">.</span><span class="n">parse_args</span><span
+            class="p">()</span></div>
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="c1"># Get command-line arguments</span>
-    <span class="n">prog</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">get_args</span><span class="p">()</span>
-    <span class="nb">setattr</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;prog&#39;</span><span class="p">,</span> <span class="n">prog</span><span class="p">)</span>
+    <span class="n">prog</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span
+                                class="n">get_args</span><span class="p">()</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span
+                                class="s1">&#39;prog&#39;</span><span class="p">,</span> <span
+                                class="n">prog</span><span class="p">)</span>
     <span class="c1"># Run program</span>
-    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">cmd</span> <span class="o">==</span> <span class="s1">&#39;overlap&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">cmd</span> <span
+                                class="o">==</span> <span class="s1">&#39;overlap&#39;</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">overlap.main</span> <span class="k">import</span> <span class="n">run</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">axis.main</span> <span class="k">import</span> <span class="n">run</span>
+        <span class="kn">from</span> <span class="nn">axis.main</span> <span class="k">import</span> <span
+                                class="n">run</span>
     <span class="n">run</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))))</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span
+                                class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span
+                                class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span
+                                class="n">os</span><span class="o">.</span><span class="n">path</span><span
+                                class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span
+                                class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span
+                                class="p">(</span><span class="n">os</span><span class="o">.</span><span
+                                class="n">path</span><span class="o">.</span><span class="n">realpath</span><span
+                                class="p">(</span><span class="vm">__file__</span><span class="p">))))</span>
     <span class="n">main</span><span class="p">()</span>
-</pre></div>
+</pre>
+                        </div>
 
-           </div>
-           <div class="articleComments">
-            
-           </div>
-          </div>
-          <footer>
-  
+                    </div>
+                    <div class="articleComments">
 
-  <hr/>
+                    </div>
+                </div>
+                <footer>
 
-  <div role="contentinfo">
-    <p>
-        &copy; Copyright 2015, Levavasseur, G..
 
-    </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+                    <hr/>
 
-</footer>
+                    <div role="contentinfo">
+                        <p>
+                            &copy; Copyright 2015, Levavasseur, G..
 
+                        </p>
+                    </div>
+                    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a
+                        href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a
+                        href="https://readthedocs.org">Read the Docs</a>.
+
+                </footer>
+
+            </div>
         </div>
-      </div>
 
     </section>
 
-  </div>
-  
+</div>
 
 
-  
-
-    <script type="text/javascript">
+<script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
             VERSION:'4.5.4',
@@ -450,26 +518,23 @@
             HAS_SOURCE:  true,
             SOURCELINK_SUFFIX: '.txt'
         };
-    </script>
-      <script type="text/javascript" src="../../static/jquery.js"></script>
-      <script type="text/javascript" src="../../static/underscore.js"></script>
-      <script type="text/javascript" src="../../static/doctools.js"></script>
 
-  
+</script>
+<script type="text/javascript" src="../../static/jquery.js"></script>
+<script type="text/javascript" src="../../static/underscore.js"></script>
+<script type="text/javascript" src="../../static/doctools.js"></script>
 
-  
-  
-    <script type="text/javascript" src="../../static/js/theme.js"></script>
-  
 
-  
-  
-  <script type="text/javascript">
+<script type="text/javascript" src="../../static/js/theme.js"></script>
+
+
+<script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.StickyNav.enable();
       });
-  </script>
-   
+
+</script>
+
 
 </body>
 </html>

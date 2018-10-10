@@ -1,168 +1,131 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en"> <!--<![endif]-->
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>nctime.utils.collector &mdash; nctime 4.5.4 documentation</title>
-  
+    <meta charset="utf-8">
 
-  
-  
-  
-  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  
+    <title>nctime.utils.collector &mdash; nctime 4.5.4 documentation</title>
 
-  
-  
-    
 
-  
+    <link rel="stylesheet" href="../../../static/css/theme.css" type="text/css"/>
 
-  
-  
-    <link rel="stylesheet" href="../../../static/css/theme.css" type="text/css" />
-  
 
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../../genindex.html"/>
-        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="index" title="Index"
+          href="../../../genindex.html"/>
+    <link rel="search" title="Search" href="../../../search.html"/>
     <link rel="top" title="nctime 4.5.4 documentation" href="../../../index.html"/>
-        <link rel="up" title="Module code" href="../../index.html"/> 
+    <link rel="up" title="Module code" href="../../index.html"/>
 
-  
-  <script src="../../../static/js/modernizr.min.js"></script>
+
+    <script src="../../../static/js/modernizr.min.js"></script>
 
 </head>
 
 <body class="wy-body-for-nav" role="document">
 
-   
-  <div class="wy-grid-for-nav">
 
-    
+<div class="wy-grid-for-nav">
+
+
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
+        <div class="wy-side-scroll">
+            <div class="wy-side-nav-search">
 
-          
-            <a href="../../../index.html" class="icon icon-home"> nctime
-          
 
-          
-          </a>
+                <a href="../../../index.html" class="icon icon-home"> nctime
 
-          
-            
-            
-              <div class="version">
-                4.5
-              </div>
-            
-          
 
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
+                </a>
 
-          
+
+                <div class="version">
+                    4.5
+                </div>
+
+
+                <div role="search">
+                    <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+                        <input type="text" name="q" placeholder="Search docs"/>
+                        <input type="hidden" name="check_keywords" value="yes"/>
+                        <input type="hidden" name="area" value="default"/>
+                    </form>
+                </div>
+
+
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal"
+                                              href="../../../installation.html">Installation</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../../configuration.html">Configuration</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Generic usage</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../../overlap.html">Check time series
+                        continuity</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../../axis.html">Check time axis
+                        squareness</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently asked
+                        questions</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../../credits.html">Credits</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../../log.html">Change Log</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../../autodoc.html">Code
+                        documentation</a></li>
+                </ul>
+
+
+            </div>
         </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Generic usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../overlap.html">Check time series continuity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../axis.html">Check time axis squareness</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently asked questions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../credits.html">Credits</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../log.html">Change Log</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../autodoc.html">Code documentation</a></li>
-</ul>
-
-            
-          
-        </div>
-      </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
-      
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">nctime</a>
-        
-      </nav>
+
+        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+
+            <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+            <a href="../../../index.html">nctime</a>
+
+        </nav>
 
 
-      
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          
+        <div class="wy-nav-content">
+            <div class="rst-content">
 
 
+                <div role="navigation" aria-label="breadcrumbs navigation">
+
+                    <ul class="wy-breadcrumbs">
+
+                        <li><a href="../../../index.html">Docs</a> &raquo;</li>
+
+                        <li><a href="../../index.html">Module code</a> &raquo;</li>
+
+                        <li>nctime.utils.collector</li>
 
 
+                        <li class="wy-breadcrumbs-aside">
 
 
+                        </li>
+
+                    </ul>
 
 
+                    <hr/>
+                </div>
+                <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+                    <div itemprop="articleBody">
 
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
-        
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-        
-      <li>nctime.utils.collector</li>
-    
-    
-      <li class="wy-breadcrumbs-aside">
-        
-            
-        
-      </li>
-    
-  </ul>
-
-  
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-            
-  <h1>Source code for nctime.utils.collector</h1><div class="highlight"><pre>
+                        <h1>Source code for nctime.utils.collector</h1>
+                        <div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
@@ -175,36 +138,59 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">from</span> <span class="nn">uuid</span> <span class="k">import</span> <span class="n">uuid4</span> <span class="k">as</span> <span class="n">uuid</span>
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="k">import</span> <span
+                                class="n">uuid4</span> <span class="k">as</span> <span class="n">uuid</span>
 
 <span class="kn">from</span> <span class="nn">custom_exceptions</span> <span class="k">import</span> <span class="n">NoFileFound</span>
 <span class="kn">from</span> <span class="nn">nctime.utils.misc</span> <span class="k">import</span> <span class="n">match</span>
 
 
-<div class="viewcode-block" id="Collecting"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.collector.Collecting">[docs]</a><span class="k">class</span> <span class="nc">Collecting</span><span class="p">:</span>
+<div class="viewcode-block" id="Collecting"><a class="viewcode-back"
+                                               href="../../../autodoc.html#nctime.utils.collector.Collecting">[docs]</a><span
+        class="k">class</span> <span class="nc">Collecting</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Spinner pending data collection.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">STATES</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;|&#39;</span><span class="p">)</span>
+    <span class="n">STATES</span> <span class="o">=</span> <span class="p">(</span><span
+            class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span
+            class="p">,</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span
+            class="p">,</span> <span class="s1">&#39;|&#39;</span><span class="p">)</span>
     <span class="n">step</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spinner</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">spinner</span> <span class="o">=</span> <span class="n">spinner</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span
+            class="p">,</span> <span class="n">spinner</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spinner</span> <span
+            class="o">=</span> <span class="n">spinner</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
 
-<div class="viewcode-block" id="Collecting.next"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.collector.Collecting.next">[docs]</a>    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Collecting.next"><a class="viewcode-back"
+                                                    href="../../../autodoc.html#nctime.utils.collector.Collecting.next">[docs]</a>    <span
+        class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span
+        class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Print collector spinner</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spinner</span><span class="p">:</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">Collecting data... </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Collecting</span><span class="o">.</span><span class="n">STATES</span><span class="p">[</span><span class="n">Collecting</span><span class="o">.</span><span class="n">step</span> <span class="o">%</span> <span class="mi">4</span><span class="p">]))</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
-        <span class="n">Collecting</span><span class="o">.</span><span class="n">step</span> <span class="o">+=</span> <span class="mi">1</span></div></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">spinner</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span
+            class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r</span><span
+            class="s1">Collecting data... </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span
+            class="n">format</span><span class="p">(</span><span class="n">Collecting</span><span
+            class="o">.</span><span class="n">STATES</span><span class="p">[</span><span
+            class="n">Collecting</span><span class="o">.</span><span class="n">step</span> <span
+            class="o">%</span> <span class="mi">4</span><span class="p">]))</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span
+            class="n">flush</span><span class="p">()</span>
+        <span class="n">Collecting</span><span class="o">.</span><span class="n">step</span> <span
+            class="o">+=</span> <span class="mi">1</span></div></div>
 
 
-<div class="viewcode-block" id="Collector"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.collector.Collector">[docs]</a><span class="k">class</span> <span class="nc">Collector</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Collector"><a class="viewcode-back"
+                                              href="../../../autodoc.html#nctime.utils.collector.Collector">[docs]</a><span
+        class="k">class</span> <span class="nc">Collector</span><span class="p">(</span><span
+        class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base collector class to yield regular NetCDF files.</span>
 
@@ -214,30 +200,61 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sources</span><span class="p">,</span> <span class="n">spinner</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">spinner</span> <span class="o">=</span> <span class="n">spinner</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sources</span> <span class="o">=</span> <span class="n">sources</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">FileFilter</span> <span class="o">=</span> <span class="n">FilterCollection</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">PathFilter</span> <span class="o">=</span> <span class="n">FilterCollection</span><span class="p">()</span>
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sources</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span
+            class="p">,</span> <span class="n">sources</span><span class="p">,</span> <span
+            class="n">spinner</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spinner</span> <span
+            class="o">=</span> <span class="n">spinner</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sources</span> <span
+            class="o">=</span> <span class="n">sources</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FileFilter</span> <span
+            class="o">=</span> <span class="n">FilterCollection</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PathFilter</span> <span
+            class="o">=</span> <span class="n">FilterCollection</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span
+            class="bp">self</span><span class="o">.</span><span class="n">sources</span><span class="p">,</span> <span
+            class="nb">list</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">source</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sources</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span
+            class="p">):</span>
+        <span class="k">for</span> <span class="n">source</span> <span class="ow">in</span> <span class="bp">self</span><span
+            class="o">.</span><span class="n">sources</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span
+            class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">source</span><span
+            class="p">):</span>
                 <span class="c1"># If input is a directory: walk through it and yields netCDF files</span>
-                <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">filenames</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">followlinks</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">PathFilter</span><span class="p">(</span><span class="n">root</span><span class="p">):</span>
-                        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">filenames</span><span class="p">):</span>
-                            <span class="n">ffp</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
-                            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">ffp</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">FileFilter</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span
+            class="n">_</span><span class="p">,</span> <span class="n">filenames</span> <span class="ow">in</span> <span
+            class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span
+            class="n">source</span><span class="p">,</span> <span class="n">followlinks</span><span
+            class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">PathFilter</span><span
+            class="p">(</span><span class="n">root</span><span class="p">):</span>
+                        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span
+            class="nb">sorted</span><span class="p">(</span><span class="n">filenames</span><span class="p">):</span>
+                            <span class="n">ffp</span> <span class="o">=</span> <span class="n">os</span><span
+            class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span
+            class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">filename</span><span
+            class="p">)</span>
+                            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span
+            class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">ffp</span><span
+            class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">FileFilter</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
                                 <span class="k">yield</span> <span class="n">ffp</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># It input is a file: yields the netCDF file itself</span>
-                <span class="n">root</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">PathFilter</span><span class="p">(</span><span class="n">root</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">FileFilter</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+                <span class="n">root</span><span class="p">,</span> <span class="n">filename</span> <span
+            class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span
+            class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">source</span><span
+            class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">PathFilter</span><span class="p">(</span><span class="n">root</span><span class="p">)</span> <span
+            class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">FileFilter</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
                     <span class="k">yield</span> <span class="n">source</span>
 
-    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span
+            class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns collector length with animation.</span>
 
@@ -245,82 +262,122 @@
 <span class="sd">        :rtype: *int*</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">progress</span> <span class="o">=</span> <span class="n">Collecting</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spinner</span><span class="p">)</span>
+        <span class="n">progress</span> <span class="o">=</span> <span class="n">Collecting</span><span
+            class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spinner</span><span
+            class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">s</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__iter__</span><span class="p">():</span>
-                <span class="n">progress</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span
+            class="bp">self</span><span class="o">.</span><span class="fm">__iter__</span><span class="p">():</span>
+                <span class="n">progress</span><span class="o">.</span><span class="n">next</span><span
+            class="p">()</span>
                 <span class="n">s</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r\033</span><span class="s1">[K&#39;</span><span class="p">)</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span
+            class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span
+            class="se">\r\033</span><span class="s1">[K&#39;</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span
+            class="n">flush</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">NoFileFound</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sources</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">NoFileFound</span><span class="p">(</span><span
+            class="bp">self</span><span class="o">.</span><span class="n">sources</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">s</span>
 
-<div class="viewcode-block" id="Collector.first"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.collector.Collector.first">[docs]</a>    <span class="k">def</span> <span class="nf">first</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Collector.first"><a class="viewcode-back"
+                                                    href="../../../autodoc.html#nctime.utils.collector.Collector.first">[docs]</a>    <span
+        class="k">def</span> <span class="nf">first</span><span class="p">(</span><span class="bp">self</span><span
+        class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the first iterator element.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__iter__</span><span class="p">()</span><span class="o">.</span><span class="n">next</span><span class="p">()</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span
+            class="fm">__iter__</span><span class="p">()</span><span class="o">.</span><span class="n">next</span><span
+            class="p">()</span></div></div>
 
 
-<div class="viewcode-block" id="FilterCollection"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.collector.FilterCollection">[docs]</a><span class="k">class</span> <span class="nc">FilterCollection</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="FilterCollection"><a class="viewcode-back"
+                                                     href="../../../autodoc.html#nctime.utils.collector.FilterCollection">[docs]</a><span
+        class="k">class</span> <span class="nc">FilterCollection</span><span class="p">(</span><span
+        class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Regex dictionary with a call method to evaluate a string against several regular expressions.</span>
 <span class="sd">    The dictionary values are 2-tuples with the regular expression as a string and a boolean</span>
 <span class="sd">    indicating to match (i.e., include) or non-match (i.e., exclude) the corresponding expression.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">FILTER_TYPES</span> <span class="o">=</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">_pattern_type</span><span class="p">)</span>
+    <span class="n">FILTER_TYPES</span> <span class="o">=</span> <span class="p">(</span><span
+            class="nb">str</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span
+            class="n">_pattern_type</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span
+            class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span
+            class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
-<div class="viewcode-block" id="FilterCollection.add"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.collector.FilterCollection.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">inclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="FilterCollection.add"><a class="viewcode-back"
+                                                         href="../../../autodoc.html#nctime.utils.collector.FilterCollection.add">[docs]</a>    <span
+        class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span
+        class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span
+        class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span
+        class="p">,</span> <span class="n">inclusive</span><span class="o">=</span><span class="kc">True</span><span
+        class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add new filter&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="p">())</span>
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">FILTER_TYPES</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inclusive</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">inclusive</span><span class="p">)</span></div>
+            <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span
+            class="p">(</span><span class="n">uuid</span><span class="p">())</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span
+            class="n">regex</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span
+            class="n">FILTER_TYPES</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inclusive</span><span
+            class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">[</span><span
+            class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span
+            class="n">regex</span><span class="p">,</span> <span class="n">inclusive</span><span
+            class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">all</span><span class="p">([</span><span class="n">match</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">string</span><span class="p">,</span> <span class="n">inclusive</span><span class="o">=</span><span class="n">inclusive</span><span class="p">)</span> <span class="k">for</span> <span class="n">regex</span><span class="p">,</span> <span class="n">inclusive</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span></div>
-</pre></div>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span
+            class="p">,</span> <span class="n">string</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">([</span><span
+            class="n">match</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span
+            class="n">string</span><span class="p">,</span> <span class="n">inclusive</span><span
+            class="o">=</span><span class="n">inclusive</span><span class="p">)</span> <span class="k">for</span> <span
+            class="n">regex</span><span class="p">,</span> <span class="n">inclusive</span> <span
+            class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span
+            class="o">.</span><span class="n">values</span><span class="p">()])</span></div>
+</pre>
+                        </div>
 
-           </div>
-           <div class="articleComments">
-            
-           </div>
-          </div>
-          <footer>
-  
+                    </div>
+                    <div class="articleComments">
 
-  <hr/>
+                    </div>
+                </div>
+                <footer>
 
-  <div role="contentinfo">
-    <p>
-        &copy; Copyright 2015, Levavasseur, G..
 
-    </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+                    <hr/>
 
-</footer>
+                    <div role="contentinfo">
+                        <p>
+                            &copy; Copyright 2015, Levavasseur, G..
 
+                        </p>
+                    </div>
+                    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a
+                        href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a
+                        href="https://readthedocs.org">Read the Docs</a>.
+
+                </footer>
+
+            </div>
         </div>
-      </div>
 
     </section>
 
-  </div>
-  
+</div>
 
 
-  
-
-    <script type="text/javascript">
+<script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
             VERSION:'4.5.4',
@@ -329,26 +386,23 @@
             HAS_SOURCE:  true,
             SOURCELINK_SUFFIX: '.txt'
         };
-    </script>
-      <script type="text/javascript" src="../../../static/jquery.js"></script>
-      <script type="text/javascript" src="../../../static/underscore.js"></script>
-      <script type="text/javascript" src="../../../static/doctools.js"></script>
 
-  
+</script>
+<script type="text/javascript" src="../../../static/jquery.js"></script>
+<script type="text/javascript" src="../../../static/underscore.js"></script>
+<script type="text/javascript" src="../../../static/doctools.js"></script>
 
-  
-  
-    <script type="text/javascript" src="../../../static/js/theme.js"></script>
-  
 
-  
-  
-  <script type="text/javascript">
+<script type="text/javascript" src="../../../static/js/theme.js"></script>
+
+
+<script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.StickyNav.enable();
       });
-  </script>
-   
+
+</script>
+
 
 </body>
 </html>

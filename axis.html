@@ -1,354 +1,398 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en"> <!--<![endif]-->
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Check time axis squareness &mdash; nctime 4.5.4 documentation</title>
-  
+    <meta charset="utf-8">
 
-  
-  
-  
-  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  
+    <title>Check time axis squareness &mdash; nctime 4.5.4 documentation</title>
 
-  
-  
-    
 
-  
+    <link rel="stylesheet" href="static/css/theme.css" type="text/css"/>
 
-  
-  
-    <link rel="stylesheet" href="static/css/theme.css" type="text/css" />
-  
 
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
+    <link rel="index" title="Index"
+          href="genindex.html"/>
+    <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="nctime 4.5.4 documentation" href="index.html"/>
-        <link rel="next" title="Frequently asked questions" href="faq.html"/>
-        <link rel="prev" title="Check time series continuity" href="overlap.html"/> 
+    <link rel="next" title="Frequently asked questions" href="faq.html"/>
+    <link rel="prev" title="Check time series continuity" href="overlap.html"/>
 
-  
-  <script src="static/js/modernizr.min.js"></script>
+
+    <script src="static/js/modernizr.min.js"></script>
 
 </head>
 
 <body class="wy-body-for-nav" role="document">
 
-   
-  <div class="wy-grid-for-nav">
 
-    
+<div class="wy-grid-for-nav">
+
+
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
+        <div class="wy-side-scroll">
+            <div class="wy-side-nav-search">
 
-          
-            <a href="index.html" class="icon icon-home"> nctime
-          
 
-          
-          </a>
+                <a href="index.html" class="icon icon-home"> nctime
 
-          
-            
-            
-              <div class="version">
-                4.5
-              </div>
-            
-          
 
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
+                </a>
 
-          
+
+                <div class="version">
+                    4.5
+                </div>
+
+
+                <div role="search">
+                    <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+                        <input type="text" name="q" placeholder="Search docs"/>
+                        <input type="hidden" name="check_keywords" value="yes"/>
+                        <input type="hidden" name="area" value="default"/>
+                    </form>
+                </div>
+
+
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+
+
+                <ul class="current">
+                    <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="usage.html">Generic usage</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="overlap.html">Check time series
+                        continuity</a></li>
+                    <li class="toctree-l1 current"><a class="current reference internal" href="#">Check time axis
+                        squareness</a>
+                        <ul>
+                            <li class="toctree-l2"><a class="reference internal" href="#rebuilt-and-check-time-axis">Rebuilt
+                                and check time axis</a></li>
+                            <li class="toctree-l2"><a class="reference internal" href="#rewrite-a-wrong-time-axis">Rewrite
+                                a wrong time axis</a></li>
+                            <li class="toctree-l2"><a class="reference internal" href="#force-time-axis-rewriting">Force
+                                time axis rewriting</a></li>
+                            <li class="toctree-l2"><a class="reference internal" href="#check-an-on-going-simulation">Check
+                                an on going simulation</a></li>
+                            <li class="toctree-l2"><a class="reference internal"
+                                                      href="#define-starting-and-or-ending-time-stamps">Define starting
+                                and/or ending time stamps</a></li>
+                            <li class="toctree-l2"><a class="reference internal" href="#show-wrong-time-steps">Show
+                                wrong time steps</a></li>
+                            <li class="toctree-l2"><a class="reference internal"
+                                                      href="#apply-time-correction-on-sud-daily-frequencies">Apply time
+                                correction on sud-daily frequencies</a></li>
+                            <li class="toctree-l2"><a class="reference internal" href="#ignore-errors">Ignore errors</a>
+                            </li>
+                            <li class="toctree-l2"><a class="reference internal" href="#time-axis-status">Time axis
+                                status</a></li>
+                        </ul>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="credits.html">Credits</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="log.html">Change Log</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="autodoc.html">Code documentation</a></li>
+                </ul>
+
+
+            </div>
         </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Generic usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="overlap.html">Check time series continuity</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Check time axis squareness</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#rebuilt-and-check-time-axis">Rebuilt and check time axis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#rewrite-a-wrong-time-axis">Rewrite a wrong time axis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#force-time-axis-rewriting">Force time axis rewriting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#check-an-on-going-simulation">Check an on going simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#define-starting-and-or-ending-time-stamps">Define starting and/or ending time stamps</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#show-wrong-time-steps">Show wrong time steps</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#apply-time-correction-on-sud-daily-frequencies">Apply time correction on sud-daily frequencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ignore-errors">Ignore errors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#time-axis-status">Time axis status</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="credits.html">Credits</a></li>
-<li class="toctree-l1"><a class="reference internal" href="log.html">Change Log</a></li>
-<li class="toctree-l1"><a class="reference internal" href="autodoc.html">Code documentation</a></li>
-</ul>
-
-            
-          
-        </div>
-      </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
-      
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">nctime</a>
-        
-      </nav>
+
+        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+
+            <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+            <a href="index.html">nctime</a>
+
+        </nav>
 
 
-      
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          
+        <div class="wy-nav-content">
+            <div class="rst-content">
 
 
+                <div role="navigation" aria-label="breadcrumbs navigation">
+
+                    <ul class="wy-breadcrumbs">
+
+                        <li><a href="index.html">Docs</a> &raquo;</li>
+
+                        <li>Check time axis squareness</li>
 
 
+                        <li class="wy-breadcrumbs-aside">
 
 
+                            <a href="sources/axis.rst.txt" rel="nofollow"> View page source</a>
 
 
+                        </li>
+
+                    </ul>
 
 
+                    <hr/>
+                </div>
+                <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+                    <div itemprop="articleBody">
+
+                        <div class="section" id="check-time-axis-squareness">
+                            <span id="axis"></span>
+                            <h1>Check time axis squareness<a class="headerlink" href="#check-time-axis-squareness"
+                                                             title="Permalink to this headline">¶</a></h1>
+                            <p>Time is a key dimension from NetCDF files. Unfortunately, the time axis is often mistaken
+                                in files from coupled climate models and leads to flawed studies or
+                                unused data. Consequently, these files cannot be used or, even worse, produced erroneous
+                                results, due to problems in the
+                                time axis description.</p>
+                            <div class="section" id="rebuilt-and-check-time-axis">
+                                <h2>Rebuilt and check time axis<a class="headerlink" href="#rebuilt-and-check-time-axis"
+                                                                  title="Permalink to this headline">¶</a></h2>
+                                <div class="highlight-bash">
+                                    <div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/
+</pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section" id="rewrite-a-wrong-time-axis">
+                                <h2>Rewrite a wrong time axis<a class="headerlink" href="#rewrite-a-wrong-time-axis"
+                                                                title="Permalink to this headline">¶</a></h2>
+                                <p>It displays the same information as above but also modify the input files ONLY IF
+                                    NECESSARY (i.e., depending on the
+                                    check results):</p>
+                                <div class="highlight-bash">
+                                    <div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ <span
+                                            class="o">{</span>-w,--write<span class="o">}</span>
+</pre>
+                                    </div>
+                                </div>
+                                <div class="admonition warning">
+                                    <p class="first admonition-title">Warning</p>
+                                    <p class="last">We highly recommend to activate <code class="docutils literal"><span
+                                            class="pre">--write</span></code> after a first dry-checking. This will
+                                        definitely modify
+                                        your input files. Be careful to activate <code class="docutils literal"><span
+                                                class="pre">--write</span></code> when you are sure about time errors.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="section" id="force-time-axis-rewriting">
+                                <h2>Force time axis rewriting<a class="headerlink" href="#force-time-axis-rewriting"
+                                                                title="Permalink to this headline">¶</a></h2>
+                                <p>Anyway, you can force to overwrite time axis in any case:</p>
+                                <div class="highlight-bash">
+                                    <div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ <span
+                                            class="o">{</span>-f,--force<span class="o">}</span>
+</pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section" id="check-an-on-going-simulation">
+                                <h2>Check an on going simulation<a class="headerlink"
+                                                                   href="#check-an-on-going-simulation"
+                                                                   title="Permalink to this headline">¶</a></h2>
+                                <p>The “on-fly” mode allows to check an incomplete time axis which is by construct
+                                    inconsistent with the end timestamp of the file name.
+                                    To disable the corresponding test and check the on going time axis squareness
+                                    use:</p>
+                                <div class="highlight-bash">
+                                    <div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ --on-fly
+</pre>
+                                    </div>
+                                </div>
+                                <p>Default is a deactivated “on-fly” mode.
+                                    <code class="docutils literal"><span class="pre">nctime</span> <span class="pre">axis</span></code>
+                                    is able to deduce if your simulation is completed or not. In the last case, the
+                                    “on-fly” mode is
+                                    automatically activated. You only need to submit the directory including both your
+                                    <code class="docutils literal"><span class="pre">config.card</span></code> and <code
+                                            class="docutils literal"><span class="pre">run.card</span></code>
+                                    provided by the libIGCM framework:</p>
+                                <div class="highlight-bash">
+                                    <div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ --card /PATH/TO/SUBMISSION/DIRECTORY
+</pre>
+                                    </div>
+                                </div>
+                                <div class="admonition warning">
+                                    <p class="first admonition-title">Warning</p>
+                                    <p class="last">This option is only available if you run your simulation within the
+                                        IPSL libICM framework.</p>
+                                </div>
+                            </div>
+                            <div class="section" id="define-starting-and-or-ending-time-stamps">
+                                <h2>Define starting and/or ending time stamps<a class="headerlink"
+                                                                                href="#define-starting-and-or-ending-time-stamps"
+                                                                                title="Permalink to this headline">¶</a>
+                                </h2>
+                                <p>Default is to consider for each file scanned the starting timestamp as true to
+                                    rebuilt the theoretical time axis.
+                                    This allow to to process each file independently. Nevertheless, at least for
+                                    debugging purpose, it could be useful
+                                    to submit another reference starting time stamp to make time axis rebuilding free
+                                    from filename hypothesis:</p>
+                                <div class="highlight-bash">
+                                    <div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ --start YYYYMMDD
+</pre>
+                                    </div>
+                                </div>
+                                <div class="admonition note">
+                                    <p class="first admonition-title">Note</p>
+                                    <p class="last">The submitted time stamp will be completed to 14 digits. We highly
+                                        recommend to submit a digit as most precise as possible for the first date of
+                                        the time axis.</p>
+                                </div>
+                                <div class="admonition warning">
+                                    <p class="first admonition-title">Warning</p>
+                                    <p class="last">Be careful this new submitted time stamp will be use to rebuilt time
+                                        axis of all the file scanned.</p>
+                                </div>
+                                <p>The same can be done with the ending time stamp even if it is unused in time axis
+                                    rebuilding:</p>
+                                <div class="highlight-bash">
+                                    <div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ --end YYYYMMDD
+</pre>
+                                    </div>
+                                </div>
+                                <div class="admonition note">
+                                    <p class="first admonition-title">Note</p>
+                                    <p class="last">Both flags can be used independently.</p>
+                                </div>
+                            </div>
+                            <div class="section" id="show-wrong-time-steps">
+                                <h2>Show wrong time steps<a class="headerlink" href="#show-wrong-time-steps"
+                                                            title="Permalink to this headline">¶</a></h2>
+                                <p>By default <code class="docutils literal"><span class="pre">nctime</span> <span
+                                        class="pre">axis</span></code> print the first five wrong time steps if exist.
+                                    This limit can be changed with:</p>
+                                <div class="highlight-bash">
+                                    <div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ --limit INTEGER
+</pre>
+                                    </div>
+                                </div>
+                                <p>To print all wrong time steps:</p>
+                                <div class="highlight-bash">
+                                    <div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ --limit
+</pre>
+                                    </div>
+                                </div>
+                                <div class="admonition note">
+                                    <p class="first admonition-title">Note</p>
+                                    <p class="last">This limit is also used to print wring time boundaries.</p>
+                                </div>
+                            </div>
+                            <div class="section" id="apply-time-correction-on-sud-daily-frequencies">
+                                <h2>Apply time correction on sud-daily frequencies<a class="headerlink"
+                                                                                     href="#apply-time-correction-on-sud-daily-frequencies"
+                                                                                     title="Permalink to this headline">¶</a>
+                                </h2>
+                                <p>By default <code class="docutils literal"><span class="pre">nctime</span></code> use
+                                    the dates from the filename to start its processes. Due to different use cases,
+                                    filename dates related
+                                    to sub-daily data could not follow MIPs specifications. You can apply a time
+                                    correction to respectively start sub-daily axis
+                                    at 000000 timestamp and end at 18000, 2100000, 230000, 233000 (depending on the
+                                    frequency 6hr, 3hr, 1hr, subhr) whether
+                                    the time axis is instantaneous or not.</p>
+                                <div class="highlight-bash">
+                                    <div class="highlight"><pre><span></span>$&gt; nctime axis --correct-timestamp
+</pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section" id="ignore-errors">
+                                <h2>Ignore errors<a class="headerlink" href="#ignore-errors"
+                                                    title="Permalink to this headline">¶</a></h2>
+                                <p>If some errors are known and expected in the diagnostic they can be ignore for a more
+                                    lightweight output:</p>
+                                <div class="highlight-bash">
+                                    <div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ --ignore-errors CODE,CODE
+</pre>
+                                    </div>
+                                </div>
+                                <div class="admonition note">
+                                    <p class="first admonition-title">Note</p>
+                                    <p class="last">The allowed error codes corresponds to the following axis status
+                                        codes (e.g., 001, 002, etc.). One or
+                                        several error coma-separated codes can be submitted.</p>
+                                </div>
+                            </div>
+                            <div class="section" id="time-axis-status">
+                                <h2>Time axis status<a class="headerlink" href="#time-axis-status"
+                                                       title="Permalink to this headline">¶</a></h2>
+                                <p>Time axis error codes:</p>
+                                <blockquote>
+                                    <div>
+                                        <ul class="simple">
+                                            <li>000: Time axis seems OK</li>
+                                            <li>001: Incorrect time axis over one or several time steps</li>
+                                            <li>002: Time units must be unchanged for the same dataset</li>
+                                            <li>003a: Last timestamp is lower than end timestamp from filename</li>
+                                            <li>003b: Last timestamp is higher than end timestamp from filename</li>
+                                            <li>004: An instantaneous time axis should not embed time boundaries</li>
+                                            <li>005: An averaged time axis should embed time boundaries</li>
+                                            <li>006: Incorrect time bounds over one or several time steps</li>
+                                            <li>007: Calendar must be unchanged for the same dataset</li>
+                                            <li>008a: Last date is earlier than end date from filename</li>
+                                            <li>008b: Last date is later than end date of filename</li>
+                                        </ul>
+                                    </div>
+                                </blockquote>
+                            </div>
+                        </div>
 
 
+                    </div>
+                    <div class="articleComments">
+
+                    </div>
+                </div>
+                <footer>
+
+                    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+
+                        <a href="faq.html" class="btn btn-neutral float-right" title="Frequently asked questions"
+                           accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
+                        <a href="overlap.html" class="btn btn-neutral" title="Check time series continuity"
+                           accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
 
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html">Docs</a> &raquo;</li>
-        
-      <li>Check time axis squareness</li>
-    
-    
-      <li class="wy-breadcrumbs-aside">
-        
-            
-            <a href="sources/axis.rst.txt" rel="nofollow"> View page source</a>
-          
-        
-      </li>
-    
-  </ul>
-
-  
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-            
-  <div class="section" id="check-time-axis-squareness">
-<span id="axis"></span><h1>Check time axis squareness<a class="headerlink" href="#check-time-axis-squareness" title="Permalink to this headline">¶</a></h1>
-<p>Time is a key dimension from NetCDF files. Unfortunately, the time axis is often mistaken in files from coupled climate models and leads to flawed studies or
-unused data. Consequently, these files cannot be used or, even worse, produced erroneous results, due to problems in the
-time axis description.</p>
-<div class="section" id="rebuilt-and-check-time-axis">
-<h2>Rebuilt and check time axis<a class="headerlink" href="#rebuilt-and-check-time-axis" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/
-</pre></div>
-</div>
-</div>
-<div class="section" id="rewrite-a-wrong-time-axis">
-<h2>Rewrite a wrong time axis<a class="headerlink" href="#rewrite-a-wrong-time-axis" title="Permalink to this headline">¶</a></h2>
-<p>It displays the same information as above but also modify the input files ONLY IF NECESSARY (i.e., depending on the
-check results):</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ <span class="o">{</span>-w,--write<span class="o">}</span>
-</pre></div>
-</div>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">We highly recommend to activate <code class="docutils literal"><span class="pre">--write</span></code> after a first dry-checking. This will definitely modify
-your input files. Be careful to activate <code class="docutils literal"><span class="pre">--write</span></code> when you are sure about time errors.</p>
-</div>
-</div>
-<div class="section" id="force-time-axis-rewriting">
-<h2>Force time axis rewriting<a class="headerlink" href="#force-time-axis-rewriting" title="Permalink to this headline">¶</a></h2>
-<p>Anyway, you can force to overwrite time axis in any case:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ <span class="o">{</span>-f,--force<span class="o">}</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="check-an-on-going-simulation">
-<h2>Check an on going simulation<a class="headerlink" href="#check-an-on-going-simulation" title="Permalink to this headline">¶</a></h2>
-<p>The “on-fly” mode allows to check an incomplete time axis which is by construct inconsistent with the end timestamp of the file name.
-To disable the corresponding test and check the on going time axis squareness use:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ --on-fly
-</pre></div>
-</div>
-<p>Default is a deactivated “on-fly” mode.
-<code class="docutils literal"><span class="pre">nctime</span> <span class="pre">axis</span></code> is able to deduce if your simulation is completed or not. In the last case, the “on-fly” mode is
-automatically activated. You only need to submit the directory including both your <code class="docutils literal"><span class="pre">config.card</span></code> and <code class="docutils literal"><span class="pre">run.card</span></code>
-provided by the libIGCM framework:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ --card /PATH/TO/SUBMISSION/DIRECTORY
-</pre></div>
-</div>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">This option is only available if you run your simulation within the IPSL libICM framework.</p>
-</div>
-</div>
-<div class="section" id="define-starting-and-or-ending-time-stamps">
-<h2>Define starting and/or ending time stamps<a class="headerlink" href="#define-starting-and-or-ending-time-stamps" title="Permalink to this headline">¶</a></h2>
-<p>Default is to consider for each file scanned the starting timestamp as true to rebuilt the theoretical time axis.
-This allow to to process each file independently. Nevertheless, at least for debugging purpose, it could be useful
-to submit another reference starting time stamp to make time axis rebuilding free from filename hypothesis:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ --start YYYYMMDD
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The submitted time stamp will be completed to 14 digits. We highly recommend to submit a digit as most precise as possible for the first date of the time axis.</p>
-</div>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">Be careful this new submitted time stamp will be use to rebuilt time axis of all the file scanned.</p>
-</div>
-<p>The same can be done with the ending time stamp even if it is unused in time axis rebuilding:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ --end YYYYMMDD
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Both flags can be used independently.</p>
-</div>
-</div>
-<div class="section" id="show-wrong-time-steps">
-<h2>Show wrong time steps<a class="headerlink" href="#show-wrong-time-steps" title="Permalink to this headline">¶</a></h2>
-<p>By default <code class="docutils literal"><span class="pre">nctime</span> <span class="pre">axis</span></code> print the first five wrong time steps if exist. This limit can be changed with:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ --limit INTEGER
-</pre></div>
-</div>
-<p>To print all wrong time steps:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ --limit
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This limit is also used to print wring time boundaries.</p>
-</div>
-</div>
-<div class="section" id="apply-time-correction-on-sud-daily-frequencies">
-<h2>Apply time correction on sud-daily frequencies<a class="headerlink" href="#apply-time-correction-on-sud-daily-frequencies" title="Permalink to this headline">¶</a></h2>
-<p>By default <code class="docutils literal"><span class="pre">nctime</span></code> use the dates from the filename to start its processes. Due to different use cases, filename dates related
-to sub-daily data could not follow MIPs specifications. You can apply a time correction to respectively start sub-daily axis
-at 000000 timestamp and end at 18000, 2100000, 230000, 233000 (depending on the frequency 6hr, 3hr, 1hr, subhr) whether
-the time axis is instantaneous or not.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis --correct-timestamp
-</pre></div>
-</div>
-</div>
-<div class="section" id="ignore-errors">
-<h2>Ignore errors<a class="headerlink" href="#ignore-errors" title="Permalink to this headline">¶</a></h2>
-<p>If some errors are known and expected in the diagnostic they can be ignore for a more lightweight output:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime axis /PATH/TO/SCAN/ --ignore-errors CODE,CODE
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The allowed error codes corresponds to the following axis status codes (e.g., 001, 002, etc.). One or
-several error coma-separated codes can be submitted.</p>
-</div>
-</div>
-<div class="section" id="time-axis-status">
-<h2>Time axis status<a class="headerlink" href="#time-axis-status" title="Permalink to this headline">¶</a></h2>
-<p>Time axis error codes:</p>
-<blockquote>
-<div><ul class="simple">
-<li>000: Time axis seems OK</li>
-<li>001: Incorrect time axis over one or several time steps</li>
-<li>002: Time units must be unchanged for the same dataset</li>
-<li>003a: Last timestamp is lower than end timestamp from filename</li>
-<li>003b: Last timestamp is higher than end timestamp from filename</li>
-<li>004: An instantaneous time axis should not embed time boundaries</li>
-<li>005: An averaged time axis should embed time boundaries</li>
-<li>006: Incorrect time bounds over one or several time steps</li>
-<li>007: Calendar must be unchanged for the same dataset</li>
-<li>008a: Last date is earlier than end date from filename</li>
-<li>008b: Last date is later than end date of filename</li>
-</ul>
-</div></blockquote>
-</div>
-</div>
+                    </div>
 
 
-           </div>
-           <div class="articleComments">
-            
-           </div>
-          </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="faq.html" class="btn btn-neutral float-right" title="Frequently asked questions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="overlap.html" class="btn btn-neutral" title="Check time series continuity" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
-  
+                    <hr/>
 
-  <hr/>
+                    <div role="contentinfo">
+                        <p>
+                            &copy; Copyright 2015, Levavasseur, G..
 
-  <div role="contentinfo">
-    <p>
-        &copy; Copyright 2015, Levavasseur, G..
+                        </p>
+                    </div>
+                    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a
+                        href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a
+                        href="https://readthedocs.org">Read the Docs</a>.
 
-    </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+                </footer>
 
-</footer>
-
+            </div>
         </div>
-      </div>
 
     </section>
 
-  </div>
-  
+</div>
 
 
-  
-
-    <script type="text/javascript">
+<script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
             VERSION:'4.5.4',
@@ -357,26 +401,23 @@ several error coma-separated codes can be submitted.</p>
             HAS_SOURCE:  true,
             SOURCELINK_SUFFIX: '.txt'
         };
-    </script>
-      <script type="text/javascript" src="static/jquery.js"></script>
-      <script type="text/javascript" src="static/underscore.js"></script>
-      <script type="text/javascript" src="static/doctools.js"></script>
 
-  
+</script>
+<script type="text/javascript" src="static/jquery.js"></script>
+<script type="text/javascript" src="static/underscore.js"></script>
+<script type="text/javascript" src="static/doctools.js"></script>
 
-  
-  
-    <script type="text/javascript" src="static/js/theme.js"></script>
-  
 
-  
-  
-  <script type="text/javascript">
+<script type="text/javascript" src="static/js/theme.js"></script>
+
+
+<script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.StickyNav.enable();
       });
-  </script>
-   
+
+</script>
+
 
 </body>
 </html>
