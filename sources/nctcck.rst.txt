@@ -1,6 +1,5 @@
 .. _overlap:
 
-
 Check time coverage continuity
 ==============================
 
