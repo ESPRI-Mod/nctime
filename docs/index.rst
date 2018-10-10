@@ -32,6 +32,7 @@ See the :ref:`faq` to learn more about what is behind the scene of ``nctime``.
    overlap
    axis
    faq
+   Example <http://LINK>
    credits
    log
    autodoc

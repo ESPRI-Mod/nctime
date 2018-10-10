@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-.. module:: nctcck - netCDF Time Coverage Checker
+.. module:: nctcck
     :platform: Unix
-    :synopsis: Toolbox to diagnose NetCDF time axis.
+    :synopsis: netCDF Time Coverage Checker part of the toolbox to diagnose NetCDF time axis.
 
 .. moduleauthor:: Guillaume Levavasseur <glipsl@ipsl.jussieu.fr>
 

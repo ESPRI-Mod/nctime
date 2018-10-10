@@ -14,7 +14,7 @@ from nctime.utils.constants import *
 from nctime.utils.context import BaseContext
 from nctime.utils.custom_exceptions import NoConfigCardFound, NoRunCardFound
 from nctime.utils.custom_print import *
-
+from nctime.utils.time import untruncated_timestamp
 
 class ProcessingContext(BaseContext):
     """
@@ -30,8 +30,8 @@ class ProcessingContext(BaseContext):
         super(self.__class__, self).__init__(args)
         self.directory = args.directory
         self.resolve = args.resolve
-        self.period_start = args.start
-        self.period_end = args.end
+        self.period_start = int(untruncated_timestamp(args.start)) if args.start else None
+        self.period_end = int(untruncated_timestamp(args.end)) if args.end else None
         self.full_only = args.full_only
         self.overlaps = 0
         self.broken = 0

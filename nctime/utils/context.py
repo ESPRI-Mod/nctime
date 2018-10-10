@@ -30,7 +30,7 @@ class BaseContext(object):
 
     def __init__(self, args):
         # Init print management
-        Print.init(log=args.log, debug=args.debug, all=args.all, cmd='{}-{}'.format(args.prog, args.cmd))
+        Print.init(log=args.log, debug=args.debug, all=args.all, cmd=args.prog)
         # Print command-line
         Print.command()
         self.project = args.project

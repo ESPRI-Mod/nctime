@@ -191,9 +191,9 @@ def create_edges(gid):
     :param str gid: The graph id
 
     """
+    global period_start, period_end
     g = graph.get_graph(gid)
     # Create edges with backward nodes
-
     # A node is a "backward" node when the difference between the next current time step
     # and its start date is positive.
     # To ensure continuity path, edges has to only exist with backward nodes.
@@ -215,32 +215,34 @@ def create_edges(gid):
     start_dates = zip(*g.nodes(data='start'))[1]
     starts = [n for n in g.nodes() if g.nodes[n]['start'] == min(start_dates)]
     # Find the node(s) with the latest date
-    end_dates = zip(*g.nodes(data='end'))[1]
-    ends = [n for n in g.nodes() if g.nodes[n]['end'] == max(end_dates)]
+    end_dates = zip(*g.nodes(data='next'))[1]
+    ends = [n for n in g.nodes() if g.nodes[n]['next'] == max(end_dates)]
     # Build starting node with edges to first node(s)
-    if not period_start:
+    # If no start date submitted for the covered period,
+    # Or if the submitted start date is higher than the min of start time stamps
+    # Set period_start as the min of time stamps.
+    if not period_start or period_start > min(start_dates):
         period_start = min(start_dates)
+    # Create START node
+    graph.add_node(gid, 'START', start=period_start, end=period_start, next=period_start)
+    # Build starting edge only if at least one file covers the start date of the period
     if period_start >= min(start_dates):
-        # Build starting edge only if at least one file covers the start date of the period
         for start in starts:
             graph.add_edge(gid, 'START', start)
             Print.debug('Graph: {} :: Edge START --> {}'.format(gid, start))
-    else:
-        # Create START node without edge(s)
-        graph.add_node(gid, 'START')
-        Print.debug('Graph: {} :: Node START --> No edges')
     # Build ending node with edges from latest node(s)
-    if not period_end:
+    # If no end date submitted for the covered period,
+    # Or if the submitted end date is lower than the max of end time stamps
+    # Set period_end as the max of time stamps.
+    if not period_end or period_end < max(end_dates):
         period_end = max(end_dates)
+    # Create START node
+    graph.add_node(gid, 'END', start=period_end, end=period_end, next=period_end)
+    # Build ending edge only if at least one file covers the end date of the period
     if period_end <= max(end_dates):
-        # Build ending edge only if at least one file covers the end date of the period
         for end in ends:
             graph.add_edge(gid, end, 'END')
             Print.debug('Graph: {} :: Edge {} --> END'.format(gid, end))
-    else:
-        # Create END node without edge(s)
-        graph.add_node(gid, 'END')
-        Print.debug('Graph: {} :: Node END --> No edges')
 
 
 def evaluate_graph(gid):
@@ -264,58 +266,61 @@ def evaluate_graph(gid):
         # Get overlaps
         partial_overlaps, full_overlaps = get_overlaps(g, path)
     except nx.NetworkXNoPath:
-        nodes = sorted(g.nodes())
+        nodes = ['START']
+        nodes.extend(sorted([x for x in g.nodes() if x not in ['START', 'END']]))
+        nodes.append('END')
         for node in nodes:
-            if node not in ['START', 'END']:
-                path.append(node)
-                # A node is a "forward" node when the difference between the next current time step
-                # and its start date is negative.
-                # A path gap exists from a node when no edges exist with ALL "forwards" nodes.
-                # Considering one node, get the others in the graph
-                other_nodes = [x for x in g.nodes() if x not in ['START', node, 'END']]
-                # Get the start dates of the other nodes
-                other_start_dates = [g.node[x]['start'] for x in other_nodes]
-                # Find the index with a negative or null difference between their start date and
-                # the next date of the considered node
-                indexes = [i for i, v in enumerate(g.node[node]['next'] - np.array(other_start_dates)) if v <= 0]
-                # Get all "next" nodes for the current node
-                next_nodes = [other_nodes[i] for i in indexes]
-                # Find available targets from graph
-                try:
-                    avail_targets = zip(*g.edges(node))[1]
-                except IndexError:
-                    avail_targets = []
-                # If no "forward" nodes in edges target and not last node = potential BREAK
-                if not set(next_nodes).intersection(avail_targets) and node != nodes[-1]:
-                    if patterns:
-                        # Get gap start year from current node
-                        gap_start_year = int(float(str(g.node[node]['next'])[:4]))
-                        # Get gap end year from next node in list
-                        gap_end_year = int(float(str(g.node[nodes[nodes.index(node) + 1]]['start'])[:4]))
-                        # Get filename pattern to search into XML files
-                        facets = re.compile(CMIP6_FILENAME_PATTERN).groupindex
-                        try:
-                            attributes = re.search(CMIP6_FILENAME_PATTERN, node).groupdict()
-                        except:
-                            raise ExpressionNotMatch(node, CMIP6_FILENAME_PATTERN)
-                        filename_pattern = list()
-                        for idx in sorted(facets.values()):
-                            key = facets.keys()[facets.values().index(idx)]
-                            if key not in IGNORED_FACETS:
-                                filename_pattern.append(attributes[key])
-                        filename_pattern = '_'.join(filename_pattern) + '_{}-{}'.format('%start_date%', '%end_date%')
-                        if node.endswith('-clim.nc'):
-                            filename_pattern += '-clim'
-                        # Check into XML files in the gap period
-                        for year in range(gap_start_year, gap_end_year):
-                            if filename_pattern in patterns[str(year)]:
-                                Print.debug('Pattern found in XML :: Year = {} :: {}'.format(year, filename_pattern))
-                                path.append('BREAK')
-                            else:
-                                path.append('XML GAP')
-                    else:
-                        # If no file card submitted, no patterns loaded = potential BREAK as real BREAK
-                        path.append('BREAK')
+            path.append(node)
+            # A node is a "forward" node when the difference between the next current time step
+            # and its start date is negative.
+            # A path gap exists from a node when no edges exist with ALL "forwards" nodes.
+            # Considering one node, get the others in the graph
+            other_nodes = [x for x in g.nodes() if x is not node]#not in ['START', node, 'END']]
+            # Get the start dates of the other nodes
+            other_start_dates = [g.node[x]['start'] for x in other_nodes]
+            # Find the index with a negative or null difference between their start date and
+            # the next date of the considered node
+            a=g.node[node]['next']
+            b=np.array(other_start_dates)
+            indexes = [i for i, v in enumerate(g.node[node]['next'] - np.array(other_start_dates)) if v <= 0]
+            # Get all "next" nodes for the current node
+            next_nodes = [other_nodes[i] for i in indexes]
+            # Find available targets from graph
+            try:
+                avail_targets = zip(*g.edges(node))[1]
+            except IndexError:
+                avail_targets = []
+            # If no "forward" nodes in edges target and not last node = potential BREAK
+            if not set(next_nodes).intersection(avail_targets) and node != nodes[-1]:
+                if patterns:
+                    # Get gap start year from current node
+                    gap_start_year = int(float(str(g.node[node]['next'])[:4]))
+                    # Get gap end year from next node in list
+                    gap_end_year = int(float(str(g.node[nodes[nodes.index(node) + 1]]['start'])[:4]))
+                    # Get filename pattern to search into XML files
+                    facets = re.compile(CMIP6_FILENAME_PATTERN).groupindex
+                    try:
+                        attributes = re.search(CMIP6_FILENAME_PATTERN, node).groupdict()
+                    except:
+                        raise ExpressionNotMatch(node, CMIP6_FILENAME_PATTERN)
+                    filename_pattern = list()
+                    for idx in sorted(facets.values()):
+                        key = facets.keys()[facets.values().index(idx)]
+                        if key not in IGNORED_FACETS:
+                            filename_pattern.append(attributes[key])
+                    filename_pattern = '_'.join(filename_pattern) + '_{}-{}'.format('%start_date%', '%end_date%')
+                    if node.endswith('-clim.nc'):
+                        filename_pattern += '-clim'
+                    # Check into XML files in the gap period
+                    for year in range(gap_start_year, gap_end_year):
+                        if filename_pattern in patterns[str(year)]:
+                            Print.debug('Pattern found in XML :: Year = {} :: {}'.format(year, filename_pattern))
+                            path.append('BREAK')
+                        else:
+                            path.append('XML GAP')
+                else:
+                    # If no file card submitted, no patterns loaded = potential BREAK as real BREAK
+                    path.append('BREAK')
     return path, partial_overlaps, full_overlaps
 
 
@@ -485,14 +490,15 @@ def run(args=None):
             Print.progress('\n')
         # Initialize Graph()
         graph = Graph()
+        global period_start
+        period_start = ctx.period_start
+        period_end = ctx.period_end
         # Process filename handler to create nodes
         ctx.nbnodes = len([x for x in itertools.imap(create_nodes, handlers)])
         # Process each directed graph to create appropriate edges
         ctx.nbdsets = len([x for x in itertools.imap(create_edges, graph())])
         # Evaluate each graph if a shortest path exist
         resolve = ctx.resolve
-        period_start = ctx.period_start
-        period_end = ctx.period_end
         for path, partial_overlaps, full_overlaps in itertools.imap(evaluate_graph, graph()):
             # Format message about path
             msg = format_path(path, partial_overlaps, full_overlaps)

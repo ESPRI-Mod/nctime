@@ -4,6 +4,12 @@
 Change Log
 ==========
 
+`v4.6.0 <https://github.com/Prodiguer/nctime/tree/v4.6.0>`__ (2018-10-10)
+-------------------------------------------------------------------------
+
+`Full
+Changelog <https://github.com/Prodiguer/nctime/compare/v4.5.5...v4.6.0>`__
+
 `v4.5.5 <https://github.com/Prodiguer/nctime/tree/v4.5.5>`__ (2018-09-19)
 -------------------------------------------------------------------------
 

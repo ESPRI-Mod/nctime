@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-.. module:: nctxck - netCDF Time Axis Checker
+.. module:: nctxck
     :platform: Unix
-    :synopsis: Toolbox to diagnose netCDF time axis.
+    :synopsis: netCDF Time Axis Checker part of the toolbox to diagnose netCDF time axis.
 
 .. moduleauthor:: Guillaume Levavasseur <glipsl@ipsl.jussieu.fr>
 
