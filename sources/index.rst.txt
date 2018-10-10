@@ -32,7 +32,7 @@ See the :ref:`faq` to learn more about what is behind the scene of ``nctime``.
    overlap
    axis
    faq
-   Example <http://LINK>
+   Example <http://https://github.com/Prodiguer/nctime/blob/master/docs/howto.ipynb>
    credits
    log
    autodoc

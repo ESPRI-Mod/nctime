@@ -96,7 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../overlap.html">Check time series continuity</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../axis.html">Check time axis squareness</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently asked questions</a></li>
-<li class="toctree-l1"><a class="reference external" href="http://LINK">Example</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://https://github.com/Prodiguer/nctime/blob/master/docs/howto.ipynb">Example</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../credits.html">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../log.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc.html">Code documentation</a></li>
@@ -180,7 +180,7 @@
 <span class="kn">from</span> <span class="nn">nctime.utils.context</span> <span class="k">import</span> <span class="n">BaseContext</span>
 <span class="kn">from</span> <span class="nn">nctime.utils.custom_exceptions</span> <span class="k">import</span> <span class="n">NoConfigCardFound</span><span class="p">,</span> <span class="n">NoRunCardFound</span>
 <span class="kn">from</span> <span class="nn">nctime.utils.custom_print</span> <span class="k">import</span> <span class="o">*</span>
-
+<span class="kn">from</span> <span class="nn">nctime.utils.time</span> <span class="k">import</span> <span class="n">untruncated_timestamp</span>
 
 <div class="viewcode-block" id="ProcessingContext"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.context.ProcessingContext">[docs]</a><span class="k">class</span> <span class="nc">ProcessingContext</span><span class="p">(</span><span class="n">BaseContext</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -196,8 +196,8 @@
         <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">directory</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">directory</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">resolve</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">resolve</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">period_start</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">start</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">period_end</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">end</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">period_start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">untruncated_timestamp</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">start</span><span class="p">))</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">start</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">period_end</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">untruncated_timestamp</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">end</span><span class="p">))</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">end</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">full_only</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">full_only</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">overlaps</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">broken</span> <span class="o">=</span> <span class="mi">0</span>
