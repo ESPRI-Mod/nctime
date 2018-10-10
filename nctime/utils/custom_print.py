@@ -241,12 +241,14 @@ class Print(object):
                 Print.print_to_stdout(msg)
 
     @staticmethod
-    def warning(msg):
+    def warning(msg, buffer=False):
         msg = TAGS.WARNING + COLOR().bold(msg) + '\n'
         if not Print.CARRIAGE_RETURNED:
             msg = '\n' + msg
         if Print.LOG:
             Print.print_to_logfile(msg)
+        elif buffer:
+            Print.BUFFER.value += msg
         else:
             Print.print_to_stdout(msg)
 

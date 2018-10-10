@@ -13,7 +13,7 @@ Rebuilt and check time axis
 
 .. code-block:: bash
 
-    $> nctime axis /PATH/TO/SCAN/
+    $> nctxck /PATH/TO/SCAN/
 
 Rewrite a wrong time axis
 *************************
@@ -23,7 +23,7 @@ check results):
 
 .. code-block:: bash
 
-   $> nctime axis /PATH/TO/SCAN/ {-w,--write}
+   $> nctxck /PATH/TO/SCAN/ {-w,--write}
 
 .. warning:: We highly recommend to activate ``--write`` after a first dry-checking. This will definitely modify
     your input files. Be careful to activate ``--write`` when you are sure about time errors.
@@ -35,7 +35,7 @@ Anyway, you can force to overwrite time axis in any case:
 
 .. code-block:: bash
 
-   $> nctime axis /PATH/TO/SCAN/ {-f,--force}
+   $> nctxck /PATH/TO/SCAN/ {-f,--force}
 
 Check an on going simulation
 ****************************
@@ -45,16 +45,16 @@ To disable the corresponding test and check the on going time axis squareness us
 
 .. code-block:: bash
 
-   $> nctime axis /PATH/TO/SCAN/ --on-fly
+   $> nctxck /PATH/TO/SCAN/ --on-fly
 
 Default is a deactivated "on-fly" mode.
-``nctime axis`` is able to deduce if your simulation is completed or not. In the last case, the "on-fly" mode is
+``nctxck`` is able to deduce if your simulation is completed or not. In the last case, the "on-fly" mode is
 automatically activated. You only need to submit the directory including both your ``config.card`` and ``run.card``
 provided by the libIGCM framework:
 
 .. code-block:: bash
 
-    $> nctime axis /PATH/TO/SCAN/ --card /PATH/TO/SUBMISSION/DIRECTORY
+    $> nctxck /PATH/TO/SCAN/ --card /PATH/TO/SUBMISSION/DIRECTORY
 
 .. warning:: This option is only available if you run your simulation within the IPSL libICM framework.
 
@@ -67,7 +67,7 @@ to submit another reference starting time stamp to make time axis rebuilding fre
 
 .. code-block:: bash
 
-    $> nctime axis /PATH/TO/SCAN/ --start YYYYMMDD
+    $> nctxck /PATH/TO/SCAN/ --start YYYYMMDD
 
 .. note::
     The submitted time stamp will be completed to 14 digits. We highly recommend to submit a digit as most precise as possible for the first date of the time axis.
@@ -79,7 +79,7 @@ The same can be done with the ending time stamp even if it is unused in time axi
 
 .. code-block:: bash
 
-    $> nctime axis /PATH/TO/SCAN/ --end YYYYMMDD
+    $> nctxck /PATH/TO/SCAN/ --end YYYYMMDD
 
 .. note::
     Both flags can be used independently.
@@ -87,31 +87,19 @@ The same can be done with the ending time stamp even if it is unused in time axi
 Show wrong time steps
 *********************
 
-By default ``nctime axis`` print the first five wrong time steps if exist. This limit can be changed with:
+By default ``nctxck`` print the first five wrong time steps if exist. This limit can be changed with:
 
 .. code-block:: bash
 
-   $> nctime axis /PATH/TO/SCAN/ --limit INTEGER
+   $> nctxck /PATH/TO/SCAN/ --limit INTEGER
 
 To print all wrong time steps:
 
 .. code-block:: bash
 
-   $> nctime axis /PATH/TO/SCAN/ --limit
+   $> nctxck /PATH/TO/SCAN/ --limit
 
-.. note:: This limit is also used to print wring time boundaries.
-
-Apply time correction on sud-daily frequencies
-**********************************************
-
-By default ``nctime`` use the dates from the filename to start its processes. Due to different use cases, filename dates related
-to sub-daily data could not follow MIPs specifications. You can apply a time correction to respectively start sub-daily axis
-at 000000 timestamp and end at 18000, 2100000, 230000, 233000 (depending on the frequency 6hr, 3hr, 1hr, subhr) whether
-the time axis is instantaneous or not.
-
-.. code-block:: bash
-
-    $> nctime axis --correct-timestamp
+.. note:: This limit is also used to print wrong time boundaries.
 
 Ignore errors
 *************
@@ -120,7 +108,7 @@ If some errors are known and expected in the diagnostic they can be ignore for a
 
 .. code-block:: bash
 
-   $> nctime axis /PATH/TO/SCAN/ --ignore-errors CODE,CODE
+   $> nctxck /PATH/TO/SCAN/ --ignore-errors CODE,CODE
 
 
 .. note::  The allowed error codes corresponds to the following axis status codes (e.g., 001, 002, etc.). One or
@@ -134,11 +122,9 @@ Time axis error codes:
  * 000: Time axis seems OK
  * 001: Incorrect time axis over one or several time steps
  * 002: Time units must be unchanged for the same dataset
- * 003a: Last timestamp is lower than end timestamp from filename
- * 003b: Last timestamp is higher than end timestamp from filename
+ * 003: Last date is earlier than end date from filename
  * 004: An instantaneous time axis should not embed time boundaries
  * 005: An averaged time axis should embed time boundaries
  * 006: Incorrect time bounds over one or several time steps
  * 007: Calendar must be unchanged for the same dataset
- * 008a: Last date is earlier than end date from filename
- * 008b: Last date is later than end date of filename
+ * 008: Last date is later than end date of filename

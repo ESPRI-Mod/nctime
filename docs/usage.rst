@@ -4,29 +4,39 @@
 Generic usage
 =============
 
-.. note:: All the following arguments can be safely combined and add to the subcommand arguments.
+All the following arguments can be safely combined and add to each of the nctime **COMMAND**:
+ - ``nctcck``
+ - ``nctxck``
+
 
 Check the help
 **************
 
 .. code-block:: bash
 
-    $> nctime {-h,--help}
-    $> nctime SUBCOMMAND {-h,--help}
+    $> COMMAND [SUBCOMMAND] {-h,--help}
 
 Check the version
 *****************
 
 .. code-block:: bash
 
-    $> nctime {-v,--version}
+    $> COMMAND {-v,--version}
+
+.. note:: The program version will be the same for all the nctime tools.
 
 Debug mode
 **********
 
+Some progress bars informs you about the processing status of the different subcommands. You can switch to a more
+verbose mode displaying each step with useful additional information.
+
 .. code-block:: bash
 
-    $> nctime SUBCOMMAND --debug
+    $> COMMAND {-d,--debug}
+
+.. warning::
+    This debug/verbose mode is silently activated in the case of a logfile (i.e., no progress bars).
 
 Print all results
 *****************
@@ -35,13 +45,12 @@ Default is to only print errors, to change this and print all results:
 
 .. code-block:: bash
 
-    $> nctime SUBCOMMAND --all
+    $> COMMAND {-a,--all}
 
 Specify the project
 *******************
 
-The ``-p/--project`` argument is used to parse the corresponding configuration INI file. It is **always required**
-(except for ``fetch-ini`` subcommand). This argument is case-sensitive and has to correspond to a section name of
+The ``-p/--project`` argument is used to parse the corresponding configuration INI file. This argument is case-sensitive and has to correspond to a section name of
 the configuration file(s).
 
 .. code-block:: bash
@@ -54,65 +63,60 @@ the configuration file(s).
 Submit a configuration directory
 ********************************
 
-By default, the configuration files are fetched or read from ``/esg/config/esgcet`` that is the usual configuration
-directory on ESGF nodes. If you're preparing your data outside of an ESGF node, you can submit another directory to
-fetch and read the configuration files.
+By default, the configuration files are fetched or read from the ``$ESGINI_DIR`` environment variable. If not exists,
+``/esg/config/esgcet`` that is the usual configuration directory on ESGF nodes is used. If you're checking your data outside of an ESGF node, you have to fetch those project-specific
+INI files from `GitHub <https://github.com/ESGF/config/tree/master/publisher-configs/ini>`_ using the
+`esgfetchini <http://esgf.github.io/esgf-prepare/fetchini.html>`_ command line from the
+`esgprep library <http://esgf.github.io/esgf-prepare>`_. Then you can submit another directory to read the configuration files.
 
 .. code-block:: bash
 
-    $> nctime SUBCOMMAND -i /PATH/TO/CONFIG/
+    $> COMMAND -i /PATH/TO/CONFIG/
 
-.. note::
-    If not submitted it takes the $ESGINI environment variable. If not exists the usual datanode path is used (i.e., ``/esg/config/esgcet``)
+Use a logfile
+*************
+
+Outputs can be logged into a file named ``PROG-YYYYMMDD-HHMMSS-PID.log``. If not, the standard output is used following the verbose mode.
+By default, the logfiles are stored in a ``logs`` folder created in your current working directory (if not exists).
+It can be changed by adding a optional logfile directory to the flag.
+
+.. code-block:: bash
+
+    $> COMMAND {-l,--log} [/PATH/TO/LOGDIR/]
 
 Use filters
 ***********
 
-``nctime`` subcommands will scan your local archive to achieve data quality check. In such a scan, you can filter the file discovery by using a Python regular expression
+``nctime`` tools will scan your local archive to achieve data quality check. In such a scan, you can filter the file discovery by using a Python regular expression
 (see `re <https://docs.python.org/2/library/re.html>`_ Python library).
 
-The default is to walk through your local filesystem ignoring the hidden folders.
-It can be change with:
+The default is to walk through your local filesystem ignoring the hidden folders. It can be change with:
 
 .. code-block:: bash
 
-    $> nctime SUBCOMMAND --ignore-dir PYTHON_REGEX
+    $> COMMAND --ignore-dir PYTHON_REGEX
 
 ``nctime`` only considers unhidden NetCDF files by default excuding the regular expression ``^\..*$`` and
 including the following one ``.*\.nc$``. It can be independently change with:
 
 .. code-block:: bash
 
-    $> nctime SUBCOMMAND --include-file PYTHON_REGEX --exclude-file PYTHON_REGEX
+    $> COMMAND --include-file PYTHON_REGEX --exclude-file PYTHON_REGEX
 
-Keep in mind that ``--ignore-dir`` and ``--exclude-file`` specifie a directory pattern **NOT** to be matched, while
+Keep in mind that ``--ignore-dir`` and ``--exclude-file`` specify a directory pattern **NOT** to be matched, while
 ``--include-file`` specifies a filename pattern **TO BE** matched.
-
-Use a logfile
-*************
-
-All errors and exceptions are logged into a file named ``nctime-YYYYMMDD-HHMMSS-PID.err``.
-Other information are logged into a file named ``nctime-YYYYMMDD-HHMMSS-PID.log`` only if ``--log`` is submitted.
-If not, the standard output is used following the verbose mode.
-By default, the logfiles are stored in a ``logs`` folder created in your current working directory (if not exists).
-It can be changed by adding a optional logfile directory to the flag.
-
-.. code-block:: bash
-
-    $> nctime SUBCOMMAND {-l,--log}
-    $> nctime SUBCOMMAND -l /PATH/TO/LOGDIR/
 
 Use multiprocessing
 *******************
 
 ``nctime`` uses a multiprocessing interface. This is useful to process a large amount of data, especially in the case
-of ``axis`` subcommands with the time axis calculation. Set the number of maximal processes to simultaneously treat
+of ``nctxck`` with the time axis calculation. Set the number of maximal processes to simultaneously treat
 several files. One process seems sequential processing. Set it -1 to use all available CPU processes
 (as returned by ``multiprocessing.cpu_count()``). Default is set to 4 processes.
 
 .. code-block:: bash
 
-    $> nctime SUBCOMMAND --max-processes 4
+    $> COMMAND --max-processes INTEGER
 
 .. warning:: The number of maximal processes is limited to the maximum CPU count in any case.
 
@@ -126,7 +130,7 @@ directory including both your ``config.card`` and ``run.card`` provided by the l
 
     $> nctime SUBCOMMAND --card /PATH/TO/SUBMISSION/DIRECTORY
 
-.. note:: This detailed documentation of ``nctime overlap`` and ``nctime axis``.
+.. note:: This detailed documentation of ``nctcck`` and ``nctxck``.
 
 .. warning:: This option is only available if you run your simulation within the IPSL libICM framework.
 
@@ -134,12 +138,12 @@ Define a reference calendar
 ***************************
 
 The reference calendar is the calendar use by ``nctime`` to rebuilt theoretical dates during the whole check.
-By default, the reference calendar is one from the first file scanned.
+By default, the reference calendar is one from the **FIRST** file scanned.
 You can specify your own reference calendar with:
 
 .. code-block:: bash
 
-    $> nctime SUBCOMMAND --calendar CALENDAR
+    $> COMMAND --calendar CALENDAR
 
 .. note::
     Available calendars are those from CF conventions: gregorian, standard, proleptic_gregorian, noleap, 365_day, all_leap, 366_day, 360_day.
@@ -151,12 +155,12 @@ Define reference time units
 ***************************
 
 The reference time units are use by ``nctime`` to rebuilt theoretical dates during the whole check.
-By default, the reference time units are those from the first file scanned.
+By default, the reference time units are those from the **FIRST** file scanned.
 You can specify your own reference time units with:
 
 .. code-block:: bash
 
-    $> nctime SUBCOMMAND --units "{seconds,minutes,hours,days} since YYYY-MM-DD [HH:mm:ss]"
+    $> COMMAND --units "{seconds,minutes,hours,days} since YYYY-MM-DD [HH:mm:ss]"
 
 .. note::
     Available units format is the one from CF conventions: "<units> since YYYY-MM-DD [HH:mm:ss]" where ``<units>`` stands for seconds, minutes, hours or days.
@@ -169,30 +173,30 @@ Overwrites a frequency increment
 
 By default, each supported frequency as its own unit and increment (e.g. mon = 1 months). In some case the frequency
 increment or units can be change, at least for diagnostic purposes. For finer modification, the increment is change for
-a couple of MIP TABLE and FREQUENCY. The "all" keyword can be use to change the time increment for "all" table or "all"
+a couple of MIP TABLE and FREQUENCY. The "all" keyword can be used to change the time increment for "all" table or "all"
 frequencies values.
 
 .. code-block:: bash
 
-    $> nctime SUBCOMMAND --set-inc TABLE:FREQUENCY=INCREMENT[+]UNITS
+    $> COMMAND --set-inc TABLE:FREQUENCY=INCREMENT[+]UNITS
 
 To change the time increment of sub-hourly files from the CFsubhr table from 30min to 15min:
 
 .. code-block:: bash
 
-    $> nctime SUBCOMMAND --set-inc CFsubhr:subhrPt=15m
+    $> COMMAND --set-inc CFsubhr:subhrPt=15m
 
 To change the time increment of all sub-hourly files whatever the MIP table:
 
 .. code-block:: bash
 
-    $> nctime SUBCOMMAND --set-inc all:subhr=15m
+    $> COMMAND --set-inc all:subhr=15m
 
 To change the time increment of all CFsubhr files whatever the frequency:
 
 .. code-block:: bash
 
-    $> nctime SUBCOMMAND --set-inc CFsubhr:all=15m
+    $> COMMAND --set-inc CFsubhr:all=15m
 
 .. note::
     Duplicate the flag to overwrite several frequency increment.

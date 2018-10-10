@@ -6,7 +6,8 @@ Code documentation
 
 nctime
 ******
-.. automodule:: nctime.nctime
+.. automodule:: nctime.nctcck
+.. automodule:: nctime.nctxck
 
 overlap
 -------

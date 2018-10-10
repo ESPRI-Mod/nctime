@@ -1,5 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 """
-.. module:: nctime.overlap
-.. moduleauthor:: Guillaume Levavasseur <glipsl@ipsl.jussieu.fr>
+.. module:: nctime.nctcck
+.. moduleauthor:: Guillaume Levavasseur <glipsl@ipsl.fr>
 
 """

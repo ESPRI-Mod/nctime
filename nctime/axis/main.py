@@ -83,15 +83,18 @@ def process(ffp):
         # Exclude codes to ignore from status codes
         # Before correction to avoid undesired operations
         fh.status = [code for code in fh.status if code not in pctx.ignore_codes]
+        correction = False
         # Rename file depending on checking
-        if (pctx.write and {'003a', '003b'}.intersection(set(fh.status))) or pctx.force:
+        if (pctx.write and {'003', '008'}.intersection(set(fh.status))) or pctx.force:
             # Change filename and file full path dynamically
             fh.nc_file_rename(new_filename=re.sub(fh.end_timestamp, fh.last_timestamp, fh.filename))
+            correction = True
         # Remove time boundaries depending on checking
         if (pctx.write and {'004'}.intersection(set(fh.status))) or pctx.force:
             # Delete time bounds and bounds attribute from file if write or force mode
             fh.nc_var_delete(variable=fh.tbnds)
             fh.nc_att_delete(attribute='bounds', variable='time')
+            correction = True
         # Rewrite time axis depending on checking
         if (pctx.write and {'001', '002', '006', '007'}.intersection(set(fh.status))) or pctx.force:
             fh.nc_var_overwrite('time', fh.time_axis_rebuilt)
@@ -99,32 +102,67 @@ def process(ffp):
             fh.nc_att_overwrite('calendar', variable='time', data=pctx.ref_calendar)
             # Rewrite time boundaries if needed
             if fh.has_bounds:
-                fh.nc_var_overwrite(fh.tbnds, fh.time_bounds_rebuilt)
+                if fh.is_climatology:
+                    fh.nc_var_overwrite('climatology_bounds', fh.time_bounds_rebuilt)
+                else:
+                    fh.nc_var_overwrite('time_bounds', fh.time_bounds_rebuilt)
+            correction = True
         # Diagnostic display
+        if {'002'}.intersection(set(fh.status)):
+            time_units = COLORS.FAIL(fh.tunits)
+            time_ref_units = COLORS.SUCCESS(pctx.ref_units)
+        else:
+            time_units = COLORS.SUCCESS(fh.tunits)
+            time_ref_units = COLOR('cyan').bold(pctx.ref_units)
+        if {'007'}.intersection(set(fh.status)):
+            time_cal = COLORS.FAIL(fh.calendar)
+            time_ref_cal = COLORS.SUCCESS(pctx.ref_calendar)
+        else:
+            time_cal = COLORS.SUCCESS(fh.calendar)
+            time_ref_cal = COLOR('cyan').bold(pctx.ref_calendar)
+        if {'003', '008'}.intersection(set(fh.status)):
+            time_end_timestamp = COLORS.FAIL(fh.end_timestamp_infile)
+            time_end_date = COLORS.FAIL(fh.end_date_infile)
+            time_end_num = COLORS.FAIL(str(fh.end_num_infile))
+            time_ref_end_timestamp = COLORS.SUCCESS(fh.end_timestamp)
+            time_ref_end_date = COLORS.SUCCESS(fh.end_date)
+            time_ref_end_num = COLORS.SUCCESS(str(fh.end_num))
+        else:
+            time_end_timestamp = COLORS.SUCCESS(fh.end_timestamp_infile)
+            time_end_date = COLORS.SUCCESS(fh.end_date_infile)
+            time_end_num = COLORS.SUCCESS(str(fh.end_num_infile))
+            time_ref_end_timestamp = COLOR('cyan').bold(fh.end_timestamp)
+            time_ref_end_date = COLOR('cyan').bold(fh.end_date)
+            time_ref_end_num = COLOR('cyan').bold(str(fh.end_num))
+
         msg = """{}
-        Units: {} [ref = {}]
-        Calendar: {} [ref = {}]
-        Start: IN FILE -- {} = {} = {}
-               REBUILT -- {} = {} = {}
-        End:   IN FILE -- {} = {} = {}
-               REBUILT -- {} = {} = {}
+        Units:
+            IN FILE -- {}
+            REF     -- {}
+        Calendar:
+            IN FILE -- {}
+            REF     -- {}
+        Start: 
+            IN FILE -- {} = {} = {}
+            REBUILT -- {} = {} = {}
+        End:
+            IN FILE -- {} = {} = {}
+            REBUILT -- {} = {} = {}
         Length: {}
         MIP table: {}
         Frequency: {} = {} {}
         Is instant: {}
         Is climatology: {}
         Has bounds: {}""".format(COLORS.HEADER(fh.filename),
-                                 fh.tunits, pctx.ref_units,
-                                 fh.calendar, pctx.ref_calendar,
+                                 time_units, time_ref_units,
+                                 time_cal, time_ref_cal,
                                  COLOR('cyan').bold(fh.start_timestamp_infile),
                                  COLOR('cyan').bold(fh.start_date_infile),
                                  COLOR('cyan').bold(str(fh.start_num_infile)),
                                  fh.start_timestamp, fh.start_date, fh.start_num,
-                                 COLOR('cyan').bold(fh.end_timestamp_infile),
-                                 COLOR('cyan').bold(fh.end_date_infile),
-                                 COLOR('cyan').bold(str(fh.end_num_infile)),
-                                 fh.end_timestamp, fh.end_date, fh.end_num,
-                                 #fh.last_timestamp, fh.last_date, fh.last_num,
+                                 time_end_timestamp, time_end_date, time_end_num,
+                                 time_ref_end_timestamp, time_ref_end_date, time_ref_end_num,
+                                 # fh.last_timestamp, fh.last_date, fh.last_num,
                                  fh.length,
                                  fh.table,
                                  fh.frequency, fh.step, fh.step_units,
@@ -135,6 +173,8 @@ def process(ffp):
         if fh.status:
             for s in fh.status:
                 msg += """\n        Status: {} """.format(COLORS.FAIL('Error {} -- {}'.format(s, STATUS[s])))
+                if correction and s in ['001', '002', '003', '004', '006', '007', '008']:
+                    msg += ' -- {}'.format(COLORS.SUCCESS('Corrected'))
         else:
             msg += """\n        Status: {}""".format(COLORS.SUCCESS(STATUS['000']))
         # Display wrong time steps and/or bounds
@@ -245,7 +285,3 @@ def run(args=None):
     # Evaluate errors and exit with appropriate return code
     if ctx.nbskip or ctx.nberrors:
         sys.exit(ctx.nbskip + ctx.nberrors)
-
-
-if __name__ == "__main__":
-    run()
