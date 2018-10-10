@@ -1,202 +1,473 @@
+
+
 <!DOCTYPE html>
-<!--[if IE 8]>
-<html class="no-js lt-ie9" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!-->
-<html class="no-js" lang="en"> <!--<![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
-    <meta charset="utf-8">
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Frequently asked questions &mdash; nctime 4.6.0 documentation</title>
+  
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  
 
-    <title>Frequently asked questions &mdash; nctime 4.5.4 documentation</title>
+  
 
+  
+  
+    
 
-    <link rel="stylesheet" href="static/css/theme.css" type="text/css"/>
+  
 
+  
+  
+    <link rel="stylesheet" href="static/css/theme.css" type="text/css" />
+  
 
-    <link rel="index" title="Index"
-          href="genindex.html"/>
-    <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="nctime 4.5.4 documentation" href="index.html"/>
-    <link rel="next" title="Credits" href="credits.html"/>
-    <link rel="prev" title="Check time axis squareness" href="axis.html"/>
+  
 
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="nctime 4.6.0 documentation" href="index.html"/>
+        <link rel="next" title="Credits" href="credits.html"/>
+        <link rel="prev" title="Check time axis squareness" href="axis.html"/> 
 
-    <script src="static/js/modernizr.min.js"></script>
+  
+  <script src="static/js/modernizr.min.js"></script>
 
 </head>
 
 <body class="wy-body-for-nav" role="document">
 
+   
+  <div class="wy-grid-for-nav">
 
-<div class="wy-grid-for-nav">
-
-
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-        <div class="wy-side-scroll">
-            <div class="wy-side-nav-search">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
 
+          
+            <a href="index.html" class="icon icon-home"> nctime
+          
 
-                <a href="index.html" class="icon icon-home"> nctime
+          
+          </a>
 
+          
+            
+            
+              <div class="version">
+                4.6
+              </div>
+            
+          
 
-                </a>
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
 
-
-                <div class="version">
-                    4.5
-                </div>
-
-
-                <div role="search">
-                    <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-                        <input type="text" name="q" placeholder="Search docs"/>
-                        <input type="hidden" name="check_keywords" value="yes"/>
-                        <input type="hidden" name="area" value="default"/>
-                    </form>
-                </div>
-
-
-            </div>
-
-            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-
-
-                <ul class="current">
-                    <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="usage.html">Generic usage</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="overlap.html">Check time series
-                        continuity</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="axis.html">Check time axis squareness</a>
-                    </li>
-                    <li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently asked
-                        questions</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="credits.html">Credits</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="log.html">Change Log</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="autodoc.html">Code documentation</a></li>
-                </ul>
-
-
-            </div>
+          
         </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Generic usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overlap.html">Check time series continuity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="axis.html">Check time axis squareness</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently asked questions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#what-nctcck-does">What <code class="docutils literal"><span class="pre">nctcck</span></code> does?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-nctcck-detects-gaps-or-overlaps-in-a-time-coverage">How <code class="docutils literal"><span class="pre">nctcck</span></code> detects gaps or overlaps in a time coverage?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-interpret-file-diagnostics-from-nctcck">How to interpret file diagnostics from <code class="docutils literal"><span class="pre">nctcck</span></code>?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-nctxck-does">What <code class="docutils literal"><span class="pre">nctxck</span></code> does?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-nctxck-checks-the-time-coordinate">How <code class="docutils literal"><span class="pre">nctxck</span></code> checks the time coordinate?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-interpret-file-diagnostics-from-nctxck">How to interpret file diagnostics from <code class="docutils literal"><span class="pre">nctxck</span></code>?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#should-we-run-nctime-tools-in-a-specific-sequence">Should we run <code class="docutils literal"><span class="pre">nctime</span></code> tools in a specific sequence?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="http://LINK">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="credits.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc.html">Code documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
-
-        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-
-            <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-            <a href="index.html">nctime</a>
-
-        </nav>
-
-
-        <div class="wy-nav-content">
-            <div class="rst-content">
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">nctime</a>
+        
+      </nav>
 
 
-                <div role="navigation" aria-label="breadcrumbs navigation">
-
-                    <ul class="wy-breadcrumbs">
-
-                        <li><a href="index.html">Docs</a> &raquo;</li>
-
-                        <li>Frequently asked questions</li>
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
 
 
-                        <li class="wy-breadcrumbs-aside">
 
 
-                            <a href="sources/faq.rst.txt" rel="nofollow"> View page source</a>
 
 
-                        </li>
-
-                    </ul>
 
 
-                    <hr/>
-                </div>
-                <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-                    <div itemprop="articleBody">
-
-                        <div class="section" id="frequently-asked-questions">
-                            <span id="faq"></span>
-                            <h1>Frequently asked questions<a class="headerlink" href="#frequently-asked-questions"
-                                                             title="Permalink to this headline">¶</a></h1>
-                        </div>
 
 
-                    </div>
-                    <div class="articleComments">
-
-                    </div>
-                </div>
-                <footer>
-
-                    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-
-                        <a href="credits.html" class="btn btn-neutral float-right" title="Credits" accesskey="n"
-                           rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
-                        <a href="axis.html" class="btn btn-neutral" title="Check time axis squareness" accesskey="p"
-                           rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-
-                    </div>
 
 
-                    <hr/>
 
-                    <div role="contentinfo">
-                        <p>
-                            &copy; Copyright 2015, Levavasseur, G..
+<div role="navigation" aria-label="breadcrumbs navigation">
 
-                        </p>
-                    </div>
-                    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a
-                        href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a
-                        href="https://readthedocs.org">Read the Docs</a>.
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Frequently asked questions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="sources/faq.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
 
-                </footer>
-
-            </div>
-        </div>
-
-    </section>
-
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="frequently-asked-questions">
+<span id="faq"></span><h1>Frequently asked questions<a class="headerlink" href="#frequently-asked-questions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="what-nctcck-does">
+<h2>What <code class="docutils literal"><span class="pre">nctcck</span></code> does?<a class="headerlink" href="#what-nctcck-does" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">nctcck</span></code> finds gaps or overlaps between the time samples contained in a dataset split across files.
+It is only based on the timestamps from filenames, the time axis is not read in this context.
+Basically, it tries to find the shorted path from the start date to the end date of the period. If no path is found, some breaks appears in the time series.
+If a path is found, the overlaps correspond to the files put a side of the path.</p>
+</div>
+<div class="section" id="how-nctcck-detects-gaps-or-overlaps-in-a-time-coverage">
+<h2>How <code class="docutils literal"><span class="pre">nctcck</span></code> detects gaps or overlaps in a time coverage?<a class="headerlink" href="#how-nctcck-detects-gaps-or-overlaps-in-a-time-coverage" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">nctcck</span></code> code uses the <a class="reference external" href="https://networkx.github.io/">networkx</a> Python library to build a directed graph of nodes.
+Each node corresponds to a file described by:</p>
+<blockquote>
+<div><ul class="simple">
+<li>the first timestamp of the filename</li>
+<li>the last timestamp of the filename</li>
+<li><dl class="first docutils">
+<dt>the next expected timestamps depending on inputs:</dt>
+<dd><ul class="first last">
+<li>the time frequency from the global attributes of the file.</li>
+<li>the base time units from the time attributes of the <strong>FIRST</strong> file scanned. Can be enforced using <code class="docutils literal"><span class="pre">--units</span></code> flag.</li>
+<li>the time calendar from the time attributes of the <strong>FIRST</strong> file scanned. Ca be enforced using <code class="docutils literal"><span class="pre">--calendar</span></code> flag.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>Such a graph is built for each dataset split across files. This means a graph per dataset. each graph is then parsed to find the shortest path from the earlier timestamp to the latest one.
+The code uses the unweighted <a class="reference external" href="https://networkx.github.io/documentation/stable/reference/algorithms/shortest_paths.html">shortest_path</a> method.</p>
+<p>If no path found, the code analyzes the list of files to detect the breaks in the time coverage. Those breaks must be manually fill to solve the error.</p>
+<p>If a path is found, the code returns the unused nodes. This means that the corresponding files are not necessary to cover the whole time period and could be removed.
+The code is also able to detect partial overlaps. This occurs when a subperiod is included in two files. In this case only, the code reads the time axis of both files to catch the time step to cut in order to resolve the overlap.
+In case of overlapping files, you can use the <code class="docutils literal"><span class="pre">--resolve</span></code> flag to automatically solve the overlaps. Be careful partial overlaps can be quite long to resolve as they require to create new files on disk.</p>
+</div>
+<div class="section" id="how-to-interpret-file-diagnostics-from-nctcck">
+<h2>How to interpret file diagnostics from <code class="docutils literal"><span class="pre">nctcck</span></code>?<a class="headerlink" href="#how-to-interpret-file-diagnostics-from-nctcck" title="Permalink to this headline">¶</a></h2>
+<p>After processing all files, <code class="docutils literal"><span class="pre">nctcck</span></code> prints the result of each graph/dataset parsed with the following layout:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>[Time series status]
+  [File #1]
+  [File #2]
+  [File #3]
+  [...]
+</pre></div>
+</div>
+<p>Full overlaps will be indicated as follows:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>[Time series status]
+  [File #1]
+  [File #2] &lt;-- to remove
+  [File #3]
+  [...]
+</pre></div>
+</div>
+<p>If <cite>–resolve</cite> is activated, the targeted files will be removed by <cite>nctcck</cite>.</p>
+<p>Partial overlaps will be indicated as follows:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>[Time series status]
+  [File #1]
+  [File #2]
+  [File #3] &lt;-- overlaps from YYYYMMDDHHmmss to YYYYMMDDHHmmss
+  [...]
+</pre></div>
+</div>
+<p>If <cite>–resolve</cite> is activated, the targeted files will be truncated at the appropriate time stamp and renamed accordingly.</p>
+<p>Broken time series will be indicated as follows:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>[Time series status]
+  [File #1]
+   BREAK
+  [File #3]
+  [...]
+</pre></div>
+</div>
+<p>In this case <cite>–resolve</cite> has no effect.</p>
+</div>
+<div class="section" id="what-nctxck-does">
+<h2>What <code class="docutils literal"><span class="pre">nctxck</span></code> does?<a class="headerlink" href="#what-nctxck-does" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">nctxck</span></code> code analyzes the time coordinate only (not other coordinates). It also checks the time boundaries
+if exists and some time attributes as the calendar and the base time units.
+Basically, the code rebuilt a theoretical time axis depending on inputs:</p>
+<blockquote>
+<div><ul class="simple">
+<li>the time frequency from the global attributes of each netCDF file.</li>
+<li>the base time units from the time attributes of the <strong>FIRST</strong> file scanned. Can be enforced using <code class="docutils literal"><span class="pre">--units</span></code> flag.</li>
+<li>the time calendar from the time attributes of the <strong>FIRST</strong> file scanned. Can be enforced using <code class="docutils literal"><span class="pre">--calendar</span></code> flag</li>
+<li>the first time stamp from each filename. Can be enforced using <code class="docutils literal"><span class="pre">--start</span></code> flag</li>
+</ul>
+</div></blockquote>
+<p>Then, the theoretical time axis is compared to the infile time axis. If differences exist between theoretical and infile axes, they are categorized with different error codes.</p>
+</div>
+<div class="section" id="how-nctxck-checks-the-time-coordinate">
+<h2>How <code class="docutils literal"><span class="pre">nctxck</span></code> checks the time coordinate?<a class="headerlink" href="#how-nctxck-checks-the-time-coordinate" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">nctxck</span> <span class="pre">``</span> <span class="pre">uses</span> <span class="pre">the</span> <span class="pre">`netcdftime</span> <span class="pre">&lt;https://www.esrl.noaa.gov/psd/people/jeffrey.s.whitaker/python/netcdftime.html&gt;`_</span> <span class="pre">package</span> <span class="pre">part</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">``netCDF4</span></code> Python library. It rebuilds in a iterative way the theoretical time axis.
+The usual <code class="docutils literal"><span class="pre">date2num</span></code> and <code class="docutils literal"><span class="pre">num2date</span></code> methods have been extended to support all time units (including month and year).
+In addition, an offset of +0.5 time step is applied to the rebuilt non-instant time axis.
+A particular treatment is applied to climatology axis following <a class="reference external" href="http://cfconventions.org/cf-conventions/v1.6.0/cf-conventions.html#climatological-statistics">CF Conventions</a>.</p>
+</div>
+<div class="section" id="how-to-interpret-file-diagnostics-from-nctxck">
+<h2>How to interpret file diagnostics from <code class="docutils literal"><span class="pre">nctxck</span></code>?<a class="headerlink" href="#how-to-interpret-file-diagnostics-from-nctxck" title="Permalink to this headline">¶</a></h2>
+<p>First of all, <code class="docutils literal"><span class="pre">axis</span></code> print useful information for each file scanned with the following layout:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>[FILENAME]
+      Units:
+          IN FILE -- [infile base time units in the format &quot;days since YYYY-MM-DD HH:mm:ss]
+          REF     -- [reference base time units in the format &quot;days since YYYY-MM-DD HH:mm:ss]
+      Calendar:
+          IN FILE -- [infile time calendar]
+          REF     -- [reference time calendar]
+      Start:
+          IN FILE -- [first timestamps from filename] = [first date from infile time axis in ISO format] = [corresponding number of days since infile base time units]
+          REBUILT -- [first theoretical timestamps] = [first theoretical date in ISO format] = [corresponding number of days since ref base time units]
+      End:
+          IN FILE -- [end timestamps from filename] = [last date from infile time axis in ISO format] = [corresponding number of days since infile base time units]
+          REBUILT -- [end theoretical timestamps] = [last theoretical date in ISO format] = [corresponding number of days since ref base time units]
+      Length: [number of time steps]
+      MIP table: [MIP table ID from netCDF global attributes]
+      Frequency: [time frequency name] = [time frequency units]
+      Is instant: [True/False]
+      Is climatology: [True/False]
+      Has bounds: [True/False]
+      Status: [CODE(S)]
+</pre></div>
+</div>
+<p>The file status can include one or several of the following error codes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="first docutils">
+<dt>000: No errors.</dt>
+<dd><ul class="first last">
+<li>Infile time axis seems correct</li>
+<li>No correction required.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>001: Infile axis seems to have one or several wrong time steps.</dt>
+<dd><ul class="first last">
+<li>This error often comes along the error 006 (wrong time boundaries).</li>
+<li>This error can be corrected with <code class="docutils literal"><span class="pre">--write</span></code> option in order to write the rebuilt theoretical time axis into the file itself without copying it.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>002: Time units must be unchanged for the same dataset</dt>
+<dd><ul class="first last">
+<li>For a dataset split across files, the base time units needs to be the same (see <a class="reference external" href="http://cfconventions.org/cf-conventions/cf-conventions.html#time-coordinate">CF Convention</a>).</li>
+<li>Broadly we recommend to set the same base time units and calendar for the whole simulation (including all frequencies and all variables).</li>
+<li>This error can be corrected with <code class="docutils literal"><span class="pre">--write</span></code> option to replace infile attribute with the reference value (i.e., from the <strong>FIRST</strong> file scanned or the <code class="docutils literal"><span class="pre">--units</span></code> flag).</li>
+<li>This error could be ignored (with <code class="docutils literal"><span class="pre">--ignore-errors</span></code> option) if you are scanning more than one simulation at a time. In this case, different base time units could be expected.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>003: Last date is lower than end date from filename</dt>
+<dd><ul class="first last">
+<li>The date of last theoretical time step is lower than the end date from the filename.</li>
+<li>Without any other errors it means that infile time axis is OK but the filename must be renamed by changing the last timestamp according to the diagnostic. In this case the error can be corrected by using the <code class="docutils literal"><span class="pre">--write</span></code> flag.</li>
+<li>If associated to the error 001 affecting the first time step it means that the whole time axis is wrong probably due to a wrong first timestamp in the filename. In this case the error can be corrected by manually renaming the file with the appropriate first timestamp. Be careful to rerun <code class="docutils literal"><span class="pre">nctxck</span></code> diagnostic then to ensure no other errors.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>004: An instantaneous time axis should not embed time boundaries</dt>
+<dd><ul class="first last">
+<li>The data are described on an instantaneous time axis but the file includes time boundaries.</li>
+<li>In such a case the time boundaries are useless.</li>
+<li>You can choose to remove the time boundaries using <code class="docutils literal"><span class="pre">--write</span></code>.</li>
+<li>In any case the time boundaries are checked according to the time axis. For instant time axis, the time boundaries, if kept, have to be, at least, a copy of the time axis to ensure equivalent time means by the netCDF operators.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>005: An averaged time axis should embed time boundaries</dt>
+<dd><ul class="first last">
+<li>This is the opposite of the error 004. Time boundaries are missing in the case of a non-instant time axis.</li>
+<li>This error can NOT be corrected using the <code class="docutils literal"><span class="pre">--write</span></code> flag.</li>
+<li>Time boundaries must be append to the file manually.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>006: Incorrect time bounds over one or several time steps</dt>
+<dd><ul class="first last">
+<li>The error is often associated to the error 001.</li>
+<li>This error can be corrected with <code class="docutils literal"><span class="pre">--write</span></code> option in order to write the rebuilt theoretical time bounds into the file itself without copying it.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>007: Different calendars between files.</dt>
+<dd><ul class="first last">
+<li>For a dataset split across files, the time calendar needs to be unchanged (see <a class="reference external" href="http://cfconventions.org/cf-conventions/cf-conventions.html#time-coordinate">CF Convention</a>).</li>
+<li>Broadly we recommend to set the same calendar for the whole simulation (including all frequencies and all variables).</li>
+<li>This error can be corrected with <code class="docutils literal"><span class="pre">--write</span></code> option to replace infile attribute with the reference value (i.e., from the <strong>FIRST</strong> file scanned or the <code class="docutils literal"><span class="pre">--calendar</span></code> flag).</li>
+<li>This error could be ignored (with <code class="docutils literal"><span class="pre">--ignore-errors</span></code> option) if you are scanning more than one simulation at a time. In this case, different calendars could be expected.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>008: Last timestamp is higher than end timestamp from filename</dt>
+<dd><ul class="first last">
+<li>This is the opposite of the error 003.</li>
+<li>This error can NOT be corrected using the <code class="docutils literal"><span class="pre">--write</span></code> flag because no way to deduce if the filename or the time axis is wrong.</li>
+<li>This error must be solved manually by investigating the file.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>Anyway, since you solved the errors on time axis, running <code class="docutils literal"><span class="pre">nctxck</span></code> a second time will provide a green light.</p>
+</div>
+<div class="section" id="should-we-run-nctime-tools-in-a-specific-sequence">
+<h2>Should we run <code class="docutils literal"><span class="pre">nctime</span></code> tools in a specific sequence?<a class="headerlink" href="#should-we-run-nctime-tools-in-a-specific-sequence" title="Permalink to this headline">¶</a></h2>
+<p>Because <code class="docutils literal"><span class="pre">nctcck</span></code> tool is <strong>ONLY</strong> based on the timestamps from the filenames, we recommend run <code class="docutils literal"><span class="pre">nctxck</span></code> <strong>BEFORE</strong> <code class="docutils literal"><span class="pre">nctcck</span></code>.
+You must then rename filenames if needed depending on <code class="docutils literal"><span class="pre">nctxck</span></code> diagnostics. Then, the <code class="docutils literal"><span class="pre">nctcck</span></code> result can be safety interpreted.</p>
+</div>
 </div>
 
 
-<script type="text/javascript">
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="credits.html" class="btn btn-neutral float-right" title="Credits" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="axis.html" class="btn btn-neutral" title="Check time axis squareness" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Levavasseur, G..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'4.5.4',
+            VERSION:'4.6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
             SOURCELINK_SUFFIX: '.txt'
         };
+    </script>
+      <script type="text/javascript" src="static/jquery.js"></script>
+      <script type="text/javascript" src="static/underscore.js"></script>
+      <script type="text/javascript" src="static/doctools.js"></script>
 
-</script>
-<script type="text/javascript" src="static/jquery.js"></script>
-<script type="text/javascript" src="static/underscore.js"></script>
-<script type="text/javascript" src="static/doctools.js"></script>
+  
 
+  
+  
+    <script type="text/javascript" src="static/js/theme.js"></script>
+  
 
-<script type="text/javascript" src="static/js/theme.js"></script>
-
-
-<script type="text/javascript">
+  
+  
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.StickyNav.enable();
       });
-
-</script>
-
+  </script>
+   
 
 </body>
 </html>

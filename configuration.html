@@ -1,262 +1,281 @@
+
+
 <!DOCTYPE html>
-<!--[if IE 8]>
-<html class="no-js lt-ie9" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!-->
-<html class="no-js" lang="en"> <!--<![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
-    <meta charset="utf-8">
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Configuration &mdash; nctime 4.6.0 documentation</title>
+  
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  
 
-    <title>Configuration &mdash; nctime 4.5.4 documentation</title>
+  
 
+  
+  
+    
 
-    <link rel="stylesheet" href="static/css/theme.css" type="text/css"/>
+  
 
+  
+  
+    <link rel="stylesheet" href="static/css/theme.css" type="text/css" />
+  
 
-    <link rel="index" title="Index"
-          href="genindex.html"/>
-    <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="nctime 4.5.4 documentation" href="index.html"/>
-    <link rel="next" title="Generic usage" href="usage.html"/>
-    <link rel="prev" title="Installation" href="installation.html"/>
+  
 
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="nctime 4.6.0 documentation" href="index.html"/>
+        <link rel="next" title="Generic usage" href="usage.html"/>
+        <link rel="prev" title="Installation" href="installation.html"/> 
 
-    <script src="static/js/modernizr.min.js"></script>
+  
+  <script src="static/js/modernizr.min.js"></script>
 
 </head>
 
 <body class="wy-body-for-nav" role="document">
 
+   
+  <div class="wy-grid-for-nav">
 
-<div class="wy-grid-for-nav">
-
-
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-        <div class="wy-side-scroll">
-            <div class="wy-side-nav-search">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
 
+          
+            <a href="index.html" class="icon icon-home"> nctime
+          
 
-                <a href="index.html" class="icon icon-home"> nctime
+          
+          </a>
 
+          
+            
+            
+              <div class="version">
+                4.6
+              </div>
+            
+          
 
-                </a>
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
 
-
-                <div class="version">
-                    4.5
-                </div>
-
-
-                <div role="search">
-                    <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-                        <input type="text" name="q" placeholder="Search docs"/>
-                        <input type="hidden" name="check_keywords" value="yes"/>
-                        <input type="hidden" name="area" value="default"/>
-                    </form>
-                </div>
-
-
-            </div>
-
-            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-
-
-                <ul class="current">
-                    <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-                    <li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration</a>
-                        <ul>
-                            <li class="toctree-l2"><a class="reference internal" href="#location">Location</a></li>
-                            <li class="toctree-l2"><a class="reference internal" href="#esg-project-id-ini"><code
-                                    class="docutils literal"><span class="pre">esg.&lt;project_id&gt;.ini</span></code></a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="usage.html">Generic usage</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="overlap.html">Check time series
-                        continuity</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="axis.html">Check time axis squareness</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="credits.html">Credits</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="log.html">Change Log</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="autodoc.html">Code documentation</a></li>
-                </ul>
-
-
-            </div>
+          
         </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#location">Location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#esg-project-id-ini"><code class="docutils literal"><span class="pre">esg.&lt;project_id&gt;.ini</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Generic usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overlap.html">Check time series continuity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="axis.html">Check time axis squareness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://LINK">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="credits.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="log.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc.html">Code documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
-
-        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-
-            <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-            <a href="index.html">nctime</a>
-
-        </nav>
-
-
-        <div class="wy-nav-content">
-            <div class="rst-content">
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">nctime</a>
+        
+      </nav>
 
 
-                <div role="navigation" aria-label="breadcrumbs navigation">
-
-                    <ul class="wy-breadcrumbs">
-
-                        <li><a href="index.html">Docs</a> &raquo;</li>
-
-                        <li>Configuration</li>
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
 
 
-                        <li class="wy-breadcrumbs-aside">
 
 
-                            <a href="sources/configuration.rst.txt" rel="nofollow"> View page source</a>
 
 
-                        </li>
-
-                    </ul>
 
 
-                    <hr/>
-                </div>
-                <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-                    <div itemprop="articleBody">
-
-                        <div class="section" id="configuration">
-                            <span id="id1"></span>
-                            <h1>Configuration<a class="headerlink" href="#configuration"
-                                                title="Permalink to this headline">¶</a></h1>
-                            <p><code class="docutils literal"><span class="pre">nctime</span></code> works according to
-                                <a class="reference external" href="https://acme-climate.atlassian.net/wiki/x/JADm">the
-                                    configuration INI file(s) of the ESGF nodes</a>.</p>
-                            <div class="section" id="location">
-                                <h2>Location<a class="headerlink" href="#location"
-                                               title="Permalink to this headline">¶</a></h2>
-                                <p>On an ESGF node, the configuration directory containing those INI files is <code
-                                        class="docutils literal"><span class="pre">/esg/config/esgcet</span></code>,
-                                    that is the default
-                                    for <code class="docutils literal"><span class="pre">nctime</span></code>. In the
-                                    case you are running <code class="docutils literal"><span class="pre">nctime</span></code>
-                                    outside of an ESGF node, the directory gathering all <code class="docutils literal"><span
-                                            class="pre">.ini</span></code>
-                                    files has to be submitted using the <code class="docutils literal"><span
-                                            class="pre">-i</span></code> option (see <a class="reference internal"
-                                                                                        href="usage.html#usage"><span
-                                            class="std std-ref">Generic usage</span></a>).</p>
-                            </div>
-                            <div class="section" id="esg-project-id-ini">
-                                <h2><code class="docutils literal"><span
-                                        class="pre">esg.&lt;project_id&gt;.ini</span></code><a class="headerlink"
-                                                                                               href="#esg-project-id-ini"
-                                                                                               title="Permalink to this headline">¶</a>
-                                </h2>
-                                <p>Those INI files declare all facets and allowed values according to the Data Reference
-                                    Syntax (DRS) and the controlled
-                                    vocabularies of the corresponding project. <code class="docutils literal"><span
-                                            class="pre">nctime</span></code> especially use the filename format to
-                                    deduce facet values.
-                                    Preset <code class="docutils literal"><span
-                                            class="pre">esg.&lt;project_id&gt;.ini</span></code> files have been
-                                    properly built by ESGF community for the following projects:</p>
-                                <blockquote>
-                                    <div>
-                                        <ul class="simple">
-                                            <li>CMIP6</li>
-                                            <li>CMIP5</li>
-                                            <li>CORDEX</li>
-                                            <li>CORDEX-Adjust</li>
-                                            <li>EUCLIPSE</li>
-                                            <li>GeoMIP</li>
-                                            <li>input4MIPs</li>
-                                            <li>obs4MIPs</li>
-                                            <li>PMIP3</li>
-                                            <li>LUCID</li>
-                                            <li>PRIMAVERA</li>
-                                            <li>TAMIP</li>
-                                            <li>ISIMIP-FT</li>
-                                        </ul>
-                                    </div>
-                                </blockquote>
-                                <p>Currently, <code class="docutils literal"><span class="pre">nctime</span></code> has
-                                    been tested and supports CMIP5-like and CORDEX-like projects.</p>
-                            </div>
-                        </div>
 
 
-                    </div>
-                    <div class="articleComments">
-
-                    </div>
-                </div>
-                <footer>
-
-                    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-
-                        <a href="usage.html" class="btn btn-neutral float-right" title="Generic usage" accesskey="n"
-                           rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
 
 
-                        <a href="installation.html" class="btn btn-neutral" title="Installation" accesskey="p"
-                           rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-
-                    </div>
 
 
-                    <hr/>
 
-                    <div role="contentinfo">
-                        <p>
-                            &copy; Copyright 2015, Levavasseur, G..
+<div role="navigation" aria-label="breadcrumbs navigation">
 
-                        </p>
-                    </div>
-                    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a
-                        href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a
-                        href="https://readthedocs.org">Read the Docs</a>.
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Configuration</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="sources/configuration.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
 
-                </footer>
-
-            </div>
-        </div>
-
-    </section>
-
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="configuration">
+<span id="id1"></span><h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal"><span class="pre">nctime</span></code> works according to
+<a class="reference external" href="https://github.com/ESGF/config/tree/master/publisher-configs/ini">the configuration INI file(s) of the ESGF nodes</a>.</p>
+<div class="section" id="location">
+<h2>Location<a class="headerlink" href="#location" title="Permalink to this headline">¶</a></h2>
+<p>On an ESGF node, the configuration directory containing those INI files is <code class="docutils literal"><span class="pre">/esg/config/esgcet</span></code>, that is the default
+for <code class="docutils literal"><span class="pre">nctime</span></code>. In the case you are running <code class="docutils literal"><span class="pre">nctime</span></code> outside of an ESGF node, the directory gathering all <code class="docutils literal"><span class="pre">.ini</span></code>
+files has to be submitted using the <code class="docutils literal"><span class="pre">-i</span></code> option (see <a class="reference internal" href="usage.html#usage"><span class="std std-ref">Generic usage</span></a>).</p>
+</div>
+<div class="section" id="esg-project-id-ini">
+<h2><code class="docutils literal"><span class="pre">esg.&lt;project_id&gt;.ini</span></code><a class="headerlink" href="#esg-project-id-ini" title="Permalink to this headline">¶</a></h2>
+<p>Those INI files declare all facets and allowed values according to the Data Reference Syntax (DRS) and the controlled
+vocabularies of the corresponding project. <code class="docutils literal"><span class="pre">nctime</span></code> especially use the filename format to deduce facet values.
+Preset <code class="docutils literal"><span class="pre">esg.&lt;project_id&gt;.ini</span></code> files have been properly built by ESGF community for the following projects:</p>
+<blockquote>
+<div><ul class="simple">
+<li>CMIP6</li>
+<li>CMIP5</li>
+<li>CORDEX</li>
+<li>CORDEX-Adjust</li>
+<li>EUCLIPSE</li>
+<li>GeoMIP</li>
+<li>input4MIPs</li>
+<li>obs4MIPs</li>
+<li>PMIP3</li>
+<li>LUCID</li>
+<li>PRIMAVERA</li>
+<li>TAMIP</li>
+<li>ISIMIP-FT</li>
+</ul>
+</div></blockquote>
+<p>Those project INI files can be fetched from the official GitHub repository using the <cite>esgfetchini</cite> tool from the
+<a class="reference external" href="http://esgf.github.io/esgf-prepare/fetchini.html">esgprep</a> Python toolbox.</p>
+<p>Currently, <code class="docutils literal"><span class="pre">nctime</span></code> has been tested and supports CMIP5-like and CORDEX-like projects.</p>
+</div>
 </div>
 
 
-<script type="text/javascript">
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="usage.html" class="btn btn-neutral float-right" title="Generic usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation.html" class="btn btn-neutral" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Levavasseur, G..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'4.5.4',
+            VERSION:'4.6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
             SOURCELINK_SUFFIX: '.txt'
         };
+    </script>
+      <script type="text/javascript" src="static/jquery.js"></script>
+      <script type="text/javascript" src="static/underscore.js"></script>
+      <script type="text/javascript" src="static/doctools.js"></script>
 
-</script>
-<script type="text/javascript" src="static/jquery.js"></script>
-<script type="text/javascript" src="static/underscore.js"></script>
-<script type="text/javascript" src="static/doctools.js"></script>
+  
 
+  
+  
+    <script type="text/javascript" src="static/js/theme.js"></script>
+  
 
-<script type="text/javascript" src="static/js/theme.js"></script>
-
-
-<script type="text/javascript">
+  
+  
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.StickyNav.enable();
       });
-
-</script>
-
+  </script>
+   
 
 </body>
 </html>

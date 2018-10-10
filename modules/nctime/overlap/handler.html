@@ -1,131 +1,169 @@
+
+
 <!DOCTYPE html>
-<!--[if IE 8]>
-<html class="no-js lt-ie9" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!-->
-<html class="no-js" lang="en"> <!--<![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
-    <meta charset="utf-8">
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>nctime.overlap.handler &mdash; nctime 4.6.0 documentation</title>
+  
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  
 
-    <title>nctime.overlap.handler &mdash; nctime 4.5.4 documentation</title>
+  
 
+  
+  
+    
 
-    <link rel="stylesheet" href="../../../static/css/theme.css" type="text/css"/>
+  
 
+  
+  
+    <link rel="stylesheet" href="../../../static/css/theme.css" type="text/css" />
+  
 
-    <link rel="index" title="Index"
-          href="../../../genindex.html"/>
-    <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 4.5.4 documentation" href="../../../index.html"/>
-    <link rel="up" title="Module code" href="../../index.html"/>
+  
 
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="nctime 4.6.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
 
-    <script src="../../../static/js/modernizr.min.js"></script>
+  
+  <script src="../../../static/js/modernizr.min.js"></script>
 
 </head>
 
 <body class="wy-body-for-nav" role="document">
 
+   
+  <div class="wy-grid-for-nav">
 
-<div class="wy-grid-for-nav">
-
-
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-        <div class="wy-side-scroll">
-            <div class="wy-side-nav-search">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
 
+          
+            <a href="../../../index.html" class="icon icon-home"> nctime
+          
 
-                <a href="../../../index.html" class="icon icon-home"> nctime
+          
+          </a>
 
+          
+            
+            
+              <div class="version">
+                4.6
+              </div>
+            
+          
 
-                </a>
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
 
-
-                <div class="version">
-                    4.5
-                </div>
-
-
-                <div role="search">
-                    <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-                        <input type="text" name="q" placeholder="Search docs"/>
-                        <input type="hidden" name="check_keywords" value="yes"/>
-                        <input type="hidden" name="area" value="default"/>
-                    </form>
-                </div>
-
-
-            </div>
-
-            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-
-
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal"
-                                              href="../../../installation.html">Installation</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../../configuration.html">Configuration</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Generic usage</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../../overlap.html">Check time series
-                        continuity</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../../axis.html">Check time axis
-                        squareness</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently asked
-                        questions</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../../credits.html">Credits</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../../log.html">Change Log</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../../autodoc.html">Code
-                        documentation</a></li>
-                </ul>
-
-
-            </div>
+          
         </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Generic usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overlap.html">Check time series continuity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../axis.html">Check time axis squareness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://LINK">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../credits.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../log.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc.html">Code documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
-
-        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-
-            <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-            <a href="../../../index.html">nctime</a>
-
-        </nav>
-
-
-        <div class="wy-nav-content">
-            <div class="rst-content">
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">nctime</a>
+        
+      </nav>
 
 
-                <div role="navigation" aria-label="breadcrumbs navigation">
-
-                    <ul class="wy-breadcrumbs">
-
-                        <li><a href="../../../index.html">Docs</a> &raquo;</li>
-
-                        <li><a href="../../index.html">Module code</a> &raquo;</li>
-
-                        <li>nctime.overlap.handler</li>
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
 
 
-                        <li class="wy-breadcrumbs-aside">
 
 
-                        </li>
-
-                    </ul>
 
 
-                    <hr/>
-                </div>
-                <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-                    <div itemprop="articleBody">
 
-                        <h1>Source code for nctime.overlap.handler</h1>
-                        <div class="highlight"><pre>
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>nctime.overlap.handler</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for nctime.overlap.handler</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">   :platform: Unix</span>
@@ -133,84 +171,42 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span> <span
-                                class="k">as</span> <span class="n">copy</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span> <span class="k">as</span> <span class="n">copy</span>
 
-<span class="kn">from</span> <span class="nn">fuzzywuzzy</span> <span class="k">import</span> <span
-                                class="n">fuzz</span><span class="p">,</span> <span class="n">process</span>
-<span class="kn">from</span> <span class="nn">networkx</span> <span class="k">import</span> <span
-                                class="n">DiGraph</span>
+<span class="kn">from</span> <span class="nn">fuzzywuzzy</span> <span class="k">import</span> <span class="n">fuzz</span><span class="p">,</span> <span class="n">process</span>
+<span class="kn">from</span> <span class="nn">networkx</span> <span class="k">import</span> <span class="n">DiGraph</span>
 
-<span class="kn">from</span> <span class="nn">nctime.utils.constants</span> <span class="k">import</span> <span
-                                class="n">CLIM_SUFFIX</span>
-<span class="kn">from</span> <span class="nn">nctime.utils.custom_exceptions</span> <span class="k">import</span> <span
-                                class="o">*</span>
-<span class="kn">from</span> <span class="nn">nctime.utils.custom_print</span> <span class="k">import</span> <span
-                                class="o">*</span>
+<span class="kn">from</span> <span class="nn">nctime.utils.constants</span> <span class="k">import</span> <span class="n">CLIM_SUFFIX</span>
+<span class="kn">from</span> <span class="nn">nctime.utils.custom_exceptions</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">nctime.utils.custom_print</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">nctime.utils.misc</span> <span class="k">import</span> <span class="n">ncopen</span>
-<span class="kn">from</span> <span class="nn">nctime.utils.time</span> <span class="k">import</span> <span class="n">get_start_end_dates_from_filename</span><span
-                                class="p">,</span> <span class="n">dates2int</span>
+<span class="kn">from</span> <span class="nn">nctime.utils.time</span> <span class="k">import</span> <span class="n">get_start_end_dates_from_filename</span><span class="p">,</span> <span class="n">dates2int</span>
 
 
-<div class="viewcode-block" id="Filename"><a class="viewcode-back"
-                                             href="../../../autodoc.html#nctime.overlap.handler.Filename">[docs]</a><span
-        class="k">class</span> <span class="nc">Filename</span><span class="p">(</span><span
-        class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Filename"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.handler.Filename">[docs]</a><span class="k">class</span> <span class="nc">Filename</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Handler providing methods to deal with file processing.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span
-            class="p">,</span> <span class="n">ffp</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ffp</span> <span class="o">=</span> <span
-            class="n">ffp</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ffp</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ffp</span> <span class="o">=</span> <span class="n">ffp</span>
         <span class="c1"># Retrieve filename</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span
-            class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span
-            class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ffp</span><span
-            class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ffp</span><span class="p">)</span>
         <span class="c1"># Remove &quot;-clim.nc&quot; suffix from filename if exists</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span
-            class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span
-            class="n">replace</span><span class="p">(</span><span class="n">CLIM_SUFFIX</span><span
-            class="p">,</span> <span class="s1">&#39;.nc&#39;</span><span class="p">)</span> <span
-            class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span
-            class="o">.</span><span class="n">endswith</span><span class="p">(</span><span
-            class="n">CLIM_SUFFIX</span><span class="p">)</span> <span class="k">else</span> <span
-            class="bp">self</span><span class="o">.</span><span class="n">filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">CLIM_SUFFIX</span><span class="p">,</span> <span class="s1">&#39;.nc&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">CLIM_SUFFIX</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
         <span class="c1"># Build id as the filename without the dates and extension</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span
-            class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span
-            class="p">(</span><span class="n">CLIM_SUFFIX</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span
-            class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span
-            class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span
-            class="o">.</span><span class="n">split</span><span class="p">(</span><span
-            class="s1">&#39;_&#39;</span><span class="p">)[:</span><span class="o">-</span><span
-            class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span
-            class="s1">&#39;-clim&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">CLIM_SUFFIX</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;-clim&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span
-            class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span
-            class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span
-            class="o">.</span><span class="n">split</span><span class="p">(</span><span
-            class="s1">&#39;_&#39;</span><span class="p">)[:</span><span class="o">-</span><span
-            class="mi">1</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="c1"># Get first and last time steps</span>
         <span class="c1"># Start/end period dates from filename + next expected date</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span> <span
-            class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">end_date</span> <span
-            class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">next_date</span> <span
-            class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_date</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next_date</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="Filename.get_start_end_dates"><a class="viewcode-back"
-                                                                 href="../../../autodoc.html#nctime.overlap.handler.Filename.get_start_end_dates">[docs]</a>    <span
-        class="k">def</span> <span class="nf">get_start_end_dates</span><span class="p">(</span><span
-        class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span
-        class="n">calendar</span><span class="p">):</span>
+<div class="viewcode-block" id="Filename.get_start_end_dates"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.handler.Filename.get_start_end_dates">[docs]</a>    <span class="k">def</span> <span class="nf">get_start_end_dates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">calendar</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wraps and records :func:`get_start_end_dates_from_filename` results.</span>
 
@@ -223,58 +219,28 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Get table from file</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span
-            class="o">.</span><span class="n">nc_att_get</span><span class="p">(</span><span class="s1">&#39;table_id&#39;</span><span
-            class="p">)</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc_att_get</span><span class="p">(</span><span class="s1">&#39;table_id&#39;</span><span class="p">)</span>
             <span class="c1"># Extract MIP table from string if needed</span>
-            <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span
-            class="o">.</span><span class="n">split</span><span class="p">(</span><span
-            class="s2">&quot; &quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-            <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span
-            class="o">.</span><span class="n">nc_att_get</span><span class="p">(</span><span class="s1">&#39;table_id&#39;</span><span
-            class="p">)</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc_att_get</span><span class="p">(</span><span class="s1">&#39;table_id&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">NoNetCDFAttribute</span><span class="p">:</span>
             <span class="n">table</span> <span class="o">=</span> <span class="s1">&#39;None&#39;</span>
         <span class="c1"># Rollback to None if unknown table</span>
-        <span class="k">if</span> <span class="n">table</span> <span class="ow">not</span> <span
-            class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="nb">zip</span><span
-            class="p">(</span><span class="o">*</span><span class="n">FREQ_INC</span><span class="o">.</span><span
-            class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="n">msg</span> <span class="o">=</span> <span
-            class="s1">&#39;Unknown MIP table &quot;</span><span class="si">{}</span><span class="s1">&quot; -- Consider default increment for the given frequency.&#39;</span><span
-            class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">table</span><span
-            class="p">)</span>
-            <span class="n">Print</span><span class="o">.</span><span class="n">warning</span><span
-            class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">table</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">FREQ_INC</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Unknown MIP table &quot;</span><span class="si">{}</span><span class="s1">&quot; -- Consider default increment for the given frequency.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+            <span class="n">Print</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">buffer</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">table</span> <span class="o">=</span> <span class="s1">&#39;None&#39;</span>
         <span class="c1"># Get frequency from file</span>
-        <span class="n">frequency</span> <span class="o">=</span> <span class="bp">self</span><span
-            class="o">.</span><span class="n">nc_att_get</span><span class="p">(</span><span class="s1">&#39;frequency&#39;</span><span
-            class="p">)</span>
-        <span class="n">dates</span> <span class="o">=</span> <span
-            class="n">get_start_end_dates_from_filename</span><span class="p">(</span><span
-            class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span
-            class="n">name</span><span class="p">,</span>
-                                                  <span class="n">pattern</span><span class="o">=</span><span class="n">pattern</span><span
-            class="p">,</span>
-                                                  <span class="n">table</span><span class="o">=</span><span class="n">table</span><span
-            class="p">,</span>
-                                                  <span class="n">frequency</span><span class="o">=</span><span
-            class="n">frequency</span><span class="p">,</span>
-                                                  <span class="n">calendar</span><span class="o">=</span><span
-            class="n">calendar</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span><span
-            class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_date</span><span
-            class="p">,</span> <span class="bp">self</span><span class="o">.</span><span
-            class="n">next_date</span> <span class="o">=</span> <span class="n">dates2int</span><span class="p">(</span><span
-            class="n">dates</span><span class="p">)</span></div>
+        <span class="n">frequency</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc_att_get</span><span class="p">(</span><span class="s1">&#39;frequency&#39;</span><span class="p">)</span>
+        <span class="n">dates</span> <span class="o">=</span> <span class="n">get_start_end_dates_from_filename</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                                  <span class="n">pattern</span><span class="o">=</span><span class="n">pattern</span><span class="p">,</span>
+                                                  <span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">,</span>
+                                                  <span class="n">frequency</span><span class="o">=</span><span class="n">frequency</span><span class="p">,</span>
+                                                  <span class="n">calendar</span><span class="o">=</span><span class="n">calendar</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_date</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_date</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_date</span> <span class="o">=</span> <span class="n">dates2int</span><span class="p">(</span><span class="n">dates</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Filename.nc_att_get"><a class="viewcode-back"
-                                                        href="../../../autodoc.html#nctime.overlap.handler.Filename.nc_att_get">[docs]</a>    <span
-        class="k">def</span> <span class="nf">nc_att_get</span><span class="p">(</span><span class="bp">self</span><span
-        class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">variable</span><span
-        class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Filename.nc_att_get"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.handler.Filename.nc_att_get">[docs]</a>    <span class="k">def</span> <span class="nf">nc_att_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get attribute from NetCDF file. Default is to find into global attributes.</span>
 <span class="sd">        If attribute key is not found, get the closest key name instead.</span>
@@ -286,164 +252,117 @@
 <span class="sd">        :rtype: *str*</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">with</span> <span class="n">ncopen</span><span class="p">(</span><span
-            class="bp">self</span><span class="o">.</span><span class="n">ffp</span><span class="p">)</span> <span
-            class="k">as</span> <span class="n">nc</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">ncopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ffp</span><span class="p">)</span> <span class="k">as</span> <span class="n">nc</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">variable</span><span class="p">:</span>
-                <span class="n">attrs</span> <span class="o">=</span> <span class="n">nc</span><span
-            class="o">.</span><span class="n">variables</span><span class="p">[</span><span
-            class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="vm">__dict__</span>
+                <span class="n">attrs</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="vm">__dict__</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">attrs</span> <span class="o">=</span> <span class="n">nc</span><span
-            class="o">.</span><span class="vm">__dict__</span>
-            <span class="k">if</span> <span class="n">attribute</span> <span class="ow">in</span> <span
-            class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="k">return</span> <span class="n">attrs</span><span class="p">[</span><span class="n">attribute</span><span
-            class="p">]</span>
+                <span class="n">attrs</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="vm">__dict__</span>
+            <span class="k">if</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">attrs</span><span class="p">[</span><span class="n">attribute</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">key</span><span class="p">,</span> <span class="n">score</span> <span class="o">=</span> <span
-            class="n">process</span><span class="o">.</span><span class="n">extractOne</span><span
-            class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">attrs</span><span
-            class="p">,</span> <span class="n">scorer</span><span class="o">=</span><span class="n">fuzz</span><span
-            class="o">.</span><span class="n">partial_ratio</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;=</span> <span
-            class="mi">80</span><span class="p">:</span>
-                    <span class="n">Print</span><span class="o">.</span><span class="n">warning</span><span
-            class="p">(</span><span class="s1">&#39;Consider &quot;</span><span class="si">{}</span><span class="s1">&quot; attribute instead of &quot;frequency&quot;&#39;</span><span
-            class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span
-            class="p">))</span>
-                    <span class="k">return</span> <span class="n">attrs</span><span class="p">(</span><span class="n">key</span><span
-            class="p">)</span>
+                <span class="n">key</span><span class="p">,</span> <span class="n">score</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">extractOne</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">scorer</span><span class="o">=</span><span class="n">fuzz</span><span class="o">.</span><span class="n">partial_ratio</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="mi">80</span><span class="p">:</span>
+                    <span class="n">Print</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Consider &quot;</span><span class="si">{}</span><span class="s1">&quot; attribute instead of &quot;frequency&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+                    <span class="k">return</span> <span class="n">attrs</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span
-            class="n">attribute</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span
-            class="n">ffp</span><span class="p">)</span></div></div>
+                    <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ffp</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="Graph"><a class="viewcode-back"
-                                          href="../../../autodoc.html#nctime.overlap.handler.Graph">[docs]</a><span
-        class="k">class</span> <span class="nc">Graph</span><span class="p">(</span><span class="nb">object</span><span
-        class="p">):</span>
+<div class="viewcode-block" id="Graph"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.handler.Graph">[docs]</a><span class="k">class</span> <span class="nc">Graph</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Handler providing methods to deal with Directed graph.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span
-            class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="nf">has_graph</span><span class="p">(</span><span
-            class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-        <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span
-            class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span
-            class="n">i</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span>
+    <span class="k">def</span> <span class="nf">has_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="nf">set_graph</span><span class="p">(</span><span
-            class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span
-            class="n">g</span><span class="o">=</span><span class="n">DiGraph</span><span class="p">()):</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span
-            class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">copy</span><span
-            class="p">(</span><span class="n">g</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">set_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="n">DiGraph</span><span class="p">()):</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">copy</span><span class="p">(</span><span class="n">g</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">get_graph</span><span class="p">(</span><span
-            class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">copy</span><span class="p">(</span><span class="nb">getattr</span><span
-            class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span
-            class="p">))</span>
+    <span class="k">def</span> <span class="nf">get_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">add_node</span><span class="p">(</span><span class="bp">self</span><span
-            class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">filename</span><span
-            class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span
-            class="p">,</span> <span class="nb">next</span><span class="p">,</span> <span class="n">path</span><span
-            class="p">):</span>
-        <span class="n">g</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span
-            class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
-        <span class="n">g</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span
-            class="n">filename</span><span class="p">,</span>
-                   <span class="n">start</span><span class="o">=</span><span class="n">start</span><span
-            class="p">,</span>
+    <span class="k">def</span> <span class="nf">add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">next</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span>
+                   <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
                    <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">,</span>
-                   <span class="nb">next</span><span class="o">=</span><span class="nb">next</span><span
-            class="p">,</span>
-                   <span class="n">path</span><span class="o">=</span><span class="n">path</span><span
-            class="p">)</span>
-        <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">node</span><span
-            class="p">[</span><span class="n">filename</span><span class="p">]</span>
+                   <span class="nb">next</span><span class="o">=</span><span class="nb">next</span><span class="p">,</span>
+                   <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="n">filename</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">add_edge</span><span class="p">(</span><span class="bp">self</span><span
-            class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">node_src</span><span
-            class="p">,</span> <span class="n">node_dst</span><span class="p">):</span>
-        <span class="n">g</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span
-            class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
-        <span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span
-            class="n">node_src</span><span class="p">,</span> <span class="n">node_dst</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">add_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">node_src</span><span class="p">,</span> <span class="n">node_dst</span><span class="p">):</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">node_src</span><span class="p">,</span> <span class="n">node_dst</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span
-            class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span
-            class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="nb">id</span> <span
-            class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="bp">self</span><span
-            class="o">.</span><span class="vm">__dict__</span><span class="p">]</span></div>
-</pre>
-                        </div>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="nb">id</span> <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">]</span></div>
+</pre></div>
 
-                    </div>
-                    <div class="articleComments">
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
 
-                    </div>
-                </div>
-                <footer>
+  <hr/>
 
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Levavasseur, G..
 
-                    <hr/>
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
-                    <div role="contentinfo">
-                        <p>
-                            &copy; Copyright 2015, Levavasseur, G..
+</footer>
 
-                        </p>
-                    </div>
-                    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a
-                        href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a
-                        href="https://readthedocs.org">Read the Docs</a>.
-
-                </footer>
-
-            </div>
         </div>
+      </div>
 
     </section>
 
-</div>
+  </div>
+  
 
 
-<script type="text/javascript">
+  
+
+    <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'4.5.4',
+            VERSION:'4.6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
             SOURCELINK_SUFFIX: '.txt'
         };
+    </script>
+      <script type="text/javascript" src="../../../static/jquery.js"></script>
+      <script type="text/javascript" src="../../../static/underscore.js"></script>
+      <script type="text/javascript" src="../../../static/doctools.js"></script>
 
-</script>
-<script type="text/javascript" src="../../../static/jquery.js"></script>
-<script type="text/javascript" src="../../../static/underscore.js"></script>
-<script type="text/javascript" src="../../../static/doctools.js"></script>
+  
 
+  
+  
+    <script type="text/javascript" src="../../../static/js/theme.js"></script>
+  
 
-<script type="text/javascript" src="../../../static/js/theme.js"></script>
-
-
-<script type="text/javascript">
+  
+  
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.StickyNav.enable();
       });
-
-</script>
-
+  </script>
+   
 
 </body>
 </html>

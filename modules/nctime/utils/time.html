@@ -1,131 +1,169 @@
+
+
 <!DOCTYPE html>
-<!--[if IE 8]>
-<html class="no-js lt-ie9" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!-->
-<html class="no-js" lang="en"> <!--<![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
-    <meta charset="utf-8">
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>nctime.utils.time &mdash; nctime 4.6.0 documentation</title>
+  
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  
 
-    <title>nctime.utils.time &mdash; nctime 4.5.4 documentation</title>
+  
 
+  
+  
+    
 
-    <link rel="stylesheet" href="../../../static/css/theme.css" type="text/css"/>
+  
 
+  
+  
+    <link rel="stylesheet" href="../../../static/css/theme.css" type="text/css" />
+  
 
-    <link rel="index" title="Index"
-          href="../../../genindex.html"/>
-    <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 4.5.4 documentation" href="../../../index.html"/>
-    <link rel="up" title="Module code" href="../../index.html"/>
+  
 
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="nctime 4.6.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
 
-    <script src="../../../static/js/modernizr.min.js"></script>
+  
+  <script src="../../../static/js/modernizr.min.js"></script>
 
 </head>
 
 <body class="wy-body-for-nav" role="document">
 
+   
+  <div class="wy-grid-for-nav">
 
-<div class="wy-grid-for-nav">
-
-
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-        <div class="wy-side-scroll">
-            <div class="wy-side-nav-search">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
 
+          
+            <a href="../../../index.html" class="icon icon-home"> nctime
+          
 
-                <a href="../../../index.html" class="icon icon-home"> nctime
+          
+          </a>
 
+          
+            
+            
+              <div class="version">
+                4.6
+              </div>
+            
+          
 
-                </a>
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
 
-
-                <div class="version">
-                    4.5
-                </div>
-
-
-                <div role="search">
-                    <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-                        <input type="text" name="q" placeholder="Search docs"/>
-                        <input type="hidden" name="check_keywords" value="yes"/>
-                        <input type="hidden" name="area" value="default"/>
-                    </form>
-                </div>
-
-
-            </div>
-
-            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-
-
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal"
-                                              href="../../../installation.html">Installation</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../../configuration.html">Configuration</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Generic usage</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../../overlap.html">Check time series
-                        continuity</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../../axis.html">Check time axis
-                        squareness</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently asked
-                        questions</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../../credits.html">Credits</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../../log.html">Change Log</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../../autodoc.html">Code
-                        documentation</a></li>
-                </ul>
-
-
-            </div>
+          
         </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Generic usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overlap.html">Check time series continuity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../axis.html">Check time axis squareness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://LINK">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../credits.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../log.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc.html">Code documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
-
-        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-
-            <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-            <a href="../../../index.html">nctime</a>
-
-        </nav>
-
-
-        <div class="wy-nav-content">
-            <div class="rst-content">
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">nctime</a>
+        
+      </nav>
 
 
-                <div role="navigation" aria-label="breadcrumbs navigation">
-
-                    <ul class="wy-breadcrumbs">
-
-                        <li><a href="../../../index.html">Docs</a> &raquo;</li>
-
-                        <li><a href="../../index.html">Module code</a> &raquo;</li>
-
-                        <li>nctime.utils.time</li>
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
 
 
-                        <li class="wy-breadcrumbs-aside">
 
 
-                        </li>
-
-                    </ul>
 
 
-                    <hr/>
-                </div>
-                <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-                    <div itemprop="articleBody">
 
-                        <h1>Source code for nctime.utils.time</h1>
-                        <div class="highlight"><pre>
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>nctime.utils.time</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for nctime.utils.time</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
@@ -137,19 +175,14 @@
 
 <span class="kn">import</span> <span class="nn">netCDF4</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">netcdftime</span> <span class="k">import</span> <span
-                                class="n">utime</span><span class="p">,</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">netcdftime</span> <span class="k">import</span> <span class="n">utime</span><span class="p">,</span> <span class="n">datetime</span>
 
-<span class="kn">from</span> <span class="nn">custom_exceptions</span> <span class="k">import</span> <span
-                                class="o">*</span>
+<span class="kn">from</span> <span class="nn">custom_exceptions</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">custom_print</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">misc</span> <span class="k">import</span> <span class="n">ncopen</span>
 
 
-<div class="viewcode-block" id="TimeInit"><a class="viewcode-back"
-                                             href="../../../autodoc.html#nctime.utils.time.TimeInit">[docs]</a><span
-        class="k">class</span> <span class="nc">TimeInit</span><span class="p">(</span><span
-        class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="TimeInit"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.TimeInit">[docs]</a><span class="k">class</span> <span class="nc">TimeInit</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Encapsulates the time properties from first file into processing context.</span>
 <span class="sd">    These properties has to be used as reference for all files into the directory.</span>
@@ -168,49 +201,22 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span
-            class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span
-            class="n">tunits_default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">with</span> <span class="n">ncopen</span><span class="p">(</span><span class="n">ref</span><span
-            class="p">)</span> <span class="k">as</span> <span class="n">nc</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">tunits_default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">ncopen</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span> <span class="k">as</span> <span class="n">nc</span><span class="p">:</span>
             <span class="c1"># Check time variable exists</span>
-            <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span
-            class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span
-            class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="k">raise</span> <span class="n">NoNetCDFVariable</span><span class="p">(</span><span
-            class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">ref</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="n">NoNetCDFVariable</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">ref</span><span class="p">)</span>
             <span class="c1"># Get reference time units</span>
-            <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">not</span> <span
-            class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span
-            class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span
-            class="o">.</span><span class="n">ncattrs</span><span class="p">():</span>
-                <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span
-            class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span
-            class="s1">&#39;time&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tunits</span> <span
-            class="o">=</span> <span class="n">control_time_units</span><span class="p">(</span><span
-            class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span
-            class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span
-            class="p">,</span> <span class="n">tunits_default</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;units&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tunits</span> <span class="o">=</span> <span class="n">control_time_units</span><span class="p">(</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="n">tunits_default</span><span class="p">)</span>
             <span class="c1"># Get reference calendar</span>
-            <span class="k">if</span> <span class="s1">&#39;calendar&#39;</span> <span class="ow">not</span> <span
-            class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span
-            class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span
-            class="o">.</span><span class="n">ncattrs</span><span class="p">():</span>
-                <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span
-            class="s1">&#39;calendar&#39;</span><span class="p">,</span> <span class="n">ref</span><span
-            class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">calendar</span> <span class="o">=</span> <span
-            class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span
-            class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span
-            class="n">calendar</span></div>
+            <span class="k">if</span> <span class="s1">&#39;calendar&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span class="s1">&#39;calendar&#39;</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">calendar</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">calendar</span></div>
 
 
-<div class="viewcode-block" id="control_time_units"><a class="viewcode-back"
-                                                       href="../../../autodoc.html#nctime.utils.time.control_time_units">[docs]</a><span
-        class="k">def</span> <span class="nf">control_time_units</span><span class="p">(</span><span
-        class="n">tunits</span><span class="p">,</span> <span class="n">tunits_default</span><span
-        class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="control_time_units"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.control_time_units">[docs]</a><span class="k">def</span> <span class="nf">control_time_units</span><span class="p">(</span><span class="n">tunits</span><span class="p">,</span> <span class="n">tunits_default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Controls the time units format as at least &quot;days since YYYY-MM-DD&quot;.</span>
 <span class="sd">    The time units can be forced within configuration file using the ``time_units_default`` option.</span>
@@ -221,47 +227,20 @@
 <span class="sd">    :rtype: *str*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">units</span> <span class="o">=</span> <span class="n">tunits</span><span class="o">.</span><span
-            class="n">split</span><span class="p">()</span>
-    <span class="n">units</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span
-            class="o">=</span> <span class="s1">&#39;days&#39;</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">units</span><span
-            class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span
-            class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">))</span> <span
-            class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span
-            class="o">+=</span> <span class="s1">&#39;-</span><span class="si">{}</span><span class="s1">-</span><span
-            class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span
-            class="p">(</span><span class="s1">&#39;01&#39;</span><span class="p">,</span> <span
-            class="s1">&#39;01&#39;</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">units</span><span
-            class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span
-            class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">))</span> <span
-            class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span
-            class="o">+=</span> <span class="s1">&#39;-</span><span class="si">{}</span><span
-            class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span
-            class="s1">&#39;01&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">tunits_default</span> <span class="ow">and</span> <span class="s1">&#39; &#39;</span><span
-            class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">units</span><span
-            class="p">)</span> <span class="o">!=</span> <span class="n">tunits_default</span><span class="p">:</span>
-        <span class="n">Print</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span
-            class="s1">&#39;Invalid time units. Replace &quot;</span><span class="si">{}</span><span class="s1">&quot; by &quot;</span><span
-            class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span
-            class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span
-            class="n">join</span><span class="p">(</span><span class="n">units</span><span class="p">),</span> <span
-            class="n">tunits_default</span><span class="p">))</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="n">tunits</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">units</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;days&#39;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;-</span><span class="si">{}</span><span class="s1">-</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;01&#39;</span><span class="p">,</span> <span class="s1">&#39;01&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">units</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;-</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;01&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">tunits_default</span> <span class="ow">and</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">units</span><span class="p">)</span> <span class="o">!=</span> <span class="n">tunits_default</span><span class="p">:</span>
+        <span class="n">Print</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Invalid time units. Replace &quot;</span><span class="si">{}</span><span class="s1">&quot; by &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">units</span><span class="p">),</span> <span class="n">tunits_default</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">tunits_default</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span
-            class="n">join</span><span class="p">(</span><span class="n">units</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">units</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="convert_time_units"><a class="viewcode-back"
-                                                       href="../../../autodoc.html#nctime.utils.time.convert_time_units">[docs]</a><span
-        class="k">def</span> <span class="nf">convert_time_units</span><span class="p">(</span><span
-        class="n">tunits</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span
-        class="n">frequency</span><span class="p">):</span>
+<div class="viewcode-block" id="convert_time_units"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.convert_time_units">[docs]</a><span class="k">def</span> <span class="nf">convert_time_units</span><span class="p">(</span><span class="n">tunits</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts default time units from file into time units using the MIP frequency.</span>
 <span class="sd">    As en example, for a 3-hourly file, the time units &quot;days since YYYY-MM-DD&quot; becomes</span>
@@ -274,17 +253,10 @@
 <span class="sd">    :rtype: *str*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">tunits</span><span class="o">.</span><span
-            class="n">replace</span><span class="p">(</span><span class="s1">&#39;days&#39;</span><span
-            class="p">,</span> <span class="n">FREQ_INC</span><span class="p">[(</span><span class="n">table</span><span
-            class="p">,</span> <span class="n">frequency</span><span class="p">)][</span><span class="mi">1</span><span
-            class="p">])</span></div>
+    <span class="k">return</span> <span class="n">tunits</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;days&#39;</span><span class="p">,</span> <span class="n">FREQ_INC</span><span class="p">[(</span><span class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span class="p">)][</span><span class="mi">1</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="untruncated_timestamp"><a class="viewcode-back"
-                                                          href="../../../autodoc.html#nctime.utils.time.untruncated_timestamp">[docs]</a><span
-        class="k">def</span> <span class="nf">untruncated_timestamp</span><span class="p">(</span><span class="n">timestamp</span><span
-        class="p">):</span>
+<div class="viewcode-block" id="untruncated_timestamp"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.untruncated_timestamp">[docs]</a><span class="k">def</span> <span class="nf">untruncated_timestamp</span><span class="p">(</span><span class="n">timestamp</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns proper digits for yearly and monthly truncated timestamps.</span>
 <span class="sd">    The dates from filename are filled with the 0 digit to reach 14 digits.</span>
@@ -296,30 +268,17 @@
 <span class="sd">    :rtype: *str*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">timestamp</span><span
-            class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
         <span class="c1"># Start year at january 1st</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">timestamp</span> <span class="o">+</span> <span
-            class="s1">&#39;0101&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">ljust</span><span
-            class="p">(</span><span class="mi">14</span><span class="p">,</span> <span
-            class="s1">&#39;0&#39;</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">timestamp</span><span
-            class="p">)</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">timestamp</span> <span class="o">+</span> <span class="s1">&#39;0101&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
         <span class="c1"># Start month at first day</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">timestamp</span> <span class="o">+</span> <span
-            class="s1">&#39;01&#39;</span><span class="p">)</span><span class="o">.</span><span
-            class="n">ljust</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span
-            class="s1">&#39;0&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">timestamp</span> <span class="o">+</span> <span class="s1">&#39;01&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">timestamp</span><span class="o">.</span><span
-            class="n">ljust</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span
-            class="s1">&#39;0&#39;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">timestamp</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="truncated_timestamp"><a class="viewcode-back"
-                                                        href="../../../autodoc.html#nctime.utils.time.truncated_timestamp">[docs]</a><span
-        class="k">def</span> <span class="nf">truncated_timestamp</span><span class="p">(</span><span
-        class="n">date</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+<div class="viewcode-block" id="truncated_timestamp"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.truncated_timestamp">[docs]</a><span class="k">def</span> <span class="nf">truncated_timestamp</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns proper digits depending on datetime object.</span>
 
@@ -329,18 +288,11 @@
 <span class="sd">    :rtype: *str*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">date2str</span><span
-            class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">iso_format</span><span
-            class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">timestamp</span><span class="p">[:</span><span class="n">length</span><span
-            class="p">]</span></div>
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">date2str</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">iso_format</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">timestamp</span><span class="p">[:</span><span class="n">length</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="num2date"><a class="viewcode-back"
-                                             href="../../../autodoc.html#nctime.utils.time.num2date">[docs]</a><span
-        class="k">def</span> <span class="nf">num2date</span><span class="p">(</span><span
-        class="n">num_axis</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span
-        class="n">calendar</span><span class="p">):</span>
+<div class="viewcode-block" id="num2date"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.num2date">[docs]</a><span class="k">def</span> <span class="nf">num2date</span><span class="p">(</span><span class="n">num_axis</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span class="n">calendar</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A wrapper from ``netCDF4.num2date`` able to handle &quot;years since&quot; and &quot;months since&quot; units.</span>
 <span class="sd">    If time units are not &quot;years since&quot; or &quot;months since&quot;, calls usual ``netcdftime.num2date``.</span>
@@ -352,147 +304,61 @@
 <span class="sd">    :rtype: *array*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">units</span><span class="o">.</span><span
-            class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span
-            class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span
-            class="p">[</span><span class="s1">&#39;years&#39;</span><span class="p">,</span> <span class="s1">&#39;months&#39;</span><span
-            class="p">]:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">units</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;years&#39;</span><span class="p">,</span> <span class="s1">&#39;months&#39;</span><span class="p">]:</span>
         <span class="c1"># If units are not &#39;years&#39; or &#39;months since&#39;, call usual netcdftime.num2date:</span>
-        <span class="k">return</span> <span class="n">netCDF4</span><span class="o">.</span><span
-            class="n">num2date</span><span class="p">(</span><span class="n">num_axis</span><span
-            class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units</span><span
-            class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span
-            class="n">calendar</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">num2date</span><span class="p">(</span><span class="n">num_axis</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="n">calendar</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># Return to time reference with &#39;days since&#39;</span>
-        <span class="n">units_as_days</span> <span class="o">=</span> <span class="s1">&#39;days &#39;</span> <span
-            class="o">+</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span
-            class="n">join</span><span class="p">(</span><span class="n">units</span><span class="o">.</span><span
-            class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span
-            class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="n">units_as_days</span> <span class="o">=</span> <span class="s1">&#39;days &#39;</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">units</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
         <span class="c1"># Convert the time reference &#39;units_as_days&#39; as datetime object</span>
-        <span class="n">start_date</span> <span class="o">=</span> <span class="n">netCDF4</span><span
-            class="o">.</span><span class="n">num2date</span><span class="p">(</span><span class="mf">0.0</span><span
-            class="p">,</span> <span class="n">units</span><span class="o">=</span><span
-            class="n">units_as_days</span><span class="p">,</span> <span class="n">calendar</span><span
-            class="o">=</span><span class="n">calendar</span><span class="p">)</span>
+        <span class="n">start_date</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">num2date</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units_as_days</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="n">calendar</span><span class="p">)</span>
         <span class="c1"># Control num_axis to always get an Numpy array (even with a scalar)</span>
-        <span class="n">num_axis_mod</span> <span class="o">=</span> <span class="n">np</span><span
-            class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span
-            class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">num_axis</span><span
-            class="p">))</span>
-        <span class="k">if</span> <span class="n">units</span><span class="o">.</span><span class="n">split</span><span
-            class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">0</span><span
-            class="p">]</span> <span class="o">==</span> <span class="s1">&#39;years&#39;</span><span class="p">:</span>
+        <span class="n">num_axis_mod</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">num_axis</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">units</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;years&#39;</span><span class="p">:</span>
             <span class="c1"># If units are &#39;years since&#39;</span>
             <span class="c1"># Define the number of maximum and minimum years to build a date axis covering</span>
             <span class="c1"># the whole &#39;num_axis&#39; period</span>
-            <span class="n">max_years</span> <span class="o">=</span> <span class="n">np</span><span
-            class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span
-            class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">num_axis_mod</span><span
-            class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
-            <span class="n">min_years</span> <span class="o">=</span> <span class="n">np</span><span
-            class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">np</span><span
-            class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">num_axis_mod</span><span
-            class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">max_years</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">num_axis_mod</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">min_years</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">num_axis_mod</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
             <span class="c1"># Create a date axis with one year that spans the entire period by year</span>
-            <span class="n">years_axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span
-            class="n">array</span><span class="p">([</span><span class="n">add_year</span><span class="p">(</span><span
-            class="n">start_date</span><span class="p">,</span> <span class="n">years_to_add</span><span
-            class="p">)</span>
-                                   <span class="k">for</span> <span class="n">years_to_add</span> <span
-            class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span
-            class="p">(</span><span class="n">min_years</span><span class="p">,</span> <span class="n">max_years</span> <span
-            class="o">+</span> <span class="mi">2</span><span class="p">)])</span>
+            <span class="n">years_axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">add_year</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">years_to_add</span><span class="p">)</span>
+                                   <span class="k">for</span> <span class="n">years_to_add</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">min_years</span><span class="p">,</span> <span class="n">max_years</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)])</span>
             <span class="c1"># Convert rebuilt years axis as &#39;number of days since&#39;</span>
-            <span class="n">cdftime</span> <span class="o">=</span> <span class="n">utime</span><span class="p">(</span><span
-            class="n">units_as_days</span><span class="p">,</span> <span class="n">calendar</span><span
-            class="o">=</span><span class="n">calendar</span><span class="p">)</span>
-            <span class="n">years_axis_as_days</span> <span class="o">=</span> <span class="n">cdftime</span><span
-            class="o">.</span><span class="n">date2num</span><span class="p">(</span><span
-            class="n">years_axis</span><span class="p">)</span>
+            <span class="n">cdftime</span> <span class="o">=</span> <span class="n">utime</span><span class="p">(</span><span class="n">units_as_days</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="n">calendar</span><span class="p">)</span>
+            <span class="n">years_axis_as_days</span> <span class="o">=</span> <span class="n">cdftime</span><span class="o">.</span><span class="n">date2num</span><span class="p">(</span><span class="n">years_axis</span><span class="p">)</span>
             <span class="c1"># Index of each years</span>
-            <span class="n">yind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span
-            class="n">vectorize</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span
-            class="n">int</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span
-            class="n">floor</span><span class="p">(</span><span class="n">num_axis_mod</span><span class="p">))</span>
+            <span class="n">yind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">num_axis_mod</span><span class="p">))</span>
             <span class="c1"># Rebuilt num_axis as &#39;days since&#39; adding the number of days since referenced time</span>
             <span class="c1"># with an half-increment (num_axis_mod - yind) = 0 or 0.5</span>
-            <span class="n">num_axis_mod_days</span> <span class="o">=</span> <span class="p">(</span><span class="n">years_axis_as_days</span><span
-            class="p">[</span><span class="n">yind</span> <span class="o">-</span> <span class="nb">int</span><span
-            class="p">(</span><span class="n">min_years</span><span class="p">)]</span> <span class="o">+</span>
-                                 <span class="p">(</span><span class="n">num_axis_mod</span> <span
-            class="o">-</span> <span class="n">yind</span><span class="p">)</span> <span class="o">*</span>
-                                 <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span
-            class="p">(</span><span class="n">years_axis_as_days</span><span class="p">)[</span><span
-            class="n">yind</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span
-            class="n">min_years</span><span class="p">)])</span>
+            <span class="n">num_axis_mod_days</span> <span class="o">=</span> <span class="p">(</span><span class="n">years_axis_as_days</span><span class="p">[</span><span class="n">yind</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">min_years</span><span class="p">)]</span> <span class="o">+</span>
+                                 <span class="p">(</span><span class="n">num_axis_mod</span> <span class="o">-</span> <span class="n">yind</span><span class="p">)</span> <span class="o">*</span>
+                                 <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">years_axis_as_days</span><span class="p">)[</span><span class="n">yind</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">min_years</span><span class="p">)])</span>
             <span class="c1"># Convert result as date axis</span>
-            <span class="k">return</span> <span class="n">netCDF4</span><span class="o">.</span><span
-            class="n">num2date</span><span class="p">(</span><span class="n">num_axis_mod_days</span><span
-            class="p">,</span> <span class="n">units</span><span class="o">=</span><span
-            class="n">units_as_days</span><span class="p">,</span> <span class="n">calendar</span><span
-            class="o">=</span><span class="n">calendar</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">units</span><span class="o">.</span><span
-            class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span
-            class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span
-            class="s1">&#39;months&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">num2date</span><span class="p">(</span><span class="n">num_axis_mod_days</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units_as_days</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="n">calendar</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">units</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;months&#39;</span><span class="p">:</span>
             <span class="c1"># If units are &#39;months since&#39;</span>
             <span class="c1"># Define the number of maximum and minimum months to build a date axis covering</span>
             <span class="c1"># the whole &#39;num_axis&#39; period</span>
-            <span class="n">max_months</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span
-            class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span
-            class="n">max</span><span class="p">(</span><span class="n">num_axis_mod</span><span
-            class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
-            <span class="n">min_months</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span
-            class="n">ceil</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span
-            class="n">min</span><span class="p">(</span><span class="n">num_axis_mod</span><span
-            class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">max_months</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">num_axis_mod</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">min_months</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">num_axis_mod</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
             <span class="c1"># Create a date axis with one month that spans the entire period by month</span>
-            <span class="n">months_axis</span> <span class="o">=</span> <span class="n">np</span><span
-            class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">add_month</span><span
-            class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span
-            class="n">months_to_add</span><span class="p">)</span>
-                                    <span class="k">for</span> <span class="n">months_to_add</span> <span
-            class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span
-            class="p">(</span><span class="n">min_months</span><span class="p">,</span> <span
-            class="n">max_months</span> <span class="o">+</span> <span class="mi">12</span><span class="p">)])</span>
+            <span class="n">months_axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">add_month</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">months_to_add</span><span class="p">)</span>
+                                    <span class="k">for</span> <span class="n">months_to_add</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">min_months</span><span class="p">,</span> <span class="n">max_months</span> <span class="o">+</span> <span class="mi">12</span><span class="p">)])</span>
             <span class="c1"># Convert rebuilt months axis as &#39;number of days since&#39;</span>
-            <span class="n">cdftime</span> <span class="o">=</span> <span class="n">utime</span><span class="p">(</span><span
-            class="n">units_as_days</span><span class="p">,</span> <span class="n">calendar</span><span
-            class="o">=</span><span class="n">calendar</span><span class="p">)</span>
-            <span class="n">months_axis_as_days</span> <span class="o">=</span> <span class="n">cdftime</span><span
-            class="o">.</span><span class="n">date2num</span><span class="p">(</span><span
-            class="n">months_axis</span><span class="p">)</span>
+            <span class="n">cdftime</span> <span class="o">=</span> <span class="n">utime</span><span class="p">(</span><span class="n">units_as_days</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="n">calendar</span><span class="p">)</span>
+            <span class="n">months_axis_as_days</span> <span class="o">=</span> <span class="n">cdftime</span><span class="o">.</span><span class="n">date2num</span><span class="p">(</span><span class="n">months_axis</span><span class="p">)</span>
             <span class="c1"># Index of each months</span>
-            <span class="n">mind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span
-            class="n">vectorize</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span
-            class="n">int</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span
-            class="n">floor</span><span class="p">(</span><span class="n">num_axis_mod</span><span class="p">))</span>
+            <span class="n">mind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">num_axis_mod</span><span class="p">))</span>
             <span class="c1"># Rebuilt num_axis as &#39;days since&#39; adding the number of days since referenced time</span>
             <span class="c1"># with an half-increment (num_axis_mod - mind) = 0 or 0.5</span>
-            <span class="n">num_axis_mod_days</span> <span class="o">=</span> <span class="p">(</span><span class="n">months_axis_as_days</span><span
-            class="p">[</span><span class="n">mind</span> <span class="o">-</span> <span class="nb">int</span><span
-            class="p">(</span><span class="n">min_months</span><span class="p">)]</span> <span class="o">+</span>
-                                 <span class="p">(</span><span class="n">num_axis_mod</span> <span
-            class="o">-</span> <span class="n">mind</span><span class="p">)</span> <span class="o">*</span>
-                                 <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span
-            class="p">(</span><span class="n">months_axis_as_days</span><span class="p">)[</span><span
-            class="n">mind</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span
-            class="n">min_months</span><span class="p">)])</span>
+            <span class="n">num_axis_mod_days</span> <span class="o">=</span> <span class="p">(</span><span class="n">months_axis_as_days</span><span class="p">[</span><span class="n">mind</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">min_months</span><span class="p">)]</span> <span class="o">+</span>
+                                 <span class="p">(</span><span class="n">num_axis_mod</span> <span class="o">-</span> <span class="n">mind</span><span class="p">)</span> <span class="o">*</span>
+                                 <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">months_axis_as_days</span><span class="p">)[</span><span class="n">mind</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">min_months</span><span class="p">)])</span>
             <span class="c1"># Convert result as date axis</span>
-            <span class="k">return</span> <span class="n">netCDF4</span><span class="o">.</span><span
-            class="n">num2date</span><span class="p">(</span><span class="n">num_axis_mod_days</span><span
-            class="p">,</span> <span class="n">units</span><span class="o">=</span><span
-            class="n">units_as_days</span><span class="p">,</span> <span class="n">calendar</span><span
-            class="o">=</span><span class="n">calendar</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">num2date</span><span class="p">(</span><span class="n">num_axis_mod_days</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units_as_days</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="n">calendar</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="date2num"><a class="viewcode-back"
-                                             href="../../../autodoc.html#nctime.utils.time.date2num">[docs]</a><span
-        class="k">def</span> <span class="nf">date2num</span><span class="p">(</span><span
-        class="n">date_axis</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span
-        class="n">calendar</span><span class="p">):</span>
+<div class="viewcode-block" id="date2num"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.date2num">[docs]</a><span class="k">def</span> <span class="nf">date2num</span><span class="p">(</span><span class="n">date_axis</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span class="n">calendar</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A wrapper from ``netCDF4.date2num`` able to handle &quot;years since&quot; and &quot;months since&quot; units.</span>
 <span class="sd">    If time units are not &quot;years since&quot; or &quot;months since&quot; calls usual ``netcdftime.date2num``.</span>
@@ -505,139 +371,59 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># date_axis is the date time axis incremented following units (i.e., by years, months, etc).</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">units</span><span class="o">.</span><span
-            class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span
-            class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span
-            class="p">[</span><span class="s1">&#39;years&#39;</span><span class="p">,</span> <span class="s1">&#39;months&#39;</span><span
-            class="p">]:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">units</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;years&#39;</span><span class="p">,</span> <span class="s1">&#39;months&#39;</span><span class="p">]:</span>
         <span class="c1"># If units are not &#39;years&#39; or &#39;months since&#39;, call usual netcdftime.date2num:</span>
-        <span class="k">return</span> <span class="n">netCDF4</span><span class="o">.</span><span
-            class="n">date2num</span><span class="p">(</span><span class="n">date_axis</span><span
-            class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units</span><span
-            class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span
-            class="n">calendar</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">date2num</span><span class="p">(</span><span class="n">date_axis</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="n">calendar</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># Return to time reference with &#39;days since&#39;</span>
-        <span class="n">units_as_days</span> <span class="o">=</span> <span class="s1">&#39;days &#39;</span> <span
-            class="o">+</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span
-            class="n">join</span><span class="p">(</span><span class="n">units</span><span class="o">.</span><span
-            class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span
-            class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="n">units_as_days</span> <span class="o">=</span> <span class="s1">&#39;days &#39;</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">units</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
         <span class="c1"># Convert date axis as number of days since time reference</span>
-        <span class="n">days_axis</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span
-            class="n">date2num</span><span class="p">(</span><span class="n">date_axis</span><span
-            class="p">,</span> <span class="n">units</span><span class="o">=</span><span
-            class="n">units_as_days</span><span class="p">,</span> <span class="n">calendar</span><span
-            class="o">=</span><span class="n">calendar</span><span class="p">)</span>
+        <span class="n">days_axis</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">date2num</span><span class="p">(</span><span class="n">date_axis</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units_as_days</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="n">calendar</span><span class="p">)</span>
         <span class="c1"># Convert the time reference &#39;units_as_days&#39; as datetime object</span>
-        <span class="n">start_date</span> <span class="o">=</span> <span class="n">netCDF4</span><span
-            class="o">.</span><span class="n">num2date</span><span class="p">(</span><span class="mf">0.0</span><span
-            class="p">,</span> <span class="n">units</span><span class="o">=</span><span
-            class="n">units_as_days</span><span class="p">,</span> <span class="n">calendar</span><span
-            class="o">=</span><span class="n">calendar</span><span class="p">)</span>
+        <span class="n">start_date</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">num2date</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units_as_days</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="n">calendar</span><span class="p">)</span>
         <span class="c1"># Create years axis from input date axis</span>
-        <span class="n">years</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span
-            class="n">array</span><span class="p">([</span><span class="n">date</span><span class="o">.</span><span
-            class="n">year</span> <span class="k">for</span> <span class="n">date</span> <span
-            class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span
-            class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span
-            class="p">(</span><span class="n">date_axis</span><span class="p">))])</span>
-        <span class="k">if</span> <span class="n">units</span><span class="o">.</span><span class="n">split</span><span
-            class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">0</span><span
-            class="p">]</span> <span class="o">==</span> <span class="s1">&#39;years&#39;</span><span class="p">:</span>
+        <span class="n">years</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">date</span><span class="o">.</span><span class="n">year</span> <span class="k">for</span> <span class="n">date</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">date_axis</span><span class="p">))])</span>
+        <span class="k">if</span> <span class="n">units</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;years&#39;</span><span class="p">:</span>
             <span class="c1"># If units are &#39;years since&#39;</span>
             <span class="c1"># Define the number of maximum and minimum years to build a date axis covering</span>
             <span class="c1"># the whole &#39;num_axis&#39; period</span>
-            <span class="n">max_years</span> <span class="o">=</span> <span class="n">np</span><span
-            class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">years</span> <span
-            class="o">-</span> <span class="n">start_date</span><span class="o">.</span><span
-            class="n">year</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="n">min_years</span> <span class="o">=</span> <span class="n">np</span><span
-            class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">years</span> <span
-            class="o">-</span> <span class="n">start_date</span><span class="o">.</span><span
-            class="n">year</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">max_years</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">years</span> <span class="o">-</span> <span class="n">start_date</span><span class="o">.</span><span class="n">year</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">min_years</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">years</span> <span class="o">-</span> <span class="n">start_date</span><span class="o">.</span><span class="n">year</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
             <span class="c1"># Create a date axis with one year that spans the entire period by year</span>
-            <span class="n">years_axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span
-            class="n">array</span><span class="p">([</span><span class="n">add_year</span><span class="p">(</span><span
-            class="n">start_date</span><span class="p">,</span> <span class="n">yid</span><span class="p">)</span>
-                                   <span class="k">for</span> <span class="n">yid</span> <span
-            class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span
-            class="p">(</span><span class="n">min_years</span><span class="p">,</span> <span class="n">max_years</span> <span
-            class="o">+</span> <span class="mi">2</span><span class="p">)])</span>
+            <span class="n">years_axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">add_year</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">yid</span><span class="p">)</span>
+                                   <span class="k">for</span> <span class="n">yid</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">min_years</span><span class="p">,</span> <span class="n">max_years</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)])</span>
             <span class="c1"># Convert years axis as number of days since time reference</span>
-            <span class="n">cdftime</span> <span class="o">=</span> <span class="n">utime</span><span class="p">(</span><span
-            class="n">units_as_days</span><span class="p">,</span> <span class="n">calendar</span><span
-            class="o">=</span><span class="n">calendar</span><span class="p">)</span>
-            <span class="n">years_axis_as_days</span> <span class="o">=</span> <span class="n">cdftime</span><span
-            class="o">.</span><span class="n">date2num</span><span class="p">(</span><span
-            class="n">years_axis</span><span class="p">)</span>
+            <span class="n">cdftime</span> <span class="o">=</span> <span class="n">utime</span><span class="p">(</span><span class="n">units_as_days</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="n">calendar</span><span class="p">)</span>
+            <span class="n">years_axis_as_days</span> <span class="o">=</span> <span class="n">cdftime</span><span class="o">.</span><span class="n">date2num</span><span class="p">(</span><span class="n">years_axis</span><span class="p">)</span>
             <span class="c1"># Find closest index for years_axis_as_days in days_axis</span>
-            <span class="n">closest_index</span> <span class="o">=</span> <span class="n">np</span><span
-            class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">years_axis_as_days</span><span
-            class="p">,</span> <span class="n">days_axis</span><span class="p">)</span>
+            <span class="n">closest_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">years_axis_as_days</span><span class="p">,</span> <span class="n">days_axis</span><span class="p">)</span>
             <span class="c1"># Compute the difference between closest value of year axis and start date, in number of days</span>
-            <span class="n">num</span> <span class="o">=</span> <span class="n">days_axis</span> <span
-            class="o">-</span> <span class="n">years_axis_as_days</span><span class="p">[</span><span class="n">closest_index</span><span
-            class="p">]</span>
+            <span class="n">num</span> <span class="o">=</span> <span class="n">days_axis</span> <span class="o">-</span> <span class="n">years_axis_as_days</span><span class="p">[</span><span class="n">closest_index</span><span class="p">]</span>
             <span class="c1"># Number of days of the corresponding closest year</span>
-            <span class="n">den</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span
-            class="n">diff</span><span class="p">(</span><span class="n">years_axis_as_days</span><span
-            class="p">)[</span><span class="n">closest_index</span><span class="p">]</span>
-            <span class="k">return</span> <span class="n">min_years</span> <span class="o">+</span> <span class="n">closest_index</span> <span
-            class="o">+</span> <span class="n">num</span> <span class="o">/</span> <span class="n">den</span>
-        <span class="k">elif</span> <span class="n">units</span><span class="o">.</span><span
-            class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span
-            class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span
-            class="s1">&#39;months&#39;</span><span class="p">:</span>
+            <span class="n">den</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">years_axis_as_days</span><span class="p">)[</span><span class="n">closest_index</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">min_years</span> <span class="o">+</span> <span class="n">closest_index</span> <span class="o">+</span> <span class="n">num</span> <span class="o">/</span> <span class="n">den</span>
+        <span class="k">elif</span> <span class="n">units</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;months&#39;</span><span class="p">:</span>
             <span class="c1"># If units are &#39;months since&#39;</span>
             <span class="c1"># Define the number of maximum and minimum months to build a date axis covering</span>
             <span class="c1"># the whole &#39;num_axis&#39; period</span>
-            <span class="n">max_months</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span
-            class="n">max</span><span class="p">(</span><span class="mi">12</span> <span class="o">*</span> <span
-            class="p">(</span><span class="n">years</span> <span class="o">-</span> <span
-            class="n">start_date</span><span class="o">.</span><span class="n">year</span> <span
-            class="o">+</span> <span class="mi">12</span><span class="p">))</span>
-            <span class="n">min_months</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span
-            class="n">min</span><span class="p">(</span><span class="mi">12</span> <span class="o">*</span> <span
-            class="p">(</span><span class="n">years</span> <span class="o">-</span> <span
-            class="n">start_date</span><span class="o">.</span><span class="n">year</span> <span
-            class="o">-</span> <span class="mi">12</span><span class="p">))</span>
+            <span class="n">max_months</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">12</span> <span class="o">*</span> <span class="p">(</span><span class="n">years</span> <span class="o">-</span> <span class="n">start_date</span><span class="o">.</span><span class="n">year</span> <span class="o">+</span> <span class="mi">12</span><span class="p">))</span>
+            <span class="n">min_months</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">12</span> <span class="o">*</span> <span class="p">(</span><span class="n">years</span> <span class="o">-</span> <span class="n">start_date</span><span class="o">.</span><span class="n">year</span> <span class="o">-</span> <span class="mi">12</span><span class="p">))</span>
             <span class="c1"># Create a date axis with one month that spans the entire period by month</span>
-            <span class="n">months_axis</span> <span class="o">=</span> <span class="n">np</span><span
-            class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">add_month</span><span
-            class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">mid</span><span
-            class="p">)</span>
-                                    <span class="k">for</span> <span class="n">mid</span> <span
-            class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span
-            class="p">(</span><span class="n">min_months</span><span class="p">,</span> <span
-            class="n">max_months</span><span class="p">)])</span>
+            <span class="n">months_axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">add_month</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">mid</span><span class="p">)</span>
+                                    <span class="k">for</span> <span class="n">mid</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">min_months</span><span class="p">,</span> <span class="n">max_months</span><span class="p">)])</span>
             <span class="c1"># Convert months axis as number of days since time reference</span>
-            <span class="n">cdftime</span> <span class="o">=</span> <span class="n">utime</span><span class="p">(</span><span
-            class="n">units_as_days</span><span class="p">,</span> <span class="n">calendar</span><span
-            class="o">=</span><span class="n">calendar</span><span class="p">)</span>
-            <span class="n">months_axis_as_days</span> <span class="o">=</span> <span class="n">cdftime</span><span
-            class="o">.</span><span class="n">date2num</span><span class="p">(</span><span
-            class="n">months_axis</span><span class="p">)</span>
+            <span class="n">cdftime</span> <span class="o">=</span> <span class="n">utime</span><span class="p">(</span><span class="n">units_as_days</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="n">calendar</span><span class="p">)</span>
+            <span class="n">months_axis_as_days</span> <span class="o">=</span> <span class="n">cdftime</span><span class="o">.</span><span class="n">date2num</span><span class="p">(</span><span class="n">months_axis</span><span class="p">)</span>
             <span class="c1"># Find closest index for months_axis_as_days in days_axis</span>
-            <span class="n">closest_index</span> <span class="o">=</span> <span class="n">np</span><span
-            class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">months_axis_as_days</span><span
-            class="p">,</span> <span class="n">days_axis</span><span class="p">)</span>
+            <span class="n">closest_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">months_axis_as_days</span><span class="p">,</span> <span class="n">days_axis</span><span class="p">)</span>
             <span class="c1"># Compute the difference between closest value of months axis and start date, in number of days</span>
-            <span class="n">num</span> <span class="o">=</span> <span class="n">days_axis</span> <span
-            class="o">-</span> <span class="n">months_axis_as_days</span><span class="p">[</span><span class="n">closest_index</span><span
-            class="p">]</span>
+            <span class="n">num</span> <span class="o">=</span> <span class="n">days_axis</span> <span class="o">-</span> <span class="n">months_axis_as_days</span><span class="p">[</span><span class="n">closest_index</span><span class="p">]</span>
             <span class="c1"># Number of days of the corresponding closest month</span>
-            <span class="n">den</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span
-            class="n">diff</span><span class="p">(</span><span class="n">months_axis_as_days</span><span
-            class="p">)[</span><span class="n">closest_index</span><span class="p">]</span>
-            <span class="k">return</span> <span class="n">min_months</span> <span class="o">+</span> <span class="n">closest_index</span> <span
-            class="o">+</span> <span class="n">num</span> <span class="o">/</span> <span class="n">den</span></div>
+            <span class="n">den</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">months_axis_as_days</span><span class="p">)[</span><span class="n">closest_index</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">min_months</span> <span class="o">+</span> <span class="n">closest_index</span> <span class="o">+</span> <span class="n">num</span> <span class="o">/</span> <span class="n">den</span></div>
 
 
-<div class="viewcode-block" id="add_month"><a class="viewcode-back"
-                                              href="../../../autodoc.html#nctime.utils.time.add_month">[docs]</a><span
-        class="k">def</span> <span class="nf">add_month</span><span class="p">(</span><span class="n">date</span><span
-        class="p">,</span> <span class="n">months_to_add</span><span class="p">):</span>
+<div class="viewcode-block" id="add_month"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.add_month">[docs]</a><span class="k">def</span> <span class="nf">add_month</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">months_to_add</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Finds the next month from date.</span>
 
@@ -647,44 +433,20 @@
 <span class="sd">    :rtype: *netcdftime.datetime*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">years_to_add</span> <span class="o">=</span> <span class="nb">int</span><span
-            class="p">((</span><span class="n">date</span><span class="o">.</span><span class="n">month</span> <span
-            class="o">+</span> <span class="n">months_to_add</span> <span class="o">-</span> <span
-            class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span
-            class="n">date</span><span class="o">.</span><span class="n">month</span> <span class="o">+</span> <span
-            class="n">months_to_add</span> <span class="o">-</span> <span class="mi">1</span><span
-            class="p">,</span> <span class="mi">12</span><span class="p">)</span> <span class="o">-</span> <span
-            class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">12</span><span
-            class="p">)</span>
-    <span class="n">new_month</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span
-            class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span
-            class="n">date</span><span class="o">.</span><span class="n">month</span> <span class="o">+</span> <span
-            class="n">months_to_add</span> <span class="o">-</span> <span class="mi">1</span><span
-            class="p">,</span> <span class="mi">12</span><span class="p">))</span> <span class="o">+</span> <span
-            class="mi">1</span>
-    <span class="n">new_year</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span
-            class="n">year</span> <span class="o">+</span> <span class="n">years_to_add</span>
-    <span class="n">date_next</span> <span class="o">=</span> <span class="n">datetime</span><span
-            class="p">(</span><span class="n">year</span><span class="o">=</span><span class="n">new_year</span><span
-            class="p">,</span>
-                         <span class="n">month</span><span class="o">=</span><span class="n">new_month</span><span
-            class="p">,</span>
-                         <span class="n">day</span><span class="o">=</span><span class="n">date</span><span
-            class="o">.</span><span class="n">day</span><span class="p">,</span>
-                         <span class="n">hour</span><span class="o">=</span><span class="n">date</span><span
-            class="o">.</span><span class="n">hour</span><span class="p">,</span>
-                         <span class="n">minute</span><span class="o">=</span><span class="n">date</span><span
-            class="o">.</span><span class="n">minute</span><span class="p">,</span>
-                         <span class="n">second</span><span class="o">=</span><span class="n">date</span><span
-            class="o">.</span><span class="n">second</span><span class="p">)</span>
+    <span class="n">years_to_add</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">date</span><span class="o">.</span><span class="n">month</span> <span class="o">+</span> <span class="n">months_to_add</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">month</span> <span class="o">+</span> <span class="n">months_to_add</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">12</span><span class="p">)</span>
+    <span class="n">new_month</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">month</span> <span class="o">+</span> <span class="n">months_to_add</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">new_year</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">year</span> <span class="o">+</span> <span class="n">years_to_add</span>
+    <span class="n">date_next</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="n">new_year</span><span class="p">,</span>
+                         <span class="n">month</span><span class="o">=</span><span class="n">new_month</span><span class="p">,</span>
+                         <span class="n">day</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">day</span><span class="p">,</span>
+                         <span class="n">hour</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">hour</span><span class="p">,</span>
+                         <span class="n">minute</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">minute</span><span class="p">,</span>
+                         <span class="n">second</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">second</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">date_next</span></div>
 
 
-<div class="viewcode-block" id="add_year"><a class="viewcode-back"
-                                             href="../../../autodoc.html#nctime.utils.time.add_year">[docs]</a><span
-        class="k">def</span> <span class="nf">add_year</span><span class="p">(</span><span class="n">date</span><span
-        class="p">,</span> <span class="n">years_to_add</span><span class="p">):</span>
+<div class="viewcode-block" id="add_year"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.add_year">[docs]</a><span class="k">def</span> <span class="nf">add_year</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">years_to_add</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Finds the next year from date.</span>
 
@@ -694,32 +456,17 @@
 <span class="sd">    :rtype: *netcdftime.datetime*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">new_year</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span
-            class="n">year</span> <span class="o">+</span> <span class="n">years_to_add</span>
-    <span class="n">date_next</span> <span class="o">=</span> <span class="n">datetime</span><span
-            class="p">(</span><span class="n">year</span><span class="o">=</span><span class="n">new_year</span><span
-            class="p">,</span>
-                         <span class="n">month</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span
-            class="n">month</span><span class="p">,</span>
-                         <span class="n">day</span><span class="o">=</span><span class="n">date</span><span
-            class="o">.</span><span class="n">day</span><span class="p">,</span>
-                         <span class="n">hour</span><span class="o">=</span><span class="n">date</span><span
-            class="o">.</span><span class="n">hour</span><span class="p">,</span>
-                         <span class="n">minute</span><span class="o">=</span><span class="n">date</span><span
-            class="o">.</span><span class="n">minute</span><span class="p">,</span>
-                         <span class="n">second</span><span class="o">=</span><span class="n">date</span><span
-            class="o">.</span><span class="n">second</span><span class="p">)</span>
+    <span class="n">new_year</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">year</span> <span class="o">+</span> <span class="n">years_to_add</span>
+    <span class="n">date_next</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="n">new_year</span><span class="p">,</span>
+                         <span class="n">month</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">month</span><span class="p">,</span>
+                         <span class="n">day</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">day</span><span class="p">,</span>
+                         <span class="n">hour</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">hour</span><span class="p">,</span>
+                         <span class="n">minute</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">minute</span><span class="p">,</span>
+                         <span class="n">second</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">second</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">date_next</span></div>
 
 
-<div class="viewcode-block" id="get_start_end_dates_from_filename"><a class="viewcode-back"
-                                                                      href="../../../autodoc.html#nctime.utils.time.get_start_end_dates_from_filename">[docs]</a><span
-        class="k">def</span> <span class="nf">get_start_end_dates_from_filename</span><span class="p">(</span><span
-        class="n">filename</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span
-        class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span
-        class="n">calendar</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span
-        class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span
-        class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_start_end_dates_from_filename"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.get_start_end_dates_from_filename">[docs]</a><span class="k">def</span> <span class="nf">get_start_end_dates_from_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">calendar</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns datetime objects for start and end dates from the filename.</span>
 <span class="sd">    To rebuild a proper time axis, the dates from filename are expected to set the first</span>
@@ -738,95 +485,41 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">dates</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">inputs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;period_start&#39;</span><span
-            class="p">:</span> <span class="n">start</span><span class="p">,</span> <span class="s1">&#39;period_end&#39;</span><span
-            class="p">:</span> <span class="n">end</span><span class="p">}</span>
-    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span
-            class="s1">&#39;period_start&#39;</span><span class="p">,</span> <span
-            class="s1">&#39;period_end&#39;</span><span class="p">]:</span>
-        <span class="n">date</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span
-            class="n">key</span><span class="p">]</span> <span class="k">if</span> <span class="n">inputs</span><span
-            class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">else</span> <span
-            class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span
-            class="n">pattern</span><span class="p">,</span> <span class="n">filename</span><span
-            class="p">)</span><span class="o">.</span><span class="n">groupdict</span><span class="p">()[</span><span
-            class="n">key</span><span class="p">]</span>
-        <span class="n">digits</span> <span class="o">=</span> <span class="n">untruncated_timestamp</span><span
-            class="p">(</span><span class="n">date</span><span class="p">)</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;period_start&#39;</span><span class="p">:</span> <span class="n">start</span><span class="p">,</span> <span class="s1">&#39;period_end&#39;</span><span class="p">:</span> <span class="n">end</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;period_start&#39;</span><span class="p">,</span> <span class="s1">&#39;period_end&#39;</span><span class="p">]:</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">if</span> <span class="n">inputs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">else</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">groupdict</span><span class="p">()[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">digits</span> <span class="o">=</span> <span class="n">untruncated_timestamp</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
         <span class="c1"># Convert string digits to %Y-%m-%d %H:%M:%S format</span>
-        <span class="n">date_as_since</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span
-            class="n">join</span><span class="p">([</span><span class="s1">&#39;&#39;</span><span
-            class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">triple</span><span
-            class="p">)</span> <span class="k">for</span> <span class="n">triple</span> <span class="ow">in</span>
-                                 <span class="nb">zip</span><span class="p">(</span><span class="n">digits</span><span
-            class="p">[::</span><span class="mi">2</span><span class="p">],</span> <span class="n">digits</span><span
-            class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span
-            class="p">],</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span
-            class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span
-            class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span
-            class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span
-            class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">])])[:</span><span
-            class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">date_as_since</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">triple</span><span class="p">)</span> <span class="k">for</span> <span class="n">triple</span> <span class="ow">in</span>
+                                 <span class="nb">zip</span><span class="p">(</span><span class="n">digits</span><span class="p">[::</span><span class="mi">2</span><span class="p">],</span> <span class="n">digits</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">])])[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="c1"># Use num2date to create netCDF4 datetime objects</span>
-        <span class="n">dates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span
-            class="n">num2date</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span
-            class="n">units</span><span class="o">=</span><span class="s1">&#39;days since &#39;</span> <span class="o">+</span> <span
-            class="n">date_as_since</span><span class="p">,</span> <span class="n">calendar</span><span
-            class="o">=</span><span class="n">calendar</span><span class="p">))</span>
+        <span class="n">dates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">num2date</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;days since &#39;</span> <span class="o">+</span> <span class="n">date_as_since</span><span class="p">,</span> <span class="n">calendar</span><span class="o">=</span><span class="n">calendar</span><span class="p">))</span>
     <span class="c1"># Append date next to the end date for overlap diagnostic</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">dates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span
-            class="n">num2date</span><span class="p">(</span><span class="n">time_inc</span><span
-            class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span
-            class="p">)[</span><span class="mi">0</span><span class="p">],</span>
-                              <span class="n">units</span><span class="o">=</span><span class="n">time_inc</span><span
-            class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span
-            class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span
-            class="s1">&#39; since &#39;</span> <span class="o">+</span> <span class="n">date_as_since</span><span
-            class="p">,</span>
-                              <span class="n">calendar</span><span class="o">=</span><span
-            class="n">calendar</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">dates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">num2date</span><span class="p">(</span><span class="n">time_inc</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                              <span class="n">units</span><span class="o">=</span><span class="n">time_inc</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; since &#39;</span> <span class="o">+</span> <span class="n">date_as_since</span><span class="p">,</span>
+                              <span class="n">calendar</span><span class="o">=</span><span class="n">calendar</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-        <span class="n">dates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span
-            class="n">num2date</span><span class="p">(</span><span class="n">time_inc</span><span
-            class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span
-            class="p">)[</span><span class="mi">0</span><span class="p">],</span>
-                              <span class="n">units</span><span class="o">=</span><span class="n">time_inc</span><span
-            class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span
-            class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span
-            class="s1">&#39; since &#39;</span> <span class="o">+</span> <span class="n">date_as_since</span><span
-            class="p">,</span>
-                              <span class="n">calendar</span><span class="o">=</span><span
-            class="n">calendar</span><span class="p">))</span>
+        <span class="n">dates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">num2date</span><span class="p">(</span><span class="n">time_inc</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                              <span class="n">units</span><span class="o">=</span><span class="n">time_inc</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; since &#39;</span> <span class="o">+</span> <span class="n">date_as_since</span><span class="p">,</span>
+                              <span class="n">calendar</span><span class="o">=</span><span class="n">calendar</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">dates</span></div>
 
 
-<div class="viewcode-block" id="get_last_timestep"><a class="viewcode-back"
-                                                      href="../../../autodoc.html#nctime.utils.time.get_last_timestep">[docs]</a><span
-        class="k">def</span> <span class="nf">get_last_timestep</span><span class="p">(</span><span class="n">ffp</span><span
-        class="p">):</span>
+<div class="viewcode-block" id="get_last_timestep"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.get_last_timestep">[docs]</a><span class="k">def</span> <span class="nf">get_last_timestep</span><span class="p">(</span><span class="n">ffp</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns last time steps from time axis of a NetCDF file.</span>
 <span class="sd">    :param str ffp: The file full path</span>
 <span class="sd">    :returns: The last timestep</span>
 <span class="sd">    :rtype: *int*</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">with</span> <span class="n">ncopen</span><span class="p">(</span><span class="n">ffp</span><span
-            class="p">)</span> <span class="k">as</span> <span class="n">nc</span><span class="p">:</span>
-        <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span
-            class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span
-            class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="n">NoNetCDFVariable</span><span class="p">(</span><span
-            class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">ffp</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">nc</span><span class="o">.</span><span
-            class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span
-            class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+    <span class="k">with</span> <span class="n">ncopen</span><span class="p">(</span><span class="n">ffp</span><span class="p">)</span> <span class="k">as</span> <span class="n">nc</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">NoNetCDFVariable</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">ffp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="get_next_timestep"><a class="viewcode-back"
-                                                      href="../../../autodoc.html#nctime.utils.time.get_next_timestep">[docs]</a><span
-        class="k">def</span> <span class="nf">get_next_timestep</span><span class="p">(</span><span class="n">ffp</span><span
-        class="p">,</span> <span class="n">current_timestep</span><span class="p">):</span>
+<div class="viewcode-block" id="get_next_timestep"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.get_next_timestep">[docs]</a><span class="k">def</span> <span class="nf">get_next_timestep</span><span class="p">(</span><span class="n">ffp</span><span class="p">,</span> <span class="n">current_timestep</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns next time step from time axis given the current one.</span>
 
@@ -836,43 +529,24 @@
 <span class="sd">    :rtype: *int*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">with</span> <span class="n">ncopen</span><span class="p">(</span><span class="n">ffp</span><span
-            class="p">)</span> <span class="k">as</span> <span class="n">nc</span><span class="p">:</span>
-        <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span
-            class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span
-            class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="n">NoNetCDFVariable</span><span class="p">(</span><span
-            class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">ffp</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">ncopen</span><span class="p">(</span><span class="n">ffp</span><span class="p">)</span> <span class="k">as</span> <span class="n">nc</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">NoNetCDFVariable</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">ffp</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">time</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span
-            class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span
-            class="p">][:]</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][:]</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span
-            class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span
-            class="p">(</span><span class="n">time</span> <span class="o">==</span> <span
-            class="n">current_timestep</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span
-            class="mi">0</span><span class="p">])</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">time</span> <span class="o">==</span> <span class="n">current_timestep</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span
-            class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span
-            class="p">(</span><span class="n">time</span> <span class="o">==</span> <span class="nb">int</span><span
-            class="p">(</span><span class="n">current_timestep</span><span class="p">))[</span><span class="mi">0</span><span
-            class="p">][</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">time</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">current_timestep</span><span class="p">))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
             <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">NetCDFTimeStepNotFound</span><span class="p">(</span><span
-            class="n">current_timestep</span><span class="p">,</span> <span class="n">ffp</span><span class="p">)</span>
-        <span class="n">next_timestep</span> <span class="o">=</span> <span class="n">time</span><span
-            class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span
-            class="p">]</span>
+                <span class="k">raise</span> <span class="n">NetCDFTimeStepNotFound</span><span class="p">(</span><span class="n">current_timestep</span><span class="p">,</span> <span class="n">ffp</span><span class="p">)</span>
+        <span class="n">next_timestep</span> <span class="o">=</span> <span class="n">time</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
         <span class="k">del</span> <span class="n">time</span>
         <span class="k">return</span> <span class="n">next_timestep</span></div>
 
 
-<div class="viewcode-block" id="trunc"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.trunc">[docs]</a><span
-        class="k">def</span> <span class="nf">trunc</span><span class="p">(</span><span class="n">array</span><span
-        class="p">,</span> <span class="n">ndecimals</span><span class="p">):</span>
+<div class="viewcode-block" id="trunc"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.trunc">[docs]</a><span class="k">def</span> <span class="nf">trunc</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">ndecimals</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Truncates each item of a Numpy array to the decimal ndecimals</span>
 
@@ -882,17 +556,11 @@
 <span class="sd">    :rtype: *numpy.array*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">decade</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span
-            class="n">ndecimals</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">trunc</span><span
-            class="p">(</span><span class="n">array</span> <span class="o">*</span> <span class="n">decade</span><span
-            class="p">)</span> <span class="o">/</span> <span class="n">decade</span></div>
+    <span class="n">decade</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="n">ndecimals</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">trunc</span><span class="p">(</span><span class="n">array</span> <span class="o">*</span> <span class="n">decade</span><span class="p">)</span> <span class="o">/</span> <span class="n">decade</span></div>
 
 
-<div class="viewcode-block" id="time_inc"><a class="viewcode-back"
-                                             href="../../../autodoc.html#nctime.utils.time.time_inc">[docs]</a><span
-        class="k">def</span> <span class="nf">time_inc</span><span class="p">(</span><span class="n">table</span><span
-        class="p">,</span> <span class="n">frequency</span><span class="p">):</span>
+<div class="viewcode-block" id="time_inc"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.time_inc">[docs]</a><span class="k">def</span> <span class="nf">time_inc</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the time incrementation and time units depending on the MIP frequency and table.</span>
 
@@ -902,27 +570,14 @@
 <span class="sd">    :rtype: *list*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">table</span> <span class="ow">not</span> <span class="ow">in</span> <span
-            class="nb">set</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span
-            class="o">*</span><span class="n">FREQ_INC</span><span class="o">.</span><span class="n">keys</span><span
-            class="p">())[</span><span class="mi">0</span><span class="p">]):</span>
-        <span class="k">raise</span> <span class="n">InvalidTable</span><span class="p">(</span><span
-            class="n">table</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">frequency</span> <span class="ow">not</span> <span
-            class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="nb">zip</span><span
-            class="p">(</span><span class="o">*</span><span class="n">FREQ_INC</span><span class="o">.</span><span
-            class="n">keys</span><span class="p">())[</span><span class="mi">1</span><span class="p">]):</span>
-        <span class="k">raise</span> <span class="n">InvalidFrequency</span><span class="p">(</span><span class="n">frequency</span><span
-            class="p">)</span>
-    <span class="k">return</span> <span class="n">FREQ_INC</span><span class="p">[</span><span
-            class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span
-            class="p">]</span></div>
+    <span class="k">if</span> <span class="n">table</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">FREQ_INC</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="k">raise</span> <span class="n">InvalidTable</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">frequency</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">FREQ_INC</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">raise</span> <span class="n">InvalidFrequency</span><span class="p">(</span><span class="n">frequency</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">FREQ_INC</span><span class="p">[</span><span class="n">table</span><span class="p">,</span> <span class="n">frequency</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="dates2int"><a class="viewcode-back"
-                                              href="../../../autodoc.html#nctime.utils.time.dates2int">[docs]</a><span
-        class="k">def</span> <span class="nf">dates2int</span><span class="p">(</span><span class="n">dates</span><span
-        class="p">):</span>
+<div class="viewcode-block" id="dates2int"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.dates2int">[docs]</a><span class="k">def</span> <span class="nf">dates2int</span><span class="p">(</span><span class="n">dates</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts (a list of) dates as integers.</span>
 
@@ -931,27 +586,13 @@
 <span class="sd">    :rtype: *list* or *int*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span
-            class="n">dates</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span
-            class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span
-            class="n">dates</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span
-            class="n">ndarray</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span
-            class="nb">int</span><span class="p">,</span> <span class="n">dates2str</span><span class="p">(</span><span
-            class="n">dates</span><span class="p">,</span> <span class="n">iso_format</span><span
-            class="o">=</span><span class="kc">False</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">dates2str</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="n">iso_format</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span
-            class="n">dates2str</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span
-            class="n">iso_format</span><span class="o">=</span><span class="kc">False</span><span
-            class="p">))</span></div>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">dates2str</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="n">iso_format</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="dates2str"><a class="viewcode-back"
-                                              href="../../../autodoc.html#nctime.utils.time.dates2str">[docs]</a><span
-        class="k">def</span> <span class="nf">dates2str</span><span class="p">(</span><span class="n">dates</span><span
-        class="p">,</span> <span class="n">iso_format</span><span class="o">=</span><span class="kc">True</span><span
-        class="p">):</span>
+<div class="viewcode-block" id="dates2str"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.dates2str">[docs]</a><span class="k">def</span> <span class="nf">dates2str</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="n">iso_format</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts (a list of) dates in format: %Y%m%d %H:%M:%s.</span>
 
@@ -961,26 +602,13 @@
 <span class="sd">    :rtype: *list* or *str*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span
-            class="n">dates</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span
-            class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span
-            class="n">dates</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span
-            class="n">ndarray</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">date2str</span><span
-            class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">iso_format</span><span
-            class="p">)</span> <span class="k">for</span> <span class="n">date</span> <span class="ow">in</span> <span
-            class="n">dates</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">date2str</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">iso_format</span><span class="p">)</span> <span class="k">for</span> <span class="n">date</span> <span class="ow">in</span> <span class="n">dates</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">date2str</span><span class="p">(</span><span
-            class="n">dates</span><span class="p">,</span> <span class="n">iso_format</span><span
-            class="p">)</span></div>
+        <span class="k">return</span> <span class="n">date2str</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="n">iso_format</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="date2str"><a class="viewcode-back"
-                                             href="../../../autodoc.html#nctime.utils.time.date2str">[docs]</a><span
-        class="k">def</span> <span class="nf">date2str</span><span class="p">(</span><span class="n">date</span><span
-        class="p">,</span> <span class="n">iso_format</span><span class="o">=</span><span class="kc">True</span><span
-        class="p">):</span>
+<div class="viewcode-block" id="date2str"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.date2str">[docs]</a><span class="k">def</span> <span class="nf">date2str</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">iso_format</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts date in format: %Y%m%d %H:%M:%s.</span>
 
@@ -991,44 +619,22 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">iso_format</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0:04d}</span><span
-            class="s1">-</span><span class="si">{1:02d}</span><span class="s1">-</span><span
-            class="si">{2:02d}</span><span class="s1">T</span><span class="si">{3:02d}</span><span
-            class="s1">:</span><span class="si">{4:02d}</span><span class="s1">:</span><span
-            class="si">{5:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span
-            class="n">format</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span
-            class="n">year</span><span class="p">,</span>
-                                                                        <span class="n">date</span><span
-            class="o">.</span><span class="n">month</span><span class="p">,</span>
-                                                                        <span class="n">date</span><span
-            class="o">.</span><span class="n">day</span><span class="p">,</span>
-                                                                        <span class="n">date</span><span
-            class="o">.</span><span class="n">hour</span><span class="p">,</span>
-                                                                        <span class="n">date</span><span
-            class="o">.</span><span class="n">minute</span><span class="p">,</span>
-                                                                        <span class="n">date</span><span
-            class="o">.</span><span class="n">second</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0:04d}</span><span class="s1">-</span><span class="si">{1:02d}</span><span class="s1">-</span><span class="si">{2:02d}</span><span class="s1">T</span><span class="si">{3:02d}</span><span class="s1">:</span><span class="si">{4:02d}</span><span class="s1">:</span><span class="si">{5:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
+                                                                        <span class="n">date</span><span class="o">.</span><span class="n">month</span><span class="p">,</span>
+                                                                        <span class="n">date</span><span class="o">.</span><span class="n">day</span><span class="p">,</span>
+                                                                        <span class="n">date</span><span class="o">.</span><span class="n">hour</span><span class="p">,</span>
+                                                                        <span class="n">date</span><span class="o">.</span><span class="n">minute</span><span class="p">,</span>
+                                                                        <span class="n">date</span><span class="o">.</span><span class="n">second</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0:04d}{1:02d}{2:02d}{3:02d}{4:02d}{5:02d}</span><span
-            class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span
-            class="n">date</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
-                                                                   <span class="n">date</span><span
-            class="o">.</span><span class="n">month</span><span class="p">,</span>
-                                                                   <span class="n">date</span><span
-            class="o">.</span><span class="n">day</span><span class="p">,</span>
-                                                                   <span class="n">date</span><span
-            class="o">.</span><span class="n">hour</span><span class="p">,</span>
-                                                                   <span class="n">date</span><span
-            class="o">.</span><span class="n">minute</span><span class="p">,</span>
-                                                                   <span class="n">date</span><span
-            class="o">.</span><span class="n">second</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0:04d}{1:02d}{2:02d}{3:02d}{4:02d}{5:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
+                                                                   <span class="n">date</span><span class="o">.</span><span class="n">month</span><span class="p">,</span>
+                                                                   <span class="n">date</span><span class="o">.</span><span class="n">day</span><span class="p">,</span>
+                                                                   <span class="n">date</span><span class="o">.</span><span class="n">hour</span><span class="p">,</span>
+                                                                   <span class="n">date</span><span class="o">.</span><span class="n">minute</span><span class="p">,</span>
+                                                                   <span class="n">date</span><span class="o">.</span><span class="n">second</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="str2dates"><a class="viewcode-back"
-                                              href="../../../autodoc.html#nctime.utils.time.str2dates">[docs]</a><span
-        class="k">def</span> <span class="nf">str2dates</span><span class="p">(</span><span
-        class="n">strings</span><span class="p">,</span> <span class="n">iso_format</span><span class="o">=</span><span
-        class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="str2dates"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.str2dates">[docs]</a><span class="k">def</span> <span class="nf">str2dates</span><span class="p">(</span><span class="n">strings</span><span class="p">,</span> <span class="n">iso_format</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts (a list of) string in format: %Y%m%d %H:%M:%s into datetime objects.</span>
 
@@ -1038,26 +644,13 @@
 <span class="sd">    :rtype: *list* or *str*</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span
-            class="n">strings</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span
-            class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span
-            class="n">strings</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span
-            class="n">ndarray</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">str2date</span><span
-            class="p">(</span><span class="n">string</span><span class="p">,</span> <span
-            class="n">iso_format</span><span class="p">)</span> <span class="k">for</span> <span class="n">string</span> <span
-            class="ow">in</span> <span class="n">strings</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">strings</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">strings</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">str2date</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">iso_format</span><span class="p">)</span> <span class="k">for</span> <span class="n">string</span> <span class="ow">in</span> <span class="n">strings</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">str2date</span><span class="p">(</span><span
-            class="n">strings</span><span class="p">,</span> <span class="n">iso_format</span><span
-            class="p">)</span></div>
+        <span class="k">return</span> <span class="n">str2date</span><span class="p">(</span><span class="n">strings</span><span class="p">,</span> <span class="n">iso_format</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="str2date"><a class="viewcode-back"
-                                             href="../../../autodoc.html#nctime.utils.time.str2date">[docs]</a><span
-        class="k">def</span> <span class="nf">str2date</span><span class="p">(</span><span class="n">string</span><span
-        class="p">,</span> <span class="n">iso_format</span><span class="o">=</span><span class="kc">True</span><span
-        class="p">):</span>
+<div class="viewcode-block" id="str2date"><a class="viewcode-back" href="../../../autodoc.html#nctime.utils.time.str2date">[docs]</a><span class="k">def</span> <span class="nf">str2date</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">iso_format</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts string date format: %Y%m%d %H:%M:%s into datetime object</span>
 
@@ -1068,74 +661,71 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">iso_format</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">dt</span><span class="o">.</span><span
-            class="n">strptime</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span
-            class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">T%H:%M:%S&quot;</span><span
-            class="p">)</span>
+        <span class="k">return</span> <span class="n">dt</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">T%H:%M:%S&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">dt</span><span class="o">.</span><span
-            class="n">strptime</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span
-            class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H%M%S&quot;</span><span
-            class="p">)</span></div>
-</pre>
-                        </div>
+        <span class="k">return</span> <span class="n">dt</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H%M%S&quot;</span><span class="p">)</span></div>
+</pre></div>
 
-                    </div>
-                    <div class="articleComments">
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
 
-                    </div>
-                </div>
-                <footer>
+  <hr/>
 
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Levavasseur, G..
 
-                    <hr/>
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
-                    <div role="contentinfo">
-                        <p>
-                            &copy; Copyright 2015, Levavasseur, G..
+</footer>
 
-                        </p>
-                    </div>
-                    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a
-                        href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a
-                        href="https://readthedocs.org">Read the Docs</a>.
-
-                </footer>
-
-            </div>
         </div>
+      </div>
 
     </section>
 
-</div>
+  </div>
+  
 
 
-<script type="text/javascript">
+  
+
+    <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'4.5.4',
+            VERSION:'4.6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
             SOURCELINK_SUFFIX: '.txt'
         };
+    </script>
+      <script type="text/javascript" src="../../../static/jquery.js"></script>
+      <script type="text/javascript" src="../../../static/underscore.js"></script>
+      <script type="text/javascript" src="../../../static/doctools.js"></script>
 
-</script>
-<script type="text/javascript" src="../../../static/jquery.js"></script>
-<script type="text/javascript" src="../../../static/underscore.js"></script>
-<script type="text/javascript" src="../../../static/doctools.js"></script>
+  
 
+  
+  
+    <script type="text/javascript" src="../../../static/js/theme.js"></script>
+  
 
-<script type="text/javascript" src="../../../static/js/theme.js"></script>
-
-
-<script type="text/javascript">
+  
+  
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.StickyNav.enable();
       });
-
-</script>
-
+  </script>
+   
 
 </body>
 </html>

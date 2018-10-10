@@ -1,131 +1,169 @@
+
+
 <!DOCTYPE html>
-<!--[if IE 8]>
-<html class="no-js lt-ie9" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!-->
-<html class="no-js" lang="en"> <!--<![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
-    <meta charset="utf-8">
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>nctime.overlap.context &mdash; nctime 4.6.0 documentation</title>
+  
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  
 
-    <title>nctime.overlap.context &mdash; nctime 4.5.4 documentation</title>
+  
 
+  
+  
+    
 
-    <link rel="stylesheet" href="../../../static/css/theme.css" type="text/css"/>
+  
 
+  
+  
+    <link rel="stylesheet" href="../../../static/css/theme.css" type="text/css" />
+  
 
-    <link rel="index" title="Index"
-          href="../../../genindex.html"/>
-    <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 4.5.4 documentation" href="../../../index.html"/>
-    <link rel="up" title="Module code" href="../../index.html"/>
+  
 
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="nctime 4.6.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
 
-    <script src="../../../static/js/modernizr.min.js"></script>
+  
+  <script src="../../../static/js/modernizr.min.js"></script>
 
 </head>
 
 <body class="wy-body-for-nav" role="document">
 
+   
+  <div class="wy-grid-for-nav">
 
-<div class="wy-grid-for-nav">
-
-
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-        <div class="wy-side-scroll">
-            <div class="wy-side-nav-search">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
 
+          
+            <a href="../../../index.html" class="icon icon-home"> nctime
+          
 
-                <a href="../../../index.html" class="icon icon-home"> nctime
+          
+          </a>
 
+          
+            
+            
+              <div class="version">
+                4.6
+              </div>
+            
+          
 
-                </a>
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
 
-
-                <div class="version">
-                    4.5
-                </div>
-
-
-                <div role="search">
-                    <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-                        <input type="text" name="q" placeholder="Search docs"/>
-                        <input type="hidden" name="check_keywords" value="yes"/>
-                        <input type="hidden" name="area" value="default"/>
-                    </form>
-                </div>
-
-
-            </div>
-
-            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-
-
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal"
-                                              href="../../../installation.html">Installation</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../../configuration.html">Configuration</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Generic usage</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../../overlap.html">Check time series
-                        continuity</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../../axis.html">Check time axis
-                        squareness</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently asked
-                        questions</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../../credits.html">Credits</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../../log.html">Change Log</a></li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../../autodoc.html">Code
-                        documentation</a></li>
-                </ul>
-
-
-            </div>
+          
         </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Generic usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overlap.html">Check time series continuity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../axis.html">Check time axis squareness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://LINK">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../credits.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../log.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc.html">Code documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
-
-        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-
-            <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-            <a href="../../../index.html">nctime</a>
-
-        </nav>
-
-
-        <div class="wy-nav-content">
-            <div class="rst-content">
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">nctime</a>
+        
+      </nav>
 
 
-                <div role="navigation" aria-label="breadcrumbs navigation">
-
-                    <ul class="wy-breadcrumbs">
-
-                        <li><a href="../../../index.html">Docs</a> &raquo;</li>
-
-                        <li><a href="../../index.html">Module code</a> &raquo;</li>
-
-                        <li>nctime.overlap.context</li>
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
 
 
-                        <li class="wy-breadcrumbs-aside">
 
 
-                        </li>
-
-                    </ul>
 
 
-                    <hr/>
-                </div>
-                <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-                    <div itemprop="articleBody">
 
-                        <h1>Source code for nctime.overlap.context</h1>
-                        <div class="highlight"><pre>
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>nctime.overlap.context</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for nctime.overlap.context</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
@@ -137,21 +175,14 @@
 
 <span class="kn">from</span> <span class="nn">ESGConfigParser</span> <span class="k">import</span> <span class="n">SectionParser</span>
 
-<span class="kn">from</span> <span class="nn">nctime.utils.collector</span> <span class="k">import</span> <span
-                                class="n">Collector</span>
-<span class="kn">from</span> <span class="nn">nctime.utils.constants</span> <span class="k">import</span> <span
-                                class="o">*</span>
+<span class="kn">from</span> <span class="nn">nctime.utils.collector</span> <span class="k">import</span> <span class="n">Collector</span>
+<span class="kn">from</span> <span class="nn">nctime.utils.constants</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">nctime.utils.context</span> <span class="k">import</span> <span class="n">BaseContext</span>
-<span class="kn">from</span> <span class="nn">nctime.utils.custom_exceptions</span> <span class="k">import</span> <span
-                                class="n">NoConfigCardFound</span><span class="p">,</span> <span class="n">NoRunCardFound</span>
-<span class="kn">from</span> <span class="nn">nctime.utils.custom_print</span> <span class="k">import</span> <span
-                                class="o">*</span>
+<span class="kn">from</span> <span class="nn">nctime.utils.custom_exceptions</span> <span class="k">import</span> <span class="n">NoConfigCardFound</span><span class="p">,</span> <span class="n">NoRunCardFound</span>
+<span class="kn">from</span> <span class="nn">nctime.utils.custom_print</span> <span class="k">import</span> <span class="o">*</span>
 
 
-<div class="viewcode-block" id="ProcessingContext"><a class="viewcode-back"
-                                                      href="../../../autodoc.html#nctime.overlap.context.ProcessingContext">[docs]</a><span
-        class="k">class</span> <span class="nc">ProcessingContext</span><span class="p">(</span><span class="n">BaseContext</span><span
-        class="p">):</span>
+<div class="viewcode-block" id="ProcessingContext"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.context.ProcessingContext">[docs]</a><span class="k">class</span> <span class="nc">ProcessingContext</span><span class="p">(</span><span class="n">BaseContext</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Encapsulates the processing context/information for main process.</span>
 
@@ -161,102 +192,47 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span
-            class="p">,</span> <span class="n">args</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span
-            class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span
-            class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span
-            class="n">args</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">directory</span> <span
-            class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">directory</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">resolve</span> <span
-            class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">resolve</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">full_only</span> <span
-            class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">full_only</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">overlaps</span> <span
-            class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">broken</span> <span class="o">=</span> <span
-            class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">card</span> <span class="o">=</span> <span
-            class="n">args</span><span class="o">.</span><span class="n">card</span>
-        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">card</span><span
-            class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">card</span> <span
-            class="o">=</span> <span class="nb">list</span><span class="p">(</span><span
-            class="n">yield_xml_from_card</span><span class="p">(</span><span class="n">args</span><span
-            class="o">.</span><span class="n">card</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nbnodes</span> <span
-            class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nbdsets</span> <span
-            class="o">=</span> <span class="mi">0</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">directory</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">directory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resolve</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">resolve</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">period_start</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">start</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">period_end</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">end</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">full_only</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">full_only</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">overlaps</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">broken</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">card</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">card</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">card</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">card</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">yield_xml_from_card</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">card</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nbnodes</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nbdsets</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span
-            class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Init data collector</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sources</span> <span
-            class="o">=</span> <span class="n">Collector</span><span class="p">(</span><span
-            class="n">sources</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span
-            class="n">directory</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sources</span> <span class="o">=</span> <span class="n">Collector</span><span class="p">(</span><span class="n">sources</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">)</span>
         <span class="c1"># Run __enter__() BaseContext</span>
-        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span
-            class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span
-            class="p">)</span><span class="o">.</span><span class="fm">__enter__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__enter__</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span
-            class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span
-            class="n">exc_val</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="n">COLORS</span><span class="o">.</span><span
-            class="n">OKBLUE</span><span class="p">(</span><span class="s1">&#39;Number of node(s): </span><span
-            class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span
-            class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span
-            class="n">nbnodes</span><span class="p">))</span>
-        <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span
-            class="n">HEADER</span><span class="p">(</span><span class="s1">&#39;Number of dataset(s): </span><span
-            class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span
-            class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span
-            class="n">nbdsets</span><span class="p">))</span>
-        <span class="n">m</span> <span class="o">=</span> <span
-            class="s1">&#39;Number of dataset(s) with overlap(s): </span><span class="si">{}</span><span
-            class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span
-            class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">overlaps</span><span
-            class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span
-            class="n">overlaps</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span
-            class="o">.</span><span class="n">FAIL</span><span class="p">(</span><span class="n">m</span><span
-            class="p">)</span>
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">OKBLUE</span><span class="p">(</span><span class="s1">&#39;Number of node(s): </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nbnodes</span><span class="p">))</span>
+        <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">HEADER</span><span class="p">(</span><span class="s1">&#39;Number of dataset(s): </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nbdsets</span><span class="p">))</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="s1">&#39;Number of dataset(s) with overlap(s): </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">overlaps</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">overlaps</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">FAIL</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span
-            class="o">.</span><span class="n">SUCCESS</span><span class="p">(</span><span class="n">m</span><span
-            class="p">)</span>
-        <span class="n">m</span> <span class="o">=</span> <span class="s1">&#39;Number of dataset(s) with broken time series: </span><span
-            class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span
-            class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broken</span><span
-            class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">broken</span><span
-            class="p">:</span>
-            <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span
-            class="o">.</span><span class="n">FAIL</span><span class="p">(</span><span class="n">m</span><span
-            class="p">)</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="s1">&#39;Number of dataset(s) with broken time series: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broken</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">broken</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">FAIL</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span
-            class="o">.</span><span class="n">SUCCESS</span><span class="p">(</span><span class="n">m</span><span
-            class="p">)</span>
-        <span class="n">Print</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span
-            class="n">msg</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="n">COLORS</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="n">Print</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="c1"># Run __exit__() BaseContext</span>
-        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span
-            class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span
-            class="p">)</span><span class="o">.</span><span class="fm">__exit__</span><span class="p">(</span><span
-            class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span
-            class="p">,</span> <span class="n">traceback</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__exit__</span><span class="p">(</span><span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">traceback</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="yield_xml_from_card"><a class="viewcode-back"
-                                                        href="../../../autodoc.html#nctime.overlap.context.yield_xml_from_card">[docs]</a><span
-        class="k">def</span> <span class="nf">yield_xml_from_card</span><span class="p">(</span><span class="n">card_path</span><span
-        class="p">):</span>
+<div class="viewcode-block" id="yield_xml_from_card"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.context.yield_xml_from_card">[docs]</a><span class="k">def</span> <span class="nf">yield_xml_from_card</span><span class="p">(</span><span class="n">card_path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Yields XML path from run.card and config.card attributes.</span>
 
@@ -266,149 +242,98 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Check cards exist</span>
-    <span class="k">if</span> <span class="n">RUN_CARD</span> <span class="ow">not</span> <span
-            class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span
-            class="p">(</span><span class="n">card_path</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">NoRunCardFound</span><span class="p">(</span><span class="n">card_path</span><span
-            class="p">)</span>
+    <span class="k">if</span> <span class="n">RUN_CARD</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">card_path</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">NoRunCardFound</span><span class="p">(</span><span class="n">card_path</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">run_card</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span
-            class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span
-            class="n">card_path</span><span class="p">,</span> <span class="n">RUN_CARD</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">CONF_CARD</span> <span class="ow">not</span> <span
-            class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span
-            class="p">(</span><span class="n">card_path</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">NoConfigCardFound</span><span class="p">(</span><span class="n">card_path</span><span
-            class="p">)</span>
+        <span class="n">run_card</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">card_path</span><span class="p">,</span> <span class="n">RUN_CARD</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">CONF_CARD</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">card_path</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">NoConfigCardFound</span><span class="p">(</span><span class="n">card_path</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">conf_card</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span
-            class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span
-            class="n">card_path</span><span class="p">,</span> <span class="n">CONF_CARD</span><span class="p">)</span>
+        <span class="n">conf_card</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">card_path</span><span class="p">,</span> <span class="n">CONF_CARD</span><span class="p">)</span>
     <span class="c1"># Extract config info from config.card</span>
-    <span class="n">config</span> <span class="o">=</span> <span class="n">SectionParser</span><span
-            class="p">(</span><span class="s1">&#39;UserChoices&#39;</span><span class="p">)</span>
-    <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span
-            class="n">conf_card</span><span class="p">)</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">SectionParser</span><span class="p">(</span><span class="s1">&#39;UserChoices&#39;</span><span class="p">)</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">conf_card</span><span class="p">)</span>
     <span class="n">xml_attrs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-    <span class="n">xml_attrs</span><span class="p">[</span><span class="s1">&#39;root&#39;</span><span
-            class="p">]</span> <span class="o">=</span> <span class="n">FILEDEF_ROOT</span>
-    <span class="n">xml_attrs</span><span class="p">[</span><span class="s1">&#39;longname&#39;</span><span
-            class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span
-            class="n">get</span><span class="p">(</span><span class="s1">&#39;longname&#39;</span><span
-            class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span
-            class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
-    <span class="n">xml_attrs</span><span class="p">[</span><span class="s1">&#39;experimentname&#39;</span><span
-            class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span
-            class="n">get</span><span class="p">(</span><span class="s1">&#39;experimentname&#39;</span><span class="p">)</span><span
-            class="o">.</span><span class="n">strip</span><span class="p">(</span><span
-            class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span
-            class="n">has_option</span><span class="p">(</span><span class="s1">&#39;modelname&#39;</span><span
-            class="p">):</span>
-        <span class="n">xml_attrs</span><span class="p">[</span><span class="s1">&#39;modelname&#39;</span><span
-            class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span
-            class="n">get</span><span class="p">(</span><span class="s1">&#39;modelname&#39;</span><span
-            class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span
-            class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
+    <span class="n">xml_attrs</span><span class="p">[</span><span class="s1">&#39;root&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">FILEDEF_ROOT</span>
+    <span class="n">xml_attrs</span><span class="p">[</span><span class="s1">&#39;longname&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;longname&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
+    <span class="n">xml_attrs</span><span class="p">[</span><span class="s1">&#39;experimentname&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;experimentname&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">has_option</span><span class="p">(</span><span class="s1">&#39;modelname&#39;</span><span class="p">):</span>
+        <span class="n">xml_attrs</span><span class="p">[</span><span class="s1">&#39;modelname&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;modelname&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">xml_attrs</span><span class="p">[</span><span class="s1">&#39;modelname&#39;</span><span
-            class="p">]</span> <span class="o">=</span> <span class="s1">&#39;IPSL-CM6A-LR&#39;</span>
-    <span class="n">xml_attrs</span><span class="p">[</span><span class="s1">&#39;member&#39;</span><span
-            class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span
-            class="n">get</span><span class="p">(</span><span class="s1">&#39;member&#39;</span><span class="p">)</span><span
-            class="o">.</span><span class="n">strip</span><span class="p">(</span><span
-            class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
+        <span class="n">xml_attrs</span><span class="p">[</span><span class="s1">&#39;modelname&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;IPSL-CM6A-LR&#39;</span>
+    <span class="n">xml_attrs</span><span class="p">[</span><span class="s1">&#39;member&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;member&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
     <span class="c1"># Extract first and last simulated years from run.card</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">run_card</span><span
-            class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span
-            class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span
-            class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span
-            class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span
-            class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">run_card</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="c1"># Get run table without header</span>
-    <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span> <span
-            class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span
-            class="n">lines</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span
-            class="n">count</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span
-            class="p">)</span> <span class="o">==</span> <span class="mi">8</span><span class="p">][</span><span
-            class="mi">1</span><span class="p">:]</span>
-    <span class="n">year_start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span
-            class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span
-            class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">3</span><span
-            class="p">][:</span><span class="mi">4</span><span class="p">])</span>
-    <span class="n">year_end</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span
-            class="n">lines</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span
-            class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span
-            class="mi">5</span><span class="p">][:</span><span class="mi">4</span><span class="p">])</span>
-    <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="nb">range</span><span
-            class="p">(</span><span class="n">year_start</span><span class="p">,</span> <span class="n">year_end</span> <span
-            class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="n">xml_attrs</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span
-            class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span
-            class="n">year</span><span class="p">)</span>
-        <span class="k">yield</span> <span class="n">FILEDEF_DIRECTORY_FORMAT</span><span class="o">.</span><span
-            class="n">format</span><span class="p">(</span><span class="o">**</span><span
-            class="n">xml_attrs</span><span class="p">)</span></div>
-</pre>
-                        </div>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">8</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">year_start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">3</span><span class="p">][:</span><span class="mi">4</span><span class="p">])</span>
+    <span class="n">year_end</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">5</span><span class="p">][:</span><span class="mi">4</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">year_start</span><span class="p">,</span> <span class="n">year_end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">xml_attrs</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">FILEDEF_DIRECTORY_FORMAT</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">xml_attrs</span><span class="p">)</span></div>
+</pre></div>
 
-                    </div>
-                    <div class="articleComments">
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
 
-                    </div>
-                </div>
-                <footer>
+  <hr/>
 
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Levavasseur, G..
 
-                    <hr/>
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
-                    <div role="contentinfo">
-                        <p>
-                            &copy; Copyright 2015, Levavasseur, G..
+</footer>
 
-                        </p>
-                    </div>
-                    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a
-                        href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a
-                        href="https://readthedocs.org">Read the Docs</a>.
-
-                </footer>
-
-            </div>
         </div>
+      </div>
 
     </section>
 
-</div>
+  </div>
+  
 
 
-<script type="text/javascript">
+  
+
+    <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'4.5.4',
+            VERSION:'4.6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
             SOURCELINK_SUFFIX: '.txt'
         };
+    </script>
+      <script type="text/javascript" src="../../../static/jquery.js"></script>
+      <script type="text/javascript" src="../../../static/underscore.js"></script>
+      <script type="text/javascript" src="../../../static/doctools.js"></script>
 
-</script>
-<script type="text/javascript" src="../../../static/jquery.js"></script>
-<script type="text/javascript" src="../../../static/underscore.js"></script>
-<script type="text/javascript" src="../../../static/doctools.js"></script>
+  
 
+  
+  
+    <script type="text/javascript" src="../../../static/js/theme.js"></script>
+  
 
-<script type="text/javascript" src="../../../static/js/theme.js"></script>
-
-
-<script type="text/javascript">
+  
+  
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.StickyNav.enable();
       });
-
-</script>
-
+  </script>
+   
 
 </body>
 </html>
