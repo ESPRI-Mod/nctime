@@ -1,8 +1,7 @@
 .. _overlap:
 
-
-Check time series continuity
-============================
+Check time coverage continuity
+==============================
 
 To produce smaller files, the NetCDF files are splitted over the time period. Consequently, the different archives
 designs include the period dates into the filename. This scheme of chunked files in projects is not fixed and depends

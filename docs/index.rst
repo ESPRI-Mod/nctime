@@ -18,8 +18,10 @@ Time is a key dimension from NetCDF files that could lead to flawed studies or u
 allows researchers to easily diagnose the time definition of their data to ensure a proper analysis. It provides two
 netCDF tools:
 
- * the netCDF Time Coverage Checker -- nctcck -- analyses the time continuity of datasets split across files.
- * the netCDF Time Axis Checker -- nctxck -- analyses the time axis squareness by rebuilding a convention-compliant time axis for netCDF files.
+ - the netCDF Time Coverage Checker :: ``nctcck``
+    Analyses the time continuity of datasets split across files.
+ - the netCDF Time Axis Checker :: ``nctxck``
+    Analyses the time axis squareness by rebuilding a convention-compliant time axis for netCDF files.
 
 See the :ref:`faq` to learn more about what is behind the scene of ``nctime``.
 
@@ -29,8 +31,8 @@ See the :ref:`faq` to learn more about what is behind the scene of ``nctime``.
    installation
    configuration
    usage
-   overlap
-   axis
+   nctcck
+   nctxck
    faq
    Example <https://github.com/Prodiguer/nctime/blob/master/docs/howto.ipynb>
    credits

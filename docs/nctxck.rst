@@ -1,6 +1,5 @@
 .. _axis:
 
-
 Check time axis squareness
 ==========================
 
