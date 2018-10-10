@@ -62,8 +62,8 @@ class File(object):
         self.timestamp_length = len(re.match(pattern, self.name).groupdict()['period_end'])
         # Rollback to None if unknown table
         if self.table not in set(zip(*FREQ_INC.keys())[0]):
-            msg= 'Unknown MIP table "{}" -- Consider default increment for the given frequency.'.format(self.table)
-            Print.warning(msg)
+            msg = 'Unknown MIP table "{}" -- Consider default increment for the given frequency.'.format(self.table)
+            Print.warning(msg, buffer=True)
             self.table = 'None'
         # Get frequency from file
         self.frequency = self.nc_att_get('frequency')

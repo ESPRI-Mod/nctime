@@ -34,4 +34,7 @@ Preset ``esg.<project_id>.ini`` files have been properly built by ESGF community
  * TAMIP
  * ISIMIP-FT
 
+Those project INI files can be fetched from the official GitHub repository using the `esgfetchini` tool from the
+`esgprep <http://esgf.github.io/esgf-prepare/fetchini.html>`_ Python toolbox.
+
 Currently, ``nctime`` has been tested and supports CMIP5-like and CORDEX-like projects.

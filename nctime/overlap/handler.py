@@ -63,7 +63,7 @@ class Filename(object):
         # Rollback to None if unknown table
         if table not in set(zip(*FREQ_INC.keys())[0]):
             msg = 'Unknown MIP table "{}" -- Consider default increment for the given frequency.'.format(table)
-            Print.warning(msg)
+            Print.warning(msg, buffer=True)
             table = 'None'
         # Get frequency from file
         frequency = self.nc_att_get('frequency')
@@ -120,7 +120,7 @@ class Graph(object):
     def get_graph(self, i):
         return copy(getattr(self, i))
 
-    def add_node(self, i, filename, start, end, next, path):
+    def add_node(self, i, filename, start=None, end=None, next=None, path=None):
         g = getattr(self, i)
         g.add_node(filename,
                    start=start,

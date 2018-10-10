@@ -30,6 +30,8 @@ class ProcessingContext(BaseContext):
         super(self.__class__, self).__init__(args)
         self.directory = args.directory
         self.resolve = args.resolve
+        self.period_start = args.start
+        self.period_end = args.end
         self.full_only = args.full_only
         self.overlaps = 0
         self.broken = 0

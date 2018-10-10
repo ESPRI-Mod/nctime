@@ -162,7 +162,7 @@ def process(ffp):
                                  fh.start_timestamp, fh.start_date, fh.start_num,
                                  time_end_timestamp, time_end_date, time_end_num,
                                  time_ref_end_timestamp, time_ref_end_date, time_ref_end_num,
-                                 #fh.last_timestamp, fh.last_date, fh.last_num,
+                                 # fh.last_timestamp, fh.last_date, fh.last_num,
                                  fh.length,
                                  fh.table,
                                  fh.frequency, fh.step, fh.step_units,
@@ -285,7 +285,3 @@ def run(args=None):
     # Evaluate errors and exit with appropriate return code
     if ctx.nbskip or ctx.nberrors:
         sys.exit(ctx.nbskip + ctx.nberrors)
-
-
-if __name__ == "__main__":
-    run()

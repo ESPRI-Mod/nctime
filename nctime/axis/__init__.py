@@ -1,5 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 """
-.. module:: nctime.axis
-.. moduleauthor:: Guillaume Levavasseur <glipsl@ipsl.jussieu.fr>
+.. module:: nctime.nctxck
+.. moduleauthor:: Guillaume Levavasseur <glipsl@ipsl.fr>
 
 """

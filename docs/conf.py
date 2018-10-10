@@ -14,8 +14,8 @@
 
 import os
 import sys
-import sphinx_rtd_theme
 
+import sphinx_rtd_theme
 from mock import Mock as MagicMock
 
 # If extensions (or modules to document with autodoc) are in another directory,

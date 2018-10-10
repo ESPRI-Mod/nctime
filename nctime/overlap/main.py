@@ -211,20 +211,36 @@ def create_edges(gid):
         for next_node in next_nodes:
             graph.add_edge(gid, node, next_node)
             Print.debug('Graph: {} :: Edge {} --> {}'.format(gid, node, next_node))
-    # Find the node(s) with the earliest date
+    # Find the node(s) with the earliest date if no period start submitted
     start_dates = zip(*g.nodes(data='start'))[1]
     starts = [n for n in g.nodes() if g.nodes[n]['start'] == min(start_dates)]
     # Find the node(s) with the latest date
     end_dates = zip(*g.nodes(data='end'))[1]
     ends = [n for n in g.nodes() if g.nodes[n]['end'] == max(end_dates)]
     # Build starting node with edges to first node(s)
-    for start in starts:
-        graph.add_edge(gid, 'START', start)
-        Print.debug('Graph: {} :: Edge START --> {}'.format(gid, start))
+    if not period_start:
+        period_start = min(start_dates)
+    if period_start >= min(start_dates):
+        # Build starting edge only if at least one file covers the start date of the period
+        for start in starts:
+            graph.add_edge(gid, 'START', start)
+            Print.debug('Graph: {} :: Edge START --> {}'.format(gid, start))
+    else:
+        # Create START node without edge(s)
+        graph.add_node(gid, 'START')
+        Print.debug('Graph: {} :: Node START --> No edges')
     # Build ending node with edges from latest node(s)
-    for end in ends:
-        graph.add_edge(gid, end, 'END')
-        Print.debug('Graph: {} :: Edge {} --> END'.format(gid, end))
+    if not period_end:
+        period_end = max(end_dates)
+    if period_end <= max(end_dates):
+        # Build ending edge only if at least one file covers the end date of the period
+        for end in ends:
+            graph.add_edge(gid, end, 'END')
+            Print.debug('Graph: {} :: Edge {} --> END'.format(gid, end))
+    else:
+        # Create END node without edge(s)
+        graph.add_node(gid, 'END')
+        Print.debug('Graph: {} :: Node END --> No edges')
 
 
 def evaluate_graph(gid):
@@ -415,7 +431,7 @@ def run(args=None):
 
     """
     # Declare global variables
-    global graph, patterns, resolve
+    global graph, patterns, resolve, period_start, period_end
     # Instantiate processing context
     with ProcessingContext(args) as ctx:
         # Collecting data
@@ -475,10 +491,12 @@ def run(args=None):
         ctx.nbdsets = len([x for x in itertools.imap(create_edges, graph())])
         # Evaluate each graph if a shortest path exist
         resolve = ctx.resolve
+        period_start = ctx.period_start
+        period_end = ctx.period_end
         for path, partial_overlaps, full_overlaps in itertools.imap(evaluate_graph, graph()):
             # Format message about path
             msg = format_path(path, partial_overlaps, full_overlaps)
-            # If broken time serie
+            # If broken time series
             if 'BREAK' in path:
                 ctx.broken += 1
                 Print.error(COLORS.FAIL('Time series broken: ') + msg)
@@ -511,7 +529,3 @@ def run(args=None):
     # Evaluate errors and exit with appropriate return code
     if ctx.overlaps or ctx.broken or ctx.nberrors:
         sys.exit(ctx.broken + ctx.overlaps + ctx.nberrors)
-
-
-if __name__ == "__main__":
-    run()

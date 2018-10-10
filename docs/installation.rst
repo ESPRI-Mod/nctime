@@ -50,11 +50,13 @@ includes:
  * `os <https://docs.python.org/2/library/os.html>`_
  * `re <https://docs.python.org/2/library/re.html>`_
  * `sys <https://docs.python.org/2/library/sys.html>`_
+ * `gettext <https://docs.python.org/2.7/library/gettext.html>`_
+ * `copy <https://docs.python.org/2/library/copy.html>`_
+ * `itertools <https://docs.python.org/2.7/library/itertools.html>`_
+ * `traceback <https://docs.python.org/2/library/traceback.html>`_
  * `logging <https://docs.python.org/2/library/logging.html>`_
  * `argparse <https://docs.python.org/2/library/argparse.html>`_
- * `importlib <https://docs.python.org/2/library/importlib.html>`_
  * `datetime <https://docs.python.org/2/library/datetime.html>`_
- * `textwrap <https://docs.python.org/2/library/textwrap.html>`_
  * `multiprocessing <https://docs.python.org/2/library/multiprocessing.html>`_
  * `uuid <https://docs.python.org/2/library/uuid.html>`_
 
