@@ -464,17 +464,17 @@ def run(args=None):
         # Process XML files if card
         Print.progress('\n')
         patterns = dict()
-        if ctx.card:
+        if ctx.xml:
             # Reset progress counter
             cctx['progress'].value = 0
             # Get number of xml
-            ctx.nbxml = len([x for x in yield_filedef(ctx.card)])
+            ctx.nbxml = len([x for x in yield_filedef(ctx.xml)])
             cctx['nbxml'] = ctx.nbxml
             if ctx.use_pool:
                 # Init processes pool
                 pool = Pool(processes=ctx.processes, initializer=initializer, initargs=(cctx.keys(),
                                                                                         cctx.values()))
-                for k, v in pool.imap(get_patterns_from_filedef, yield_filedef(ctx.card)):
+                for k, v in pool.imap(get_patterns_from_filedef, yield_filedef(ctx.xml)):
                     if k not in patterns.keys():
                         patterns[k] = list()
                     patterns[k].extend(v)
@@ -483,7 +483,7 @@ def run(args=None):
                 pool.join()
             else:
                 initializer(cctx.keys(), cctx.values())
-                for k, v in itertools.imap(get_patterns_from_filedef, yield_filedef(ctx.card)):
+                for k, v in itertools.imap(get_patterns_from_filedef, yield_filedef(ctx.xml)):
                     if k not in patterns.keys():
                         patterns[k] = list()
                     patterns[k].extend(v)

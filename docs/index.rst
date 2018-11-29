@@ -21,7 +21,7 @@ netCDF tools:
  - the netCDF Time Coverage Checker :: ``nctcck``
     Analyses the time continuity of datasets split across files.
  - the netCDF Time Axis Checker :: ``nctxck``
-    Analyses the time axis squareness by rebuilding a convention-compliant time axis for netCDF files.
+    Analyses the time axis correctness by rebuilding a convention-compliant time axis for netCDF files.
 
 See the :ref:`faq` to learn more about what is behind the scene of ``nctime``.
 
@@ -34,7 +34,7 @@ See the :ref:`faq` to learn more about what is behind the scene of ``nctime``.
    nctcck
    nctxck
    faq
-   Example <https://github.com/Prodiguer/nctime/blob/master/docs/howto.ipynb>
+   Quick start <https://github.com/Prodiguer/nctime/blob/master/docs/howto.ipynb>
    credits
    log
    autodoc

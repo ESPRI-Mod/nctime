@@ -123,6 +123,8 @@ several files. One process seems sequential processing. Set it -1 to use all ava
 Use libIGCM infos
 *****************
 
+.. warning:: This option is only available if you run your simulation within the IPSL libICM framework.
+
 ``nctime`` can use your libIGCM info to automatically apply some configuration. This requires to submit the
 directory including both your ``config.card`` and ``run.card`` provided by the libIGCM framework:
 
@@ -131,8 +133,6 @@ directory including both your ``config.card`` and ``run.card`` provided by the l
     $> nctime SUBCOMMAND --card /PATH/TO/SUBMISSION/DIRECTORY
 
 .. note:: This detailed documentation of ``nctcck`` and ``nctxck``.
-
-.. warning:: This option is only available if you run your simulation within the IPSL libICM framework.
 
 Define a reference calendar
 ***************************

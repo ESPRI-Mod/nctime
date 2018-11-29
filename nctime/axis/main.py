@@ -42,7 +42,7 @@ def process(ffp):
                   ref_calendar=pctx.ref_calendar,
                   input_start_timestamp=pctx.ref_start,
                   input_end_timestamp=pctx.ref_end)
-        # Check time axis squareness
+        # Check time axis correctness
         wrong_timesteps = list()
         # Rebuild a theoretical time axis with appropriate precision
         fh.time_axis_rebuilt = trunc(fh.build_time_axis(), NDECIMALS)
@@ -50,7 +50,7 @@ def process(ffp):
             fh.status.append('001')
             time_axis_diff = (fh.time_axis_rebuilt == fh.time_axis)
             wrong_timesteps = list(np.where(time_axis_diff == False)[0])
-        # Check time boundaries squareness
+        # Check time boundaries correctness
         wrong_bounds = list()
         if fh.has_bounds and not {'004'}.intersection(set(fh.status)):
             fh.time_bounds_rebuilt = trunc(fh.build_time_bounds(), NDECIMALS)

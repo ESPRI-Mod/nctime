@@ -35,9 +35,13 @@ class ProcessingContext(BaseContext):
         self.full_only = args.full_only
         self.overlaps = 0
         self.broken = 0
-        self.card = args.card
-        if args.card:
-            self.card = list(yield_xml_from_card(args.card))
+        # Get xml path(s)
+        if args.xml:
+            self.xml = args.xml
+        elif args.card:
+            self.xml = list(yield_xml_from_card(args.card))
+        else:
+            self.xml = None
         self.nbnodes = 0
         self.nbdsets = 0
 

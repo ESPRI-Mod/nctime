@@ -100,6 +100,16 @@ def get_args(args=None):
         action='store_true',
         default=False,
         help=FULL_ONLY_HELP)
+    group = main.add_mutually_exclusive_group(required=False)
+    group.add_argument(
+        '-x', '--xml',
+        action=DirectoryChecker,
+        nargs='+',
+        help=XML_HELP)
+    group.add_argument(
+        '-c', '--card',
+        action=DirectoryChecker,
+        help=CARD_HELP)
     main.add_argument(
         '-c', '--card',
         action=DirectoryChecker,

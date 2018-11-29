@@ -25,7 +25,7 @@ PROGRAM_DESC = {
     'axis': """
 {}
 
-{} The time axis is a key dimension. Unfortunately, this time axis often is mistaken in files from coupled climate models and leads to flawed studies or unused data. Consequently, these files cannot be used or, even worse, produced erroneous results, due to problems in the time axis description. The netCDF Time Axis Checker ("nctxck") allows to easily check the time axis squareness by rebuilding a convention-compliant time axis for NetCDF files.
+{} The time axis is a key dimension. Unfortunately, this time axis often is mistaken in files from coupled climate models and leads to flawed studies or unused data. Consequently, these files cannot be used or, even worse, produced erroneous results, due to problems in the time axis description. The netCDF Time Axis Checker ("nctxck") allows to easily check the time axis correctness by rebuilding a convention-compliant time axis for NetCDF files.
 
 {}
 
@@ -102,6 +102,10 @@ THIS ACTION DEFINITELY MODIFY INPUT FILES!
 """
 
 ON_FLY_HELP = """Ignore the test on end date consistency for on going simulation (this also include completed files).
+
+"""
+
+XML_HELP = """One or several directory with DR2XML files used for the simulation.
 
 """
 

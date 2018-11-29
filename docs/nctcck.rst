@@ -16,6 +16,8 @@ directories in order to save disk space.
 Detects overlaps or time gaps
 *****************************
 
+.. warning:: This option is only available if you run your simulation within the IPSL libICM framework.
+
 .. code-block:: bash
 
     $> nctcck /PATH/TO/SCAN/
@@ -29,8 +31,6 @@ provided by the libIGCM framework:
 .. code-block:: bash
 
     $> nctcck /PATH/TO/SCAN/ --card /PATH/TO/SUBMISSION/DIRECTORY
-
-.. warning:: This option is only available if you run your simulation within the IPSL libICM framework.
 
 Remove overlapping files
 ************************
