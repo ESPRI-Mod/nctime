@@ -1,7 +1,7 @@
 .. _axis:
 
-Check time axis squareness
-==========================
+Check time axis correctness
+===========================
 
 Time is a key dimension from NetCDF files. Unfortunately, the time axis is often mistaken in files from coupled climate models and leads to flawed studies or
 unused data. Consequently, these files cannot be used or, even worse, produced erroneous results, due to problems in the
@@ -39,8 +39,10 @@ Anyway, you can force to overwrite time axis in any case:
 Check an on going simulation
 ****************************
 
+.. warning:: This option is only available if you run your simulation within the IPSL libICM framework.
+
 The "on-fly" mode allows to check an incomplete time axis which is by construct inconsistent with the end timestamp of the file name.
-To disable the corresponding test and check the on going time axis squareness use:
+To disable the corresponding test and check the on going time axis correctness use:
 
 .. code-block:: bash
 
@@ -54,8 +56,6 @@ provided by the libIGCM framework:
 .. code-block:: bash
 
     $> nctxck /PATH/TO/SCAN/ --card /PATH/TO/SUBMISSION/DIRECTORY
-
-.. warning:: This option is only available if you run your simulation within the IPSL libICM framework.
 
 Define starting and/or ending time stamps
 *****************************************

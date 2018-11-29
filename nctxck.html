@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Check time axis squareness &mdash; nctime 4.6.0 documentation</title>
+  <title>Check time axis correctness &mdash; nctime 4.6.0 documentation</title>
   
 
   
@@ -95,7 +95,7 @@
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Generic usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="nctcck.html">Check time coverage continuity</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Check time axis squareness</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Check time axis correctness</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#rebuilt-and-check-time-axis">Rebuilt and check time axis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#rewrite-a-wrong-time-axis">Rewrite a wrong time axis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#force-time-axis-rewriting">Force time axis rewriting</a></li>
@@ -107,7 +107,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/Prodiguer/nctime/blob/master/docs/howto.ipynb">Example</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Prodiguer/nctime/blob/master/docs/howto.ipynb">Quick start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="credits.html">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="log.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="autodoc.html">Code documentation</a></li>
@@ -155,7 +155,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Check time axis squareness</li>
+      <li>Check time axis correctness</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -174,8 +174,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="check-time-axis-squareness">
-<span id="axis"></span><h1>Check time axis squareness<a class="headerlink" href="#check-time-axis-squareness" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="check-time-axis-correctness">
+<span id="axis"></span><h1>Check time axis correctness<a class="headerlink" href="#check-time-axis-correctness" title="Permalink to this headline">¶</a></h1>
 <p>Time is a key dimension from NetCDF files. Unfortunately, the time axis is often mistaken in files from coupled climate models and leads to flawed studies or
 unused data. Consequently, these files cannot be used or, even worse, produced erroneous results, due to problems in the
 time axis description.</p>
@@ -207,8 +207,12 @@ your input files. Be careful to activate <code class="docutils literal"><span cl
 </div>
 <div class="section" id="check-an-on-going-simulation">
 <h2>Check an on going simulation<a class="headerlink" href="#check-an-on-going-simulation" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This option is only available if you run your simulation within the IPSL libICM framework.</p>
+</div>
 <p>The “on-fly” mode allows to check an incomplete time axis which is by construct inconsistent with the end timestamp of the file name.
-To disable the corresponding test and check the on going time axis squareness use:</p>
+To disable the corresponding test and check the on going time axis correctness use:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctxck /PATH/TO/SCAN/ --on-fly
 </pre></div>
 </div>
@@ -218,10 +222,6 @@ automatically activated. You only need to submit the directory including both yo
 provided by the libIGCM framework:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctxck /PATH/TO/SCAN/ --card /PATH/TO/SUBMISSION/DIRECTORY
 </pre></div>
-</div>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">This option is only available if you run your simulation within the IPSL libICM framework.</p>
 </div>
 </div>
 <div class="section" id="define-starting-and-or-ending-time-stamps">

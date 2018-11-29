@@ -36,7 +36,7 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="nctime 4.6.0 documentation" href="index.html"/>
-        <link rel="next" title="Check time series continuity" href="overlap.html"/>
+        <link rel="next" title="Check time coverage continuity" href="nctcck.html"/>
         <link rel="prev" title="Configuration" href="configuration.html"/> 
 
   
@@ -110,10 +110,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#exit-status">Exit status</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="overlap.html">Check time series continuity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="axis.html">Check time axis squareness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nctcck.html">Check time coverage continuity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nctxck.html">Check time axis correctness</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
-<li class="toctree-l1"><a class="reference external" href="http://https://github.com/Prodiguer/nctime/blob/master/docs/howto.ipynb">Example</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Prodiguer/nctime/blob/master/docs/howto.ipynb">Quick start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="credits.html">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="log.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="autodoc.html">Code documentation</a></li>
@@ -289,6 +289,10 @@ several files. One process seems sequential processing. Set it -1 to use all ava
 </div>
 <div class="section" id="use-libigcm-infos">
 <h2>Use libIGCM infos<a class="headerlink" href="#use-libigcm-infos" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This option is only available if you run your simulation within the IPSL libICM framework.</p>
+</div>
 <p><code class="docutils literal"><span class="pre">nctime</span></code> can use your libIGCM info to automatically apply some configuration. This requires to submit the
 directory including both your <code class="docutils literal"><span class="pre">config.card</span></code> and <code class="docutils literal"><span class="pre">run.card</span></code> provided by the libIGCM framework:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctime SUBCOMMAND --card /PATH/TO/SUBMISSION/DIRECTORY
@@ -297,10 +301,6 @@ directory including both your <code class="docutils literal"><span class="pre">c
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">This detailed documentation of <code class="docutils literal"><span class="pre">nctcck</span></code> and <code class="docutils literal"><span class="pre">nctxck</span></code>.</p>
-</div>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">This option is only available if you run your simulation within the IPSL libICM framework.</p>
 </div>
 </div>
 <div class="section" id="define-a-reference-calendar">
@@ -405,7 +405,7 @@ frequencies values.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="overlap.html" class="btn btn-neutral float-right" title="Check time series continuity" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="nctcck.html" class="btn btn-neutral float-right" title="Check time coverage continuity" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="configuration.html" class="btn btn-neutral" title="Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

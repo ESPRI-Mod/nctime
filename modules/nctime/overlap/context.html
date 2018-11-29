@@ -94,9 +94,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Generic usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../nctcck.html">Check time coverage continuity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../nctxck.html">Check time axis squareness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../nctxck.html">Check time axis correctness</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently asked questions</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/Prodiguer/nctime/blob/master/docs/howto.ipynb">Example</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Prodiguer/nctime/blob/master/docs/howto.ipynb">Quick start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../credits.html">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../log.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc.html">Code documentation</a></li>
@@ -201,9 +201,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">full_only</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">full_only</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">overlaps</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">broken</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">card</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">card</span>
-        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">card</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">card</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">yield_xml_from_card</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">card</span><span class="p">))</span>
+        <span class="c1"># Get xml path(s)</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">xml</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xml</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">xml</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">card</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xml</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">yield_xml_from_card</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">card</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xml</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nbnodes</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nbdsets</span> <span class="o">=</span> <span class="mi">0</span>
 

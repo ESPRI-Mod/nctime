@@ -94,9 +94,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Generic usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../nctcck.html">Check time coverage continuity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../nctxck.html">Check time axis squareness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../nctxck.html">Check time axis correctness</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently asked questions</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/Prodiguer/nctime/blob/master/docs/howto.ipynb">Example</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Prodiguer/nctime/blob/master/docs/howto.ipynb">Quick start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../credits.html">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../log.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autodoc.html">Code documentation</a></li>
@@ -630,17 +630,17 @@
         <span class="c1"># Process XML files if card</span>
         <span class="n">Print</span><span class="o">.</span><span class="n">progress</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">patterns</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">card</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">xml</span><span class="p">:</span>
             <span class="c1"># Reset progress counter</span>
             <span class="n">cctx</span><span class="p">[</span><span class="s1">&#39;progress&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="c1"># Get number of xml</span>
-            <span class="n">ctx</span><span class="o">.</span><span class="n">nbxml</span> <span class="o">=</span> <span class="nb">len</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">yield_filedef</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">card</span><span class="p">)])</span>
+            <span class="n">ctx</span><span class="o">.</span><span class="n">nbxml</span> <span class="o">=</span> <span class="nb">len</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">yield_filedef</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">xml</span><span class="p">)])</span>
             <span class="n">cctx</span><span class="p">[</span><span class="s1">&#39;nbxml&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">nbxml</span>
             <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">use_pool</span><span class="p">:</span>
                 <span class="c1"># Init processes pool</span>
                 <span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">processes</span><span class="p">,</span> <span class="n">initializer</span><span class="o">=</span><span class="n">initializer</span><span class="p">,</span> <span class="n">initargs</span><span class="o">=</span><span class="p">(</span><span class="n">cctx</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span>
                                                                                         <span class="n">cctx</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
-                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pool</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">get_patterns_from_filedef</span><span class="p">,</span> <span class="n">yield_filedef</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">card</span><span class="p">)):</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pool</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">get_patterns_from_filedef</span><span class="p">,</span> <span class="n">yield_filedef</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">xml</span><span class="p">)):</span>
                     <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">patterns</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                         <span class="n">patterns</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
                     <span class="n">patterns</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
@@ -649,7 +649,7 @@
                 <span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">initializer</span><span class="p">(</span><span class="n">cctx</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">cctx</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">get_patterns_from_filedef</span><span class="p">,</span> <span class="n">yield_filedef</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">card</span><span class="p">)):</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">get_patterns_from_filedef</span><span class="p">,</span> <span class="n">yield_filedef</span><span class="p">(</span><span class="n">ctx</span><span class="o">.</span><span class="n">xml</span><span class="p">)):</span>
                     <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">patterns</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                         <span class="n">patterns</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
                     <span class="n">patterns</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>

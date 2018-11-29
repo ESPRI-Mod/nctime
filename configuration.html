@@ -92,16 +92,12 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#location">Location</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#esg-project-id-ini"><code class="docutils literal"><span class="pre">esg.&lt;project_id&gt;.ini</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Generic usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="overlap.html">Check time series continuity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="axis.html">Check time axis squareness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nctcck.html">Check time coverage continuity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nctxck.html">Check time axis correctness</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
-<li class="toctree-l1"><a class="reference external" href="http://https://github.com/Prodiguer/nctime/blob/master/docs/howto.ipynb">Example</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Prodiguer/nctime/blob/master/docs/howto.ipynb">Quick start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="credits.html">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="log.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="autodoc.html">Code documentation</a></li>
@@ -172,14 +168,9 @@
 <span id="id1"></span><h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
 <p><code class="docutils literal"><span class="pre">nctime</span></code> works according to
 <a class="reference external" href="https://github.com/ESGF/config/tree/master/publisher-configs/ini">the configuration INI file(s) of the ESGF nodes</a>.</p>
-<div class="section" id="location">
-<h2>Location<a class="headerlink" href="#location" title="Permalink to this headline">¶</a></h2>
 <p>On an ESGF node, the configuration directory containing those INI files is <code class="docutils literal"><span class="pre">/esg/config/esgcet</span></code>, that is the default
 for <code class="docutils literal"><span class="pre">nctime</span></code>. In the case you are running <code class="docutils literal"><span class="pre">nctime</span></code> outside of an ESGF node, the directory gathering all <code class="docutils literal"><span class="pre">.ini</span></code>
 files has to be submitted using the <code class="docutils literal"><span class="pre">-i</span></code> option (see <a class="reference internal" href="usage.html#usage"><span class="std std-ref">Generic usage</span></a>).</p>
-</div>
-<div class="section" id="esg-project-id-ini">
-<h2><code class="docutils literal"><span class="pre">esg.&lt;project_id&gt;.ini</span></code><a class="headerlink" href="#esg-project-id-ini" title="Permalink to this headline">¶</a></h2>
 <p>Those INI files declare all facets and allowed values according to the Data Reference Syntax (DRS) and the controlled
 vocabularies of the corresponding project. <code class="docutils literal"><span class="pre">nctime</span></code> especially use the filename format to deduce facet values.
 Preset <code class="docutils literal"><span class="pre">esg.&lt;project_id&gt;.ini</span></code> files have been properly built by ESGF community for the following projects:</p>
@@ -202,8 +193,7 @@ Preset <code class="docutils literal"><span class="pre">esg.&lt;project_id&gt;.i
 </div></blockquote>
 <p>Those project INI files can be fetched from the official GitHub repository using the <cite>esgfetchini</cite> tool from the
 <a class="reference external" href="http://esgf.github.io/esgf-prepare/fetchini.html">esgprep</a> Python toolbox.</p>
-<p>Currently, <code class="docutils literal"><span class="pre">nctime</span></code> has been tested and supports CMIP5-like and CORDEX-like projects.</p>
-</div>
+<p>Currently, <code class="docutils literal"><span class="pre">nctime</span></code> has been tested and supports CMIP-like and CORDEX-like projects.</p>
 </div>
 
 

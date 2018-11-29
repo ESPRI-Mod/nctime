@@ -36,7 +36,7 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="nctime 4.6.0 documentation" href="index.html"/>
-        <link rel="next" title="Check time axis squareness" href="nctxck.html"/>
+        <link rel="next" title="Check time axis correctness" href="nctxck.html"/>
         <link rel="prev" title="Generic usage" href="usage.html"/> 
 
   
@@ -101,9 +101,9 @@
 <li class="toctree-l2"><a class="reference internal" href="#define-starting-and-or-ending-period-time-stamps">Define starting and/or ending period time stamps</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="nctxck.html">Check time axis squareness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nctxck.html">Check time axis correctness</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/Prodiguer/nctime/blob/master/docs/howto.ipynb">Example</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Prodiguer/nctime/blob/master/docs/howto.ipynb">Quick start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="credits.html">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="log.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="autodoc.html">Code documentation</a></li>
@@ -182,6 +182,10 @@ producing overlaps in a time series. It is able to delete all chunked overlappin
 directories in order to save disk space.</p>
 <div class="section" id="detects-overlaps-or-time-gaps">
 <h2>Detects overlaps or time gaps<a class="headerlink" href="#detects-overlaps-or-time-gaps" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This option is only available if you run your simulation within the IPSL libICM framework.</p>
+</div>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctcck /PATH/TO/SCAN/
 </pre></div>
 </div>
@@ -192,10 +196,6 @@ a time gap is expected or not. To activate this just submit the directory includ
 provided by the libIGCM framework:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>$&gt; nctcck /PATH/TO/SCAN/ --card /PATH/TO/SUBMISSION/DIRECTORY
 </pre></div>
-</div>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">This option is only available if you run your simulation within the IPSL libICM framework.</p>
 </div>
 </div>
 <div class="section" id="remove-overlapping-files">
@@ -248,7 +248,7 @@ to cover by using respectively <cite>–start</cite> and <cite>–end</cite> fla
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="nctxck.html" class="btn btn-neutral float-right" title="Check time axis squareness" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="nctxck.html" class="btn btn-neutral float-right" title="Check time axis correctness" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="usage.html" class="btn btn-neutral" title="Generic usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
