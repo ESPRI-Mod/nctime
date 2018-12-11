@@ -33,6 +33,8 @@ class BaseContext(object):
         Print.init(log=args.log, debug=args.debug, all=args.all, cmd=args.prog)
         # Print command-line
         Print.command()
+        self._process_color_arg(args)
+        # Get project and related configuration
         self.project = args.project
         self.config_dir = args.i
         self.processes = args.max_processes if args.max_processes <= cpu_count() else cpu_count()
@@ -119,3 +121,10 @@ class BaseContext(object):
         Print.summary(msg)
         # Print log path if exists
         Print.log()
+
+    def _process_color_arg(self, args):
+        # process --color / --no-color arg if present
+        if 'color' in args and args.color:
+            enable_colors()
+        if 'no_color' in args and args.no_color:
+            disable_colors()

@@ -275,13 +275,13 @@ def evaluate_graph(gid):
             # and its start date is negative.
             # A path gap exists from a node when no edges exist with ALL "forwards" nodes.
             # Considering one node, get the others in the graph
-            other_nodes = [x for x in g.nodes() if x is not node]#not in ['START', node, 'END']]
+            other_nodes = [x for x in g.nodes() if x is not node]  # not in ['START', node, 'END']]
             # Get the start dates of the other nodes
             other_start_dates = [g.node[x]['start'] for x in other_nodes]
             # Find the index with a negative or null difference between their start date and
             # the next date of the considered node
-            a=g.node[node]['next']
-            b=np.array(other_start_dates)
+            a = g.node[node]['next']
+            b = np.array(other_start_dates)
             indexes = [i for i, v in enumerate(g.node[node]['next'] - np.array(other_start_dates)) if v <= 0]
             # Get all "next" nodes for the current node
             next_nodes = [other_nodes[i] for i in indexes]

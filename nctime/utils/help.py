@@ -200,3 +200,11 @@ Default is to consider the time units from the first file scanned.
 Available time units format is "<units> since YYYY-MM-DD HH:mm:ss" where <units> stands for seconds, minutes, hours or days.
 
 """
+
+COLOR_HELP = """Enable colors. (Default is to enable when writing to a terminal.)
+
+"""
+
+NO_COLOR_HELP = """Disable colors.
+
+"""

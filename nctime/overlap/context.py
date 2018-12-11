@@ -16,6 +16,7 @@ from nctime.utils.custom_exceptions import NoConfigCardFound, NoRunCardFound
 from nctime.utils.custom_print import *
 from nctime.utils.time import untruncated_timestamp
 
+
 class ProcessingContext(BaseContext):
     """
     Encapsulates the processing context/information for main process.
