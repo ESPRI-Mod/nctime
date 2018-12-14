@@ -9,10 +9,10 @@
 from datetime import datetime as dt
 
 # Program version
-VERSION = '4.6.0'
+VERSION = '4.6.1'
 
 # Date
-VERSION_DATE = dt(year=2018, month=10, day=10).strftime("%Y-%d-%m")
+VERSION_DATE = dt(year=2018, month=12, day=14).strftime("%Y-%d-%m")
 
 # Cards name
 RUN_CARD = 'run.card'
