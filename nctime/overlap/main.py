@@ -527,7 +527,7 @@ def run(args=None):
                         resolve_overlap(ffp=partial_overlaps[node]['path'],
                                         pattern=ctx.pattern,
                                         from_date=partial_overlaps[node]['cutting_date'],
-                                        to_date=partial_overlaps[node]['end_date'],
+                                        to_date=partial_overlaps[node]['end'],
                                         cutting_timestep=partial_overlaps[node]['cutting_timestep'],
                                         partial=True)
     # Evaluate errors and exit with appropriate return code
