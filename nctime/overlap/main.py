@@ -67,21 +67,21 @@ def get_overlaps(g, shortest):
     return overlaps['partial'], overlaps['full']
 
 
-def resolve_overlap(directory, pattern, filename, from_date=None, to_date=None, cutting_timestep=None, partial=False):
+def resolve_overlap(ffp, pattern, from_date=None, to_date=None, cutting_timestep=None, partial=False):
     """
     Resolve overlapping files.
     If full overlap, the corresponding file is removed.
     If partial overlap, the corresponding file is truncated into a new one and the old file is removed.
 
-    :param str directory: The directory scanned
+    :param str ffp: The file full path
     :param str pattern: The filename pattern
-    :param str filename: The filename
     :param int from_date: Overlap starting date
     :param int to_date:  Overlap ending date
     :param int cutting_timestep:  Time step to cut the file
     :param boolean partial: Resolve partial overlap if True
 
     """
+    directory, filename = os.path.split(ffp)
     if partial:
         filename_attr = re.match(pattern, filename).groupdict()
         assert len(filename_attr['period_start']) == len(filename_attr['period_end'])
@@ -91,10 +91,10 @@ def resolve_overlap(directory, pattern, filename, from_date=None, to_date=None, 
         new_filename = tmp.replace(filename_attr['period_end'], to_timestamp)
         assert not os.path.exists(os.path.join(directory, new_filename))
         nc = nco.Nco()
-        nc.ncks(input=os.path.join(directory, filename),
+        nc.ncks(input=ffp,
                 output=os.path.join(directory, new_filename),
                 options=['-O', '-d time,{},,1'.format(cutting_timestep)])
-    os.remove(os.path.join(directory, filename))
+    os.remove(os.path.join(ffp))
 
 
 def extract_dates(ffp):
@@ -519,18 +519,16 @@ def run(args=None):
             if resolve:
                 # Full overlapping files has to be deleted before partial overlapping files are truncated.
                 for node in full_overlaps:
-                    resolve_overlap(directory=ctx.directory,
+                    resolve_overlap(ffp=full_overlaps[node]['path'],
                                     pattern=ctx.pattern,
-                                    filename=node,
                                     partial=False)
                 if not ctx.full_only:
                     for node in partial_overlaps:
-                        resolve_overlap(directory=ctx.directory,
+                        resolve_overlap(ffp=partial_overlaps[node]['path'],
                                         pattern=ctx.pattern,
-                                        filename=node,
-                                        from_date=ctx.overlaps['partial'][node]['cutting_date'],
-                                        to_date=ctx.overlaps['partial'][node]['end_date'],
-                                        cutting_timestep=ctx.overlaps['partial'][node]['cutting_timestep'],
+                                        from_date=partial_overlaps[node]['cutting_date'],
+                                        to_date=partial_overlaps[node]['end_date'],
+                                        cutting_timestep=partial_overlaps[node]['cutting_timestep'],
                                         partial=True)
     # Evaluate errors and exit with appropriate return code
     if ctx.overlaps or ctx.broken or ctx.nberrors:

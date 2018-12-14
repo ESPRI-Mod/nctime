@@ -319,11 +319,14 @@ class File(object):
             if attribute in attrs.keys():
                 return attrs[attribute]
             else:
-                key, score = process.extractOne(attribute, attrs, scorer=fuzz.partial_ratio)
-                if score >= 80:
-                    Print.warning('Consider "{}" attribute instead of "frequency"'.format(key))
-                    return attrs(key)
-                else:
+                try:
+                    key, score = process.extractOne(attribute, attrs, scorer=fuzz.partial_ratio)
+                    if score >= 80:
+                        Print.warning('Consider "{}" attribute instead of "frequency"'.format(key))
+                        return attrs(key)
+                    else:
+                        raise NoNetCDFAttribute(attribute, self.ffp)
+                except:
                     raise NoNetCDFAttribute(attribute, self.ffp)
 
     def nc_file_rename(self, new_filename):
