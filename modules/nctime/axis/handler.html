@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.axis.handler &mdash; nctime 4.6.0 documentation</title>
+  <title>nctime.axis.handler &mdash; nctime 4.6.1 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 4.6.0 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 4.6.1 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -485,11 +485,14 @@
             <span class="k">if</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="k">return</span> <span class="n">attrs</span><span class="p">[</span><span class="n">attribute</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">key</span><span class="p">,</span> <span class="n">score</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">extractOne</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">scorer</span><span class="o">=</span><span class="n">fuzz</span><span class="o">.</span><span class="n">partial_ratio</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="mi">80</span><span class="p">:</span>
-                    <span class="n">Print</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Consider &quot;</span><span class="si">{}</span><span class="s1">&quot; attribute instead of &quot;frequency&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
-                    <span class="k">return</span> <span class="n">attrs</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">key</span><span class="p">,</span> <span class="n">score</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">extractOne</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">scorer</span><span class="o">=</span><span class="n">fuzz</span><span class="o">.</span><span class="n">partial_ratio</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="mi">80</span><span class="p">:</span>
+                        <span class="n">Print</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Consider &quot;</span><span class="si">{}</span><span class="s1">&quot; attribute instead of &quot;frequency&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+                        <span class="k">return</span> <span class="n">attrs</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ffp</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">NoNetCDFAttribute</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ffp</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="File.nc_file_rename"><a class="viewcode-back" href="../../../autodoc.html#nctime.axis.handler.File.nc_file_rename">[docs]</a>    <span class="k">def</span> <span class="nf">nc_file_rename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_filename</span><span class="p">):</span>
@@ -544,7 +547,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'4.6.0',
+            VERSION:'4.6.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

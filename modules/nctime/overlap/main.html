@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.overlap.main &mdash; nctime 4.6.0 documentation</title>
+  <title>nctime.overlap.main &mdash; nctime 4.6.1 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 4.6.0 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 4.6.1 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -233,21 +233,21 @@
     <span class="k">return</span> <span class="n">overlaps</span><span class="p">[</span><span class="s1">&#39;partial&#39;</span><span class="p">],</span> <span class="n">overlaps</span><span class="p">[</span><span class="s1">&#39;full&#39;</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="resolve_overlap"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.main.resolve_overlap">[docs]</a><span class="k">def</span> <span class="nf">resolve_overlap</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">from_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cutting_timestep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="resolve_overlap"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.main.resolve_overlap">[docs]</a><span class="k">def</span> <span class="nf">resolve_overlap</span><span class="p">(</span><span class="n">ffp</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">from_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cutting_timestep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Resolve overlapping files.</span>
 <span class="sd">    If full overlap, the corresponding file is removed.</span>
 <span class="sd">    If partial overlap, the corresponding file is truncated into a new one and the old file is removed.</span>
 
-<span class="sd">    :param str directory: The directory scanned</span>
+<span class="sd">    :param str ffp: The file full path</span>
 <span class="sd">    :param str pattern: The filename pattern</span>
-<span class="sd">    :param str filename: The filename</span>
 <span class="sd">    :param int from_date: Overlap starting date</span>
 <span class="sd">    :param int to_date:  Overlap ending date</span>
 <span class="sd">    :param int cutting_timestep:  Time step to cut the file</span>
 <span class="sd">    :param boolean partial: Resolve partial overlap if True</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">directory</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">ffp</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">partial</span><span class="p">:</span>
         <span class="n">filename_attr</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">groupdict</span><span class="p">()</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">filename_attr</span><span class="p">[</span><span class="s1">&#39;period_start&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">filename_attr</span><span class="p">[</span><span class="s1">&#39;period_end&#39;</span><span class="p">])</span>
@@ -257,10 +257,10 @@
         <span class="n">new_filename</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">filename_attr</span><span class="p">[</span><span class="s1">&#39;period_end&#39;</span><span class="p">],</span> <span class="n">to_timestamp</span><span class="p">)</span>
         <span class="k">assert</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">new_filename</span><span class="p">))</span>
         <span class="n">nc</span> <span class="o">=</span> <span class="n">nco</span><span class="o">.</span><span class="n">Nco</span><span class="p">()</span>
-        <span class="n">nc</span><span class="o">.</span><span class="n">ncks</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">filename</span><span class="p">),</span>
+        <span class="n">nc</span><span class="o">.</span><span class="n">ncks</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="n">ffp</span><span class="p">,</span>
                 <span class="n">output</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">new_filename</span><span class="p">),</span>
                 <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;-O&#39;</span><span class="p">,</span> <span class="s1">&#39;-d time,</span><span class="si">{}</span><span class="s1">,,1&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cutting_timestep</span><span class="p">)])</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span></div>
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ffp</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="extract_dates"><a class="viewcode-back" href="../../../autodoc.html#nctime.overlap.main.extract_dates">[docs]</a><span class="k">def</span> <span class="nf">extract_dates</span><span class="p">(</span><span class="n">ffp</span><span class="p">):</span>
@@ -441,13 +441,13 @@
             <span class="c1"># and its start date is negative.</span>
             <span class="c1"># A path gap exists from a node when no edges exist with ALL &quot;forwards&quot; nodes.</span>
             <span class="c1"># Considering one node, get the others in the graph</span>
-            <span class="n">other_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">node</span><span class="p">]</span><span class="c1">#not in [&#39;START&#39;, node, &#39;END&#39;]]</span>
+            <span class="n">other_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">node</span><span class="p">]</span>  <span class="c1"># not in [&#39;START&#39;, node, &#39;END&#39;]]</span>
             <span class="c1"># Get the start dates of the other nodes</span>
             <span class="n">other_start_dates</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">other_nodes</span><span class="p">]</span>
             <span class="c1"># Find the index with a negative or null difference between their start date and</span>
             <span class="c1"># the next date of the considered node</span>
-            <span class="n">a</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;next&#39;</span><span class="p">]</span>
-            <span class="n">b</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">other_start_dates</span><span class="p">)</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;next&#39;</span><span class="p">]</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">other_start_dates</span><span class="p">)</span>
             <span class="n">indexes</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;next&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">other_start_dates</span><span class="p">))</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">]</span>
             <span class="c1"># Get all &quot;next&quot; nodes for the current node</span>
             <span class="n">next_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">other_nodes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indexes</span><span class="p">]</span>
@@ -685,18 +685,16 @@
             <span class="k">if</span> <span class="n">resolve</span><span class="p">:</span>
                 <span class="c1"># Full overlapping files has to be deleted before partial overlapping files are truncated.</span>
                 <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">full_overlaps</span><span class="p">:</span>
-                    <span class="n">resolve_overlap</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span>
+                    <span class="n">resolve_overlap</span><span class="p">(</span><span class="n">ffp</span><span class="o">=</span><span class="n">full_overlaps</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;path&#39;</span><span class="p">],</span>
                                     <span class="n">pattern</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span>
-                                    <span class="n">filename</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
                                     <span class="n">partial</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">ctx</span><span class="o">.</span><span class="n">full_only</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">partial_overlaps</span><span class="p">:</span>
-                        <span class="n">resolve_overlap</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span>
+                        <span class="n">resolve_overlap</span><span class="p">(</span><span class="n">ffp</span><span class="o">=</span><span class="n">partial_overlaps</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;path&#39;</span><span class="p">],</span>
                                         <span class="n">pattern</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span>
-                                        <span class="n">filename</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
-                                        <span class="n">from_date</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">overlaps</span><span class="p">[</span><span class="s1">&#39;partial&#39;</span><span class="p">][</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;cutting_date&#39;</span><span class="p">],</span>
-                                        <span class="n">to_date</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">overlaps</span><span class="p">[</span><span class="s1">&#39;partial&#39;</span><span class="p">][</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;end_date&#39;</span><span class="p">],</span>
-                                        <span class="n">cutting_timestep</span><span class="o">=</span><span class="n">ctx</span><span class="o">.</span><span class="n">overlaps</span><span class="p">[</span><span class="s1">&#39;partial&#39;</span><span class="p">][</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;cutting_timestep&#39;</span><span class="p">],</span>
+                                        <span class="n">from_date</span><span class="o">=</span><span class="n">partial_overlaps</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;cutting_date&#39;</span><span class="p">],</span>
+                                        <span class="n">to_date</span><span class="o">=</span><span class="n">partial_overlaps</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;end_date&#39;</span><span class="p">],</span>
+                                        <span class="n">cutting_timestep</span><span class="o">=</span><span class="n">partial_overlaps</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">&#39;cutting_timestep&#39;</span><span class="p">],</span>
                                         <span class="n">partial</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="c1"># Evaluate errors and exit with appropriate return code</span>
     <span class="k">if</span> <span class="n">ctx</span><span class="o">.</span><span class="n">overlaps</span> <span class="ow">or</span> <span class="n">ctx</span><span class="o">.</span><span class="n">broken</span> <span class="ow">or</span> <span class="n">ctx</span><span class="o">.</span><span class="n">nberrors</span><span class="p">:</span>
@@ -737,7 +735,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'4.6.0',
+            VERSION:'4.6.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

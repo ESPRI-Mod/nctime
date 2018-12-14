@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>nctime.utils.context &mdash; nctime 4.6.0 documentation</title>
+  <title>nctime.utils.context &mdash; nctime 4.6.1 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="nctime 4.6.0 documentation" href="../../../index.html"/>
+    <link rel="top" title="nctime 4.6.1 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -199,6 +199,8 @@
         <span class="n">Print</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">log</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">all</span><span class="p">,</span> <span class="n">cmd</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">prog</span><span class="p">)</span>
         <span class="c1"># Print command-line</span>
         <span class="n">Print</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_process_color_arg</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="c1"># Get project and related configuration</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">project</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">project</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config_dir</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">i</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">processes</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">max_processes</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">max_processes</span> <span class="o">&lt;=</span> <span class="n">cpu_count</span><span class="p">()</span> <span class="k">else</span> <span class="n">cpu_count</span><span class="p">()</span>
@@ -284,7 +286,14 @@
         <span class="c1"># Print summary</span>
         <span class="n">Print</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="c1"># Print log path if exists</span>
-        <span class="n">Print</span><span class="o">.</span><span class="n">log</span><span class="p">()</span></div>
+        <span class="n">Print</span><span class="o">.</span><span class="n">log</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_process_color_arg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="c1"># process --color / --no-color arg if present</span>
+        <span class="k">if</span> <span class="s1">&#39;color&#39;</span> <span class="ow">in</span> <span class="n">args</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">color</span><span class="p">:</span>
+            <span class="n">enable_colors</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s1">&#39;no_color&#39;</span> <span class="ow">in</span> <span class="n">args</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">no_color</span><span class="p">:</span>
+            <span class="n">disable_colors</span><span class="p">()</span></div>
 </pre></div>
 
            </div>
@@ -321,7 +330,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'4.6.0',
+            VERSION:'4.6.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Code documentation &mdash; nctime 4.6.0 documentation</title>
+  <title>Code documentation &mdash; nctime 4.6.1 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="nctime 4.6.0 documentation" href="index.html"/>
+    <link rel="top" title="nctime 4.6.1 documentation" href="index.html"/>
         <link rel="prev" title="Change Log" href="log.html"/> 
 
   
@@ -255,7 +255,7 @@
 
 <dl class="function">
 <dt id="nctime.overlap.main.resolve_overlap">
-<code class="descclassname">nctime.overlap.main.</code><code class="descname">resolve_overlap</code><span class="sig-paren">(</span><em>directory</em>, <em>pattern</em>, <em>filename</em>, <em>from_date=None</em>, <em>to_date=None</em>, <em>cutting_timestep=None</em>, <em>partial=False</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/overlap/main.html#resolve_overlap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.overlap.main.resolve_overlap" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">nctime.overlap.main.</code><code class="descname">resolve_overlap</code><span class="sig-paren">(</span><em>ffp</em>, <em>pattern</em>, <em>from_date=None</em>, <em>to_date=None</em>, <em>cutting_timestep=None</em>, <em>partial=False</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/overlap/main.html#resolve_overlap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.overlap.main.resolve_overlap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resolve overlapping files.
 If full overlap, the corresponding file is removed.
 If partial overlap, the corresponding file is truncated into a new one and the old file is removed.</p>
@@ -264,9 +264,8 @@ If partial overlap, the corresponding file is truncated into a new one and the o
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>directory</strong> (<em>str</em>) – The directory scanned</li>
+<li><strong>ffp</strong> (<em>str</em>) – The file full path</li>
 <li><strong>pattern</strong> (<em>str</em>) – The filename pattern</li>
-<li><strong>filename</strong> (<em>str</em>) – The filename</li>
 <li><strong>from_date</strong> (<em>int</em>) – Overlap starting date</li>
 <li><strong>to_date</strong> (<em>int</em>) – Overlap ending date</li>
 <li><strong>cutting_timestep</strong> (<em>int</em>) – Time step to cut the file</li>
@@ -1173,9 +1172,11 @@ Default is no color (i.e., restore original color)</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="nctime.utils.custom_print.TAGS">
-<em class="property">class </em><code class="descclassname">nctime.utils.custom_print.</code><code class="descname">TAGS</code><a class="reference internal" href="modules/nctime/utils/custom_print.html#TAGS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.custom_print.TAGS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tags strings for print statements</p>
+<dt id="nctime.utils.custom_print._TAGS">
+<em class="property">class </em><code class="descclassname">nctime.utils.custom_print.</code><code class="descname">_TAGS</code><a class="reference internal" href="modules/nctime/utils/custom_print.html#_TAGS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.custom_print._TAGS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tags strings for print statements
+These are evaluated as properties, in order to defer until after
+enable_colors or disable_colors has been called during initialisation</p>
 </dd></dl>
 
 <dl class="class">
@@ -1196,7 +1197,7 @@ Default is no color (i.e., restore original color)</p>
 </table>
 <dl class="class">
 <dt id="nctime.utils.parser.MultilineFormatter">
-<em class="property">class </em><code class="descclassname">nctime.utils.parser.</code><code class="descname">MultilineFormatter</code><span class="sig-paren">(</span><em>prog</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/parser.html#MultilineFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.parser.MultilineFormatter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">nctime.utils.parser.</code><code class="descname">MultilineFormatter</code><span class="sig-paren">(</span><em>prog</em>, <em>default_columns=120</em><span class="sig-paren">)</span><a class="reference internal" href="modules/nctime/utils/parser.html#MultilineFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nctime.utils.parser.MultilineFormatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Custom formatter class for argument parser to use with the Python
 <a class="reference external" href="https://docs.python.org/2/library/argparse.html">argparse</a> module.</p>
 </dd></dl>
@@ -1951,7 +1952,7 @@ time boundary and not the middle of the time interval.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'4.6.0',
+            VERSION:'4.6.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
