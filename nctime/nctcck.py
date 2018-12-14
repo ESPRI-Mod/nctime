@@ -111,10 +111,6 @@ def get_args(args=None):
         action=DirectoryChecker,
         help=CARD_HELP)
     main.add_argument(
-        '-c', '--card',
-        action=DirectoryChecker,
-        help=CARD_HELP)
-    main.add_argument(
         '--set-inc',
         metavar='TABLE:FREQUENCY=INCREMENT',
         type=inc_converter,
