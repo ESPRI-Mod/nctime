@@ -52,7 +52,7 @@ def process(ffp):
             wrong_timesteps = list(np.where(time_axis_diff == False)[0])
         # Check time boundaries correctness
         wrong_bounds = list()
-        if fh.has_bounds and not {'004'}.intersection(set(fh.status)):
+        if fh.has_bounds:
             fh.time_bounds_rebuilt = trunc(fh.build_time_bounds(), NDECIMALS)
             if not np.array_equal(fh.time_bounds_rebuilt, fh.time_bounds):
                 fh.status.append('006')
@@ -94,6 +94,12 @@ def process(ffp):
             # Delete time bounds and bounds attribute from file if write or force mode
             fh.nc_var_delete(variable=fh.tbnds)
             fh.nc_att_delete(attribute='bounds', variable='time')
+            correction = True
+        # Add time boundaries depending on checking
+        if (pctx.write and {'005'}.intersection(set(fh.status))) or pctx.force:
+            # Add time bounds and bounds attribute from file if write or force mode
+            fh.nc_var_add(variable=fh.tbnds)
+            fh.nc_att_add(attribute='bounds', variable='time')
             correction = True
         # Rewrite time axis depending on checking
         if (pctx.write and {'001', '002', '006', '007'}.intersection(set(fh.status))) or pctx.force:

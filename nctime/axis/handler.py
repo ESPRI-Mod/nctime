@@ -234,12 +234,26 @@ class File(object):
         assert len(axis) == self.length
         return axis
 
+    def nc_var_add(self, variable):
+        """
+        Add a NetCDF variable using NCO operators.
+        A unique filename is generated to avoid multiprocessing errors.
+
+        :param str variable: The variable to delete
+        :raises Error: If the deletion failed
+
+        """
+        try:
+            nc = nco.Nco()
+            nc.ncks(input=self.ffp,
+                    options=['-O', '-x', '-v {}'.format(variable)])
+        except:
+            raise NetCDFVariableRemoveFail(variable, self.ffp)
+
     def nc_var_delete(self, variable):
         """
         Delete a NetCDF variable using NCO operators.
         A unique filename is generated to avoid multiprocessing errors.
-        To overwrite the input file, the source file is dump using the ``cat`` Shell command-line
-        to avoid Python memory limit.
 
         :param str variable: The variable to delete
         :raises Error: If the deletion failed
@@ -256,8 +270,6 @@ class File(object):
         """
         Delete a NetCDF dimension attribute using NCO operators.
         A unique filename is generated to avoid multiprocessing errors.
-        To overwrite the input file, the source file is dump using the ``cat`` Shell command-line
-        to avoid Python memory limit.
 
         :param str attribute: The attribute to delete
         :param str variable: The variable that has the attribute
@@ -281,6 +293,24 @@ class File(object):
         """
         with ncopen(self.ffp, 'r+') as nc:
             nc.variables[variable][:] = data
+
+    def nc_att_add(self, attribute, data, variable=None):
+        """
+        Add attribute to NetCDF file.
+
+        :param str attribute: The attribute to replace
+        :param str data: The attribute value to add
+        :param str variable: The variable that has the attribute, default is global attributes
+
+        """
+        with ncopen(self.ffp, 'r+') as nc:
+            if variable:
+                if variable not in nc.variables.keys():
+                    raise NoNetCDFVariable(variable, nc.path)
+                nc.variables[variable].setncattr(attribute, data)
+            else:
+                nc.setncattr(attribute, data)
+
 
     def nc_att_overwrite(self, attribute, data, variable=None):
         """

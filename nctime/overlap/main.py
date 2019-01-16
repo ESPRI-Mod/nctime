@@ -63,7 +63,9 @@ def get_overlaps(g, shortest):
                                                          'cutting_date': current_node['next'],
                                                          'cutting_timestep': cutting_timestep})
     # Find full overlapping nodes
-    overlaps['full'] = list(set(g.nodes()).symmetric_difference(set(shortest)))
+    overlaps['full'] = dict()
+    for n in list(set(g.nodes()).symmetric_difference(set(shortest))):
+        overlaps['full'][n] = g.node[n]
     return overlaps['partial'], overlaps['full']
 
 
