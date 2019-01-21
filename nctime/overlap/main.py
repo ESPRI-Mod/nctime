@@ -222,26 +222,30 @@ def create_edges(gid):
     # Build starting node with edges to first node(s)
     # If no start date submitted for the covered period,
     # Or if the submitted start date is higher than the min of start time stamps
-    # Set period_start as the min of time stamps.
+    # Set START node date as the min of time stamps.
     if not period_start or period_start > min(start_dates):
-        period_start = min(start_dates)
-    # Create START node
-    graph.add_node(gid, 'START', start=period_start, end=period_start, next=period_start)
+        start_node_date = min(start_dates)
+    else:
+    # If start date submitted set it as START node date
+        start_node_date = period_start
+    graph.add_node(gid, 'START', start=start_node_date, end=start_node_date, next=start_node_date)
     # Build starting edge only if at least one file covers the start date of the period
-    if period_start >= min(start_dates):
+    if start_node_date >= min(start_dates):
         for start in starts:
             graph.add_edge(gid, 'START', start)
             Print.debug('Graph: {} :: Edge START --> {}'.format(gid, start))
     # Build ending node with edges from latest node(s)
     # If no end date submitted for the covered period,
     # Or if the submitted end date is lower than the max of end time stamps
-    # Set period_end as the max of time stamps.
+    # Set END node date as the max of time stamps.
     if not period_end or period_end < max(end_dates):
-        period_end = max(end_dates)
-    # Create START node
-    graph.add_node(gid, 'END', start=period_end, end=period_end, next=period_end)
+        end_node_date = max(end_dates)
+    else:
+    # If end date submitted set it as END node date
+        end_node_date = period_end
+    graph.add_node(gid, 'END', start=end_node_date, end=end_node_date, next=end_node_date)
     # Build ending edge only if at least one file covers the end date of the period
-    if period_end <= max(end_dates):
+    if end_node_date <= max(end_dates):
         for end in ends:
             graph.add_edge(gid, end, 'END')
             Print.debug('Graph: {} :: Edge {} --> END'.format(gid, end))
