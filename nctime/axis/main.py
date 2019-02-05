@@ -90,22 +90,26 @@ def process(ffp):
             fh.nc_file_rename(new_filename=re.sub(fh.end_timestamp, fh.last_timestamp, fh.filename))
             correction = True
         # Remove time boundaries depending on checking
-        if (pctx.write and {'004'}.intersection(set(fh.status))) or pctx.force:
+        if pctx.write and {'004'}.intersection(set(fh.status)):
             # Delete time bounds and bounds attribute from file if write or force mode
             fh.nc_var_delete(variable=fh.tbnds)
             fh.nc_att_delete(attribute='bounds', variable='time')
             correction = True
         # Add time boundaries depending on checking
-        if (pctx.write and {'005'}.intersection(set(fh.status))) or pctx.force:
+        if pctx.write and {'005'}.intersection(set(fh.status)):
             # Add time bounds and bounds attribute from file if write or force mode
             fh.nc_var_add(variable=fh.tbnds)
             fh.nc_att_add(attribute='bounds', variable='time')
             correction = True
-        # Rewrite time axis depending on checking
-        if (pctx.write and {'001', '002', '006', '007'}.intersection(set(fh.status))) or pctx.force:
-            fh.nc_var_overwrite('time', fh.time_axis_rebuilt)
+        # Rewrite time units depending on checking
+        if pctx.write and {'002'}.intersection(set(fh.status)):
             fh.nc_att_overwrite('units', variable='time', data=pctx.ref_units)
+        # Rewrite time calendar depending on checking
+        if pctx.write and {'007'}.intersection(set(fh.status)):
             fh.nc_att_overwrite('calendar', variable='time', data=pctx.ref_calendar)
+        # Rewrite time axis depending on checking
+        if (pctx.write and {'001', '006'}.intersection(set(fh.status))) or pctx.force:
+            fh.nc_var_overwrite('time', fh.time_axis_rebuilt)
             # Rewrite time boundaries if needed
             if fh.has_bounds:
                 if fh.is_climatology:

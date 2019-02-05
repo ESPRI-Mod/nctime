@@ -292,7 +292,10 @@ class File(object):
 
         """
         with ncopen(self.ffp, 'r+') as nc:
-            nc.variables[variable][:] = data
+            if nc.variables[variable].endian() == 'big':
+                nc.variables[variable][:] = data.byteswap(True)
+            else:
+                nc.variables[variable][:] = data
 
     def nc_att_add(self, attribute, data, variable=None):
         """
