@@ -47,7 +47,7 @@ def process(ffp):
         # Rebuild a theoretical time axis with appropriate precision
         fh.time_axis_rebuilt = trunc(fh.build_time_axis(), NDECIMALS)
         if not np.array_equal(fh.time_axis_rebuilt, fh.time_axis):
-            fh.status.append('001')
+            fh.status.append(ERROR_TIME_AXIS_KO)
             time_axis_diff = (fh.time_axis_rebuilt == fh.time_axis)
             wrong_timesteps = list(np.where(time_axis_diff == False)[0])
         # Check time boundaries correctness
@@ -55,60 +55,84 @@ def process(ffp):
         if fh.has_bounds:
             fh.time_bounds_rebuilt = trunc(fh.build_time_bounds(), NDECIMALS)
             if not np.array_equal(fh.time_bounds_rebuilt, fh.time_bounds):
-                fh.status.append('006')
+                fh.status.append(ERROR_TIME_BOUNDS_KO)
                 time_bounds_diff = (fh.time_bounds_rebuilt == fh.time_bounds)
                 wrong_bounds = list(np.where(np.all(time_bounds_diff, axis=1) == False)[0])
         # Get last theoretical date
         fh.last_num = fh.time_axis_rebuilt[-1]
         fh.last_date = fh.date_axis_rebuilt[-1]
         fh.last_timestamp = truncated_timestamp(str2dates(fh.last_date), fh.timestamp_length)
-        # Check consistency between last time date and end date from filename
-        if not pctx.on_fly and fh.last_date != fh.end_date:
-            if fh.last_date < fh.end_date:
-                fh.status.append('003')
+        # Check consistency between start date infile and start date from filename
+        if fh.start_date_infile != fh.start_date_filename:
+            if fh.start_date_infile < fh.start_date_filename:
+                fh.status.append(ERROR_START_DATE_IN_VS_NAME)
             else:
-                fh.status.append('008')
+                fh.status.append(ERROR_START_DATE_NAME_VS_IN)
+        # Check consistency between end date infile and end date from filename
+        if not pctx.on_fly and fh.end_date_infile != fh.end_date_filename:
+            if fh.end_date_infile < fh.end_date_filename:
+                fh.status.append(ERROR_END_DATE_IN_VS_NAME)
+            else:
+                fh.status.append(ERROR_END_DATE_NAME_VS_IN)
+        # Check consistency between rebuilt end date and end date from filename
+        if not pctx.on_fly and fh.last_date != fh.end_date_filename:
+            if fh.last_date < fh.end_date_filename:
+                fh.status.append(ERROR_END_DATE_REF_VS_NAME)
+            else:
+                fh.status.append(ERROR_END_DATE_NAME_VS_REF)
+        # Check consistency between rebuilt end date and end date infile
+        if not pctx.on_fly and fh.last_date != fh.end_date_infile:
+            if fh.last_date < fh.end_date_infile:
+                fh.status.append(ERROR_END_DATE_REF_VS_IN)
+            else:
+                fh.status.append(ERROR_END_DATE_IN_VS_REF)
         # Check file consistency between instant time and time boundaries
         if fh.is_instant and fh.has_bounds:
-            fh.status.append('004')
+            fh.status.append(ERROR_TIME_BOUNDS_INS)
         # Check file consistency between averaged time and time boundaries
         if not fh.is_instant and not fh.has_bounds:
-            fh.status.append('005')
+            fh.status.append(ERROR_TIME_BOUNDS_AVE)
         # Check time units consistency between file and ref
         if pctx.ref_units != fh.tunits:
-            fh.status.append('002')
+            fh.status.append(ERROR_TIME_UNITS)
         # Check calendar consistency between file and ref
         if pctx.ref_calendar != fh.calendar:
-            fh.status.append('007')
+            fh.status.append(ERROR_TIME_CALENDAR)
         # Exclude codes to ignore from status codes
         # Before correction to avoid undesired operations
         fh.status = [code for code in fh.status if code not in pctx.ignore_codes]
         correction = False
         # Rename file depending on checking
-        if (pctx.write and {'003', '008'}.intersection(set(fh.status))) or pctx.force:
+        if (pctx.write and (
+                (
+                        ({ERROR_END_DATE_NAME_VS_IN, ERROR_END_DATE_IN_VS_NAME}.intersection(set(fh.status)))
+                        and
+                        {ERROR_END_DATE_NAME_VS_REF, ERROR_END_DATE_REF_VS_NAME}.intersection(set(fh.status))
+                )
+                or
+                (
+                        ({ERROR_END_DATE_NAME_VS_REF, ERROR_END_DATE_REF_VS_NAME}.intersection(set(fh.status))
+                         and
+                         {ERROR_END_DATE_IN_VS_REF, ERROR_END_DATE_REF_VS_IN}.intersection(set(fh.status)))
+                )
+        )) or pctx.force:
             # Change filename and file full path dynamically
-            fh.nc_file_rename(new_filename=re.sub(fh.end_timestamp, fh.last_timestamp, fh.filename))
+            fh.nc_file_rename(new_filename=re.sub(fh.end_timestamp_filename, fh.last_timestamp, fh.filename))
             correction = True
         # Remove time boundaries depending on checking
-        if pctx.write and {'004'}.intersection(set(fh.status)):
+        if pctx.write and ERROR_TIME_BOUNDS_INS in fh.status:
             # Delete time bounds and bounds attribute from file if write or force mode
             fh.nc_var_delete(variable=fh.tbnds)
             fh.nc_att_delete(attribute='bounds', variable='time')
             correction = True
-        # Add time boundaries depending on checking
-        if pctx.write and {'005'}.intersection(set(fh.status)):
-            # Add time bounds and bounds attribute from file if write or force mode
-            fh.nc_var_add(variable=fh.tbnds)
-            fh.nc_att_add(attribute='bounds', variable='time')
-            correction = True
         # Rewrite time units depending on checking
-        if pctx.write and {'002'}.intersection(set(fh.status)):
+        if pctx.write and ERROR_TIME_UNITS in fh.status:
             fh.nc_att_overwrite('units', variable='time', data=pctx.ref_units)
         # Rewrite time calendar depending on checking
-        if pctx.write and {'007'}.intersection(set(fh.status)):
+        if pctx.write and ERROR_TIME_CALENDAR in fh.status:
             fh.nc_att_overwrite('calendar', variable='time', data=pctx.ref_calendar)
         # Rewrite time axis depending on checking
-        if (pctx.write and {'001', '006'}.intersection(set(fh.status))) or pctx.force:
+        if (pctx.write and {ERROR_TIME_AXIS_KO, ERROR_TIME_BOUNDS_KO}.intersection(set(fh.status))) or pctx.force:
             fh.nc_var_overwrite('time', fh.time_axis_rebuilt)
             # Rewrite time boundaries if needed
             if fh.has_bounds:
@@ -118,75 +142,91 @@ def process(ffp):
                     fh.nc_var_overwrite(fh.tbnds, fh.time_bounds_rebuilt)
             correction = True
         # Diagnostic display
-        if {'002'}.intersection(set(fh.status)):
-            time_units = COLORS.FAIL(fh.tunits)
-            time_ref_units = COLORS.SUCCESS(pctx.ref_units)
+        msgval = {}
+        msgval['file'] = COLORS.HEADER(fh.filename)
+        if ERROR_TIME_UNITS in fh.status:
+            msgval['infile_units'] = COLORS.FAIL(fh.tunits)
+            msgval['ref_units'] = COLORS.SUCCESS(pctx.ref_units)
         else:
-            time_units = COLORS.SUCCESS(fh.tunits)
-            time_ref_units = COLOR('cyan').bold(pctx.ref_units)
-        if {'007'}.intersection(set(fh.status)):
-            time_cal = COLORS.FAIL(fh.calendar)
-            time_ref_cal = COLORS.SUCCESS(pctx.ref_calendar)
+            msgval['infile_units'] = COLORS.SUCCESS(fh.tunits)
+            msgval['ref_units'] = COLOR('cyan').bold(pctx.ref_units)
+        if ERROR_TIME_CALENDAR in fh.status:
+            msgval['infile_calendar'] = COLORS.FAIL(fh.calendar)
+            msgval['ref_calendar'] = COLORS.SUCCESS(pctx.ref_calendar)
         else:
-            time_cal = COLORS.SUCCESS(fh.calendar)
-            time_ref_cal = COLOR('cyan').bold(pctx.ref_calendar)
-        if {'003', '008'}.intersection(set(fh.status)):
-            time_end_timestamp = COLORS.FAIL(fh.end_timestamp_infile)
-            time_end_date = COLORS.FAIL(fh.end_date_infile)
-            time_end_num = COLORS.FAIL(str(fh.end_num_infile))
-            time_ref_end_timestamp = COLORS.SUCCESS(fh.end_timestamp)
-            time_ref_end_date = COLORS.SUCCESS(fh.end_date)
-            time_ref_end_num = COLORS.SUCCESS(str(fh.end_num))
+            msgval['infile_calendar'] = COLORS.SUCCESS(fh.calendar)
+            msgval['ref_calendar'] = COLOR('cyan').bold(pctx.ref_calendar)
+        if {ERROR_START_DATE_IN_VS_NAME, ERROR_START_DATE_NAME_VS_IN}.intersection(set(fh.status)):
+            msgval['infile_start_timestamp'] = COLORS.FAIL(fh.start_timestamp_infile)
+            msgval['infile_start_date'] = COLORS.FAIL(fh.start_date_infile)
+            msgval['infile_start_num'] = COLORS.FAIL(str(fh.start_num_infile))
+            msgval['ref_start_timestamp'] = COLORS.SUCCESS(fh.start_timestamp_filename)
+            msgval['ref_start_date'] = COLORS.SUCCESS(fh.start_date_filename)
+            msgval['ref_start_num'] = COLORS.SUCCESS(str(fh.start_num_filename))
         else:
-            time_end_timestamp = COLORS.SUCCESS(fh.end_timestamp_infile)
-            time_end_date = COLORS.SUCCESS(fh.end_date_infile)
-            time_end_num = COLORS.SUCCESS(str(fh.end_num_infile))
-            time_ref_end_timestamp = COLOR('cyan').bold(fh.end_timestamp)
-            time_ref_end_date = COLOR('cyan').bold(fh.end_date)
-            time_ref_end_num = COLOR('cyan').bold(str(fh.end_num))
+            msgval['infile_start_timestamp'] = COLORS.SUCCESS(fh.start_timestamp_infile)
+            msgval['infile_start_date'] = COLORS.SUCCESS(fh.start_date_infile)
+            msgval['infile_start_num'] = COLORS.SUCCESS(str(fh.start_num_infile))
+            msgval['ref_start_timestamp'] = COLOR('cyan').bold(fh.start_timestamp_filename)
+            msgval['ref_start_date'] = COLOR('cyan').bold(fh.start_date_filename)
+            msgval['ref_start_num'] = COLOR('cyan').bold(str(fh.start_num_filename))
+        if {ERROR_END_DATE_NAME_VS_REF, ERROR_END_DATE_REF_VS_NAME}.intersection(set(fh.status)):
+            msgval['filename_end_timestamp'] = COLORS.FAIL(fh.end_timestamp_filename)
+            msgval['filename_end_date'] = COLORS.FAIL(fh.end_date_filename)
+            msgval['filename_end_num'] = COLORS.FAIL(str(fh.end_num_filename))
+        else:
+            msgval['filename_end_timestamp'] = COLORS.SUCCESS(fh.end_timestamp_filename)
+            msgval['filename_end_date'] = COLORS.SUCCESS(fh.end_date_filename)
+            msgval['filename_end_num'] = COLORS.SUCCESS(str(fh.end_num_filename))
+        if {ERROR_END_DATE_IN_VS_REF, ERROR_END_DATE_REF_VS_IN}.intersection(set(fh.status)):
+            msgval['infile_end_timestamp'] = COLORS.FAIL(fh.end_timestamp_infile)
+            msgval['infile_end_date'] = COLORS.FAIL(fh.end_date_infile)
+            msgval['infile_end_num'] = COLORS.FAIL(str(fh.end_num_infile))
+        else:
+            msgval['infile_end_timestamp'] = COLORS.SUCCESS(fh.end_timestamp_infile)
+            msgval['infile_end_date'] = COLORS.SUCCESS(fh.end_date_infile)
+            msgval['infile_end_num'] = COLORS.SUCCESS(str(fh.end_num_infile))
+        msgval['ref_end_timestamp'] = COLOR('cyan').bold(fh.last_timestamp)
+        msgval['ref_end_date'] = COLOR('cyan').bold(fh.last_date)
+        msgval['ref_end_num'] = COLOR('cyan').bold(str(fh.last_num))
+        msgval['len'] = fh.length
+        msgval['table'] = fh.table
+        msgval['freq'] = fh.frequency
+        msgval['step'] = fh.step
+        msgval['units'] = fh.step_units
+        msgval['instant'] = fh.is_instant
+        msgval['clim'] = fh.is_climatology
+        msgval['bnds'] = fh.has_bounds
 
-        msg = """{}
+        msg = """{file}
         Units:
-            IN FILE -- {}
-            REF     -- {}
+            IN FILE -- {infile_units}
+            REF     -- {ref_units}
         Calendar:
-            IN FILE -- {}
-            REF     -- {}
+            IN FILE -- {infile_calendar}
+            REF     -- {ref_calendar}
         Start: 
-            IN FILE -- {} = {} = {}
-            REBUILT -- {} = {} = {}
+            IN FILE -- {infile_start_timestamp} = {infile_start_date} = {infile_start_num}
+            REF     -- {ref_start_timestamp} = {ref_start_date} = {ref_start_num}
         End:
-            IN FILE -- {} = {} = {}
-            REBUILT -- {} = {} = {}
-        Length: {}
-        MIP table: {}
-        Frequency: {} = {} {}
-        Is instant: {}
-        Is climatology: {}
-        Has bounds: {}""".format(COLORS.HEADER(fh.filename),
-                                 time_units, time_ref_units,
-                                 time_cal, time_ref_cal,
-                                 COLOR('cyan').bold(fh.start_timestamp_infile),
-                                 COLOR('cyan').bold(fh.start_date_infile),
-                                 COLOR('cyan').bold(str(fh.start_num_infile)),
-                                 fh.start_timestamp, fh.start_date, fh.start_num,
-                                 time_end_timestamp, time_end_date, time_end_num,
-                                 time_ref_end_timestamp, time_ref_end_date, time_ref_end_num,
-                                 # fh.last_timestamp, fh.last_date, fh.last_num,
-                                 fh.length,
-                                 fh.table,
-                                 fh.frequency, fh.step, fh.step_units,
-                                 fh.is_instant,
-                                 fh.is_climatology,
-                                 fh.has_bounds)
+            FILENAME -- {filename_end_timestamp} = {filename_end_date} = {filename_end_num}
+            IN FILE  -- {infile_end_timestamp} = {infile_end_date} = {infile_end_num}
+            REBUILT  -- {ref_end_timestamp} = {ref_end_date} = {ref_end_num}
+        Length: {len}
+        MIP table: {table}
+        Frequency: {freq} = {step} {units}
+        Is instant: {instant}
+        Is climatology: {clim}
+        Has bounds: {bnds}""".format(**msgval)
+
         # Add status message
         if fh.status:
             for s in fh.status:
                 msg += """\n        Status: {} """.format(COLORS.FAIL('Error {} -- {}'.format(s, STATUS[s])))
-                if correction and s in ['001', '002', '003', '004', '006', '007', '008']:
+                if correction and s in ERROR_CORRECTED_SET:
                     msg += ' -- {}'.format(COLORS.SUCCESS('Corrected'))
         else:
-            msg += """\n        Status: {}""".format(COLORS.SUCCESS(STATUS['000']))
+            msg += """\n        Status: {}""".format(COLORS.SUCCESS(STATUS[ERROR_TIME_AXIS_OK]))
         # Display wrong time steps and/or bounds
         timestep_limit = pctx.limit if pctx.limit else len(wrong_timesteps)
         for i, v in enumerate(wrong_timesteps):

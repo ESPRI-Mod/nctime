@@ -77,10 +77,10 @@ class File(object):
                 raise EmptyTimeAxis(self.ffp)
             t = nc.variables['time'][:]
             self.time_axis = trunc(t, NDECIMALS)
-            self.start_num_infile = self.time_axis[1]
+            self.start_num_infile = self.time_axis[0]
             self.end_num_infile = self.time_axis[-1]
             self.date_axis = dates2str(num2date(t, units=self.ref_units, calendar=self.ref_calendar))
-            self.start_date_infile = self.date_axis[1]
+            self.start_date_infile = self.date_axis[0]
             self.end_date_infile = self.date_axis[-1]
             self.start_timestamp_infile = truncated_timestamp(str2date(self.start_date_infile), self.timestamp_length)
             self.end_timestamp_infile = truncated_timestamp(str2date(self.end_date_infile), self.timestamp_length)
@@ -159,10 +159,10 @@ class File(object):
             dates_num += 0.5
         self.start_axis = dates_num[0]
         dates = num2date(dates_num, units=self.funits, calendar=self.calendar)
-        self.start_num, self.end_num, _ = date2num(dates, units=self.tunits, calendar=self.calendar)
-        self.start_date, self.end_date, _ = dates2str(list(dates))
+        self.start_num_filename, self.end_num_filename, _ = date2num(dates, units=self.tunits, calendar=self.calendar)
+        self.start_date_filename, self.end_date_filename, _ = dates2str(list(dates))
         # Convert dates into timestamps
-        self.start_timestamp, self.end_timestamp, _ = [
+        self.start_timestamp_filename, self.end_timestamp_filename, _ = [
             truncated_timestamp(date, self.timestamp_length) for date in dates]
         # Declare last time attribute
         self.last_date = None
@@ -234,22 +234,6 @@ class File(object):
         assert len(axis) == self.length
         return axis
 
-    def nc_var_add(self, variable):
-        """
-        Add a NetCDF variable using NCO operators.
-        A unique filename is generated to avoid multiprocessing errors.
-
-        :param str variable: The variable to delete
-        :raises Error: If the deletion failed
-
-        """
-        try:
-            nc = nco.Nco()
-            nc.ncks(input=self.ffp,
-                    options=['-O', '-x', '-v {}'.format(variable)])
-        except:
-            raise NetCDFVariableRemoveFail(variable, self.ffp)
-
     def nc_var_delete(self, variable):
         """
         Delete a NetCDF variable using NCO operators.
@@ -313,7 +297,6 @@ class File(object):
                 nc.variables[variable].setncattr(attribute, data)
             else:
                 nc.setncattr(attribute, data)
-
 
     def nc_att_overwrite(self, attribute, data, variable=None):
         """
