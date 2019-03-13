@@ -136,10 +136,7 @@ def process(ffp):
             fh.nc_var_overwrite('time', fh.time_axis_rebuilt)
             # Rewrite time boundaries if needed
             if fh.has_bounds:
-                if fh.is_climatology:
-                    fh.nc_var_overwrite('climatology_bounds', fh.time_bounds_rebuilt)
-                else:
-                    fh.nc_var_overwrite(fh.tbnds, fh.time_bounds_rebuilt)
+                fh.nc_var_overwrite(fh.tbnds, fh.time_bounds_rebuilt)
             correction = True
         # Diagnostic display
         msgval = {}

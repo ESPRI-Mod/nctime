@@ -120,10 +120,22 @@ Time axis error codes:
 
  * 000: Time axis seems OK
  * 001: Incorrect time axis over one or several time steps
- * 002: Time units must be unchanged for the same dataset
- * 003: Last date is earlier than end date from filename
- * 004: An instantaneous time axis should not embed time boundaries
- * 005: An averaged time axis should embed time boundaries
- * 006: Incorrect time bounds over one or several time steps
- * 007: Calendar must be unchanged for the same dataset
- * 008: Last date is later than end date of filename
+
+ * 002: An instantaneous time axis should not embed time boundaries
+ * 003: An averaged time axis should embed time boundaries
+ * 004: Incorrect time bounds over one or several time steps
+
+ * 005: Time units must be unchanged for the same dataset
+ * 006: Calendar must be unchanged for the same dataset
+
+ * 007a: End date in file is earlier than end date from filename
+ * 007b: End date in file is late than end date from filename
+
+ * 008a: End date from filename is earlier than theoretical end date
+ * 008b: End date from filename is later than theoretical end date
+
+ * 009a: End date in file is earlier than theoretical end date
+ * 009b: End date in file is later than theoretical end date
+
+ * 010a: Start date in file is earlier than start date from filename
+ * 010b: Start date in file is later than start date from filename
