@@ -117,7 +117,7 @@ def process(ffp):
                 )
         )) or pctx.force:
             # Change filename and file full path dynamically
-            fh.nc_file_rename(new_filename=re.sub(fh.end_timestamp_filename, fh.last_timestamp, fh.filename))
+            fh.nc_file_rename(new_filename=re.sub(fh.orig_end_timestamp_filename, fh.last_timestamp, fh.filename))
             correction = True
         # Remove time boundaries depending on checking
         if pctx.write and ERROR_TIME_BOUNDS_INS in fh.status:

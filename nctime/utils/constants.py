@@ -53,6 +53,7 @@ FREQ_INC = {('None', 'subhr'): [30, 'minutes'],
             ('None', 'mon'): [1, 'months'],
             ('None', 'monC'): [1, 'months'],
             ('None', 'monPt'): [1, 'months'],
+            ('None', 'sem'): [3, 'months'],
             ('None', 'yr'): [1, 'years'],
             ('None', 'yrPt'): [1, 'years'],
             ('3hr', '3hr'): [3, 'hours'],
@@ -140,7 +141,7 @@ TIME_UNITS = {'s': 'seconds',
               'Y': 'years'}
 
 # Frequencies to consider in case of non-instant time correction
-AVERAGE_CORRECTION_FREQ = ['day', 'mon', 'monPt', 'yr', 'yrPt', '1hrCM']
+AVERAGE_CORRECTION_FREQ = ['day', 'mon', 'monPt', 'yr', 'yrPt', '1hrCM', 'sem']
 
 # Climatology frequencies
 CLIMATOLOGY_FREQ = ['monC', 'monClim', '1hrCM']

@@ -136,6 +136,9 @@ class File(object):
                                                   calendar=self.calendar,
                                                   start=input_start_timestamp,
                                                   end=input_end_timestamp)
+        # Backup origin timestamp to be replaced in case of file renaming
+        self.orig_start_timestamp_filename, self.orig_end_timestamp_filename, _ = [
+            truncated_timestamp(date, self.timestamp_length) for date in dates]
         dates_num = trunc(date2num(dates, units=self.funits, calendar=self.calendar), NDECIMALS)
         if self.is_climatology:
             # Get climatology offset to start in the middle of the interval
@@ -156,7 +159,7 @@ class File(object):
             dates_num[1] -= self.clim_diff[1] - 0.5
         elif not self.is_instant and self.frequency in AVERAGE_CORRECTION_FREQ:
             # Apply time offset for non-instant time axis:
-            dates_num += 0.5
+            dates_num += 0.5 * self.step
         self.start_axis = dates_num[0]
         dates = num2date(dates_num, units=self.funits, calendar=self.calendar)
         self.start_num_filename, self.end_num_filename, _ = date2num(dates, units=self.tunits, calendar=self.calendar)

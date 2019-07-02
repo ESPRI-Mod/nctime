@@ -235,7 +235,7 @@ def date2num(date_axis, units, calendar):
             num = days_axis - years_axis_as_days[closest_index]
             # Number of days of the corresponding closest year
             den = np.diff(years_axis_as_days)[closest_index]
-            return min_years + closest_index + num / den
+            return np.around(min_years + closest_index + num / den, 10)
         elif units.split(' ')[0] == 'months':
             # If units are 'months since'
             # Define the number of maximum and minimum months to build a date axis covering
@@ -254,7 +254,7 @@ def date2num(date_axis, units, calendar):
             num = days_axis - months_axis_as_days[closest_index]
             # Number of days of the corresponding closest month
             den = np.diff(months_axis_as_days)[closest_index]
-            return min_months + closest_index + num / den
+            return np.around(min_months + closest_index + num / den, 10)
 
 
 def add_month(date, months_to_add):
